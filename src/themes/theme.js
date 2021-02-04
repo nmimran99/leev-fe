@@ -6,8 +6,8 @@ export const theme = createMuiTheme({
         MuiButton: {
          root: {
           "&:hover": {
-            boxShadow: 'rgba(0,0,0,0.5) inset 0px 0px 5px 1px',
-            backgroundColor: 'rgba(0,0,0,0.2)'
+            boxShadow: 'rgba(0,0,0,0.25) 2px 3px 2px 0px',
+           
           },
          }
         }

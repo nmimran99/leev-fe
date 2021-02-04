@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { makeStyles, InputLabel, Accordion, OutlinedInput, Button, ClickAwayListener, TextField, Typography, Collapse, FormControl, } from '@material-ui/core'
+import React, {  useState } from 'react'
+import { makeStyles, InputLabel, OutlinedInput, Button, Typography, Collapse, FormControl, } from '@material-ui/core'
 import clsx from 'clsx'
-import { EventNote } from '@material-ui/icons';
 
 
-export const UpdateAsset = ({ open, data, handleSave, handleCancel }) => {
+
+
+export const UpdateAsset = ({ open, data, handleUpdate, handleCancel }) => {
 
     const [ values, setValues ] = useState({
-        address: data.address,
-        addInfo: data.addInfo,
-        type: data.type
+        address: data.address || '',
+        addInfo: data.addInfo || '',
+        type: data.type || ''
     });
     const [ errors, setErrors ] = useState([]);
 
@@ -40,7 +41,7 @@ export const UpdateAsset = ({ open, data, handleSave, handleCancel }) => {
                 </Typography>
                 <div className={classes.inputs}>
                     <div className={classes.cont}>
-                        <FormControl variant='outlined' className={classes.textInput}  fullWidth>
+                        <FormControl variant='outlined' className={classes.textInput} fullWidth>
                             <InputLabel htmlFor='outlined-input-password' shrink>שם רחוב</InputLabel>
                             <OutlinedInput
                                 notched
@@ -48,8 +49,7 @@ export const UpdateAsset = ({ open, data, handleSave, handleCancel }) => {
                                 id='outlined-input-password' 
                                 value={ values.address.street }
                                 onChange={handleChange({type: 'address', field: 'street'})}
-                                labelWidth={60}
-                              
+                                labelWidth={60} 
                             />
                         </FormControl>
                     </div>           
@@ -162,7 +162,7 @@ export const UpdateAsset = ({ open, data, handleSave, handleCancel }) => {
                     <div className={classes.controls}>
                         <Button
                             className={clsx(classes.control, classes.save)}
-                            onClick={handleSave}
+                            onClick={() => handleUpdate(data._id, values.address, values.addInfo, values.type)}
                         >
                             שמירה
                         </Button>
@@ -188,7 +188,7 @@ const useStyles = makeStyles(theme => ({
     container: {
         background: 'white',
         height: '370px',
-        margin: '15px',
+        margin: '10px',
         borderRadius: '19px',
         boxShadow: 'rgba(0,0,0,0.25) 0px 2px 10px 5px',
     },

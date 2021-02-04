@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { makeStyles, List, ListItem, ListItemIcon, ListItemText, Box, Divider, Grow, ClickAwayListener, useMediaQuery } from '@material-ui/core'
+import React from 'react'
+import { makeStyles, List, ListItem, ListItemIcon, ListItemText, Grow, ClickAwayListener, useMediaQuery } from '@material-ui/core'
 import AddLocationOutlinedIcon from '@material-ui/icons/AddLocationOutlined';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import QueueIcon from '@material-ui/icons/Queue';

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../context/authContext';
+import { AuthContext } from '../../context/AuthContext';
 import { Route, Redirect } from 'react-router-dom';
 import { authenticate, handleLS } from '../../api/userApi';
 

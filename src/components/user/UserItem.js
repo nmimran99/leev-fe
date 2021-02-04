@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../../context/authContext'
+import { AuthContext } from '../../context/AuthContext'
 import { makeStyles, Avatar, Typography, Button } from '@material-ui/core'
-import avtrImg from '../../assets/images/users/avatars/5fdd089738c8a758a8a1a957.JPG'
+import avtrImg from '../../assets/images/users/avatars/600e048ccbe5b841e4f9e7ed.jpg'
 
 
 export const UserItem = ({ user, showPhone, showTitle, avatarSize }) => {

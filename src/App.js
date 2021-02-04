@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useContext, useEffect} from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import { Login } from './components/user/Login';
 import { ProtectedWorkspace } from './components/workspace/ProtectedWorkspace';
@@ -7,6 +7,7 @@ import { InitialRouter } from './components/routes/InitialRouter';
 import { Workspace } from './components/workspace/Workspace'; 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { theme } from './themes/theme';
+import { FiltersContextProvider } from './context/FiltersContext';
 
 function App() {
 
@@ -22,7 +23,9 @@ function App() {
                 <Login />
               </Route>
               <ProtectedWorkspace path='/workspace'>
-                <Workspace />
+                <FiltersContextProvider>
+                  <Workspace />
+                </FiltersContextProvider>
               </ProtectedWorkspace>
             </Switch>
           </Router>

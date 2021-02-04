@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, AppBar, Toolbar, IconButton, Grid, Badge, Grow   } from '@material-ui/core';
+import { makeStyles, AppBar, IconButton, Grid, Badge } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
 import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
-import { SideMenu } from './SideMenu'
 import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded';
 import AddIcon from '@material-ui/icons/Add';
 
 export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu}) => {
 
     const classes = useStyles();
-    const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
     
     const StyledBadge = withStyles((theme) => ({
         badge: {

@@ -11,9 +11,9 @@ export const Workspace = ({}) => {
 
     return(
         <React.Fragment>
-            <Grid container className={classes.mainContainer} justify={'center'} >
+            <Grid container className={classes.mainContainer} justify='center' >
                 <Controls />
-                <Grid item xs={12} md={9} className={classes.mainData} justify='center'>
+                <Grid item xs={12} md={9} className={classes.mainData} >
                     <Switch>
                         <Route path={'/workspace/assets'}>
                             <Assets />
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
         overflowY: 'auto',
     },
     mainData: {
-        height: 'calc(90vh - 86px)',
+        height: 'calc(100vh - 86px)',
        
     }
 }))

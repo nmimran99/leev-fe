@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Grid, Accordion, AccordionSummary, Button, ClickAwayListener, Paper, Typography, Fade, useMediaQuery, Collapse, Grow } from '@material-ui/core'
+import { makeStyles, Grid, ClickAwayListener, Paper, Typography, Fade, useMediaQuery, IconButton, Tooltip } from '@material-ui/core'
 import clsx from 'clsx'
-import { ExpandMoreRounded } from '@material-ui/icons';
 import { UserItem } from '../../user/UserItem'
 import { AssetControls } from './AssetControls'
 import CategoryOutlinedIcon from '@material-ui/icons/CategoryOutlined';
@@ -11,6 +10,10 @@ import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
 import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
 import { UpdateAsset } from './UpdateAsset';
+import { updateSiteAddress } from '../../../api/assetsApi'
+import { UpdateAssetOwner } from './UpdateAssetOwner';
+import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
+import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 
 const gradients = [
     'linear-gradient(38deg, rgba(170,0,255,0.6194852941176471) 0%, rgba(44,23,238,0.5438550420168067) 100%)',
@@ -22,15 +25,15 @@ const gradients = [
     
 ]
 
-export const Asset = ({data, order, removeAsset}) => {
+export const Asset = ({assetData, order, removeAsset }) => {
 
     const classes = useStyles();
     const [ controlsVisible, setControlsVisible ] = useState(false);
     const [ editMode, setEditMode ] = useState(false);
     const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
+    const [ data, setData ] = useState(assetData);
     const [ transition, setTransition ] = useState({
         container: {
-            height: '200px',
             transition: 'height 0.3s ease'
         }
     });
@@ -39,14 +42,12 @@ export const Asset = ({data, order, removeAsset}) => {
         if (editMode){
             setTransition({
                 container: {
-                    height: '600px',
                     transition: 'height 0.3s ease'
                 }
             })  
         } else {
             setTransition({
-                container: {
-                    height: '200px',
+                container: {    
                     transition: 'height 0.3s ease'
                 }
             })
@@ -62,23 +63,33 @@ export const Asset = ({data, order, removeAsset}) => {
         }          
     }
 
-    const toggleEditMode = () => {
-        if (editMode) {
+    const toggleEditMode = type => event => {
+        if (editMode === type) {
             setEditMode(false)
         } else {
-            setEditMode(true)
+            setEditMode(type)
         }
     }
 
+    const handleUpdate = async (siteId, address, addInfo, type) => {
+        const res = await updateSiteAddress(siteId, address, addInfo, type);
+        if (res) {
+            setEditMode(false);
+            setData(res.data);
+        }
+        
+    }
+
+
     return (
         <Fade in={true}>
-            <Grid item xs={12} sm={9} md={6} lg={6} xl={4} >
+            <Grid item xs={12} sm={7} md={6} lg={4} xl={4} >
                 <ClickAwayListener onClickAway={() => editMode ? setEditMode(false) : null }>
                     <Paper 
                         className={classes.assetContainer} 
                         style={{ 
                             background: gradients[order % 4], 
-                            height: editMode ? transition.container.height : '200px', 
+                            height: editMode ? transition.container.height : 'auto', 
                             transition: editMode ? transition.container.transition : 'height 0.3s ease'
                         }} 
                         elevation={6}
@@ -98,7 +109,7 @@ export const Asset = ({data, order, removeAsset}) => {
                                 </Typography>
                             </div>
                             <div className={classes.siteOwner}>
-                                <UserItem showPhone avatarSize={'50px'}/>
+                                <UserItem user={data.siteOwner} showPhone avatarSize={'50px'}/>
                             </div>
                             {
                                 (controlsVisible || !matches) &&
@@ -157,29 +168,47 @@ export const Asset = ({data, order, removeAsset}) => {
                                 }
                                 
                             </div>
-                            <div className={classes.buttonsContainer} >
-                                <Button
-                                    startIcon={<WarningRoundedIcon className={classes.typeIcon}/>}
-                                    className={clsx(classes.errorsBtn, classes.buttonsBtn)}
-                                >
-                                    {`תקלות`}    
-                                </Button>
-                                <Button
-                                    startIcon={<AssignmentRoundedIcon className={classes.typeIcon}/>}
-                                    className={clsx(classes.assignmentsBtn, classes.buttonsBtn)}
-                                >
-                                    {`משימות`}    
-                                </Button>
-                                <Button
-                                    startIcon={<DescriptionRoundedIcon className={classes.typeIcon}/>}
-                                    className={clsx(classes.docsBtn, classes.buttonsBtn)}
-                                >
-                                    {`מסמכים`}    
-                                </Button>
+                            <div className={clsx(classes.buttonsContainer, Boolean(editMode) && classes.buttonsContainerRound)} >
+                                <Tooltip title={`תקלות`}>
+                                    <IconButton className={classes.button}>
+                                        <WarningRoundedIcon className={classes.typeIcon}/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={`משימות`}>
+                                    <IconButton className={classes.button}>
+                                        <AssignmentRoundedIcon className={classes.typeIcon}/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={`מסמכים`}>
+                                    <IconButton className={classes.button}>
+                                        <DescriptionRoundedIcon className={classes.typeIcon}/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={`משתמשים`}>
+                                    <IconButton className={classes.button}>
+                                        <PeopleOutlineRoundedIcon className={classes.typeIcon}/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={`מערכות`}>
+                                    <IconButton className={classes.button}>
+                                        <BlurOnRoundedIcon className={classes.typeIcon}/>
+                                    </IconButton>
+                                </Tooltip>                
                             </div>
                         </div>
                     
-                        <UpdateAsset data={data} open={editMode}/>
+                        <UpdateAsset 
+                            data={data} 
+                            open={editMode === 'address'}
+                            handleUpdate={handleUpdate}
+                            handleCancel={() => setEditMode(false)}
+                        />
+                        <UpdateAssetOwner 
+                            currentOwner={data.siteOwner._id}
+                            open={editMode === 'siteOwner'}
+                            handleUpdate={handleUpdate}
+                            handleCancel={() => setEditMode(false)}
+                        />
                    
                     </Paper>
                 </ClickAwayListener>
@@ -197,7 +226,7 @@ const useStyles = makeStyles(theme => ({
         margin: '10px',
         background: 'white',
         borderRadius: '25px',
-        height: '200px',
+        height: 'auto',
         color: 'white'
     },
     topMain: {
@@ -223,11 +252,12 @@ const useStyles = makeStyles(theme => ({
         fontSize: '14px'
     },
     bottomMain: {
-        height: '80px',
+        height: 'auto',
         borderRadius: '25px',
-        background: 'white',
         position: 'relative',
-        background: 'transparent'
+        background: 'transparent',
+        display: 'grid',
+        placeItems: 'center'
     },
     siteOwner: {
         width: '160px',
@@ -243,60 +273,51 @@ const useStyles = makeStyles(theme => ({
     },
     extraDetails: {
         display: 'flex',
-        justifyContent: 'flex-start',
-        height: '40%',
-        borderRadius: '25px'
+        justifyContent: 'center',
+        height: '30px',
+        borderRadius: '25px',
+        background: theme.palette.primary.main,
+        width: 'fit-content',
+        boxShadow: 'rgba(0,0,0,0.4) 0px 0px 5px 2px'
     },
     type: {
         position: 'relative',
         display: 'flex',
         padding: '5px 10px',
         width: 'fit-content',
-        background: theme.palette.primary.main,
-        borderRadius: '25px 0 25px 0',
+        background: 'transparent',
         color: 'white',
-        alignItems: 'center',
-        border: '1px solid white'
-
+        alignItems: 'center'
     },
     typeIcon: {
-        fontSize: '20px'
+        fontSize: '20px',
+        color: 'white'
     },
     typeData: {
         padding: '0 20px 0 10px',
         lineHeight: 1
     },
-    floor: {
-        right: '22px',
-        
-    },
-    unit: {
-        right: '44px',
-        
-    },
     buttonsContainer: {
-        width: '100%',
-        height: '60%',
+        width: 'fit-content',
+        margin: '10px auto 0',
+        height: 'auto',
         display: 'flex',
+        flexWrap: 'wrap',
         justifyContent: 'space-between',
-        borderRadius: '0 0 25px 25px',
-        
+        borderRadius: '10px 10px 0 0',
+        transition: 'border-radius 0.5s ease',
+        background: theme.palette.primary.main,
+        boxShadow: 'rgba(0,0,0,0.4) 0px 0px 5px 2px'  
     },
-    buttonsBtn: {
-        width: '33%',
-        padding: '7px 20px',
-        borderRadius: '50px',
-        fontSize: '16px',
-        color: 'white'
+    buttonsContainerRound: {
+        borderRadius: '25px',
+        transition: 'border-radius 0.5s ease'
     },
-    errorsBtn: {
-        borderRadius: '0 0 0 25px'
+    button: {
+        '&:hover': {
+            background: 'rgba(0,0,0,0.5)',
+        }
     },
-    assignmentsBtn: {
-        borderRadius: '0 0 0 0'
-    },
-    docsBtn: {
-        borderRadius: '0 0 25px 0'
-    }
+    
     
 }))

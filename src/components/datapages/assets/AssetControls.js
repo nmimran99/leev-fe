@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { makeStyles, Fade, IconButton, Tooltip } from '@material-ui/core'
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
@@ -11,26 +11,29 @@ export const AssetControls = ({removeAsset, toggleEditMode}) => {
     
     return (
         <Fade in={true} timeout={500}>
-            <div className={ classes.container}>
+            <div className={ classes.container}>               
+                <Tooltip title='עריכת כתובת'>
+                    <IconButton 
+                        className={classes.iconbutton}
+                        onClick={toggleEditMode('address')}
+                    >
+                        <EditRoundedIcon className={classes.icon} />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title='שינוי מנהל בניין'>
+                    <IconButton 
+                        className={classes.iconbutton}
+                        onClick={toggleEditMode('siteOwner')}
+                    > 
+                        <TransferWithinAStationRoundedIcon className={classes.icon}/>
+                    </IconButton>
+                </Tooltip>
                 <Tooltip title='מחיקת נכס'>
                     <IconButton 
                         className={classes.iconbutton}
                         onClick={removeAsset}    
                     >
                         <DeleteOutlineRoundedIcon className={classes.icon} />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title='עריכת כתובת'>
-                    <IconButton 
-                        className={classes.iconbutton}
-                        onClick={toggleEditMode}
-                    >
-                        <EditRoundedIcon className={classes.icon} />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title='שינוי מנהל בניין'>
-                    <IconButton className={classes.iconbutton}> 
-                        <TransferWithinAStationRoundedIcon className={classes.icon}/>
                     </IconButton>
                 </Tooltip>
             </div>
@@ -44,6 +47,7 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         right: 0,
         top: '55%',
+        
     },
     iconbutton: {
         margin: '7px 5px',
@@ -54,6 +58,6 @@ const useStyles = makeStyles(theme => ({
        
     },
     icon: {
-        fontSize: '24px'
+        fontSize: '20px'
     }
 }));

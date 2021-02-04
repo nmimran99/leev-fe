@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
-import { makeStyles, List, ListItem, ListItemIcon, ListItemText, Box, Divider, Grow, ClickAwayListener, useMediaQuery } from '@material-ui/core'
+import React from 'react'
+import { makeStyles, List, ListItem, ListItemIcon, ListItemText, Grow, ClickAwayListener, useMediaQuery } from '@material-ui/core'
 import BusinessRoundedIcon from '@material-ui/icons/BusinessRounded';
 import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
+import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 import { UserItem } from '../../user/UserItem'
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -41,6 +42,14 @@ export const SideMenu = ({toggleMenu}) => {
                                 <BusinessRoundedIcon fontSize={'medium'} className={classes.icon}/>
                             </ListItemIcon>
                             <ListItemText primary='נכסים' className={classes.listItemText} disableTypography={true}/>
+                        </ListItem>
+                        <ListItem button={true} className={classes.listItem}
+                            onClick={handleClick('systems')}
+                        >
+                            <ListItemIcon className={classes.listItemIcon}>
+                                <BlurOnRoundedIcon fontSize={'medium'} className={classes.icon}/>
+                            </ListItemIcon>
+                            <ListItemText primary='מערכות' className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} className={classes.listItem}
                             onClick={handleClick('tasks')}

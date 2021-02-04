@@ -93,7 +93,7 @@ export const Login = () => {
 
     return (
         <Grid container alignItems='center' justify='center' className={classes.mainContainer} >
-            <Grid item alignItems='center' justify='center' className={classes.loginContainer} xl={3} lg={3} md={6} sm={6} xs={11}>
+            <Grid item alignItems='center' className={classes.loginContainer} xl={3} lg={3} md={6} sm={6} xs={11}>
                 <Box className={classes.bannerContainer} bgcolor='primary.main'>
                     <Typography className={classes.banner}>
                         Leev

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Grid, LinearProgress } from '@material-ui/core'
-import { getSites, removeSite,getFullAddress } from '../../../api/assetsApi'
+import { Grid, LinearProgress } from '@material-ui/core'
+import { getSites, removeSite,getFullAddress, applyFilters } from '../../../api/assetsApi'
 import { Asset } from './Asset'
 import { AssetsControls } from './AssetsControls'
 import { AlertDialog } from '../../reuseables/AlertDialoge'
+import { queryParamsToObject } from '../../../api/genericApi';
+import { useLocation } from 'react-router-dom';
 
-export const Assets = ({}) => {
+export const Assets = () => {
 
-    const classes = useStyles();
+    const location = useLocation();
     const [ sites, setSites ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
     const [ alertDialoge , setAlertDialoge ] = useState(null)
@@ -17,14 +19,26 @@ export const Assets = ({}) => {
         getSites()
         .then(res => {
             if (res) {
-                setSites([...res.data]);
+                return applyFilters(queryParamsToObject(location.search), res.data)   
             }
         })
+        .then(data => {
+            if (data) {
+                setSites(data)
+            }
+        }) 
         .catch(e => {
             console.log(e.message)
         })
-        setIsLoading(false)
+        .finally(() => setIsLoading(false))
+        
     }, [isLoading])
+
+    useEffect(()=> {
+        if(location.search) {
+            setIsLoading(true)
+        }
+    }, [location.search])
 
     const removeAsset = (siteId, data) => {
         setAlertDialoge({
@@ -43,22 +57,24 @@ export const Assets = ({}) => {
         })
     }
 
+
     return (
         <div>
-            <Grid container justify='center'  xs={12}>
-                <Grid item xs={12} md={10}>
+            <Grid container >
+                <Grid item xs={12} md={12} >
                     <AssetsControls />
                 </Grid>
-                <Grid container justify='center'  xs={12}>
+                <Grid container justify='center' >
                     {
                         isLoading ?
                         <LinearProgress /> :
                         sites.map((v,i) => 
                             <Asset 
-                                data={v} 
+                                assetData={v} 
                                 key={i} 
                                 order={i}
                                 removeAsset={removeAsset}
+                                
                             />
                         )    
                     }
@@ -77,8 +93,3 @@ export const Assets = ({}) => {
     )
 }
 
-const useStyles = makeStyles(theme => ({
-    assetPaper: {
-        height: '200px'
-    }
-}))
