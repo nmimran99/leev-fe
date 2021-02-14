@@ -14,20 +14,15 @@ import { updateSiteAddress } from '../../../api/assetsApi'
 import { UpdateAssetOwner } from './UpdateAssetOwner';
 import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
 import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router'
 
-const gradients = [
-    'linear-gradient(38deg, rgba(170,0,255,0.6194852941176471) 0%, rgba(44,23,238,0.5438550420168067) 100%)',
-    
-    'linear-gradient(55deg, rgba(0,255,68,0.7931547619047619) 0%, rgba(255,214,0,0.7315301120448179) 100%)',
-    'linear-gradient(55deg, rgba(242,0,0,0.6923144257703081) 0%, rgba(250,130,0,0.8239670868347339) 100%)',
-    'linear-gradient(55deg, rgba(4,0,255,0.8211659663865546) 0%, rgba(0,255,244,0.7063200280112045) 100%)',
-    'linear-gradient(55deg, rgba(73,0,242,0.6923144257703081) 0%, rgba(250,0,249,0.6643032212885154) 100%)',
-    
-]
 
 export const Asset = ({assetData, order, removeAsset }) => {
 
     const classes = useStyles();
+    const history = useHistory();
+    const { t, i18n } = useTranslation();
     const [ controlsVisible, setControlsVisible ] = useState(false);
     const [ editMode, setEditMode ] = useState(false);
     const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
@@ -80,6 +75,10 @@ export const Asset = ({assetData, order, removeAsset }) => {
         
     }
 
+    const handleReferralClick = type => event => {
+        history.push(`${type}/?asset=${data._id}`)
+    }
+
 
     return (
         <Fade in={true}>
@@ -88,11 +87,12 @@ export const Asset = ({assetData, order, removeAsset }) => {
                     <Paper 
                         className={classes.assetContainer} 
                         style={{ 
-                            background: gradients[order % 4], 
+                            background: 'rgba(0,0,0,0.2)',
+                            border: '1px solid rgba(255,255,255,0.2)', 
                             height: editMode ? transition.container.height : 'auto', 
                             transition: editMode ? transition.container.transition : 'height 0.3s ease'
                         }} 
-                        elevation={6}
+                        elevation={9}
                         onMouseEnter={toggleControls}
                         onMouseLeave={toggleControls}
                     >
@@ -108,8 +108,8 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                     {`${data.address.zipcode}, ${data.address.country}`}
                                 </Typography>
                             </div>
-                            <div className={classes.siteOwner}>
-                                <UserItem user={data.siteOwner} showPhone avatarSize={'50px'}/>
+                            <div className={classes.owner}>
+                                <UserItem user={data.owner} showPhone avatarSize={'50px'}/>
                             </div>
                             {
                                 (controlsVisible || !matches) &&
@@ -136,7 +136,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                         <VerticalSplitRoundedIcon className={classes.typeIcon}/>
                                         <div className={classes.typeDetails}>
                                             <div className={classes.typeData}>
-                                                {`${data.addInfo.floors} קומות`}
+                                                {`${data.addInfo.floors} ${t("assetsModule.floors")}`}
                                             </div>
                                         </div>
                                     </div>
@@ -148,7 +148,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                         <VerticalSplitRoundedIcon className={classes.typeIcon}/>
                                         <div className={classes.typeDetails}>
                                             <div className={classes.typeData}>
-                                            {`קומה ${data.addInfo.floor}`}
+                                            {`${t("assetsModule.floor")} ${data.addInfo.floor}`}
                                             </div>
                                         </div>
                                     </div>
@@ -160,7 +160,19 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                         <HomeRoundedIcon className={classes.typeIcon}/>
                                         <div className={classes.typeDetails}>
                                             <div className={classes.typeData}>
-                                            {`דירה ${data.addInfo.unit}`}
+                                            {`${t("assetsModule.unit")} ${data.addInfo.unit}`}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    : null
+                                }
+                                {
+                                    data.addInfo.units ?
+                                    <div className={clsx(classes.type, classes.units)}>
+                                        <HomeRoundedIcon className={classes.typeIcon}/>
+                                        <div className={classes.typeDetails}>
+                                            <div className={classes.typeData}>
+                                            {`${data.addInfo.units} ${t("assetsModule.units")}`}
                                             </div>
                                         </div>
                                     </div>
@@ -169,31 +181,35 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                 
                             </div>
                             <div className={clsx(classes.buttonsContainer, Boolean(editMode) && classes.buttonsContainerRound)} >
-                                <Tooltip title={`תקלות`}>
-                                    <IconButton className={classes.button}>
-                                        <WarningRoundedIcon className={classes.typeIcon}/>
+                                <Tooltip title={t("assetsModule.systems")}>
+                                    <IconButton 
+                                        className={classes.button}
+                                        onClick={handleReferralClick('systems')}
+                                    >
+                                        <BlurOnRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title={`משימות`}>
+                                <Tooltip title={t("assetsModule.tasks")}>
                                     <IconButton className={classes.button}>
                                         <AssignmentRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title={`מסמכים`}>
+                                <Tooltip title={t("assetsModule.faults")}>
+                                    <IconButton className={classes.button}>
+                                        <WarningRoundedIcon className={classes.typeIcon}/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={t("assetsModule.documents")}>
                                     <IconButton className={classes.button}>
                                         <DescriptionRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title={`משתמשים`}>
+                                <Tooltip title={t("assetsModule.users")}>
                                     <IconButton className={classes.button}>
                                         <PeopleOutlineRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title={`מערכות`}>
-                                    <IconButton className={classes.button}>
-                                        <BlurOnRoundedIcon className={classes.typeIcon}/>
-                                    </IconButton>
-                                </Tooltip>                
+                                                
                             </div>
                         </div>
                     
@@ -204,8 +220,8 @@ export const Asset = ({assetData, order, removeAsset }) => {
                             handleCancel={() => setEditMode(false)}
                         />
                         <UpdateAssetOwner 
-                            currentOwner={data.siteOwner._id}
-                            open={editMode === 'siteOwner'}
+                            currentOwner={data.owner._id}
+                            open={editMode === 'owner'}
                             handleUpdate={handleUpdate}
                             handleCancel={() => setEditMode(false)}
                         />
@@ -227,7 +243,10 @@ const useStyles = makeStyles(theme => ({
         background: 'white',
         borderRadius: '25px',
         height: 'auto',
-        color: 'white'
+        color: 'white',
+        [theme.breakpoints.down('sm')] : {
+            margin: '10px 0'
+        } 
     },
     topMain: {
         height: '120px',
@@ -259,7 +278,7 @@ const useStyles = makeStyles(theme => ({
         display: 'grid',
         placeItems: 'center'
     },
-    siteOwner: {
+    owner: {
         width: '160px',
         height: '50px',
         padding: '7px',
@@ -294,7 +313,7 @@ const useStyles = makeStyles(theme => ({
         color: 'white'
     },
     typeData: {
-        padding: '0 20px 0 10px',
+        padding: '0 10px 0 10px',
         lineHeight: 1
     },
     buttonsContainer: {

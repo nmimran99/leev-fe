@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { makeStyles, Button, Menu, MenuItem, IconButton } from '@material-ui/core'
+import { makeStyles, Grid, ClickAwayListener, FormControl, OutlinedInput, Button, Menu, MenuItem, IconButton } from '@material-ui/core'
 import { useHistory, useLocation } from 'react-router-dom';
 import { addQueryParam, specialStringPurge, removeQueryParam } from '../../api/genericApi';
 import { useQuery } from './customHooks/useQuery';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import clsx from 'clsx';
 import { LanguageContext } from '../../context/LanguageContext';
 
-export const FilterBySelect = ({ filterField, placeholder, filterIcon, optionsFunc }) => {
+export const FilterByMultiSelect = ({ filterField, placeholder, filterIcon, optionsFunc }) => {
     
     const classes = useStyles();
     const history = useHistory();
@@ -14,37 +15,51 @@ export const FilterBySelect = ({ filterField, placeholder, filterIcon, optionsFu
     const query = useQuery(location.search);
     const { lang } = useContext(LanguageContext);
     const [ menuOptions, setMenuOptions] = useState([]);
+    const [ orgMenuOptions, setOrgMenuOptions ] = useState([])
     const [ anchorEl, setAnchorEl ] = useState(null);
-    const [ value, setValue ] = useState(query[filterField] || '')
+    const [ values, setValues ] = useState( query[filterField] || [])
 
     useEffect(() => {
         optionsFunc()
         .then(data => {
-            setMenuOptions(data)
+            setOrgMenuOptions(data);
+            if (query[filterField]) {
+                data = data.filter(op => query[filterField].indexOf(op.value) === -1 )
+            }
+            setMenuOptions(data);
+            
         }) 
     }, [])
 
     useEffect(() => {
-        if (value) {
+        if (values.length) {
+            
             history.push({
                 path: location.pathname,
-                search: addQueryParam(location.search, [{ name: filterField, value }])
+                search: addQueryParam(location.search, [{ name: filterField, value: values }])
             });
             return;
         }
-        if(query[filterField]) {
+        if (query[filterField] && !values.length) {
             history.push({
                 path: location.pathname,
                 search: removeQueryParam(location.search, filterField)
             });
-        }     
-    }, [value])
+        }
+        
+    }, [values])
 
-    const createTag = val => {
-        let data = menuOptions.find(op => val === op.value);
+    useEffect(() => {
+        if(!menuOptions.length) {
+            setAnchorEl(null)
+        }
+    }, [menuOptions])
+
+    const createTag = (val, key) => {
+        let data = orgMenuOptions.find(op => val === op.value);
         if (!data) return;
         return (
-            <div className={classes.tag}>
+            <div className={classes.tag} key={key}>
                 <label className={classes.tagLabel}>
                     { data.label }
                 </label>
@@ -60,25 +75,55 @@ export const FilterBySelect = ({ filterField, placeholder, filterIcon, optionsFu
 
     const removeChoice = value => event => {
         event.stopPropagation();
-        setValue('')
+        getMenuOptions(value)
+        .then(data => {
+            setValues(values => values.filter(val => val !== value ));
+            if (!menuOptions.length) {
+                setAnchorEl(null)
+            }
+            setMenuOptions(data)
+        });  
     }
 
     const handleClick = val => event => {
-        setValue(val);
-        setAnchorEl(null)
+        setValues([...values, val]);
+        setMenuOptions(menuOptions => menuOptions.filter( op => op.value !== val));
+    }
+
+    const getMenuOptions = (value) => {
+        return new Promise((resolve, reject) => {
+            let mop = menuOptions;
+            mop.push(orgMenuOptions.find( op => op.value === value));
+            resolve(mop);
+        }) 
     }
 
     return (
         <React.Fragment>
             {
-                Boolean(menuOptions.length) &&
-                    <div item className={classes.select}>
+                Boolean(orgMenuOptions.length) &&
+                <div className={classes.select}>
                         <Button 
                             className={classes.filterBy}
                             onClick={event => setAnchorEl(event.currentTarget)}
                             startIcon={filterIcon}
                         >
-                            { value ? createTag(value) : <label style={{ padding: '0 15px', cursor: 'pointer' }}>{placeholder}</label>}
+                            { 
+                                values.length 
+                                ?   
+                                    <div className={classes.selectedContainer}>
+                                        {
+                                             values.map((val, i ) => createTag(val, i)) 
+                                        }
+                                    </div>
+                               
+                                :   <label style={{ 
+                                        padding: '5px 0px 5px 20px', 
+                                        cursor: 'pointer' 
+                                    }}>
+                                        {placeholder}
+                                    </label>
+                            }
                         </Button>
                         <Menu
                             anchorEl={anchorEl}
@@ -113,7 +158,7 @@ export const FilterBySelect = ({ filterField, placeholder, filterIcon, optionsFu
                                 })
                             }
                         </Menu>
-                    </div>
+               </div>
             }          
         </React.Fragment>
     )
@@ -122,25 +167,31 @@ export const FilterBySelect = ({ filterField, placeholder, filterIcon, optionsFu
 const useStyles = makeStyles(theme => ({
     select: {
         margin: '5px',
-        height: '45px',
+        height: 'auto',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
+
     },
     filterBy: {
         textTransform: 'none',
         color: 'white',
-        padding: '0 4px',
-        height: '45px',
+        padding: '0 5px',
+        minHeight: '45px',
         border: '1px solid rgba(255,255,255,0.2)',
         borderRadius: '25px',
+        
+        '&:hover': {
+            boxShadow: 'rgba(0,0,0,0.25) 2px 3px 2px 0px',
+        }
+    },
+    selectedContainer: {
         display: 'flex',
         alignItems: 'center',
         whiteSpace: 'nowrap',
-        '&:hover': {
-            boxShadow: 'rgba(0,0,0,0.25) 2px 3px 2px 0px',
-            
-        }
+        flexWrap: 'wrap',
+        width: 'fit-content',
+        maxWidth: '400px'
     },
     menu: {
         marginTop: '55px',
@@ -163,7 +214,9 @@ const useStyles = makeStyles(theme => ({
         }
     },
     focused: {
-        border: `2px solid ${theme.palette.primary.main}`
+        boxShadow: 'rgba(0,0,0,0.25) 2px 3px 2px 0px',
+        background: 'rgba(0,0,0,0.1)',
+        backdropFilter: 'blur(40px)'
     },
     form: {
         width: '100%',
@@ -193,9 +246,10 @@ const useStyles = makeStyles(theme => ({
         padding: '5px 10px',
         borderRadius: '50px',
         // background: 'rgba(0,0,0,0.3)',
-        border: '1px solid rgba(255,255,255,0.2)',
+        boxShadow: 'rgba(0,0,0,0.25) 0px 0px 3px 1px',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        margin: '3px'
     },
     tagLabel: {
         padding: '0 5px'

@@ -55,6 +55,6 @@ export const Controls = () => {
 const useStyles = makeStyles(theme => ({
     controlsContainer: {
         zIndex: 2,
-        height: '86px'
+        height: '64px'
     }
 }))

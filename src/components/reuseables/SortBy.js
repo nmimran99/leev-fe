@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { makeStyles, ButtonGroup, Button, Menu, MenuItem } from '@material-ui/core'
 import SortRoundedIcon from '@material-ui/icons/SortRounded';
 import ArrowDropUpOutlinedIcon from '@material-ui/icons/ArrowDropUpOutlined';
@@ -6,6 +6,9 @@ import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined'
 import { useHistory, useLocation } from 'react-router-dom';
 import { addQueryParam } from '../../api/genericApi';
 import { useQuery } from './customHooks/useQuery';
+import { useTranslation } from 'react-i18next'
+import { LanguageContext } from '../../context/LanguageContext';
+
 
 export const SortBy = ({menuOptions, handleSortChange}) => {
     
@@ -13,6 +16,8 @@ export const SortBy = ({menuOptions, handleSortChange}) => {
     const history = useHistory();
     const location = useLocation();
     const query = useQuery(location.search);
+    const { t, i18n } = useTranslation();
+    const { lang } = useContext(LanguageContext);
     const [ values, setValues ] = useState({
         sortBy: query.sortBy || '',
         sortOrder: query.sortOrder || 'asc' 
@@ -49,7 +54,7 @@ export const SortBy = ({menuOptions, handleSortChange}) => {
         if (result) {
             return result.text
         }
-        return 'סדר לפי'
+        return t("sort.sortBy")
     }
     
     return (
@@ -61,9 +66,9 @@ export const SortBy = ({menuOptions, handleSortChange}) => {
                 <Button 
                     className={classes.sortBy}
                     onClick={event => setAnchorEl(event.currentTarget)}
-                    startIcon={<SortRoundedIcon />}
+                    startIcon={<SortRoundedIcon className={classes.icon}/>}
                 >
-                    {values.sortBy ? getOptionText(values.sortBy) : 'סדר לפי'}
+                    {values.sortBy ? getOptionText(values.sortBy) : `${t("sort.sortBy")}`}
                 </Button>
                 <Menu
                     anchorEl={anchorEl}
@@ -88,6 +93,7 @@ export const SortBy = ({menuOptions, handleSortChange}) => {
                                 <MenuItem
                                     key={i}
                                     onClick={handleClick(v.field)}
+                                    style={{ direction: lang.code === 'he' ? 'rtl' : 'ltr'}}
                                 >
                                     {v.text}
                                 </MenuItem>
@@ -101,7 +107,7 @@ export const SortBy = ({menuOptions, handleSortChange}) => {
                     onClick={handleChange}
                     className={classes.sortOrder}
                 >
-                    { `${ values.sortOrder === 'asc' ? `סדר עולה` : `סדר יורד`}`}
+                    { `${ values.sortOrder === 'asc' ? `${t("sort.asc")}` : `${t("sort.desc")}`}`}
                 </Button> 
             </ButtonGroup>
             
@@ -111,25 +117,38 @@ export const SortBy = ({menuOptions, handleSortChange}) => {
 
 const useStyles = makeStyles(theme => ({
     sort: {
-        height: '45px'
+        margin: '5px',
+        height: '45px',
+        
     },
     sortBy: {
         borderRadius: '25px 0 0 25px',
-        padding: '0 20px',
+        padding: '0 15px 0 5px',
         color: 'white',
         width: 'auto',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        border: '1px solid rgba(255,255,255,0.2)',
     },
     sortOrder: {
         borderRadius: '0px 25px 25px 0px',
         padding: 0,
         color: 'white',
-       width: '100px'
+       width: '100px',
+       border: '1px solid rgba(255,255,255,0.2)',
     },
     menu: {
         marginTop: '55px',
-        background: 'rgba(0,0,0,0.8)',
+        background: 'rgba(0,0,0,0.5)',
         backdropFilter: 'blur(10px)',
         color: 'white'
+    },
+    icon: {
+        fontSize: '20px',
+        margin: '0 6px',
+        color: 'white',
+        borderRadius: '50px',
+        padding: '6px',
+        border: '1px solid rgba(255,255,255,0.2)',
+        
     }
 }));

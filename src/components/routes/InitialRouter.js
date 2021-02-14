@@ -15,6 +15,7 @@ export const InitialRouter = ({...rest}) => {
             return;
         };
         let res = await authenticate(token);
+        
         if (res.auth) {
            setAuth({
                 isAuth: res.auth,

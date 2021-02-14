@@ -1,34 +1,28 @@
-import React, { useState } from 'react'
-import { Grid, makeStyles,  useMediaQuery, Collapse, Button } from '@material-ui/core'
+import React, { useState, useEffect } from 'react'
+import { Grid, makeStyles, useMediaQuery, Button, Collapse } from '@material-ui/core'
 import { SortBy } from '../../reuseables/SortBy'
-import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import { SearchBox } from '../../reuseables/SearchBox';
 import { FilterBySelect } from '../../reuseables/FilterBySelect';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
-import { getUserList } from '../../../api/userApi';
-import { FilterByMultiSelect } from '../../reuseables/FilterByMultiSelect';
+import { createUserOptions } from '../../../api/userApi';
 import { useTranslation } from 'react-i18next';
+import { SearchBoxSelect } from '../../reuseables/SearchBoxSelect';
+import { getAssetsSuggestions } from '../../../api/systemsApi';
+import { getFullAddress, getSite } from '../../../api/assetsApi';
+import { useLocation } from 'react-router';
+import { useQuery } from '../../reuseables/customHooks/useQuery';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import { ClearRounded } from '@material-ui/icons';
 
-
 const sortOptions = [
     {
-        text: 'כתובת',
-        field: 'street'
+        text: 'שם מערכת',
+        field: 'systemName'
     },
     {
-        text: 'עיר',
-        field: 'city'
-    },
-    {
-        text: 'מנהל בניין',
+        text: 'מנהל מערכת',
         field: 'owner'
-    },
-    {
-        text: 'כמות משימות פתוחות',
-        field: 'openTasksCount'
     },
     {
         text: 'כמות תקלות פתוחות',
@@ -37,23 +31,43 @@ const sortOptions = [
     
 ]
 
-export const AssetsControls = ({ components }) => {
+export const SystemsControls = () => {
     
     const classes = useStyles();
     const { t, i18n } = useTranslation();
+    const location = useLocation();
+    const query = useQuery(location.search);
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
+    const [ reloadedValue, setReloadedValue ] = useState(null);
     const [ collapsed, setCollapsed ] = useState(!downSm ? true : false);
     
-
-    const createUserOptions = () => {
-        return getUserList()
-        .then(data => {
-            let userList = [];
-            data.forEach(user => {
-                userList.push({label: `${user.firstName} ${user.lastName}`, value: user._id })
+    useEffect(() => {
+        if (query.asset) {
+            handleReloaded(query.asset)
+            .then(data => {
+                if (data) {
+                    setReloadedValue(data);
+                } else {
+                    
+                }
+            })
+        } else {
+            setReloadedValue({
+                label: '',
+                value: null
             });
-            return userList;
-        })
+        }
+    }, [location.search])
+
+    const handleReloaded = async (assetId) => {
+        const res = await getSite(assetId);
+        if (res) {
+            return {
+                label: getFullAddress(res.data),
+                value: res.data._id
+            }
+        }
+        
     }
 
     const toggleCollapse = () => {
@@ -84,25 +98,37 @@ export const AssetsControls = ({ components }) => {
             }
             <Collapse in={collapsed}>
                 <Grid container justify='center' >
-                    <Grid item xs={11} sm={9} md={7} lg={5} xl={4} className={classes.gridItem}>
-                        <SearchBox 
-                            placeholder={t("assetsModule.filterByCityOrAddress")}
-                            filterField={'searchText'}
-                        />
+                    <Grid item xs={11} sm={8} md={7} lg={4} xl={4} className={classes.gridItem}>
+
+                        {
+                            reloadedValue &&
+                            <SearchBoxSelect
+                                suggestionsFunc={getAssetsSuggestions}
+                                placeholder={t("systemsModule.filterByAsset")}
+                                filterField={'asset'}
+                                reloadedLabel={reloadedValue.label}
+                                reloadedValue={reloadedValue.value}
+                            />
+                        }  
                     </Grid>
-                    <Grid item xs={11} className={classes.gridItem}>         
+                    <Grid item xs={11} sm={8} md={7} lg={4} xl={4} className={classes.gridItem}>
+                        <SearchBox 
+                                placeholder={t("systemsModule.filterBySystemName")}
+                                filterField={'name'}
+                            />
+                        </Grid>
+                    <Grid xs={11} className={classes.gridItem}>
                         <FilterBySelect 
                             optionsFunc={createUserOptions}
-                            placeholder={t("assetsModule.filterByAssetOwner")}
+                            placeholder={t("systemsModule.filterBySystemOwner")}
                             filterIcon={<PersonRoundedIcon className={classes.icon }/>}
                             filterField={'owner'}
-                        
                         />
-                    
                         <SortBy 
                             menuOptions={sortOptions}
-                        />   
-                    </Grid>  
+                        />
+                    </Grid>
+                    
                 </Grid>
             </Collapse>
         </React.Fragment>

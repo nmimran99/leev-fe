@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { makeStyles, List, ListItem, ListItemIcon, ListItemText, Grow, ClickAwayListener, useMediaQuery } from '@material-ui/core'
 import BusinessRoundedIcon from '@material-ui/icons/BusinessRounded';
 import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
@@ -9,12 +9,16 @@ import { UserItem } from '../../user/UserItem'
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useHistory } from 'react-router-dom'; 
+import { useTranslation } from 'react-i18next';
+import { AuthContext } from '../../../context/AuthContext';
 
 export const SideMenu = ({toggleMenu}) => {
 
     const classes = useStyles();
     const history = useHistory();
+    const { t, i18n } = useTranslation();
     const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
+    const { auth } = useContext(AuthContext);
 
     const closeMenu = () => {
         if (matches) {
@@ -32,7 +36,10 @@ export const SideMenu = ({toggleMenu}) => {
             <Grow in={true}>
                 <div className={classes.sidemenuContainer}>
                     <div className={classes.userContainer}>   
-                        <UserItem showTitle/>
+                        <UserItem 
+                            showTitle
+                            user={auth.user}
+                        />
                     </div>
                     <List className= { classes.list}>
                         <ListItem button={true} className={classes.listItem}
@@ -41,7 +48,7 @@ export const SideMenu = ({toggleMenu}) => {
                             <ListItemIcon className={classes.listItemIcon}>
                                 <BusinessRoundedIcon fontSize={'medium'} className={classes.icon}/>
                             </ListItemIcon>
-                            <ListItemText primary='נכסים' className={classes.listItemText} disableTypography={true}/>
+                            <ListItemText primary={t("sideMenu.assets")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} className={classes.listItem}
                             onClick={handleClick('systems')}
@@ -49,7 +56,7 @@ export const SideMenu = ({toggleMenu}) => {
                             <ListItemIcon className={classes.listItemIcon}>
                                 <BlurOnRoundedIcon fontSize={'medium'} className={classes.icon}/>
                             </ListItemIcon>
-                            <ListItemText primary='מערכות' className={classes.listItemText} disableTypography={true}/>
+                            <ListItemText primary={t("sideMenu.systems")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} className={classes.listItem}
                             onClick={handleClick('tasks')}
@@ -57,7 +64,7 @@ export const SideMenu = ({toggleMenu}) => {
                             <ListItemIcon className={classes.listItemIcon}>
                                 <AssignmentRoundedIcon fontSize={'medium'}/>
                             </ListItemIcon>
-                            <ListItemText primary='המשימות שלי' className={classes.listItemText} disableTypography={true}/>
+                            <ListItemText primary={t("sideMenu.myTasks")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} className={classes.listItem}
                             onClick={handleClick('faults')}
@@ -65,7 +72,7 @@ export const SideMenu = ({toggleMenu}) => {
                             <ListItemIcon className={classes.listItemIcon}>
                                 <WarningRoundedIcon fontSize={'medium'}/>
                             </ListItemIcon>
-                            <ListItemText primary='תקלות' className={classes.listItemText} disableTypography={true}/>
+                            <ListItemText primary={t("sideMenu.faults")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} className={classes.listItem}
                             onClick={handleClick('docs')}
@@ -73,7 +80,7 @@ export const SideMenu = ({toggleMenu}) => {
                             <ListItemIcon className={classes.listItemIcon}>
                                 <DescriptionRoundedIcon fontSize={'medium'}/>
                             </ListItemIcon>
-                            <ListItemText primary='מסמכים' className={classes.listItemText} disableTypography={true}/>
+                            <ListItemText primary={t("sideMenu.documents")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                     </List>
                     <List className={classes.bottomList}>
@@ -81,13 +88,13 @@ export const SideMenu = ({toggleMenu}) => {
                             <ListItemIcon className={classes.listItemIcon}>
                                 <SettingsIcon fontSize={'medium'} />
                             </ListItemIcon>
-                            <ListItemText primary='הגדרות' className={classes.listItemText} disableTypography={true}/>
+                            <ListItemText primary={t("sideMenu.settings")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} >
                             <ListItemIcon className={classes.listItemIcon}>
                                 <ExitToAppRoundedIcon fontSize={'medium'} />
                             </ListItemIcon>
-                            <ListItemText primary='התנתק' className={classes.listItemText} disableTypography={true}/>
+                            <ListItemText primary={t("sideMenu.logout")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                     </List>
                 </div>
@@ -104,6 +111,8 @@ const useStyles = makeStyles(theme => ({
         margin: '20px auto',
         padding: '15px 10px',
         borderRadius: '10px',
+        border: '1px solid rgba(255,255,255,0.2)',
+        background: 'rgba(0,0,0,0.7)',
         boxShadow: '0 8px 32px 0 rgb(0 0 0 / 37%)',
         '&:hover' :{
             background: 'black',
@@ -115,11 +124,13 @@ const useStyles = makeStyles(theme => ({
         zIndex: 2,
         width: '300px',
         background: theme.palette.primary.main,
+        backdropFilter: 'blur(10px)',
         boxShadow: 'rgba(0,0,0,0.25) 0px 0px 6px 3px',
         position: 'absolute',
         top: '80px',
         left: '10px',
         borderRadius: '10px',
+        border: '1px solid rgba(255,255,255,0.2)',
         [theme.breakpoints.down('sm')]: {
             maxHeight: '70vh',
             overflow: 'scroll'
@@ -137,10 +148,10 @@ const useStyles = makeStyles(theme => ({
         color: 'theme.palette.primary.main',
         margin: '7px auto',
         borderRadius: '10px',
-        boxShadow: 'rgba(0,0,0,0.3) 1px 1px 4px 1px',
+        border: '1px solid rgba(255,255,255,0.2)',
         transition: 'background box-shadow 0.3s ease-in-out',
         '&:hover': {
-            background: 'black',
+            background: 'rgba(0,0,0,0.6)',
             transition: 'background box-shadow 0.2s ease-in-out',
             boxShadow: '0 8px 32px 0 rgb(0 0 0 / 80%)',
         }

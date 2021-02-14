@@ -67,3 +67,25 @@ export const getUserList = async () => {
         return e.response;
     }
 }
+
+export const getUserDataById = async (userId) => {
+    try {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/getUserDataById`, { userId });
+        if (res.status === 200) {
+            return res.data;
+        }
+    } catch(e) {
+        return e.response;
+    }
+} 
+
+export const createUserOptions = () => {
+    return getUserList()
+    .then(data => {
+        let userList = [];
+        data.forEach(user => {
+            userList.push({label: `${user.firstName} ${user.lastName}`, value: user._id })
+        });
+        return userList;
+    })
+};

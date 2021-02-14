@@ -5,7 +5,7 @@ import { getUserList } from '../../../api/userApi';
 
 export const UpdateAssetOwner = ({ open, currentOwner, handleUpdate, handleCancel }) => {
 
-    const [ siteOwner, setSiteOwner ] = useState(currentOwner);
+    const [ owner, setOwner ] = useState(currentOwner);
     const [ userList, setUserList] = useState([]);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ export const UpdateAssetOwner = ({ open, currentOwner, handleUpdate, handleCance
     }, [])
 
     const handleChange = event => {
-        setSiteOwner(event.target.value);
+        setOwner(event.target.value);
     }
 
     const classes = useStyles();
@@ -33,7 +33,7 @@ export const UpdateAssetOwner = ({ open, currentOwner, handleUpdate, handleCance
                             <FormControl variant='outlined' className={classes.textInput}  fullWidth>
                                 
                                 <Select
-                                    value={siteOwner}
+                                    value={owner}
                                     onChange={handleChange}
                                 >
                                     {

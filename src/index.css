@@ -9,7 +9,7 @@ html {
   margin: 0;
   box-sizing: border-box;
   width: 100vw;
-  height: 100vh;
+  height: -webkit-fill-available;
 }
 
 #root {
@@ -28,11 +28,12 @@ body {
   box-sizing: border-box;
   padding: 0;
   width: 100vw;
-  height: 100vh;
   position: fixed;
+  min-height: -webkit-fill-available;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+

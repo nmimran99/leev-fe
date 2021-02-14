@@ -1,0 +1,99 @@
+{
+    "login": {
+        "title": "Sign in",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot Password"
+    },
+    "sideMenu": {
+        "assets": "Assets",
+        "systems": "Systems",
+        "tasks": "Tasks",
+        "myTasks": "My Tasks",
+        "faults": "Faults",
+        "documents": "Documents",
+        "settings": "Settings",
+        "logout": "Sign out"
+    },
+    "assetsModule": {
+        "assets": "Assets",
+        "systems": "Systems",
+        "tasks": "Tasks",
+        "faults": "Faults",
+        "documents": "Documents",
+        "users": "Users",
+        "filterByCityOrAddress": "Filter by City or Address",
+        "filterByAssetOwner": "Filter by Asset Manager",
+        "streetName": "Street Name",
+        "streetNumber": "Street Number",
+        "entrance": "entrance",
+        "city": "City",
+        "province": "Province",
+        "state": "State",
+        "country": "Country",
+        "building": "Building",
+        "apartment": "Apartment",
+        "floor": "Floor",
+        "floors": "Floors",
+        "unit": "Unit",
+        "units": "Units",
+        "editAddress": "Edit Address",
+        "editAssetManager": "Change Asset Manager",
+        "deleteAsset": "Delete Asset",
+        "deleteConfirmation": "Are you sure you want to delete this asset located on"
+    },
+    "systemsModule": {
+        "filterBySystemName": "Filter by system name",
+        "filterByAsset": "Filter by asset",
+        "filterBySystemOwner": "Filter by system owner",
+        "initMessage": "Please filter by asset to view related systems.",
+        "showUsers": "Show Related Users",
+        "changeManager": "Change Assigned Manager",
+        "showFaults": "Show Faults",
+        "showTasks": "Show My Tasks",
+        "showDocuments": "Show Related Documents",
+        "systemName": "System Name",
+        "ownerHeader": "System Manager",
+        "tasks": "Tasks",
+        "documents": "Documents",
+        "faults": "Faults",
+        "users": "Users",
+        "removeUser": "Remove user from system",
+        "userRemoveConfrimText": "Are you sure you want to remove",
+        "userRemoveConfrimLabel": "System User Remove",
+        "assignedUsers": "Professionals and Linked Users",
+        "noUsersAssigned": "There are currently no users assigned to this system.",
+        "addRelatedUserTitle": "Link a user to the system",
+        "chooseUserToAdd": "Select a user to add to the system",
+        "updateSystemOwnerTitle": "Update System Manager",
+        "chooseManagerToUpdate": "Select a user to assign as manager"
+    },
+    "faultsModule": {
+        "statuses" : {
+            "ready": "Ready",
+            "inProgress": "In Progress",
+            "Pending": "Pending for Action", 
+            "Close": "Closed"
+        },
+        "showFilters": "Show Filters",
+        "hideFilters": "Hide Filters",
+        "filterByFaultOwner": "Filter By Fault Owner",
+        "filterByStatus": "Filter by Status"
+    },
+    "createMenu": {
+        "addAsset": "Add Asset",
+        "createUser": "Create User",
+        "createTask": "Create Task",
+        "createFault": "Create Fault",
+        "addDocument": "Add Document"
+    },
+    "alert": {
+        "confirm": "Confirm",
+        "cancel" : "Cancel"
+    },
+    "sort": {
+        "sortBy": "Sort By",
+        "asc": "Ascending",
+        "desc": "Descending"
+    }
+}

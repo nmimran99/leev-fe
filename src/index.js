@@ -1,23 +1,20 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import { AuthContextProvider } from './context/AuthContext';
-import { create } from 'jss';
-import rtl from 'jss-rtl';
-import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-
-// Configure JSS
-const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
-
+import './i18n';
+import { LanguageContextProvider } from './context/LanguageContext';
 
 ReactDOM.render(
-
-    <AuthContextProvider>
-      <StylesProvider jss={jss}>
-        <App />
-      </StylesProvider>
-    </AuthContextProvider>
+    <LanguageContextProvider>
+      <AuthContextProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <App />
+        </Suspense>   
+      </AuthContextProvider>
+    </LanguageContextProvider>
+      
  ,
   document.getElementById('root')
 );

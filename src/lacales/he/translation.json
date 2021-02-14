@@ -1,0 +1,100 @@
+{
+    "login": {
+        "title": "התחברות",
+        "email": "כתובת מייל",
+        "password": "סיסמה",
+        "forgotPassword": "שכחת סיסמה"
+    },
+    "sideMenu": {
+        "assets": "נכסים",
+        "systems": "מערכות",
+        "tasks": "משימות",
+        "myTasks": "המשימות שלי",
+        "faults": "תקלות",
+        "documents": "מסמכים",
+        "settings": "הגדרות",
+        "logout": "התנתק"
+    },
+    "assetsModule": {
+        "assets": "נכסים",
+        "systems": "מערכות",
+        "tasks": "משימות",
+        "faults": "תקלות",
+        "documents": "מסמכים",
+        "users": "משתמשים",
+        "filterByCityOrAddress": "סנן לפי עיר או כתובת",
+        "filterByAssetOwner": "סנן על פי מנהל בניין",
+        "streetName": "שם רחוב",
+        "streetNumber": "מספר רחוב",
+        "entrance": "כניסה",
+        "city": "עיר",
+        "province": "מחוז",
+        "state": "מדינה",
+        "country": "מדינה",
+        "building": "בניין",
+        "apartment": "דירה",
+        "floor": "קומה",
+        "floors": "קומות",
+        "unit": "דירה",
+        "units": "דירות",
+        "editAddress": "עריכת כתובת",
+        "editAssetManager": "שינוי מנהל בניין",
+        "deleteAsset": "מחיקת נכס",
+        "deleteConfirmation": "האם אתה בטוח שברצונך למחוק את הנכס שכתובתו"
+    },
+    "systemsModule": {
+        "filterBySystemName": "סנן לפי שם מערכת",
+        "filterByAsset": "סנן לפי נכס",
+        "filterBySystemOwner": "סנן לפי מנהל מערכת",
+        "initMessage": "אנא סנן על פי נכס על מנת לצפות במערכות המקושרות.",
+        "showUsers": "הצג אנשי שטח",
+        "changeManager": "שנה אחראי מערכת",
+        "showFaults": "הצג תקלות",
+        "showTasks": "הצג משימות מקושרות",
+        "showDocuments": "הצג מסמכים מקושרים",
+        "systemName": "שם מערכת",
+        "ownerHeader": "מנהל מערכת",
+        "tasks": "משימות",
+        "documents": "מסמכים",
+        "faults": "תקלות",
+        "users": "משתמשים",
+        "removeUser": "הסר את המשתמש מהמערכת",
+        "userRemoveConfirmText": "האם אתה בטוח שברצונך להסיר את",
+        "userRemoveConfirmTitle": "הסרת משתמש ממערכת",
+        "assignedUsers": "אנשי שטח ומשתמשים מקושרים",
+        "noUsersAssigned": "לא קיימים משתמשים המקושרים למערכת זו.",
+        "addRelatedUserTitle": "הוסף משתמש למערכת",
+        "chooseUserToAdd": "בחר משתמש להוספה למערכת",
+        "updateSystemOwnerTitle": "שינוי מנהל מערכת",
+        "chooseManagerToUpdate": "בחר משתמש לשינוי מנהל מערכת"
+
+    },
+    "faultsModule": {
+        "statuses" : {
+            "ready": "מוכן לביצוע",
+            "inProgress": "בביצוע",
+            "Pending": "ממתין לפעולה", 
+            "Close": "סגור"
+        },
+        "showFilters": "הצג מסננים",
+        "hideFilters": "הסתר מסננים",
+        "filterByFaultOwner": "סנן על פי ממונה על תקלה",
+        "filterByStatus": "סנן על פי סטטוס"
+    },
+    "createMenu": {
+        "addAsset": "הוסף נכס",
+        "createUser": "צור משתמש",
+        "createTask": "צור משימה",
+        "createFault": "צור תקלה",
+        "addDocument": "הוסף מסמך"
+    },
+    "alert": {
+        "confirm": "אישור",
+        "cancel" : "ביטול"
+    },
+    "sort": {
+        "sortBy": "סדר לפי",
+        "asc": "סדר עולה",
+        "desc": "סדר יורד"
+    }
+}

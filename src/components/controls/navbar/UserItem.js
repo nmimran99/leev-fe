@@ -34,8 +34,9 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'flex-start',
         borderRadius: '10px',
         boxShadow: '0 8px 32px 0 rgb(0 0 0 / 37%)',
+        background: 'transparent',
         '&:hover' :{
-            background: 'black',
+            background: 'rgba(0,0,0,0.6)',
             transition: 'background 0.2s ease',
             boxShadow: '0 8px 32px 0 rgb(0 0 0 / 80%)',
             

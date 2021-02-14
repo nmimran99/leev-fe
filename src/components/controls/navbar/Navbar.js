@@ -92,11 +92,14 @@ const useStyles = makeStyles(theme => ({
         fontFamily: 'Crete'     
     },
     navbar: {
+        height: "64px",
+        padding: "0 8px",
+        background: "rgba(0,0,0,0.8)",
+        backdropFilter: "blur(22px)",
+        boxShadow: "rgba(0,0,0,0.4) 0px 0px 5px 2px"
+      
         
-        height: '64px',
-        background: theme.palette.primary.main,
-        
-        padding: `0 ${theme.spacing(1)}px`
+
     },
     menuButton: {
         

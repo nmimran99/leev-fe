@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Grid, LinearProgress } from '@material-ui/core'
+import { Grid, LinearProgress, makeStyles } from '@material-ui/core'
 import { getSites, removeSite,getFullAddress, applyFilters } from '../../../api/assetsApi'
 import { Asset } from './Asset'
 import { AssetsControls } from './AssetsControls'
 import { AlertDialog } from '../../reuseables/AlertDialoge'
 import { queryParamsToObject } from '../../../api/genericApi';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const Assets = () => {
 
     const location = useLocation();
+    const classes = useStyles();
+    const { t, i18n } = useTranslation();
     const [ sites, setSites ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
     const [ alertDialoge , setAlertDialoge ] = useState(null)
@@ -35,9 +38,7 @@ export const Assets = () => {
     }, [isLoading])
 
     useEffect(()=> {
-        if(location.search) {
-            setIsLoading(true)
-        }
+        setIsLoading(true)
     }, [location.search])
 
     const removeAsset = (siteId, data) => {
@@ -52,8 +53,8 @@ export const Assets = () => {
                 }
             },
             handleCancel: () => setAlertDialoge(null),
-            text: `האם אתה בטוח שברצונך למחוק את הנכס שכתובתו ${getFullAddress(data)}?`,
-            title: `מחיקת נכס`
+            text: `${t("assetsModule.deleteConfirmation")} ${getFullAddress(data)}?`,
+            title: `${t("assetsModule.deleteAsset")}`
         })
     }
 
@@ -61,10 +62,15 @@ export const Assets = () => {
     return (
         <div>
             <Grid container >
+                <Grid item xs={12}>
+                    <div className={classes.pageModule}>
+                        {t("assetsModule.assets")}
+                    </div>
+                </Grid>
                 <Grid item xs={12} md={12} >
                     <AssetsControls />
                 </Grid>
-                <Grid container justify='center' >
+                <Grid container justify='center'>
                     {
                         isLoading ?
                         <LinearProgress /> :
@@ -93,3 +99,16 @@ export const Assets = () => {
     )
 }
 
+const useStyles = makeStyles(theme => ({
+    pageModule: {
+        color: 'white',
+        padding: '10px 40px',
+        fontSize: '18px',
+        background: 'rgba(0,0,0,0.6)',
+        margin: '0px auto 5px',
+        width: '30%',
+        textAlign: 'center',
+        borderRadius: '0 0 25px 25px',
+        lineHeight: '1'
+    }
+}))

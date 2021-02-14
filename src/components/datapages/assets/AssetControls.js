@@ -3,16 +3,18 @@ import { makeStyles, Fade, IconButton, Tooltip } from '@material-ui/core'
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 import TransferWithinAStationRoundedIcon from '@material-ui/icons/TransferWithinAStationRounded';
+import { useTranslation } from 'react-i18next';
 
 
 export const AssetControls = ({removeAsset, toggleEditMode}) => {
     
     const classes = useStyles();
+    const { t, i18n } = useTranslation();
     
     return (
         <Fade in={true} timeout={500}>
             <div className={ classes.container}>               
-                <Tooltip title='עריכת כתובת'>
+                <Tooltip title={t("assetsModule.editAddress")}>
                     <IconButton 
                         className={classes.iconbutton}
                         onClick={toggleEditMode('address')}
@@ -20,15 +22,15 @@ export const AssetControls = ({removeAsset, toggleEditMode}) => {
                         <EditRoundedIcon className={classes.icon} />
                     </IconButton>
                 </Tooltip>
-                <Tooltip title='שינוי מנהל בניין'>
+                <Tooltip title={t("assetsModule.editAssetManager")}>
                     <IconButton 
                         className={classes.iconbutton}
-                        onClick={toggleEditMode('siteOwner')}
+                        onClick={toggleEditMode('owner')}
                     > 
                         <TransferWithinAStationRoundedIcon className={classes.icon}/>
                     </IconButton>
                 </Tooltip>
-                <Tooltip title='מחיקת נכס'>
+                <Tooltip title={t("assetsModule.deleteAsset")}>
                     <IconButton 
                         className={classes.iconbutton}
                         onClick={removeAsset}    

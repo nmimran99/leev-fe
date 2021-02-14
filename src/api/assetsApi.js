@@ -63,10 +63,10 @@ export const applyFilters = (filters, sites) => {
                          :   a['address'][filters.sortBy] < b['address'][filters.sortBy] ? 1 : -1
                      )      
                  })
-            } else if (filters.sortBy === 'siteOwner') {
+            } else if (filters.sortBy === 'owner') {
                 sites = sites.sort((a,b) => {
-                    let aName = `${a.siteOwner.firstName} ${a.siteOwner.lastName}`
-                    let bName = `${b.siteOwner.firstName} ${b.siteOwner.lastName}`
+                    let aName = `${a.owner.firstName} ${a.owner.lastName}`
+                    let bName = `${b.owner.firstName} ${b.owner.lastName}`
                     return (
                         filters.sortOrder === 'asc' 
                         ?   aName > bName ? 1 : -1
@@ -78,16 +78,17 @@ export const applyFilters = (filters, sites) => {
         }
         if(filters.searchText){
             sites = sites.filter(site => {
-                console.log(createSiteAddress(site.address))
                 return createSiteAddress(site.address)
                         .includes(specialStringPurge(filters.searchText))
                           
             })
         }
-        if (filters.siteOwner) {
+        if (filters.owner) {
             sites = sites.filter(site => {
-                console.log(site.siteOwner, filters.siteOwner)
-                return site.siteOwner._id == filters.siteOwner
+                if (filters.owner instanceof Array) {
+                    return filters.owner.indexOf(site.owner._id) !== -1
+                }
+                return  site.owner._id == filters.owner
             })
         }
         resolve(sites);

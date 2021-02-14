@@ -6,17 +6,17 @@ import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import { useQuery } from './customHooks/useQuery';
 import clsx from 'clsx';
 
-export const SearchBox = ({ placeholder }) => {
+export const SearchBox = ({ placeholder, filterField }) => {
     
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
     const query = useQuery(location.search);
     const [ onFocus, setOnFocus ] = useState(false);
-    const [ searchText, setSearchText ] = useState(specialStringPurge(query.searchText) || '');
+    const [ searchText, setSearchText ] = useState(specialStringPurge(query[filterField]) || '');
     
     useEffect(() => {
-        if (Boolean(searchText) && searchText === specialStringPurge(query.searchText)) return;
+        if (Boolean(searchText) && searchText === specialStringPurge(query[filterField])) return;
         const timeOutId = setTimeout(() => handleSearch(searchText), 700);
         return () => clearTimeout(timeOutId);
     }, [searchText])
@@ -29,41 +29,42 @@ export const SearchBox = ({ placeholder }) => {
         if (searchText) {
             history.push({
                 path: location.pathname,
-                search: addQueryParam(location.search, [{ name: 'searchText', value: searchText}])
+                search: addQueryParam(location.search, [{ name: filterField, value: searchText}])
             });
             return; 
         }
         history.push({
             path: location.pathname,
-            search: removeQueryParam(location.search, 'searchText')
+            search: removeQueryParam(location.search, filterField)
         });
         
     }
 
     return (
         <ClickAwayListener onClickAway={() => setOnFocus(false)}>
-            <Grid container justify='center'>
-                <Grid item className={clsx(classes.container , onFocus && classes.focused)} xs={11} sm={9} md={8} lg={6}>
-                        <SearchRoundedIcon className={classes.icon}/>
-                        <FormControl variant='outlined' className={classes.form}>
-                            <OutlinedInput
-                                value={ searchText || '' }
-                                onChange={handleChange}
-                                placeholder={placeholder}
-                                className={clsx(classes.searchInput)}
-                                onFocus={() => setOnFocus(true)}
-                            />
-                        </FormControl>
-                </Grid>
-            </Grid>
+            <div className={clsx(classes.container , onFocus && classes.focused)} xs={11} sm={9} md={8} lg={6}>
+                    <SearchRoundedIcon className={classes.icon}/>
+                    <FormControl variant='outlined' className={classes.form}>
+                        <OutlinedInput
+                            value={ searchText || '' }
+                            onChange={handleChange}
+                            placeholder={placeholder}
+                            className={clsx(classes.searchInput)}
+                            onFocus={() => setOnFocus(true)}
+                        />
+                    </FormControl>
+            </div>
         </ClickAwayListener>
     )
 }
 
 const useStyles = makeStyles(theme => ({
     container: {
+        margin: '5px',
         height: '45px',
-        border: '1px solid rgba(0,0,0,0.25)',
+        width: '100%',
+        maxWidth: '450px',
+        border: '1px solid rgba(255,255,255,0.2)',
         borderRadius: '25px',
         display: 'flex',
         alignItems: 'center',
@@ -75,7 +76,9 @@ const useStyles = makeStyles(theme => ({
 
     },
     focused: {
-        border: `2px solid ${theme.palette.primary.main}`
+        boxShadow: 'rgba(0,0,0,0.25) 2px 3px 2px 0px',
+        background: 'rgba(0,0,0,0.1)',
+        backdropFilter: 'blur(40px)'
     },
     form: {
         width: '100%',
@@ -96,11 +99,11 @@ const useStyles = makeStyles(theme => ({
     },
     icon: {
         fontSize: '20px',
-        margin: '0 5px',
+        margin: '0 6px',
         color: 'white',
         borderRadius: '50px',
         padding: '6px',
-        boxShadow: 'rgba(0,0,0,0.25) 0px 0px 1px 2px',
+        border: '1px solid rgba(255,255,255,0.2)',
         
     }
 }))

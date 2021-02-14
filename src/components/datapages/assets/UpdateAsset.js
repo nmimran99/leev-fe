@@ -167,7 +167,7 @@ export const UpdateAsset = ({ open, data, handleUpdate, handleCancel }) => {
                             שמירה
                         </Button>
                         <Button
-                            className={clsx(classes.control, classes.cencel)}
+                            className={clsx(classes.control, classes.cancel)}
                             onClick={handleCancel}
                         >
                             ביטול
@@ -186,7 +186,8 @@ export const UpdateAsset = ({ open, data, handleUpdate, handleCancel }) => {
 
 const useStyles = makeStyles(theme => ({
     container: {
-        background: 'white',
+        background: 'rgba(0,0,0,0.2)',
+        border: '1px solid rgba(255,255,255,0.2)',
         height: '370px',
         margin: '10px',
         borderRadius: '19px',
@@ -195,21 +196,36 @@ const useStyles = makeStyles(theme => ({
     title: {
         width: 'auto',
         padding: '5px 20px',
-        border: `1px solid ${theme.palette.primary.main}`,
-        background: theme.palette.primary.main,
+        borderBottom: `1px solid rgba(255,255,255,0.1)`,
+        background: 'rgba(0,0,0,0.3)',
         color: theme.palette.textPrimary,
         fontSize: '18px',
         borderRadius: '18px 18px 0 0',
         boxShadow: 'rgba(0,0,0,0.25) 0 2px 4px 1px'
     },
     inputs: {
-        padding: '10px'
+        padding: '10px',
+        
     },
     typeContainer: {
         display: 'flex'
     },
     textInput: {
-        margin: '5px',    
+        margin: '5px',
+        '& input': {
+            color: 'white',
+            paddingLeft: '20px',
+        },
+        '& label': {
+            color: 'white',
+            paddingLeft: '5px' 
+        },
+        '& fieldset': {
+            borderColor: 'rgba(255,255,255,0.6)',
+            borderRadius: '42px',
+            
+        }
+           
     },
     cont: {
         display: 'flex'
@@ -220,14 +236,14 @@ const useStyles = makeStyles(theme => ({
     },
     control: {
         width: '30%',
-        border: '1px solid black',
+        border: '1px solid rgba(255,255,255,0.5)',
         fontSize: '16px',
         margin: '5px',
         padding: '5px 30px',
-        borderRadius: '30px'
+        borderRadius: '30px',
+        color: 'white', 
     },
     save: {
-        background: 'black',
-        color: 'white'
+        background: 'rgba(0,0,0,0.2)', 
     }
 }))
