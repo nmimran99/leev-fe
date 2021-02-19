@@ -62,7 +62,6 @@ const useStyles = makeStyles(theme => ({
     container: {
         margin: '5px',
         height: '45px',
-        width: '100%',
         maxWidth: '450px',
         border: '1px solid rgba(255,255,255,0.2)',
         borderRadius: '25px',
@@ -99,7 +98,7 @@ const useStyles = makeStyles(theme => ({
     },
     icon: {
         fontSize: '20px',
-        margin: '0 6px',
+        margin: '0 5px',
         color: 'white',
         borderRadius: '50px',
         padding: '6px',

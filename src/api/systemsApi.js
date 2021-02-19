@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { getSites, getFullAddress } from './assetsApi'
+import { getAssets, getFullAddress } from './assetsApi'
 
 export const getAssetsSuggestions = async (searchText) => {
-    const res = await getSites();
+    const res = await getAssets();
     let result = [];
     if (!searchText) { 
         res.data.forEach(asset => {

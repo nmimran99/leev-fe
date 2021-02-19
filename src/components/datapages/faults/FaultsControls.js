@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { makeStyles, Grid, useMediaQuery, Collapse, Button } from '@material-ui/core';
+import { makeStyles, Grid, useMediaQuery, Collapse, Button, ButtonGroup } from '@material-ui/core';
 import { SearchBoxSelect } from '../../reuseables/SearchBoxSelect';
 import { SearchBox } from '../../reuseables/SearchBox';
 import { FilterBySelect } from '../../reuseables/FilterBySelect';
@@ -9,14 +9,18 @@ import { getAssetsSuggestions } from '../../../api/systemsApi';
 import { createUserOptions } from '../../../api/userApi';
 import { useTranslation } from 'react-i18next';
 import { FilterByMultiSelect } from '../../reuseables/FilterByMultiSelect';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
-import { getFullAddress, getSite } from '../../../api/assetsApi';
-import { getFaultsStatusList, getFaultsStatusListSuggestions } from '../../../api/faultsApi';
+import { getFullAddress, getAsset } from '../../../api/assetsApi';
+import { getSystemsByAssetOptions, getFaultsStatusListSuggestions } from '../../../api/faultsApi';
 import DonutSmallIcon from '@material-ui/icons/DonutSmall';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import { ClearRounded } from '@material-ui/icons';
+import ViewListRoundedIcon from '@material-ui/icons/ViewListRounded';
+import ViewWeekRoundedIcon from '@material-ui/icons/ViewWeekRounded';
+import clsx from 'clsx'
+import { removeQueryParam } from '../../../api/genericApi';
 
 const sortOptions = [
     {
@@ -40,8 +44,9 @@ const sortOptions = [
 ]
 
 
-export const FaultsControls = ({ mode }) => {
+export const FaultsControls = ({ viewType, setViewType }) => {
 
+    const history = useHistory();
     const location = useLocation();
     const query = useQuery(location.search);
     const classes = useStyles();
@@ -56,20 +61,22 @@ export const FaultsControls = ({ mode }) => {
             .then(data => {
                 if (data) {
                     setReloadedValue(data);
-                } else {
-                    
-                }
+                } 
             })
         } else {
             setReloadedValue({
                 label: '',
                 value: null
             });
+            history.push({
+                path: location.pathname,
+                search: removeQueryParam(location.search, 'system')
+            });       
         }
     }, [location.search])
 
     const handleReloaded = async (assetId) => {
-        const res = await getSite(assetId);
+        const res = await getAsset(assetId);
         if (res) {
             return {
                 label: getFullAddress(res.data),
@@ -91,7 +98,7 @@ export const FaultsControls = ({ mode }) => {
             {
                 downSm &&
                 <Grid container justify='center'>
-                    <Grid item xs={11} className={classes.gridItem}>
+                    <Grid item xs={12} className={classes.gridItem}>
                         <Button
                         className={classes.sortandfilter}
                         startIcon={<FilterListIcon className={classes.icon} />}
@@ -106,7 +113,7 @@ export const FaultsControls = ({ mode }) => {
             }
             <Collapse in={collapsed}>
                 <Grid container justify='center'>  
-                    <Grid item xs={11} sm={8} md={7} lg={4} xl={4} className={classes.gridItem}>
+                    <Grid item xs={12} className={classes.gridItem}>
                         {
                             reloadedValue &&
                             <SearchBoxSelect
@@ -116,34 +123,54 @@ export const FaultsControls = ({ mode }) => {
                                 reloadedLabel={reloadedValue.label}
                                 reloadedValue={reloadedValue.value}
                             />
-                        }
-                    </Grid>
-                    <Grid item xs={11} sm={8} md={7} lg={4} xl={4} className={classes.gridItem}>                  
-                        <SearchBox 
-                            placeholder={t("systemsModule.filterBySystemName")}
-                            filterField={'name'}
-                        />
-                    </Grid>
-                    <Grid xs={11} className={classes.gridItem} >
-                        {
-                            mode === 'list' &&
-                            <FilterByMultiSelect 
-                                optionsFunc={getFaultsStatusListSuggestions}
-                                placeholder={t("faultsModule.filterByStatus")}
+                        }                 
+                            {
+                                query.asset &&
+                                <FilterByMultiSelect 
+                                optionsFunc={() => getSystemsByAssetOptions(query.asset)}
+                                placeholder={t("systemsModule.filterBySystemName")}
                                 filterIcon={<DonutSmallIcon className={classes.icon} />}
-                                filterField={'status'}
-
+                                filterField={'system'}
                             />
-                        }
+                            } 
+                            {
+                            viewType === 'list' &&
+                                <FilterByMultiSelect 
+                                    optionsFunc={getFaultsStatusListSuggestions}
+                                    placeholder={t("faultsModule.filterByStatus")}
+                                    filterIcon={<DonutSmallIcon className={classes.icon} />}
+                                    filterField={'status'}
+
+                                />
+                            }
+                    </Grid>
+                    
+                    <Grid item xs={12}className={classes.gridItem}>
                         <FilterByMultiSelect 
                             optionsFunc={createUserOptions}
                             placeholder={t("faultsModule.filterByFaultOwner")}
                             filterIcon={<PersonRoundedIcon className={classes.icon }/>}
                             filterField={'owner'}
                         />
-                        <SortBy 
-                            menuOptions={sortOptions}
-                        />
+                        <SortBy menuOptions={sortOptions}/>
+                        <ButtonGroup
+                            className={classes.typeGroup}
+                        >
+                            <Button
+                                className={clsx(classes.modeBtn, classes.listBtn, viewType === 'list' ? classes.modeBtnActive : null)}
+                                startIcon={<ViewListRoundedIcon className={classes.icon}/>}
+                                onClick={() => setViewType('list')}
+                            >
+                                {t("faultsModule.listMode")}
+                            </Button>
+                            <Button
+                                className={clsx(classes.modeBtn, classes.blocksBtn, viewType === 'blocks' ? classes.modeBtnActive : null)}
+                                startIcon={<ViewWeekRoundedIcon className={classes.icon} />}
+                                onClick={() => setViewType('blocks')}
+                            >
+                                {t("faultsModule.blocksMode")}
+                            </Button>
+                        </ButtonGroup>
                     </Grid>   
                 </Grid>
             </Collapse>
@@ -162,7 +189,7 @@ const useStyles = makeStyles(them => ({
     },
     icon: {
         fontSize: '20px',
-        marginLeft: '7px',
+        marginLeft: '4px',
         color: 'white',
         borderRadius: '50px',
         padding: '6px',
@@ -178,5 +205,27 @@ const useStyles = makeStyles(them => ({
         '&:hover': {
             background: 'black'
         }
+    },
+    typeGroup: {
+        margin: '5px',
+        height: '45px'
+
+    },
+    modeBtn: {   
+        padding: '0 15px 0 5px',
+        color: 'white',
+        width: 'auto',
+        whiteSpace: 'nowrap',
+        border: '1px solid rgba(255,255,255,0.2)',
+    },
+    listBtn: {
+        borderRadius: '25px 0 0 25px',
+    },
+    blocksBtn: {
+        borderRadius: '0px 25px 25px 0px',
+    },
+    modeBtnActive: {
+        background: 'rgba(0,0,0,0.6)'
     }
+
 }))

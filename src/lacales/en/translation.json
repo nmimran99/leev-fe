@@ -78,7 +78,20 @@
         "showFilters": "Show Filters",
         "hideFilters": "Hide Filters",
         "filterByFaultOwner": "Filter By Fault Owner",
-        "filterByStatus": "Filter by Status"
+        "filterByStatus": "Filter by Status",
+        "listMode": "List Mode",
+        "blocksMode": "Blocks Mode",
+        "controls": {
+            "openInNew": "Open in a new tab",
+            "editDetails": "Edit Fault Details",
+            "changeOwner": "Change Assigned User",
+            "addFollowing": "Add Following Users",
+            "removeFollower": "Remove user from following"
+        },
+        "noFollowers": "There are no followers to this fault yet.",
+        "followingUsers": "Following",
+        "createDate": "Created at"
+        
     },
     "createMenu": {
         "addAsset": "Add Asset",
@@ -95,5 +108,35 @@
         "sortBy": "Sort By",
         "asc": "Ascending",
         "desc": "Descending"
+    },
+    "comments": {
+        "title": "Comments",
+        "add": "Write a comment...",
+        "edit": "Edit",
+        "delete": "Delete",
+        "reply": "Reply"
+    },
+    "dates": {
+        "year": "Year",
+        "years": "Years",
+        "month": "Month",
+        "months": "Months",
+        "week": "Week",
+        "weeks": "Weeks",
+        "day": "Day",
+        "days": "Days",
+        "hour" :"Hour",
+        "hours": "Hours",
+        "minute": "Minutes",
+        "minutes": "Minutes",
+        "second": "Second",
+        "seconds": "Seconds",
+        "shortyear": "y",
+        "shortmonth": "mo",
+        "shortweek": "w",
+        "shortday": "d",
+        "shorthour": "h",
+        "shortminute": "m",
+        "shortsecind": "s"
     }
 }

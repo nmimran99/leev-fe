@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { specialStringPurge } from './genericApi'
 
-export const getSite = async (siteId) => {
+export const getAsset = async (assetId) => {
     try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/getSite`, { siteId });
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/getAsset`, { assetId });
         if (res.status === 200) {
             return res;
         }
@@ -12,9 +12,9 @@ export const getSite = async (siteId) => {
     } 
 };
 
-export const getSites = async () => {
+export const getAssets = async () => {
     try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/getSites`);
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/getAssets`);
         if (res.status === 200) {
             return res;
         }
@@ -23,9 +23,9 @@ export const getSites = async () => {
     } 
 };
 
-export const removeSite = async (siteId) => {
+export const removeAsset = async (assetId) => {
     try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/removeSite`, { siteId });
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/removeAsset`, { assetId });
         if (res.status === 200) {
             return res;
         }
@@ -38,9 +38,10 @@ export const getFullAddress = (data) => {
     return `${data.address.street} ${data.address.streetNumber}${data.address.entrance || ''}, ${data.address.city}`
 }
 
-export const updateSiteAddress = async (siteId, address, addInfo, type) => {
+
+export const updateAssetAddress = async (assetId, address, addInfo, type) => {
     try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/updateSiteAddress`, { siteId, address, addInfo, type });
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/updateAssetAddress`, { assetId, address, addInfo, type });
         if (res.status === 200) {
             return res;
         }
@@ -51,12 +52,12 @@ export const updateSiteAddress = async (siteId, address, addInfo, type) => {
 }
 
 
-export const applyFilters = (filters, sites) => {
+export const applyFilters = (filters, assets) => {
     return new Promise((resolve, reject) => {
-        if (!filters) resolve(sites);
+        if (!filters) resolve(assets);
         if (filters.sortBy) {
             if (['city', 'street'].indexOf(filters.sortBy) !== -1) {
-                 sites = sites.sort((a,b) => {
+                 assets = assets.sort((a,b) => {
                      return (
                          filters.sortOrder === 'asc' 
                          ?   a['address'][filters.sortBy] > b['address'][filters.sortBy] ? 1 : -1
@@ -64,7 +65,7 @@ export const applyFilters = (filters, sites) => {
                      )      
                  })
             } else if (filters.sortBy === 'owner') {
-                sites = sites.sort((a,b) => {
+                assets = assets.sort((a,b) => {
                     let aName = `${a.owner.firstName} ${a.owner.lastName}`
                     let bName = `${b.owner.firstName} ${b.owner.lastName}`
                     return (
@@ -77,37 +78,37 @@ export const applyFilters = (filters, sites) => {
 
         }
         if(filters.searchText){
-            sites = sites.filter(site => {
-                return createSiteAddress(site.address)
+            assets = assets.filter(asset => {
+                return createAssetAddress(asset.address)
                         .includes(specialStringPurge(filters.searchText))
                           
             })
         }
         if (filters.owner) {
-            sites = sites.filter(site => {
+            assets = assets.filter(asset => {
                 if (filters.owner instanceof Array) {
-                    return filters.owner.indexOf(site.owner._id) !== -1
+                    return filters.owner.indexOf(asset.owner._id) !== -1
                 }
-                return  site.owner._id == filters.owner
+                return  asset.owner._id == filters.owner
             })
         }
-        resolve(sites);
+        resolve(assets);
     });
    
 
 }
 
-export const createSiteAddress = (address) => {
+export const createAssetAddress = (address) => {
     if (!address) return '';
     return `${address.street} ${address.streetNumber} ${address.city}`;
 }
 
 
 
-export const getOpenTasksForSite = () => {
+export const getOpenTasksForAsset = () => {
 
 }
 
-export const getOpenFaultsForSite = () => {
+export const getOpenFaultsForAsset = () => {
     
 }

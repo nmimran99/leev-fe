@@ -10,7 +10,7 @@ import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
 import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
 import { UpdateAsset } from './UpdateAsset';
-import { updateSiteAddress } from '../../../api/assetsApi'
+import { updateAssetAddress } from '../../../api/assetsApi'
 import { UpdateAssetOwner } from './UpdateAssetOwner';
 import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
 import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
@@ -66,8 +66,8 @@ export const Asset = ({assetData, order, removeAsset }) => {
         }
     }
 
-    const handleUpdate = async (siteId, address, addInfo, type) => {
-        const res = await updateSiteAddress(siteId, address, addInfo, type);
+    const handleUpdate = async (assetId, address, addInfo, type) => {
+        const res = await updateAssetAddress(assetId, address, addInfo, type);
         if (res) {
             setEditMode(false);
             setData(res.data);

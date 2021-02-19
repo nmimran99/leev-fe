@@ -123,7 +123,7 @@ const useStyles = makeStyles(theme => ({
     },
     sortBy: {
         borderRadius: '25px 0 0 25px',
-        padding: '0 15px 0 5px',
+        padding: '0 15px 0 3px',
         color: 'white',
         width: 'auto',
         whiteSpace: 'nowrap',

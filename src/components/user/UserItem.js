@@ -15,7 +15,9 @@ export const UserItem = ({ user, showPhone, showTitle, avatarSize, size }) => {
         if (!user._id) {
             getUserDataById(user)
             .then(data => {
+                console.log(data)
                 setUserData(data)
+ 
             })
         }
     }, [user])
@@ -25,7 +27,7 @@ export const UserItem = ({ user, showPhone, showTitle, avatarSize, size }) => {
         <Button 
             className={classes.btnContainer}
         >
-            <Avatar className={classes.avatar} alt={'abc'} src={userData.avatar || avtrImg} style={{ height: avatarSize || '60px', width: avatarSize || '60px' }}/>
+            <Avatar className={classes.avatar} alt={'abc'} src={userData.avatar} style={{ height: avatarSize || '60px', width: avatarSize || '60px' }}/>
             <div className={classes.dataContainer}>
                 <Typography className={classes.fullname} style={{ fontSize: !size ? '16px' : `${size * 1.1}px`}}>
                     {`${userData.firstName} ${userData.lastName}`}

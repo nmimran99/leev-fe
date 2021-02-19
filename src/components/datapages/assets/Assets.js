@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Grid, LinearProgress, makeStyles } from '@material-ui/core'
-import { getSites, removeSite,getFullAddress, applyFilters } from '../../../api/assetsApi'
+import { getAssets, removeAsset,getFullAddress, applyFilters } from '../../../api/assetsApi'
 import { Asset } from './Asset'
 import { AssetsControls } from './AssetsControls'
 import { AlertDialog } from '../../reuseables/AlertDialoge'
@@ -13,13 +13,13 @@ export const Assets = () => {
     const location = useLocation();
     const classes = useStyles();
     const { t, i18n } = useTranslation();
-    const [ sites, setSites ] = useState([]);
+    const [ assets, setAssets ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
     const [ alertDialoge , setAlertDialoge ] = useState(null)
 
     useEffect(() => {
         if(!isLoading) return;
-        getSites()
+        getAssets()
         .then(res => {
             if (res) {
                 return applyFilters(queryParamsToObject(location.search), res.data)   
@@ -27,7 +27,7 @@ export const Assets = () => {
         })
         .then(data => {
             if (data) {
-                setSites(data)
+                setAssets(data)
             }
         }) 
         .catch(e => {
@@ -41,10 +41,10 @@ export const Assets = () => {
         setIsLoading(true)
     }, [location.search])
 
-    const removeAsset = (siteId, data) => {
+    const removeAsset = (assetId, data) => {
         setAlertDialoge({
             handleConfirm: async () => {
-                const res = await removeSite(siteId);
+                const res = await removeAsset(assetId);
                 if (res) {
                     setAlertDialoge(null)
                     setIsLoading(true);
@@ -74,7 +74,7 @@ export const Assets = () => {
                     {
                         isLoading ?
                         <LinearProgress /> :
-                        sites.map((v,i) => 
+                        assets.map((v,i) => 
                             <Asset 
                                 assetData={v} 
                                 key={i} 

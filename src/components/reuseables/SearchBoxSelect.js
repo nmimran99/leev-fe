@@ -170,9 +170,8 @@ const useStyles = makeStyles(theme => ({
     container: {
         margin: '5px',
         padding: '0 5px',
-        width: '100%',
         maxWidth: '450px',
-        height: '45px',
+        height: '43px',
         border: '1px solid rgba(255,255,255,0.2)',
         borderRadius: '25px',
         display: 'flex',

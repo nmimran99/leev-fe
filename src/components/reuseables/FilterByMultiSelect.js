@@ -170,8 +170,8 @@ const useStyles = makeStyles(theme => ({
         height: 'auto',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
-
+        alignItems: 'center',
+        whiteSpace: 'nowrap'
     },
     filterBy: {
         textTransform: 'none',
@@ -245,7 +245,6 @@ const useStyles = makeStyles(theme => ({
     tag: {
         padding: '5px 10px',
         borderRadius: '50px',
-        // background: 'rgba(0,0,0,0.3)',
         boxShadow: 'rgba(0,0,0,0.25) 0px 0px 3px 1px',
         display: 'flex',
         alignItems: 'center',

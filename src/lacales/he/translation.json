@@ -79,7 +79,19 @@
         "showFilters": "הצג מסננים",
         "hideFilters": "הסתר מסננים",
         "filterByFaultOwner": "סנן על פי ממונה על תקלה",
-        "filterByStatus": "סנן על פי סטטוס"
+        "filterByStatus": "סנן על פי סטטוס",
+        "listMode": "מצב רשימה",
+        "blocksMode": "מצב בלוקים",
+        "controls": {
+            "openInNew": "פתח בחלון חדש",
+            "editDetails": "ערוך פרטי תקלה",
+            "changeOwner": "החלף ממונה על תקלה",
+            "addFollowing": "הוסף משתמשים עוקבים",
+            "removeFollower": "הסר משתמש מרשימת העוקבים"
+        },
+        "noFollowers": "לתקלה זו אין כרגע עוקבים.",
+        "followingUsers": "עוקבים",
+        "createDate": "נוצר בתאריך"
     },
     "createMenu": {
         "addAsset": "הוסף נכס",
@@ -96,5 +108,35 @@
         "sortBy": "סדר לפי",
         "asc": "סדר עולה",
         "desc": "סדר יורד"
+    },
+    "comments": {
+        "title": "תגובות",
+        "add": "כתוב תגובה...",
+        "edit": "ערוך",
+        "delete": "מחק",
+        "reply": "הגב"
+    },
+    "dates": {
+        "year": "שנה",
+        "years": "שנים",
+        "month": "חודש",
+        "months": "חודשים",
+        "week": "שבוע",
+        "weeks": "שבועות",
+        "day": "יום",
+        "days": "ימים",
+        "hour" :"שעה",
+        "hours": "שעות",
+        "minute": "דקה",
+        "minutes": "דקות",
+        "second": "שניה",
+        "seconds": "שניות",
+        "shortyear": "שנים",
+        "shortmonth": "חודשים",
+        "shortweek": "שבועות",
+        "shortday": "ימים",
+        "shorthour": "שעות",
+        "shortminute": "דקות",
+        "shortsecind": "שניות"
     }
 }

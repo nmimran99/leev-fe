@@ -1,4 +1,5 @@
 import axios from 'axios';
+import i18next from 'i18next';
 
 export const queryParamsToObject = (search) => {
     if (!search) return {};
@@ -62,3 +63,35 @@ export const getFullName = (user) => {
     return `${user.firstName} ${user.lastName}`
 }
 
+export const getDatediffString = (fromDate) => {
+    let diffInSecs = Math.round((new Date() - new Date(fromDate)) / 1000);
+    let diff;
+    if (diffInSecs < 60) {
+        diff = (diffInSecs).toString();
+        return  diff + i18next.t("dates.shortsecond")
+    }
+    if (diffInSecs > 60 && diffInSecs < 3600) {
+        diff = Math.round((diffInSecs / 60)).toString();
+        return diff + ' ' + i18next.t("dates.shortminute")
+    }
+    if (diffInSecs > 3600 && diffInSecs < 86400) {
+        diff = Math.round((diffInSecs / 3600)).toString();
+        return diff + ' ' + i18next.t("dates.shorthour")
+    }
+    if (diffInSecs > 86400 && diffInSecs < 604800) {
+        diff = Math.round((diffInSecs / 86400)).toString();
+        return diff + ' ' + i18next.t("dates.shortday")
+    }
+    if (diffInSecs > 604800 && diffInSecs < 2629743) {
+        diff = Math.round((diffInSecs / 604800)).toString();
+        return diff + ' ' + i18next.t("dates.shortweek")
+    }
+    if (diffInSecs > 2629743 && diffInSecs < 31556926) {
+        diff = Math.round((diffInSecs / 2629743)).toString();
+        return diff + ' ' + i18next.t("dates.shortmonth")
+    }
+    if (diffInSecs < 31556926) {
+        diff = Math.round((diffInSecs / 31556926)).toString();
+        return diff + ' ' + i18next.t("dates.shortyear")
+    };
+}

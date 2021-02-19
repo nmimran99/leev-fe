@@ -192,7 +192,6 @@ const useStyles = makeStyles(theme => ({
     tag: {
         padding: '5px 10px',
         borderRadius: '50px',
-        // background: 'rgba(0,0,0,0.3)',
         border: '1px solid rgba(255,255,255,0.2)',
         display: 'flex',
         alignItems: 'center'

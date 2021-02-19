@@ -118,7 +118,7 @@ const useStyles = makeStyles(them => ({
     },
     icon: {
         fontSize: '20px',
-        marginLeft: '7px',
+        marginLeft: '4px',
         color: 'white',
         borderRadius: '50px',
         padding: '6px',

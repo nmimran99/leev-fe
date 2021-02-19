@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Controls } from '../controls/Controls'
-import { makeStyles, Grid } from '@material-ui/core'
+import { makeStyles, Grid, useMediaQuery } from '@material-ui/core'
 import { Assets } from '../datapages/assets/Assets'
 import { Switch, Route } from 'react-router-dom'
 import { Systems } from '../datapages/systems/Systems'
@@ -11,12 +11,18 @@ import { Faults } from '../datapages/faults/Faults'
 export const Workspace = ({}) => {
 
     const classes = useStyles();
+    const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
     return(
         <React.Fragment>
-            <Grid container className={classes.mainContainer} justify='center' alignItems='flex-start'>
+            <Grid container 
+                className={classes.mainContainer} 
+                justify='center' 
+                alignItems='flex-start'
+                 
+            >
                 <Controls />
-                <Grid item xs={12} md={9} className={classes.mainData} >
+                <Grid item xs={12} md={12} lg={11} xl={9} className={classes.mainData} >
                     <Switch>
                         <Route path={'/workspace/assets'}>
                             <Assets />
@@ -46,7 +52,11 @@ const useStyles = makeStyles(theme => ({
         backgroundSize: 'cover',
         paddingBottom: '50px',
         overflowY: 'auto',
-       
+        [theme.breakpoints.down('sm')]: { 
+            '&::-webkit-scrollbar': { 
+                display:  'none'
+            } 
+        }   
     },
     
     mainData: {
@@ -65,5 +75,18 @@ const useStyles = makeStyles(theme => ({
         }
        
        
-    }
+    },
+    '@global': {
+        '*::-webkit-scrollbar': {
+          width: '0.4em'
+        },
+        '*::-webkit-scrollbar-track': {
+          '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
+        },
+        '*::-webkit-scrollbar-thumb': {
+          backgroundColor: 'rgba(0,0,0,.4)',
+          borderRadius: '50px'
+       
+        }
+      }
 }))

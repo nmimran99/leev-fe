@@ -8,7 +8,7 @@ import { createUserOptions } from '../../../api/userApi';
 import { useTranslation } from 'react-i18next';
 import { SearchBoxSelect } from '../../reuseables/SearchBoxSelect';
 import { getAssetsSuggestions } from '../../../api/systemsApi';
-import { getFullAddress, getSite } from '../../../api/assetsApi';
+import { getFullAddress, getAsset } from '../../../api/assetsApi';
 import { useLocation } from 'react-router';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -60,7 +60,7 @@ export const SystemsControls = () => {
     }, [location.search])
 
     const handleReloaded = async (assetId) => {
-        const res = await getSite(assetId);
+        const res = await getAsset(assetId);
         if (res) {
             return {
                 label: getFullAddress(res.data),
@@ -98,7 +98,7 @@ export const SystemsControls = () => {
             }
             <Collapse in={collapsed}>
                 <Grid container justify='center' >
-                    <Grid item xs={11} sm={8} md={7} lg={4} xl={4} className={classes.gridItem}>
+                    <Grid item xs={12} className={classes.gridItem}>
 
                         {
                             reloadedValue &&
@@ -110,8 +110,6 @@ export const SystemsControls = () => {
                                 reloadedValue={reloadedValue.value}
                             />
                         }  
-                    </Grid>
-                    <Grid item xs={11} sm={8} md={7} lg={4} xl={4} className={classes.gridItem}>
                         <SearchBox 
                                 placeholder={t("systemsModule.filterBySystemName")}
                                 filterField={'name'}
@@ -144,7 +142,7 @@ const useStyles = makeStyles(them => ({
     },
     icon: {
         fontSize: '20px',
-        marginLeft: '7px',
+        marginLeft: '4px',
         color: 'white',
         borderRadius: '50px',
         padding: '6px',

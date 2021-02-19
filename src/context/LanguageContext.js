@@ -6,9 +6,11 @@ export const LanguageContext = createContext();
 
 export const LanguageContextProvider = (props) => {
     const [ lang, setLang ] = useState({
-        name: 'Hebrew',
+        name: 'hebrew',
         code: 'he',
-        dir: 'rtl'
+        dir: 'rtl',
+        dateformat: 'dd/mm/yyyy',
+        timeformat: 'HH:MM'
     })
 
     useEffect(() => {
