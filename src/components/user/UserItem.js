@@ -24,39 +24,39 @@ export const UserItem = ({ user, showPhone, showTitle, avatarSize, size }) => {
 
 
     return (
-        <Button 
+        <div 
             className={classes.btnContainer}
         >
             <Avatar className={classes.avatar} alt={'abc'} src={userData.avatar} style={{ height: avatarSize || '60px', width: avatarSize || '60px' }}/>
             <div className={classes.dataContainer}>
-                <Typography className={classes.fullname} style={{ fontSize: !size ? '16px' : `${size * 1.1}px`}}>
+                <Typography className={classes.fullname} style={{ fontSize: `${size * 1.2}px` || '16px' }}>
                     {`${userData.firstName} ${userData.lastName}`}
                 </Typography>
                 {
                     showTitle &&
-                    <Typography className={classes.title} style={{ fontSize: !size ? '18px' : `${size * 1.3}px`}}>
+                    <Typography className={classes.title} style={{ fontSize: `${size * 1.1}px` || '18px' }}>
                         {userData.title || 'עובד כללי'}
                     </Typography>
                 }
                 
                 {
                     showPhone &&
-                    <Typography className={classes.phoneNumber} style={{ fontSize: !size ? '14px' : `${size * 1}px`}}>
+                    <Typography className={classes.phoneNumber} style={{ fontSize: `${size * 1}px` || '14px' }}>
                         {userData.phoneNumber || '054-652-9994'}
                     </Typography>
                 }
             </div>
-        </Button>
+        </div>
     )
 }
 
 const useStyles = makeStyles(theme => ({
     btnContainer: {
-        width: 'inherit',
+        width: 'fit-content',
         height: 'inherit',
         borderRadius: 'inherit',
-        padding: 'inherit',
         display: 'flex',
+        alignItems: 'center',
         justifyContent: 'flex-start',
         '&:hover': {
             boxShadow: 'none',
@@ -64,12 +64,15 @@ const useStyles = makeStyles(theme => ({
         }
     },
     dataContainer: {
+        marginLeft: '15px',
         width: '90%',
-        padding: '5px 0 0 15px',
-        textAlign: 'left'
+        textAlign: 'left',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center'
     },
     fullname: {
-        width: '99%',
+        width: 'fit-content',
         color: 'lightgrey',
         lineHeight: 1,
         textOverflow: 'ellipsis',

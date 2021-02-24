@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
         zIndex: 2,
         backgroundRepeat: 'no-reaper',
         backgroundSize: 'cover',
-        paddingBottom: '50px',
+        
         overflowY: 'auto',
         [theme.breakpoints.down('sm')]: { 
             '&::-webkit-scrollbar': { 
@@ -71,7 +71,8 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('sm')]: {
             border: 'none',
             borderRadius: 0,
-            margin: 0
+            margin: 0,
+            padding: 0
         }
        
        

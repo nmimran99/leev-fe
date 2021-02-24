@@ -1,24 +1,34 @@
-import React, { useState } from 'react';
-import { Grid, IconButton, makeStyles, Paper, useMediaQuery } from '@material-ui/core';
+import React, { useState, useEffect} from 'react';
+import { Backdrop, Grid, IconButton, makeStyles, Modal, Paper, useMediaQuery } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { UpdateSystemOwner } from './UpdateSystemOwner';
-import { updateSystemOwner } from '../../../api/systemsApi';
+import { updateSystemOwner, updateSystemAdditionalData } from '../../../api/systemsApi';
 import { SystemName } from './SystemName';
 import { SystemLinkedUsers } from './SystemLinkedUsers';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import ExpandLessRoundedIcon from '@material-ui/icons/ExpandLessRounded';
 import { SystemControls } from './SystemControls';
+import { SystemAdditionalDetails } from './SystemAdditionalDetails';
+import { UpsertSystem } from './UpsertSystem';
 
 export const System = ({ systemData }) => {
 
     const classes = useStyles();
     const { t, i18n } = useTranslation();
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
-    const [ data, setData ] = useState(systemData)
+    const [ data, setData ] = useState(systemData);
     const [ editOwner, setEditOwner ] = useState(false)
     const [ editName, setEditName ] = useState(false)
     const [ expanded, setExpanded ] = useState(false);
+    const [ editDetails, setEditDetails ] = useState(null);
+    const [ showAdditionalDetails, setShowAdditionalDetails ] = useState(false)
     const [ showLinkedUsers, setShowLinkedUsers ] = useState(false);
+
+    useEffect(() => {
+        if (!expanded) {
+            setShowAdditionalDetails(null);
+        }
+    }, [expanded])
 
     const toggleEditOwner = () => {
         if (editOwner) {
@@ -38,11 +48,32 @@ export const System = ({ systemData }) => {
         }
     }
 
+    const updateSystemData = systemData => {
+        updateSystemAdditionalData(systemData)
+        .then(res => {
+            if (res) {
+                console.log(res)
+                setData(res)
+            }
+        })
+        .finally(() => {
+            setEditDetails(null);
+        })
+    }
+
     const setSystemName = name => {
         setData({
             ...data,
             name
         });
+    }
+
+    const showAdditionalDetailsToggle = () => {
+        if (!showAdditionalDetails) {
+            setShowAdditionalDetails(true);
+            return;
+        }
+        setShowAdditionalDetails(false)
     }
 
     const showLinkedUsersToggle = () => {
@@ -58,13 +89,15 @@ export const System = ({ systemData }) => {
         if (expanded) {
             setShowLinkedUsers(false);
             setEditOwner(false);
+            setEditDetails(null);
             setExpanded(false);
             return;
         } 
         setExpanded(true)
     }
+
     return (
-        <Grid item xs={ 12 } sm={7} md={8} lg={11} xl={9}>
+        <Grid item xs={ 12 } sm={7} md={8} lg={11} xl={11}>
             <Paper elevation={9} className={classes.paper}>
                 <div className={classes.mainRow}>
                     <div 
@@ -99,13 +132,16 @@ export const System = ({ systemData }) => {
                         owner={data.owner}
                         showLinkedUsersToggle={showLinkedUsersToggle}
                         toggleEditOwner={toggleEditOwner}
+                        toggleAdditionalDetails={showAdditionalDetailsToggle}
+
                     />
                 </div> 
                 <SystemLinkedUsers
                     isOpen={showLinkedUsers}  
                     userList={ data.linkedUsers }  
                     setData={ setData } 
-                    systemId={ data._id }                        
+                    systemId={ data._id }     
+
                 />
                 <UpdateSystemOwner 
                     isOpen={editOwner}
@@ -113,12 +149,45 @@ export const System = ({ systemData }) => {
                     handleSave={updateOwner}
                     handleClose={toggleEditOwner}
                 />
+                <SystemAdditionalDetails 
+                    data={data.data}
+                    isOpen={showAdditionalDetails}
+                    systemId={data._id}
+                    toggleEdit={() => setEditDetails(data._id)}
+                />
+                {   
+                    Boolean(editDetails) &&
+                    <Modal
+                        open={Boolean(editDetails)}
+                        onClose={() => setEditDetails(null)}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                            timeout: 500
+                        }}
+                        className={classes.modal}
+                    >
+                        <UpsertSystem 
+                            handleClose={() => setEditDetails(null)}
+                            systemId={editDetails}
+                            handleUpdate={updateSystemData}
+                            data={data.data}
+                        />
+                    </Modal>
+                }
+            
             </Paper>
         </Grid>
     )
 }
 
 const useStyles = makeStyles(theme => ({
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(10px)'   
+    },
     paper: {
         background: 'rgba(0,0,0,0.4)',
         border: '1px solid rgba(255,255,255,0.2)',

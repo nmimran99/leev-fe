@@ -9,6 +9,7 @@ import { getSystemsByAsset } from '../../../api/systemsApi';
 import { applyFilters } from '../../../api/systemsApi';
 import { System } from './System';
 import { SystemsHeader } from './SystemsHeader';
+import { UpsertSystem } from './UpsertSystem';
 
 export const Systems = () => {
 
@@ -19,6 +20,7 @@ export const Systems = () => {
     const { t, i18n } = useTranslation();
     const [ systems, setSystems ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(false);
+ 
 
     useEffect(() => {
         if (!isLoading) return;    
@@ -79,7 +81,6 @@ export const Systems = () => {
                     }   
                 </Grid>
             </Grid>
-
         </div>
     )
 }

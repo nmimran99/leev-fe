@@ -23,7 +23,7 @@ export const UserList = ({ users, handleRemove, removeTooltip, handleAdd, addToo
     }
     return (
            
-        <div className={classes.linked} style={{ width: `${width}px`}}>
+        <div className={classes.linked} style={{ minWidth: `200px`, width: '100%'}}>
             <div className={classes.topRow}>
                 <div className={classes.linkedHeader}>
                     {title}
@@ -99,7 +99,7 @@ const useStyles = makeStyles(theme => ({
     },
     topRow: {
         margin: '0px auto',
-        width: '80%',
+        width: '90%',
         borderBottom: '1px solid rgba(255,255,255,0.2)',
         display: 'flex',
         justifyContent: 'space-between',
@@ -111,13 +111,16 @@ const useStyles = makeStyles(theme => ({
         padding: '5px',
     },
     followingList: {
-        padding: '5px',
+        padding: '5px 0',
         overflowY: 'auto',
         
     },
     listItem: {
-        width: '250px',
+        width: '100%',
         borderRadius: '5px',
+        padding: '8px',
+        display: 'flex',
+        justifyContent: 'space-between',
         '&:hover': {
             background: 'rgba(0,0,0,0.4)',
         }

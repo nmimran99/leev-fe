@@ -9,7 +9,7 @@ export const SystemsHeader = () => {
     const { t, i18n } = useTranslation();
 
     return (
-        <Grid item xs={ 12 } sm={7} md={8} lg={11} xl={9}>
+        <Grid item xs={ 12 } sm={7} md={8} lg={11} xl={11}>
             <Paper elevation={9} className={classes.headerPaper}>
                 <div className={classes.systemName}>
                     {t("systemsModule.systemName")}
@@ -17,6 +17,9 @@ export const SystemsHeader = () => {
                 {
                     !downSm &&
                     <div className={classes.actionsContainer}>
+                        <div className={classes.iconHeader}>
+                            {t("systemsModule.moreDetails")}
+                        </div>
                         <div className={classes.iconHeader}>
                             {t("systemsModule.tasks")}
                         </div>
@@ -60,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     actionsContainer: {
         display: 'flex',
         fontSize: '12px',
-        width: '590px',
+        width: '668px',
         justifyContent: 'flex-end'
  
     },

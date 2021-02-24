@@ -87,8 +87,6 @@ export const Asset = ({assetData, order, removeAsset }) => {
                     <Paper 
                         className={classes.assetContainer} 
                         style={{ 
-                            background: 'rgba(0,0,0,0.2)',
-                            border: '1px solid rgba(255,255,255,0.2)', 
                             height: editMode ? transition.container.height : 'auto', 
                             transition: editMode ? transition.container.transition : 'height 0.3s ease'
                         }} 
@@ -109,7 +107,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                 </Typography>
                             </div>
                             <div className={classes.owner}>
-                                <UserItem user={data.owner} showPhone avatarSize={'50px'}/>
+                                <UserItem user={data.owner} showPhone avatarSize={'40px'} size={14}/>
                             </div>
                             {
                                 (controlsVisible || !matches) &&
@@ -126,7 +124,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                     <CategoryOutlinedIcon className={classes.typeIcon}/>
                                     <div className={classes.typeDetails}>
                                         <div className={classes.typeData}>
-                                            {data.type}
+                                            {t(`assetsModule.${data.type}`)}
                                         </div>
                                     </div>
                                 </div>
@@ -244,8 +242,12 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '25px',
         height: 'auto',
         color: 'white',
+        background: 'rgba(0,0,0,0.4)',
+        border: '1px solid rgba(255,255,255,0.2)', 
         [theme.breakpoints.down('sm')] : {
-            margin: '10px 0'
+            margin: '10px 0',
+            borderRadius: '0',
+            border: '0', 
         } 
     },
     topMain: {
@@ -253,7 +255,10 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '25px',
         display: 'flex',
         justifyContent: 'space-between',
-        position: 'relative'
+        position: 'relative',
+        [theme.breakpoints.down('sm')] : {
+            borderRadius: '0',
+        } 
     },
     address: {
         padding: `${theme.spacing(3)}px 0 0 ${theme.spacing(3)}px`,
@@ -281,14 +286,17 @@ const useStyles = makeStyles(theme => ({
     owner: {
         width: '160px',
         height: '50px',
-        padding: '7px',
+        padding: '3px 3px 6px',
         borderRadius: '0px 25px 0px 30px',
         boxShadow: '0 2px 20px 0 rgb(0 0 0 / 37%)',
         '&:hover' :{
             background: 'black',
             transition: 'background 0.2s ease',
             boxShadow: '0 8px 32px 0 rgb(0 0 0 / 80%)',
-        }
+        },
+        [theme.breakpoints.down('sm')] : {
+            borderRadius: '0px 0px 0px 30px',
+        } 
     },
     extraDetails: {
         display: 'flex',

@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
 import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 
-export const SystemControls = ({ editName, expanded, owner, showLinkedUsersToggle, toggleEditOwner }) => {
+export const SystemControls = ({ editName, expanded, owner, showLinkedUsersToggle, toggleEditOwner, toggleAdditionalDetails }) => {
 
     const classes = useStyles();
     const { t, i18n } = useTranslation();
@@ -19,6 +20,14 @@ export const SystemControls = ({ editName, expanded, owner, showLinkedUsersToggl
         <Collapse in={((!downSm && !editName) || expanded)}>
             <div className={classes.actionsContainer}>
                 <div className={classes.actions}>
+                    <Tooltip title={t("systemsModule.moreDetails")}>
+                        <IconButton
+                            className={classes.iconBtn}
+                            onClick={toggleAdditionalDetails}
+                        >
+                            <MoreHorizIcon className={classes.userIcon}/>
+                        </IconButton>
+                    </Tooltip>
                     <Tooltip title={t("systemsModule.showTasks")}>
                         <IconButton
                             className={classes.iconBtn}
@@ -63,6 +72,7 @@ export const SystemControls = ({ editName, expanded, owner, showLinkedUsersToggl
                         user={owner}
                         avatarSize={40}
                         showPhone
+                        size={13}
                     />
                 </div> 
             </div>

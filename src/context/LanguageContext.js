@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { getLabelsByLanguage } from '../api/genericApi';
 import i18n from '../i18n'
 
 export const LanguageContext = createContext();
@@ -9,7 +8,7 @@ export const LanguageContextProvider = (props) => {
         name: 'hebrew',
         code: 'he',
         dir: 'rtl',
-        dateformat: 'dd/mm/yyyy',
+        dateformat: 'dd/MM/yyyy',
         timeformat: 'HH:MM'
     })
 

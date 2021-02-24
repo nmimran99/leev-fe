@@ -96,8 +96,7 @@ export const CommentSection = ({ comments, avatar, saveComment }) => {
             }
             
             <ClickAwayListener onClickAway={() => setTextFocused(false)}> 
-                <Grid item xs={12} className={classes.addComment}>
-                    
+                <Grid item xs={12} sm={12} md={8} lg={6} xl={6} className={classes.addComment}>
                     <FormControl variant='outlined' className={classes.form}>
                         <OutlinedInput
                             value={ text || '' }
@@ -105,7 +104,10 @@ export const CommentSection = ({ comments, avatar, saveComment }) => {
                             placeholder={t("comments.add")}
                             className={clsx(classes.textInput, textFocused ? classes.focused : null)}
                             onFocus={() => setTextFocused(true)}
-                            
+                            multiline
+                            classes={{
+                                inputMultiline: classes.multiLine
+                            }}
                         />
                         
                     </FormControl>
@@ -141,15 +143,15 @@ const useStyles = makeStyles(theme => ({
     },
     form: {
         color: 'white',
+        width: '100%'
 
     },
     textInput: {
-        height: '45px',
-        width: '400px',
+        
         borderRadius: '42px',
         '& input': {
             color: 'white',
-            paddingLeft: '20px',
+            width: '80%'
         },
         '& label': {
             color: 'white',
@@ -235,6 +237,9 @@ const useStyles = makeStyles(theme => ({
         minWidth: '0',
         width: 'fit-content',
         color: 'rgba(255,255,255,0.4)',
+    },
+    multiLine: {
+        padding: '0px 20px'
     }
 
 }))

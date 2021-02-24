@@ -1,8 +1,7 @@
-import React, { useState, useContext, iseEffect, useEffect } from 'react';
+import React, { useState, } from 'react';
 import { Grid, makeStyles, Collapse, Tooltip, IconButton, useMediaQuery, Fade } from '@material-ui/core';
 import { UserItem } from '../../user/UserItem';
 import { getFullName } from '../../../api/genericApi';
-import avtrImg from '../../../assets/images/users/avatars/600e048ccbe5b841e4f9e7ed.jpg';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
 import { useTranslation } from 'react-i18next';
 import { AlertDialog } from '../../reuseables/AlertDialoge';
@@ -98,7 +97,7 @@ export const SystemLinkedUsers = ({ userList, setData, systemId, isOpen }) => {
                                             showTitle
                                             showPhone
                                             avatarSize={'50px'}
-                                            size={11}
+                                            size={13}
                                         />
                                         <Fade in={showControls === i || downSm}>
                                             <Tooltip title={t("systemsModule.removeUser")}>

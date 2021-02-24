@@ -50,7 +50,6 @@ const useStyles = makeStyles(theme => ({
         width: 'fit-content',
         padding: '0 5px',
         borderRadius: '5px',
-        fontWeight: 600,
         fontSize: '14px',
         whiteSpace: 'nowrap'
 

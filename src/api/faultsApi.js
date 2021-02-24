@@ -1,3 +1,4 @@
+import { ImageSearch } from '@material-ui/icons';
 import axios from 'axios'
 import i18next from 'i18next';
 import { getFullAddress } from './assetsApi';
@@ -80,4 +81,31 @@ export const getSystemsByAssetOptions = async (asset) => {
         
     });
     return options;
+}
+
+export const createNewFault = async details => {
+    let formData = new FormData();
+    Object.entries(details).forEach(f => {
+        if (f[0] === 'images') {
+            for (let i = 0; i < details.images.length; i++) {
+                formData.append("images", details.images[i]);
+              }
+        } else {
+            formData.append(f[0], f[1])
+        }
+    });
+    let config = {
+        headers: {
+            'Content-Type': `multipart/form-data`
+        }
+    }
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/createFault`, formData, config); 
+        if (res) {
+            return res.data
+        };
+    } catch(e) {
+        console.log(e)
+        return e.message
+    }
 }

@@ -5,9 +5,10 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import QueueIcon from '@material-ui/icons/Queue';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import NoteAddOutlinedIcon from '@material-ui/icons/NoteAddOutlined';
+import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 import { useTranslation } from 'react-i18next';
 
-export const AddMenu = ({toggleAddMenu}) => {
+export const AddMenu = ({toggleAddMenu, toggleAdd}) => {
 
     const classes = useStyles();
     const { t, i18n } = useTranslation();
@@ -24,11 +25,25 @@ export const AddMenu = ({toggleAddMenu}) => {
             <Grow in={true}>
                 <div className={classes.addMenuContainer}>
                     <List className= { classes.list}>
-                        <ListItem button={true} className={classes.listItem}>
+                        <ListItem 
+                            button={true} 
+                            className={classes.listItem}
+                            onClick={toggleAdd('asset')}
+                        >
                             <ListItemIcon className={classes.listItemIcon}>
                                 <AddLocationOutlinedIcon fontSize={'medium'} className={classes.icon}/>
                             </ListItemIcon>
                             <ListItemText primary={t("createMenu.addAsset")} className={classes.listItemText} disableTypography={true}/>
+                        </ListItem>
+                        <ListItem 
+                            button={true} 
+                            className={classes.listItem}
+                            onClick={toggleAdd('system')}
+                        >
+                            <ListItemIcon className={classes.listItemIcon}>
+                                <BlurOnRoundedIcon fontSize={'medium'} className={classes.icon}/>
+                            </ListItemIcon>
+                            <ListItemText primary={t("createMenu.addSystem")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} className={classes.listItem}>
                             <ListItemIcon className={classes.listItemIcon}>
@@ -42,7 +57,11 @@ export const AddMenu = ({toggleAddMenu}) => {
                             </ListItemIcon>
                             <ListItemText primary={t("createMenu.createTask")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
-                        <ListItem button={true} className={classes.listItem}>
+                        <ListItem 
+                            button={true} 
+                            className={classes.listItem}
+                            onClick={toggleAdd('fault')}
+                        >
                             <ListItemIcon className={classes.listItemIcon}>
                                 <QueueIcon fontSize={'medium'}/>
                             </ListItemIcon>

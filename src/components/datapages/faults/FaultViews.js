@@ -53,7 +53,7 @@ export const FaultViews = () => {
     }, [viewType])
  
     return (
-        <Grid container jutify='center' >
+        <Grid container justify={ 'center'} >
             <div className={classes.pageModule}>
                     {t("assetsModule.faults")}
             </div>
@@ -95,6 +95,9 @@ const useStyles = makeStyles(theme => ({
         lineHeight: '1'
     },
     faultPresent: {
-        margin: '20px 10px'
+        margin: '20px 10px',
+        [theme.breakpoints.down('sm')]: {
+            margin: '20px 0',
+        }
     }
 }))

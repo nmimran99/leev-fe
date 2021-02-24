@@ -22,31 +22,39 @@
         "faults": "תקלות",
         "documents": "מסמכים",
         "users": "משתמשים",
+        "owner": "מנהל נכס",
         "filterByCityOrAddress": "סנן לפי עיר או כתובת",
         "filterByAssetOwner": "סנן על פי מנהל בניין",
-        "streetName": "שם רחוב",
+        "street": "שם רחוב",
         "streetNumber": "מספר רחוב",
         "entrance": "כניסה",
         "city": "עיר",
         "province": "מחוז",
         "state": "מדינה",
         "country": "מדינה",
+        "zipcode": "מיקוד",
         "building": "בניין",
         "apartment": "דירה",
         "floor": "קומה",
         "floors": "קומות",
         "unit": "דירה",
         "units": "דירות",
+        "assetType": "סוג נכס",
+        "addressDetails": "פרטי כתובת",
+        "additionalDetails": "פרטים נוספים",
         "editAddress": "עריכת כתובת",
         "editAssetManager": "שינוי מנהל בניין",
         "deleteAsset": "מחיקת נכס",
-        "deleteConfirmation": "האם אתה בטוח שברצונך למחוק את הנכס שכתובתו"
+        "deleteConfirmation": "האם אתה בטוח שברצונך למחוק את הנכס שכתובתו",
+        "createAsset": "יצירת נכס",
+        "editAsset": "ערוך פרטי נכס"
     },
     "systemsModule": {
         "filterBySystemName": "סנן לפי שם מערכת",
         "filterByAsset": "סנן לפי נכס",
         "filterBySystemOwner": "סנן לפי מנהל מערכת",
         "initMessage": "אנא סנן על פי נכס על מנת לצפות במערכות המקושרות.",
+        "moreDetails": "פרטים נוספים",
         "showUsers": "הצג אנשי שטח",
         "changeManager": "שנה אחראי מערכת",
         "showFaults": "הצג תקלות",
@@ -66,7 +74,50 @@
         "addRelatedUserTitle": "הוסף משתמש למערכת",
         "chooseUserToAdd": "בחר משתמש להוספה למערכת",
         "updateSystemOwnerTitle": "שינוי מנהל מערכת",
-        "chooseManagerToUpdate": "בחר משתמש לשינוי מנהל מערכת"
+        "chooseManagerToUpdate": "בחר משתמש לשינוי מנהל מערכת",
+        "createSystem": "יצירת מערכת",
+        "generalDetails": "פרטים כלליים",
+        "systemOwner": "אחראי על מערכת",
+        "linkedUsers": "משתמשים מקושרים",
+        "owningAsset": "נכס",
+        "additionalDetails": "פרטי מערכת נוספים",
+        "location": "מיקום מערכת",
+        "manufacturingYear": "שנת יצור",
+        "SID": "מספר סידורי",
+        "manufacturer": "פרטי יצרן",
+        "supplier": "פרטי ספק",
+        "insurance": "פרטי ביטוח",
+        "warranty": "אחריות",
+        "manufacturerDetails": {
+            "name": "שם יצרן",
+            "contactName": "איש קשר",
+            "email": "כתובת מייל",
+            "phoneNumber": "מספר טלפון",
+            "extension": "שלוחה"
+        },
+        "supplierDetails": {
+            "name": "שם ספק",
+            "contactName": "איש קשר",
+            "email": "כתובת מייל",
+            "phoneNumber": "מספר טלפון",
+            "extension": "שלוחה"
+        },
+        "insuranceDetails": {
+            "name": "שם ספק הביטוח",
+            "contactName": "איש קשר",
+            "email": "כתובת מייל",
+            "phoneNumber": "מספר טלפון",
+            "extension": "שלוחה",
+            "expiryDate": "תאריך תפוגת הביטוח"
+        },
+        "warrantyDetails": {
+            "supplier": "ספק",
+            "manufacturer": "יצרן",
+            "expiryDate": "תאריך תפוגת האחריות",
+            "nowarranty": "ללא אחריות",
+            "issuer": "ספק האחריות"
+        },
+        "updateSystemDetails": "עידכון פרטי מערכת"
 
     },
     "faultsModule": {
@@ -91,10 +142,26 @@
         },
         "noFollowers": "לתקלה זו אין כרגע עוקבים.",
         "followingUsers": "עוקבים",
-        "createDate": "נוצר בתאריך"
+        "createDate": "נוצר בתאריך",
+        "upsert": {
+            "generalDetails": "פרטים כלליים",
+            "updateFaultDetails": "עדכן פרטי תקלה",
+            "createFault": "יצירת תקלה",
+            "title": "כותרת התקלה",
+            "description": "פירוט התקלה",
+            "followingUsers": "עוקבים",
+            "asset": "נכס",
+            "system": "מערכת",
+            "faultOwner": "ממונה",
+            "faultImages": "תמונות מקושרות",
+            "uploadImages": "העלה תמונות",
+            "imagesSelected": "תמונות נבחרו"
+        }   
+        
     },
     "createMenu": {
         "addAsset": "הוסף נכס",
+        "addSystem": "הוסף מערכת",
         "createUser": "צור משתמש",
         "createTask": "צור משימה",
         "createFault": "צור תקלה",
@@ -138,5 +205,16 @@
         "shorthour": "שעות",
         "shortminute": "דקות",
         "shortsecind": "שניות"
+    },
+    "controls": {
+        "confirm": "אישור",
+        "cancel": "ביטול",
+        "save": "שמירה"
+    },
+    "errors": {
+        "isRequired": "שדה זה הינו חובה"
+    },
+    "general": {
+        "noData": "אין מידע" 
     }
 }

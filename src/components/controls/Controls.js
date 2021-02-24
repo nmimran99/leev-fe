@@ -3,12 +3,14 @@ import { makeStyles, Grid } from '@material-ui/core'
 import { Navbar } from './navbar/Navbar'
 import { SideMenu } from './navbar/SideMenu'
 import { AddMenu } from './navbar/AddMenu'
+import { CreateContainer } from '../reuseables/CreateContainer'
 
 
 export const Controls = () => {
 
     const [ menuOpen, setMenuOpen ] = useState(false)
     const [ addMenuOpen, setAddMenuOpen ] = useState(false)
+    const [ create, setCreate ] = useState(null)
     const classes = useStyles();
 
     const toggleMenu = () => {
@@ -27,6 +29,11 @@ export const Controls = () => {
         }  
     }
 
+    const openCreate = itemType => event => {
+        toggleAddMenu();
+        setCreate(itemType)
+    }
+
     return (
         <React.Fragment>
             <Grid container className={classes.controlsContainer} justify='center'>
@@ -40,11 +47,25 @@ export const Controls = () => {
             </Grid>
             {
                 menuOpen &&
-                <SideMenu toggleMenu={toggleMenu}/>      
+                <SideMenu 
+                    toggleMenu={toggleMenu}
+
+                />      
             }
             {
                 addMenuOpen &&
-                <AddMenu toggleAddMenu={toggleAddMenu}/>      
+                <AddMenu 
+                    toggleAddMenu={toggleAddMenu}
+                    toggleAdd={openCreate}    
+                />      
+            }
+            {
+                Boolean(create) &&
+                <CreateContainer
+                    isOpen={true}
+                    handleClose={() => setCreate(null)}
+                    itemType={create} 
+                />
             }
         </React.Fragment>
         

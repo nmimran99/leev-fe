@@ -35,17 +35,17 @@ export const Carousel = ({ images, isOpen, size }) => {
             <IconButton
                 className={clsx(classes.arrow, classes.arrowLeft)}
                 onClick={handleClick('left')}
-                style={{ left: lang.drection === 'rtl' ? '95%' : '5%' }}
+                style={{ left: lang.drection === 'rtl' ? '100%' : '0%' }}
             >
-                <ChevronLeftRoundedIcon />
+                <ChevronLeftRoundedIcon className={classes.icon}/>
             </IconButton>
             <CarouselSlide image={images[index]} />
             <IconButton
                 className={clsx(classes.arrow, classes.arrowRight)}
                 onClick={handleClick('right')}
-                style={{ right: lang.drection === 'rtl' ? '95%' : '5%' }}
+                style={{ right: lang.drection === 'rtl' ? '100%' : '0%' }}
             >
-                <ChevronRightRoundedIcon />
+                <ChevronRightRoundedIcon className={classes.icon}/>
             </IconButton>
         </div>
     )
@@ -56,7 +56,7 @@ const CarouselSlide = ({image, size}) => {
     const classes = useStyles();
 
     return (
-        <Paper className={classes.paper} >
+        <Paper className={classes.paper} elevation={0}>
             <img src={image} className={classes.image} style={{ height: size}}/>
         </Paper>   
     )
@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
     container: {
         display: 'flex',
         position: 'relative',
-        width: 'inherit',
+        width: '100%',
         justifyContent: 'center',
         padding: '10px 5px',
         borderRadius: '10px'
@@ -75,13 +75,16 @@ const useStyles = makeStyles(theme => ({
         padding: 0,
         margin: 0,
         width: '100%',
-        height: '300px',
+        height: '500px',
         direction: 'ltr',
-        borderRadius: '10px'
+        background: 'transparent',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     image: {
-        height: '300px',
-        width: 'inherit',
+        maxHeight: '90%',
+        maxWidth: '90%',
         borderRadius: '10px',
         objectFit: 'cover'
     },
@@ -90,7 +93,8 @@ const useStyles = makeStyles(theme => ({
         background: 'rgba(0,0,0,0.6)',
         color: 'white',
         zIndex: 1,
-        padding: '5px'
+        padding: '5px',
+
     },
     arrowLeft: {
         top: '50%',
@@ -99,5 +103,8 @@ const useStyles = makeStyles(theme => ({
     arrowRight: {
         top: '50%',
         transform: 'translateY(-50%)'
+    },
+    icon: {
+        fontSize: '32px'
     }
 }))

@@ -22,31 +22,39 @@
         "faults": "Faults",
         "documents": "Documents",
         "users": "Users",
+        "owner": "Asset Manager",
         "filterByCityOrAddress": "Filter by City or Address",
         "filterByAssetOwner": "Filter by Asset Manager",
-        "streetName": "Street Name",
+        "street": "Street Name",
         "streetNumber": "Street Number",
         "entrance": "entrance",
         "city": "City",
         "province": "Province",
         "state": "State",
         "country": "Country",
+        "zipcode": "Zipcode",
         "building": "Building",
         "apartment": "Apartment",
         "floor": "Floor",
         "floors": "Floors",
         "unit": "Unit",
         "units": "Units",
+        "assetType": "Asset Type",
+        "addressDetails": "Address Details",
+        "additionalDetails": "Additional Details",
         "editAddress": "Edit Address",
         "editAssetManager": "Change Asset Manager",
         "deleteAsset": "Delete Asset",
-        "deleteConfirmation": "Are you sure you want to delete this asset located on"
+        "deleteConfirmation": "Are you sure you want to delete this asset located on",
+        "createAsset": "Create An Asset",
+        "editAsset": "Edit Asset Details"
     },
     "systemsModule": {
         "filterBySystemName": "Filter by system name",
         "filterByAsset": "Filter by asset",
         "filterBySystemOwner": "Filter by system owner",
         "initMessage": "Please filter by asset to view related systems.",
+        "moreDetails": "More Details",
         "showUsers": "Show Related Users",
         "changeManager": "Change Assigned Manager",
         "showFaults": "Show Faults",
@@ -66,7 +74,50 @@
         "addRelatedUserTitle": "Link a user to the system",
         "chooseUserToAdd": "Select a user to add to the system",
         "updateSystemOwnerTitle": "Update System Manager",
-        "chooseManagerToUpdate": "Select a user to assign as manager"
+        "chooseManagerToUpdate": "Select a user to assign as manager",
+        "createSystem": "Create a System",
+        "generalDetails": "General",
+        "systemOwner": "System Manager",
+        "linkedUsers": "Linked Users",
+        "owningAsset": "Asset",
+        "additionalDetails": "Additional System Details",
+        "location": "System Location",
+        "manufacturingYear": "Manufacturing Year",
+        "SID": "Serial Number",
+        "manufacturer": "Manufacturer",
+        "supplier": "Supplier",
+        "insurance": "Insurance",
+        "warranty": "Warranty",
+        "manufacturerDetails": {
+            "name": "Manufacturer Name",
+            "contactName": "Contact Name",
+            "email": "Contact Email",
+            "phoneNumber": "Contact Phone Number",
+            "extension": "Extension"
+        },
+        "supplierDetails": {
+            "name": "Supplier Name",
+            "contactName": "Contact Name",
+            "email": "Contact Email",
+            "phoneNumber": "Contact Phone Number",
+            "extension": "Extension"
+        },
+        "insuranceDetails": {
+            "name": "Insurance Provider",
+            "contactName": "Contact Name",
+            "email": "Contact Email",
+            "phoneNumber": "Contact Phone Number",
+            "extension": "Extension",
+            "expiryDate": "Expiry Date"
+        },
+        "warrantyDetails": {
+            "supplier": "Supplier",
+            "manufacturer": "Manufacturer",
+            "expiryDate": "Expiry Date",
+            "nowarranty": "No Warranty",
+            "issuer": "Warranty Issuer"
+        },
+        "updateSystemDetails": "Update System Details"
     },
     "faultsModule": {
         "statuses" : {
@@ -90,11 +141,26 @@
         },
         "noFollowers": "There are no followers to this fault yet.",
         "followingUsers": "Following",
-        "createDate": "Created at"
+        "createDate": "Created at",
+        "upsert": {
+            "generalDetails": "General Details",
+            "updateFaultDetails": "Update Fault Details",
+            "createFault": "Create Fault",
+            "title": "Fault Title",
+            "description": "Fault Description",
+            "followingUsers": "Follwing",
+            "asset": "Asset",
+            "system": "System",
+            "faultOwner": "Owner",
+            "faultImages": "Fault Related Images",
+            "uploadImages": "Upload Images",
+            "imagesSelected": "Images Selected"
+        }
         
     },
     "createMenu": {
         "addAsset": "Add Asset",
+        "addSystem": "Add System",
         "createUser": "Create User",
         "createTask": "Create Task",
         "createFault": "Create Fault",
@@ -138,5 +204,16 @@
         "shorthour": "h",
         "shortminute": "m",
         "shortsecind": "s"
+    },
+    "controls": {
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+    "errors": {
+        "isRequired": "This field is required"
+    }, 
+    "general": {
+        "noData": "No Data" 
     }
 }

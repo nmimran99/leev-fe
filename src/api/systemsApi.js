@@ -1,6 +1,14 @@
 import axios from 'axios';
 import { getAssets, getFullAddress } from './assetsApi'
 
+export const createNewSystem = async (details) => {
+    const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/systems/createSystem`, { ...details });
+    if (res.data) {
+        return res.data;
+    }
+    return [];
+}
+
 export const getAssetsSuggestions = async (searchText) => {
     const res = await getAssets();
     let result = [];
@@ -110,4 +118,22 @@ export const addUser = async (systemId, userId) => {
         return res.data;
     }
     return null;
+}
+
+export const updateSystemAdditionalData = async (systemData) => {
+    const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/systems/updateSystemData`, { systemData });
+    if (res.data) {
+        return res.data;
+    }
+    return null;
+}
+
+export const createSystemMenuOptions = (systems) => {
+    return new Promise((resolve, reject) => {
+        let options = [];
+        systems.forEach(s => {
+            options.push({ text: s.name, value: s._id})
+        });
+        resolve(options);
+    })
 }

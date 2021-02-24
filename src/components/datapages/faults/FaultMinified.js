@@ -14,23 +14,23 @@ export const FaultMinified = ({ data }) => {
 
     return (
         <div className={classes.container}>
+            
             <div 
                 className={classes.topRow}   
             >
                 <div className={classes.asset}>
-                    { getFullAddress(data.asset)}
+                    { getFullAddress(data.asset, true)}
                 </div>
-                <div>
-                    <FaultLink faultId={data.faultId}/>
+                <div >
+                <FaultLink faultId={data.faultId}/>
                 </div>
-                
             </div>
             <div className={classes.title}>
                 { data.title }
             </div>
             <div className={classes.bottomRow}>
                 <div className={classes.userData}>
-                    <UserItem size={13} avatarSize={30} user={data.owner._id}/>
+                    <UserItem size={14} avatarSize={40} user={data.owner._id} showPhone/>
                 </div>
                 <StatusTag status={data.status} type={'fault'}/>
                 
@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
     title: {
         color: "white",
         height: "35%",
-        margin: "15px 10px 15px 10px",
+        margin: "5px 10px 0px 10px",
         fontSize: "18px",
         display: "-webkit-box",
         WebkitLineClamp: "3",
@@ -67,7 +67,7 @@ const useStyles = makeStyles(theme => ({
     },
     userData: {
         width: '170px',
-        padding: '5px 10px'
+        padding: '10px 0px'
     },
     bottomRow: {
         height: '50px',
@@ -75,8 +75,6 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-       
-
     },
     asset: {
         color: 'white',
@@ -85,5 +83,10 @@ const useStyles = makeStyles(theme => ({
         padding: '5px 10px',
         border: '1px solid rgba(255,255,255,0.2)',
         boxShadow: 'rgba(0,0,0,0.3) 1px 1px 5px 2px'
+    },
+    faultLink: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        margin: '3px 0'
     }
 }))

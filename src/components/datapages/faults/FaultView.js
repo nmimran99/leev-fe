@@ -37,6 +37,7 @@ export const FaultView = ({ fid }) => {
         if (!faultId && !fid) {
             setNotExist(true);
         }
+        console.log(faultId)
         getFault(faultId || fid)
         .then(data => {
             setFault(data);
@@ -49,26 +50,27 @@ export const FaultView = ({ fid }) => {
     }, [isLoading])
 
     useEffect(() => {
-        if (fid) {
+        if (fid || faultId) {
             setIsLoading(true);
         }
         
-    }, [fid])
+    }, [fid, faultId])
+
 
     return (
         isLoading ? 
         <LinearProgress />
         :
-            <Grid container className={classes.container}>
+            <Grid container className={classes.container} justify='space-between' alignItems='flex-start'>
                 <Grid item xs={12} className={classes.controls}>
                     <div className={classes.faultId}>
                         <FaultLink faultId={fault.faultId} size={18} />
                     </div>
                     <FaultViewControls id={fault._id} faultId={fault.faultId} />                
                 </Grid>
-                <Grid item lg={12} lg={8} xl={6}  className={classes.rightContainer}>
+                <Grid item xs={12} sm={12} md={11} lg={8} xl={6}  className={classes.rightContainer} >
                     <div className={classes.asset}>
-                        { `${getFullAddress(fault.asset)}${fault.asset.type == 'apartment' ? `, ${t("assetsModule.apartment")} ${fault.asset.addInfo.unit}` : ''}`}
+                        {getFullAddress(fault.asset)}
                     </div>  
                
                     <div className={classes.title}>
@@ -89,7 +91,7 @@ export const FaultView = ({ fid }) => {
                         />
                     }
                 </Grid>
-                <Grid item xl={6} className={classes.leftContainer}>
+                <Grid item xs={12} md={12} lg={3} xl={4} className={classes.leftContainer}>
                     <div className={classes.owner}>
                         <UserItem 
                             user={fault.owner}
@@ -106,7 +108,6 @@ export const FaultView = ({ fid }) => {
                         title={t("faultsModule.followingUsers")}
                         handleRemove={() => null}
                         handleAdd={() => null}
-                        width={270}
                     />
                 </Grid>
                 <Grid item xs={12} className={classes.comments}>
@@ -128,8 +129,12 @@ const useStyles = makeStyles(theme => ({
     rightContainer: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        padding: '0 30px'
+        justifyContent: 'flex-start',
+        margin: '0 30px',
+        [theme.breakpoints.down('sm')]: {
+            alignItems: 'center'
+        }
+        
     },
     asset: {
         color: 'white',
@@ -144,25 +149,30 @@ const useStyles = makeStyles(theme => ({
         color: 'white',
         fontSize: '22px',
         padding: '20px 0',
-        alignSelf: 'flex-end'
+        alignSelf: 'flex-end',
+        width: '100%'
     },
     desc: {
         background: 'rgba(0,0,0,0.4)',
         borderRadius: '10px',
         padding: '20px',
         color: 'white',
-        border: '1px solid rgba(255,255,255, 0.2)'
+        border: '1px solid rgba(255,255,255, 0.2)',
+        width: '90%'
     },
     leftContainer: {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
-        padding: '10px 30px'
+        padding: '10px 30px',
+        [theme.breakpoints.down('sm')]: {
+            alignItems: 'center',
+        }
     },
     owner: {
         background: 'rgba(0,0,0,0.4)',
-        padding: '5px 20px 5px 10px',
+        padding: '5px 30px',
         borderRadius: '10px',
         width: 'fit-content',
         height: '70px'
@@ -227,7 +237,10 @@ const useStyles = makeStyles(theme => ({
     comments: {
         background: 'rgba(0,0,0,0.2)',
         margin: '20px 30px',
-        borderRadius: '10px'
+        borderRadius: '10px',
+        [theme.breakpoints.down('sm')]: {
+            margin: '20px 0px',
+        }
     }
     
 }))

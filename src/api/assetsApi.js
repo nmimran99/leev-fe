@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { specialStringPurge } from './genericApi'
+import i18next from 'i18next'
 
 export const getAsset = async (assetId) => {
     try {
@@ -35,7 +36,8 @@ export const removeAsset = async (assetId) => {
 }
 
 export const getFullAddress = (data) => {
-    return `${data.address.street} ${data.address.streetNumber}${data.address.entrance || ''}, ${data.address.city}`
+    let unit = data.type === 'apartment' ? data.addInfo.unit || '' : '';
+    return `${data.address.street} ${data.address.streetNumber}${data.address.entrance || ''}, ${data.address.city}${Boolean(unit) ? `, ${i18next.t("assetsModule.unit")} ${unit}` : ''}`
 }
 
 
@@ -103,12 +105,14 @@ export const createAssetAddress = (address) => {
     return `${address.street} ${address.streetNumber} ${address.city}`;
 }
 
-
-
-export const getOpenTasksForAsset = () => {
-
-}
-
-export const getOpenFaultsForAsset = () => {
-    
+export const createNewAsset = async (details) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/createAsset`, { ...details  });
+        if (res) {
+            return res.data;
+        }
+    } catch(e) {
+        console.log(e);
+        return e.message;
+    }
 }

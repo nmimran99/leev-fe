@@ -84,7 +84,7 @@ export const createUserOptions = () => {
     .then(data => {
         let userList = [];
         data.forEach(user => {
-            userList.push({label: `${user.firstName} ${user.lastName}`, value: user._id })
+            userList.push({label: `${user.firstName} ${user.lastName}`, value: user._id, ...user  })
         });
         return userList;
     })
