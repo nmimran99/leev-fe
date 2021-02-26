@@ -7,7 +7,7 @@ import TransferWithinAStationRoundedIcon from '@material-ui/icons/TransferWithin
 import GroupAddRoundedIcon from '@material-ui/icons/GroupAddRounded';
 
 
-export const FaultViewControls = ({ id, faultId }) => {
+export const FaultViewControls = ({ id, faultId, editFault, updateOwner }) => {
 
     const classes = useStyles();
     const { t, i18n } = useTranslation();
@@ -29,6 +29,7 @@ export const FaultViewControls = ({ id, faultId }) => {
             <Tooltip title={t("faultsModule.controls.editDetails")}>
                 <IconButton
                     className={classes.iconBtn}
+                    onClick={editFault}
                 >
                     <CreateIcon className={classes.icon}/>
                 </IconButton>
@@ -36,6 +37,7 @@ export const FaultViewControls = ({ id, faultId }) => {
             <Tooltip title={t("faultsModule.controls.changeOwner")}>
                 <IconButton
                     className={classes.iconBtn}
+                    onClick={updateOwner}
                 >
                     <TransferWithinAStationRoundedIcon className={classes.icon}/>
                 </IconButton>

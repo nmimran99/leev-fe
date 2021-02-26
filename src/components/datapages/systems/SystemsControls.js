@@ -60,11 +60,11 @@ export const SystemsControls = () => {
     }, [location.search])
 
     const handleReloaded = async (assetId) => {
-        const res = await getAsset(assetId);
+        const res = await getAsset(assetId, false);
         if (res) {
             return {
-                label: getFullAddress(res.data),
-                value: res.data._id
+                label: getFullAddress(res),
+                value: res._id
             }
         }
         

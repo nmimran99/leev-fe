@@ -10,6 +10,7 @@ import ExpandLessRoundedIcon from '@material-ui/icons/ExpandLessRounded';
 import { SystemControls } from './SystemControls';
 import { SystemAdditionalDetails } from './SystemAdditionalDetails';
 import { UpsertSystem } from './UpsertSystem';
+import { UpdateOwner } from '../../reuseables/UpdateOwner';
 
 export const System = ({ systemData }) => {
 
@@ -143,11 +144,13 @@ export const System = ({ systemData }) => {
                     systemId={ data._id }     
 
                 />
-                <UpdateSystemOwner 
+                <UpdateOwner 
                     isOpen={editOwner}
                     currentOwner={data.owner}
                     handleSave={updateOwner}
                     handleClose={toggleEditOwner}
+                    title={t("systemsModule.updateSystemOwnerTitle")}
+                    instructions={t("systemsModule.chooseManagerToUpdate")}
                 />
                 <SystemAdditionalDetails 
                     data={data.data}

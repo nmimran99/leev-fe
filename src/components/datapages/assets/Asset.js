@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Grid, ClickAwayListener, Paper, Typography, Fade, useMediaQuery, IconButton, Tooltip } from '@material-ui/core'
+import { makeStyles, Grid, ClickAwayListener, Paper, Typography, Fade, useMediaQuery, IconButton, Tooltip, Backdrop, Modal } from '@material-ui/core'
 import clsx from 'clsx'
 import { UserItem } from '../../user/UserItem'
 import { AssetControls } from './AssetControls'
@@ -9,13 +9,13 @@ import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
 import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
-import { UpdateAsset } from './UpdateAsset';
-import { updateAssetAddress } from '../../../api/assetsApi'
-import { UpdateAssetOwner } from './UpdateAssetOwner';
+import { updateAsset } from '../../../api/assetsApi'
 import PeopleOutlineRoundedIcon from '@material-ui/icons/PeopleOutlineRounded';
 import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router'
+import { UpdateOwner } from '../../reuseables/UpdateOwner'
+import { UpsertAsset } from './UpsertAsset'
 
 
 export const Asset = ({assetData, order, removeAsset }) => {
@@ -27,37 +27,8 @@ export const Asset = ({assetData, order, removeAsset }) => {
     const [ editMode, setEditMode ] = useState(false);
     const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
     const [ data, setData ] = useState(assetData);
-    const [ transition, setTransition ] = useState({
-        container: {
-            transition: 'height 0.3s ease'
-        }
-    });
     
-    useEffect(() => {
-        if (editMode){
-            setTransition({
-                container: {
-                    transition: 'height 0.3s ease'
-                }
-            })  
-        } else {
-            setTransition({
-                container: {    
-                    transition: 'height 0.3s ease'
-                }
-            })
-        }
-    }, [editMode]);
     
-
-    const toggleControls = () => {
-        if(controlsVisible) {
-            setControlsVisible(false)
-        } else {
-            setControlsVisible(true)
-        }          
-    }
-
     const toggleEditMode = type => event => {
         if (editMode === type) {
             setEditMode(false)
@@ -66,8 +37,8 @@ export const Asset = ({assetData, order, removeAsset }) => {
         }
     }
 
-    const handleUpdate = async (assetId, address, addInfo, type) => {
-        const res = await updateAssetAddress(assetId, address, addInfo, type);
+    const handleUpdate = async (details) => {
+        const res = await updateAsset(details);
         if (res) {
             setEditMode(false);
             setData(res.data);
@@ -86,13 +57,9 @@ export const Asset = ({assetData, order, removeAsset }) => {
                 <ClickAwayListener onClickAway={() => editMode ? setEditMode(false) : null }>
                     <Paper 
                         className={classes.assetContainer} 
-                        style={{ 
-                            height: editMode ? transition.container.height : 'auto', 
-                            transition: editMode ? transition.container.transition : 'height 0.3s ease'
-                        }} 
                         elevation={9}
-                        onMouseEnter={toggleControls}
-                        onMouseLeave={toggleControls}
+                        onMouseEnter={() => setControlsVisible(true)}
+                        onMouseLeave={() => setControlsVisible(false)}
                     >
                         <div className={classes.topMain} >
                             <div className={classes.address}>
@@ -107,7 +74,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                 </Typography>
                             </div>
                             <div className={classes.owner}>
-                                <UserItem user={data.owner} showPhone avatarSize={'40px'} size={14}/>
+                                <UserItem user={data.owner} showPhone avatarSize={'40px'} size={12}/>
                             </div>
                             {
                                 (controlsVisible || !matches) &&
@@ -210,20 +177,27 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                                 
                             </div>
                         </div>
-                    
-                        <UpdateAsset 
-                            data={data} 
-                            open={editMode === 'address'}
-                            handleUpdate={handleUpdate}
-                            handleCancel={() => setEditMode(false)}
-                        />
-                        <UpdateAssetOwner 
-                            currentOwner={data.owner._id}
-                            open={editMode === 'owner'}
-                            handleUpdate={handleUpdate}
-                            handleCancel={() => setEditMode(false)}
-                        />
-                   
+                        {   
+                            editMode === "address" &&
+                            <Modal
+                                open={editMode === "address"}
+                                onClose={() => setEditMode(null)}
+                                closeAfterTransition
+                                BackdropComponent={Backdrop}
+                                BackdropProps={{
+                                    timeout: 500
+                                }}
+                                className={classes.modal}
+                            >
+                                 <div style={{ outline: 'none'}}>
+                                    <UpsertAsset 
+                                        assetId={data._id} 
+                                        handleUpdate={handleUpdate}
+                                        handleClose={() => setEditMode(false)}
+                                    />
+                                </div>
+                            </Modal>
+                        }
                     </Paper>
                 </ClickAwayListener>
             </Grid>
@@ -235,14 +209,20 @@ export const Asset = ({assetData, order, removeAsset }) => {
 }
 
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({  
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(10px)'   
+    },
     assetContainer: {
         margin: '10px',
         background: 'white',
-        borderRadius: '25px',
+        borderRadius: '10px',
         height: 'auto',
         color: 'white',
-        background: 'rgba(0,0,0,0.4)',
+        background: 'rgba(0,0,0,0.3)',
         border: '1px solid rgba(255,255,255,0.2)', 
         [theme.breakpoints.down('sm')] : {
             margin: '10px 0',
@@ -286,17 +266,15 @@ const useStyles = makeStyles(theme => ({
     owner: {
         width: '160px',
         height: '50px',
-        padding: '3px 3px 6px',
-        borderRadius: '0px 25px 0px 30px',
-        boxShadow: '0 2px 20px 0 rgb(0 0 0 / 37%)',
+        padding: '3px 5px 3px',
+        borderRadius: '0px 10px 0px 5px',
+        boxShadow: '-2px 2px 2px 0 rgb(0 0 0 / 37%)',
         '&:hover' :{
             background: 'black',
             transition: 'background 0.2s ease',
             boxShadow: '0 8px 32px 0 rgb(0 0 0 / 80%)',
         },
-        [theme.breakpoints.down('sm')] : {
-            borderRadius: '0px 0px 0px 30px',
-        } 
+         
     },
     extraDetails: {
         display: 'flex',

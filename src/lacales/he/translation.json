@@ -47,7 +47,9 @@
         "deleteAsset": "מחיקת נכס",
         "deleteConfirmation": "האם אתה בטוח שברצונך למחוק את הנכס שכתובתו",
         "createAsset": "יצירת נכס",
-        "editAsset": "ערוך פרטי נכס"
+        "editAsset": "ערוך פרטי נכס",
+        "updateAssetOwner": "עידכון מנהל נכס",
+        "updateAssetOwnerInstructions": "בחר משתמש שיתפקד כמנהל הנכס"
     },
     "systemsModule": {
         "filterBySystemName": "סנן לפי שם מערכת",
@@ -155,8 +157,11 @@
             "faultOwner": "ממונה",
             "faultImages": "תמונות מקושרות",
             "uploadImages": "העלה תמונות",
+            "addFaultImages": "הוספת תמונות מוספות",
             "imagesSelected": "תמונות נבחרו"
-        }   
+        },
+        "updateOwner": "עידכון ממונה על תקלה",
+        "updateOwnerInstructions": "בחר משתמש על מנת לעדכן ממונה על תקלה"   
         
     },
     "createMenu": {

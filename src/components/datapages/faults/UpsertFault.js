@@ -1,6 +1,6 @@
 import heLocale from "date-fns/locale/he";
 import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, Chip, Input, Avatar, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
+import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, Chip, Input, Avatar, RadioGroup, FormControlLabel, Radio, LinearProgress } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { useTranslation } from 'react-i18next';
@@ -12,11 +12,12 @@ import clsx from 'clsx'
 import { UserItem } from '../../user/UserItem';
 import { getFullName } from '../../../api/genericApi';
 import { createSystemMenuOptions, getAssetsSuggestions, getSystemsByAsset } from '../../../api/systemsApi';
+import { getFault } from "../../../api/faultsApi";
 
 
 
 
-export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId, data }) => {
+export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) => {
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
     const { auth } = useContext(AuthContext);
@@ -24,11 +25,11 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId, da
     const { t, i18n } = useTranslation();
     const [ mode, setMode ] = useState(handleUpdate ? 'update' : 'create')
     const [ errors, setErrors ] = useState([]);
-    const [ faults, setFaults ] = useState([]);
     const [ assets, setAssets ] = useState([]);
     const [ systems, setSystems ] = useState([]);
     const [ userList, setUserList ] = useState([]);
-    const [ details, setDetails ] = useState(data || {
+    const [ isLoading, setIsLoading ] = useState(true);
+    const [ details, setDetails ] = useState({
         title: '',
         description: '',
         asset: '',
@@ -37,11 +38,36 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId, da
         following: [],
         createdBy: auth.user._id,
         images: []
-    })
+    });
+
 
     useEffect(() => {
-        console.log(details.images)
-    }, [details])
+        createUserOptions()
+        .then(data => {
+            setUserList(data);
+            return getAssetsSuggestions()
+        })
+        .then(data => {
+            setAssets(data); 
+            if (!faultId) {
+                setIsLoading(false);
+                return;
+            }
+            getFault(faultId, true)        
+            .then(data => {
+                return Promise.all([loadSystemOptions(data.asset), Promise.resolve(data)]) 
+            })
+            .then(res => {
+               let data = res[1];
+               if (!data) return;
+               setDetails({ ...data, images: []});
+            })
+            .finally(() => {
+                setIsLoading(false)
+            }); 
+        }) 
+    }, []);
+
 
     const validateFields = () => {
         return new Promise((resolve,reject) => {
@@ -67,56 +93,37 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId, da
         })
     }
 
-    useEffect(() => {
-        createUserOptions()
-        .then(data => {
-            setUserList(data);
-        })
-    }, [])
-
-    useEffect(() => {
-        getAssetsSuggestions()
-        .then(data => {
-            if (data.length){
-                setAssets(data);
-            }
-        })
-    }, [])
-
-    const loadSystemOptions = (assetId) => {
-        getSystemsByAsset(assetId)
+    const loadSystemOptions = async (assetId) => {
+        return getSystemsByAsset(assetId)
         .then(systems => {
-            
             return createSystemMenuOptions(systems)
         })
         .then(data => {
             setSystems(data);
+            return true;
         })
     };
 
     const handleConfirm = () => {
         validateFields()
         .then(res => {
-            console.log(res)
+            if (!res) return;
             if (mode === 'update') {
-                handleUpdate()
-            }
-            if (res) {
-                console.log(details)
+                handleUpdate(details)
+            } else 
                 handleSave(details);
             }
-            
-        })      
+        )      
     }
 
-    const handleChange = field => event => {
+    const handleChange = field => async event => {
         setDetails({
             ...details,
             [field]: event.target.value
         })
         if (field === 'asset'){
             if (event.target.value) {
-                loadSystemOptions(event.target.value)
+                await loadSystemOptions(event.target.value)
             } else {
                 setDetails({
                     ...details,
@@ -131,7 +138,7 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId, da
         }
     }
 
-    const handleChangeMultiple = event => {
+    const handleChangeMultiple = (event) => {
         setDetails({...details, 
             following: event.target.value
         });
@@ -153,6 +160,8 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId, da
     }
 
     return (
+        isLoading ? 
+        <LinearProgress /> :
         <Fade in={true}>
             <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
                 <Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
@@ -174,237 +183,21 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId, da
                                         <ClearRounded className={classes.icon}/>
                                     </IconButton>
                                 </div>
-                            </Grid>
-                            {
-                                mode === 'create' &&
-                                <React.Fragment>
-                                     <Grid item xs={12} sm={6} md={6} lg={6} xl={6} className={classes.section}>
-                                        <Grid item xs={12}>
-                                            <div className={classes.sectionTitle}>
-                                                {t("faultsModule.upsert.asset")}
-                                            </div>
-                                        </Grid>
-                                        <Grid item xs={12} className={classes.fields}>
-                                            <Grid container justify='flex-start'>
-                                                <Grid item xs={12} className={classes.textContainer}>
-                                                <Select
-                                                    variant={"outlined"}
-                                                    error={ errors.filter(e => e.field === `asset`).length > 0 }
-                                                    value={ details.asset }
-                                                    onChange={handleChange(`asset`)}
-                                                    className={classes.selectInput}
-                                                    MenuProps={{
-                                                        anchorOrigin: {
-                                                            vertical: "bottom",
-                                                            horizontal: "center",
-                                                        },
-                                                        transformOrigin: {
-                                                            vertical: "top",
-                                                            horizontal: "center",
-                                                        },
-                                                        getContentAnchorEl: null,
-                                                        classes: {
-                                                            paper: classes.menupaper,
-                                                    
-                                                        }
-                                                    }}
-                                                    
-                                                >
-                                                    {
-                                                        assets.map((asset, i) => 
-                                                            <MenuItem 
-                                                                key={i}
-                                                                value={asset.value}
-                                                                style={{ direction: lang.dir }}
-                                                                className={classes.menuitem}
-                                                            >
-                                                                {asset.text}
-                                                            </MenuItem>
-                                                        )
-                                                    }
-                                                </Select>
-                                                {
-                                                    errors.filter(e => e.field === 'asset').length > 0 &&
-                                                    <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                                }
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={4} lg={4} xl={4} className={classes.section}>
-                                        <Grid item xs={12}>
-                                            <div className={classes.sectionTitle}>
-                                                {t("faultsModule.upsert.system")}
-                                            </div>
-                                        </Grid>
-                                        <Grid item xs={12} className={classes.fields}>
-                                            <Grid container justify='flex-start'>
-                                                <Grid item xs={12} className={classes.textContainer}>
-                                                <Select
-                                                    variant={"outlined"}
-                                                    error={ errors.filter(e => e.field === `system`).length > 0 }
-                                                    value={ details.system }
-                                                    onChange={handleChange(`system`)}
-                                                    className={classes.selectInput}
-                                                    MenuProps={{
-                                                        anchorOrigin: {
-                                                            vertical: "bottom",
-                                                            horizontal: "center",
-                                                        },
-                                                        transformOrigin: {
-                                                            vertical: "top",
-                                                            horizontal: "center",
-                                                        },
-                                                        getContentAnchorEl: null,
-                                                        classes: {
-                                                            paper: classes.menupaper,
-                                                    
-                                                        }
-                                                    }}
-                                                    
-                                                >
-                                                    {
-                                                        systems.map((system, i) => 
-                                                            <MenuItem 
-                                                                key={i}
-                                                                value={system.value}
-                                                                style={{ direction: lang.dir }}
-                                                                className={classes.menuitem}
-                                                            >
-                                                                {system.text}
-                                                            </MenuItem>
-                                                        )
-                                                    }
-                                                </Select>
-                                                {
-                                                    errors.filter(e => e.field === 'asset').length > 0 &&
-                                                    <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                                }
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12} className={classes.section}>
-                                        <Grid item xs={12}>
-                                            <div className={classes.sectionTitle}>
-                                                {t("faultsModule.upsert.generalDetails")}
-                                            </div>
-                                        </Grid>
-                                        <Grid item xs={12} className={classes.fields}>
-                                            <Grid container justify='flex-start'>
-                                                <Grid item xs={12} className={classes.textContainer}>
-                                                    <TextField
-                                                        variant={"outlined"}
-                                                        label={t(`faultsModule.upsert.title`)}
-                                                        error={ errors.filter(e => e.field === `title`).length > 0 }
-                                                        value={ details.title }
-                                                        onChange={handleChange('title')}
-                                                        className={classes.textField}
-                                                        size={'medium'}
-                                                        helperText={ errors.filter(e => e.field === `title`).length > 0 ? t("errors.isRequired"): null }
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={12} className={classes.textContainer}>
-                                                    <TextField
-                                                        variant={"outlined"}
-                                                        label={t(`faultsModule.upsert.description`)}
-                                                        value={ details.description }
-                                                        onChange={handleChange('description')}
-                                                        className={classes.textField}
-                                                        size={'medium'}
-                                                        multiline={true}
-                                                        rows={7}
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                   
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4}  className={classes.section}>
-                                        <Grid item xs={12}>
-                                            <div className={classes.sectionTitle}>
-                                                {t("faultsModule.upsert.faultOwner")}
-                                            </div>
-                                        </Grid>
-                                        <Grid item xs={12} className={classes.fields}>
-                                            <Grid item xs={12} className={classes.textContainer}>
-                                                <Select
-                                                    variant={"outlined"}
-                                                    error={ errors.filter(e => e.field === `owner`).length > 0 }
-                                                    value={ details.owner }
-                                                    onChange={handleChange(`owner`)}
-                                                    className={classes.selectInput}
-                                                    MenuProps={{
-                                                        anchorOrigin: {
-                                                            vertical: "bottom",
-                                                            horizontal: "center",
-                                                        },
-                                                        transformOrigin: {
-                                                            vertical: "top",
-                                                            horizontal: "center",
-                                                        },
-                                                        getContentAnchorEl: null,
-                                                        classes: {
-                                                            paper: classes.menupaper,
-                                                    
-                                                        }
-                                                    }}
-                                                    renderValue={(selected) => {
-                                                        let user = userList.find( f => f._id === selected);
-                                                        return (
-                                                            
-                                                                <Chip
-                                                                    size={'medium'}
-                                                                    avatar={<Avatar style={{ height: '40px', width: '40px'}} src={user.avatar} />}
-                                                                    label={getFullName(user)}
-                                                                    className={classes.chip}
-                                                                    
-                                                                />
-                                                        
-                                                        )
-                                                    }}
-                                                >
-                                                    {
-                                                        userList.map((user, i) => 
-                                                            <MenuItem 
-                                                                key={i}
-                                                                value={user.value}
-                                                                style={{ direction: lang.dir }}
-                                                                className={classes.menuitem}
-                                                            >
-                                                                <div className={classes.userCont}>
-                                                                    <UserItem
-                                                                        user={user}
-                                                                        avatarSize={40}
-                                                                        size={13}
-                                                                    />
-                                                                </div>
-                                                                
-                                                            </MenuItem>
-                                                        )
-                                                    }
-                                                </Select>
-                                                {
-                                                    errors.filter(e => e.field === 'owner').length > 0 &&
-                                                    <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                                }
-                                                
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={7} xl={7} className={classes.section}>
-                                    <Grid item xs={12}>
-                                        <div className={classes.sectionTitle}>
-                                            {t("faultsModule.upsert.followingUsers")}
-                                        </div>
-                                    </Grid>
-                                    <Grid item xs={12} className={classes.fields}>
+                            </Grid>                     
+                            <Grid item xs={12} sm={6} md={6} lg={6} xl={6} className={classes.section}>
+                                <Grid item xs={12}>
+                                    <div className={classes.sectionTitle}>
+                                        {t("faultsModule.upsert.asset")}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} className={classes.fields}>
+                                    <Grid container justify='flex-start'>
                                         <Grid item xs={12} className={classes.textContainer}>
                                         <Select
                                             variant={"outlined"}
-                                            multiple
-                                            value={details.following}
-                                            onChange={handleChangeMultiple}
+                                            error={ errors.filter(e => e.field === `asset`).length > 0 }
+                                            value={ details.asset }
+                                            onChange={handleChange(`asset`)}
                                             className={classes.selectInput}
                                             MenuProps={{
                                                 anchorOrigin: {
@@ -416,67 +209,199 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId, da
                                                     horizontal: "center",
                                                 },
                                                 getContentAnchorEl: null,
-                                                disablePortal: true,
                                                 classes: {
                                                     paper: classes.menupaper,
-                                
+                                            
                                                 }
                                             }}
-                                            renderValue={(selected) => (
-                                                <div className={classes.chips}>
-                                                {
-                                                    selected.map((value) => {
-                                                        let user = userList.find( f => f._id === value);
-                                                        return (
-                                                            <div className={classes.chipsCont}>
-                                                                <Chip
-                                                                    clickable
-                                                                    size={'medium'}
-                                                                    avatar={<Avatar style={{ height: '40px', width: '40px'}} src={user.avatar} />}
-                                                                    label={getFullName(user)}
-                                                                    onDelete={handleFollowingRemove(value)}
-                                                                    deleteIcon={<ClearRounded className={classes.removeIcon}/>}
-                                                                    onMouseDown={e => e.stopPropagation()}
-                                                                    className={classes.chip}
-                                                                />
-                                                            </div>
-                                                        )
-
-                                                        
-                                                    })
-                                                }
-                                                </div>
-                                            )}
-                                
-                                            >
-                                            {
-                                                    userList.map((user, i) => 
-                                                        <MenuItem 
-                                                            key={i}
-                                                            value={user.value}
-                                                            style={{ direction: lang.dir }}
-                                                            className={classes.menuitem}
-                                                        >
-                                                            <div className={classes.userCont}>
-                                                                <UserItem
-                                                                    user={user}
-                                                                    avatarSize={40}
-                                                                    size={14}
-                                                                />
-                                                            </div>
-                                                            
-                                                        </MenuItem>
-                                                    )
-                                                }
-                                            </Select>
                                             
+                                        >
+                                            {
+                                                assets.map((asset, i) => 
+                                                    <MenuItem 
+                                                        key={i}
+                                                        value={asset.value}
+                                                        style={{ direction: lang.dir }}
+                                                        className={classes.menuitem}
+                                                    >
+                                                        {asset.text}
+                                                    </MenuItem>
+                                                )
+                                            }
+                                        </Select>
+                                        {
+                                            errors.filter(e => e.field === 'asset').length > 0 &&
+                                            <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
+                                        }
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                                <Grid item xs={12} md={6} className={classes.section}>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={4} xl={4} className={classes.section}>
+                                <Grid item xs={12}>
+                                    <div className={classes.sectionTitle}>
+                                        {t("faultsModule.upsert.system")}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} className={classes.fields}>
+                                    <Grid container justify='flex-start'>
+                                        <Grid item xs={12} className={classes.textContainer}>
+                                        <Select
+                                            variant={"outlined"}
+                                            error={ errors.filter(e => e.field === `system`).length > 0 }
+                                            value={ details.system }
+                                            onChange={handleChange(`system`)}
+                                            className={classes.selectInput}
+                                            MenuProps={{
+                                                anchorOrigin: {
+                                                    vertical: "bottom",
+                                                    horizontal: "center",
+                                                },
+                                                transformOrigin: {
+                                                    vertical: "top",
+                                                    horizontal: "center",
+                                                },
+                                                getContentAnchorEl: null,
+                                                classes: {
+                                                    paper: classes.menupaper,
+                                            
+                                                }
+                                            }}
+                                            
+                                        >
+                                            {
+                                                systems.map((system, i) => 
+                                                    <MenuItem 
+                                                        key={i}
+                                                        value={system.value}
+                                                        style={{ direction: lang.dir }}
+                                                        className={classes.menuitem}
+                                                    >
+                                                        {system.text}
+                                                    </MenuItem>
+                                                )
+                                            }
+                                        </Select>
+                                        {
+                                            errors.filter(e => e.field === 'asset').length > 0 &&
+                                            <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
+                                        }
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12} className={classes.section}>
+                                <Grid item xs={12}>
+                                    <div className={classes.sectionTitle}>
+                                        {t("faultsModule.upsert.generalDetails")}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} className={classes.fields}>
+                                    <Grid container justify='flex-start'>
+                                        <Grid item xs={12} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`faultsModule.upsert.title`)}
+                                                error={ errors.filter(e => e.field === `title`).length > 0 }
+                                                value={ details.title }
+                                                onChange={handleChange('title')}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                                helperText={ errors.filter(e => e.field === `title`).length > 0 ? t("errors.isRequired"): null }
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`faultsModule.upsert.description`)}
+                                                value={ details.description }
+                                                onChange={handleChange('description')}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                                multiline={true}
+                                                rows={7}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={6} lg={4} xl={4}  className={classes.section}>
+                                <Grid item xs={12}>
+                                    <div className={classes.sectionTitle}>
+                                        {t("faultsModule.upsert.faultOwner")}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} className={classes.fields}>
+                                    <Grid item xs={12} className={classes.textContainer}>
+                                        <Select
+                                            variant={"outlined"}
+                                            error={ errors.filter(e => e.field === `owner`).length > 0 }
+                                            value={ details.owner }
+                                            onChange={handleChange(`owner`)}
+                                            className={classes.selectInput}
+                                            MenuProps={{
+                                                anchorOrigin: {
+                                                    vertical: "bottom",
+                                                    horizontal: "center",
+                                                },
+                                                transformOrigin: {
+                                                    vertical: "top",
+                                                    horizontal: "center",
+                                                },
+                                                getContentAnchorEl: null,
+                                                classes: {
+                                                    paper: classes.menupaper,
+                                            
+                                                }
+                                            }}
+                                            renderValue={(selected) => {
+                                                let user = userList.find( f => f._id === selected);
+                                                return (
+                                                    
+                                                        <Chip
+                                                            size={'medium'}
+                                                            avatar={<Avatar style={{ height: '40px', width: '40px'}} src={user.avatar} />}
+                                                            label={getFullName(user)}
+                                                            className={classes.chip}
+                                                            
+                                                        />
+                                                
+                                                )
+                                            }}
+                                        >
+                                            {
+                                                userList.map((user, i) => 
+                                                    <MenuItem 
+                                                        key={i}
+                                                        value={user.value}
+                                                        style={{ direction: lang.dir }}
+                                                        className={classes.menuitem}
+                                                    >
+                                                        <div className={classes.userCont}>
+                                                            <UserItem
+                                                                user={user}
+                                                                avatarSize={40}
+                                                                size={13}
+                                                            />
+                                                        </div>
+                                                        
+                                                    </MenuItem>
+                                                )
+                                            }
+                                        </Select>
+                                        {
+                                            errors.filter(e => e.field === 'owner').length > 0 &&
+                                            <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
+                                        }
+                                        
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            
+                            <Grid item xs={12} md={6} className={classes.section}>
                                         <Grid item xs={12}>
                                             <div className={classes.sectionTitle}>
-                                                {t("faultsModule.upsert.faultImages")}
+                                                {mode === 'create' ? t("faultsModule.upsert.faultImages") : t("faultsModule.upsert.addFaultImages")}
                                             </div>
                                         </Grid>
                                         <Grid item xs={12} className={classes.fields}>
@@ -504,9 +429,6 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId, da
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                </React.Fragment>
-                            }
-                        
                             <Grid item xs={12} className={classes.controls}>
                                 <Button
                                     className={clsx(classes.control, classes.save)}
@@ -716,6 +638,7 @@ const useStyles = makeStyles(theme => ({
         padding: '0 15px'
     },
     uploadBtn: {
+        margin: '9px 0',
         background: 'rgba(0,0,0,0.1)',
         color: 'white',
         border: '1px solid rgba(255,255,255,0.2)',

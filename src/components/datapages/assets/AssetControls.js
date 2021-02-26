@@ -22,14 +22,6 @@ export const AssetControls = ({removeAsset, toggleEditMode}) => {
                         <EditRoundedIcon className={classes.icon} />
                     </IconButton>
                 </Tooltip>
-                <Tooltip title={t("assetsModule.editAssetManager")}>
-                    <IconButton 
-                        className={classes.iconbutton}
-                        onClick={toggleEditMode('owner')}
-                    > 
-                        <TransferWithinAStationRoundedIcon className={classes.icon}/>
-                    </IconButton>
-                </Tooltip>
                 <Tooltip title={t("assetsModule.deleteAsset")}>
                     <IconButton 
                         className={classes.iconbutton}

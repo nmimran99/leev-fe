@@ -23,13 +23,6 @@ export const Carousel = ({ images, isOpen, size }) => {
         }, 100)
     }
 
-
-    useEffect(() => {
-        console.log(images[index])
-    }, [index])
-
-
-
     return (
         <div className={classes.container}>
             <IconButton
@@ -75,7 +68,7 @@ const useStyles = makeStyles(theme => ({
         padding: 0,
         margin: 0,
         width: '100%',
-        height: '500px',
+        height: '300px',
         direction: 'ltr',
         background: 'transparent',
         display: 'flex',

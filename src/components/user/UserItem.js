@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext'
 import { makeStyles, Avatar, Typography, Button } from '@material-ui/core'
-import avtrImg from '../../assets/images/users/avatars/600e048ccbe5b841e4f9e7ed.jpg'
 import { getUserDataById } from '../../api/userApi';
 
 
@@ -15,10 +14,10 @@ export const UserItem = ({ user, showPhone, showTitle, avatarSize, size }) => {
         if (!user._id) {
             getUserDataById(user)
             .then(data => {
-                console.log(data)
                 setUserData(data)
- 
             })
+        } else {
+            setUserData(user)
         }
     }, [user])
 

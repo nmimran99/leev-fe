@@ -2,11 +2,11 @@ import axios from 'axios';
 import { specialStringPurge } from './genericApi'
 import i18next from 'i18next'
 
-export const getAsset = async (assetId) => {
+export const getAsset = async (assetId, plain) => {
     try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/getAsset`, { assetId });
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/getAsset`, { assetId, plain });
         if (res.status === 200) {
-            return res;
+            return res.data;
         }
     } catch (e){
         return e.response;
@@ -41,9 +41,10 @@ export const getFullAddress = (data) => {
 }
 
 
-export const updateAssetAddress = async (assetId, address, addInfo, type) => {
+export const updateAsset = async (details) => {
+    const { _id, owner, address, addInfo, type } = details;
     try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/updateAssetAddress`, { assetId, address, addInfo, type });
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/updateAsset`, { assetId: _id, owner, address, addInfo, type });
         if (res.status === 200) {
             return res;
         }

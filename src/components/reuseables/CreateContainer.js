@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles, useMediaQuery, Modal, Backdrop } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { LanguageContext } from '../../context/LanguageContext';
-import { CreateAsset } from '../datapages/assets/CreateAsset';
+import { UpsertAsset } from '../datapages/assets/UpsertAsset';
 import { createNewAsset } from '../../api/assetsApi';
 import { useHistory, useLocation } from 'react-router';
 import { UpsertSystem } from '../datapages/systems/UpsertSystem';
@@ -69,25 +69,26 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
             }}
             className={classes.modal}
         >
-            {
-                itemType === 'asset' ?
-                <CreateAsset 
-                    handleClose={handleClose}
-                    handleSave={handleSaveAsset}
-                /> : 
-                itemType ==='system' ? 
-                <UpsertSystem 
-                    handleClose={handleClose}
-                    handleSave={handleSaveSystem}
-                />
-                : 
-                itemType === 'fault' ?
-                <UpsertFault 
-                    handleClose={handleClose}
-                    handleSave={handleSaveFault}
-                /> : null
-            }
-           
+            <div style={{ outline: 'none'}}>
+                {
+                    itemType === 'asset' ?
+                    <UpsertAsset 
+                        handleClose={handleClose}
+                        handleSave={handleSaveAsset}
+                    /> : 
+                    itemType ==='system' ? 
+                    <UpsertSystem 
+                        handleClose={handleClose}
+                        handleSave={handleSaveSystem}
+                    />
+                    : 
+                    itemType === 'fault' ?
+                    <UpsertFault 
+                        handleClose={handleClose}
+                        handleSave={handleSaveFault}
+                    /> : null
+                }
+            </div>
         </Modal>
     )
 }

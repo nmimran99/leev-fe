@@ -56,9 +56,9 @@ export const getFaults = async (filters) => {
     }
 }
 
-export const getFault = async (faultId) => {
+export const getFault = async (faultId, plain) => {
     try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/getFault`, { faultId });
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/getFault`, { faultId, plain: plain });
         if (res) {
             return res.data;
         } 
@@ -67,6 +67,8 @@ export const getFault = async (faultId) => {
         return e.response;
     }
 }
+
+
 
 export const getSystemsByAssetOptions = async (asset) => {
     const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/systems/getSystemsOptions`, { asset });
@@ -107,5 +109,45 @@ export const createNewFault = async details => {
     } catch(e) {
         console.log(e)
         return e.message
+    }
+}
+
+export const updateFault = async (details) => {
+    let formData = new FormData();
+    Object.entries(details).forEach(f => {
+        if (f[0] === 'images') {
+            for (let i = 0; i < details.images.length; i++) {
+                formData.append("images", details.images[i]);
+              }
+        } else {
+            formData.append(f[0], f[1])
+        }
+    });
+    let config = {
+        headers: {
+            'Content-Type': `multipart/form-data`
+        }
+    }
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/updateFaultData`, formData, config); 
+        if (res) {
+            return res.data
+        };
+    } catch(e) {
+        console.log(e)
+        return e.message
+    }
+
+}
+
+export const updateFaultOwner = async (faultId, userId) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/updateFaultOwner`, { faultId, userId });
+        if (res) {
+            return res.data;
+        } 
+        return null;
+    } catch (e){
+        return e.response;
     }
 }

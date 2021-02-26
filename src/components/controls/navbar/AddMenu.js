@@ -31,7 +31,7 @@ export const AddMenu = ({toggleAddMenu, toggleAdd}) => {
                             onClick={toggleAdd('asset')}
                         >
                             <ListItemIcon className={classes.listItemIcon}>
-                                <AddLocationOutlinedIcon fontSize={'medium'} className={classes.icon}/>
+                                <AddLocationOutlinedIcon  className={classes.icon}/>
                             </ListItemIcon>
                             <ListItemText primary={t("createMenu.addAsset")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
@@ -41,19 +41,19 @@ export const AddMenu = ({toggleAddMenu, toggleAdd}) => {
                             onClick={toggleAdd('system')}
                         >
                             <ListItemIcon className={classes.listItemIcon}>
-                                <BlurOnRoundedIcon fontSize={'medium'} className={classes.icon}/>
+                                <BlurOnRoundedIcon  className={classes.icon}/>
                             </ListItemIcon>
                             <ListItemText primary={t("createMenu.addSystem")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} className={classes.listItem}>
                             <ListItemIcon className={classes.listItemIcon}>
-                                <GroupAddIcon fontSize={'medium'}/>
+                                <GroupAddIcon />
                             </ListItemIcon>
                             <ListItemText primary={t("createMenu.createUser")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} className={classes.listItem}>
                             <ListItemIcon className={classes.listItemIcon}>
-                                <PostAddIcon fontSize={'medium'}/>
+                                <PostAddIcon />
                             </ListItemIcon>
                             <ListItemText primary={t("createMenu.createTask")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
@@ -63,13 +63,13 @@ export const AddMenu = ({toggleAddMenu, toggleAdd}) => {
                             onClick={toggleAdd('fault')}
                         >
                             <ListItemIcon className={classes.listItemIcon}>
-                                <QueueIcon fontSize={'medium'}/>
+                                <QueueIcon />
                             </ListItemIcon>
                             <ListItemText primary={t("createMenu.createFault")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
                         <ListItem button={true} className={classes.listItem}>
                             <ListItemIcon className={classes.listItemIcon}>
-                                <NoteAddOutlinedIcon fontSize={'medium'}/>
+                                <NoteAddOutlinedIcon />
                             </ListItemIcon>
                             <ListItemText primary={t("createMenu.addDocument")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>

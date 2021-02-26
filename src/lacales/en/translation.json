@@ -47,7 +47,9 @@
         "deleteAsset": "Delete Asset",
         "deleteConfirmation": "Are you sure you want to delete this asset located on",
         "createAsset": "Create An Asset",
-        "editAsset": "Edit Asset Details"
+        "editAsset": "Edit Asset Details",
+        "updateAssetOwner": "Upade Asset Manager",
+        "updateAssetOwnerInstructions": "Choose a user to act as asset manager"
     },
     "systemsModule": {
         "filterBySystemName": "Filter by system name",
@@ -154,8 +156,11 @@
             "faultOwner": "Owner",
             "faultImages": "Fault Related Images",
             "uploadImages": "Upload Images",
+            "addFaultImages": "Add More Images",
             "imagesSelected": "Images Selected"
-        }
+        },
+        "updateOwner": "Update Fault Owner",
+        "updateOwnerInstructions": "Choose user to update as fault owner"
         
     },
     "createMenu": {

@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, Grid, useMediaQuery, List, ListItem, IconButton, Tooltip, LinearProgress } from '@material-ui/core';
+import { makeStyles, Grid, useMediaQuery, List, ListItem, IconButton, Tooltip, LinearProgress, Backdrop, Modal } from '@material-ui/core';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { getFullAddress } from '../../../api/assetsApi';
 import { useTranslation } from 'react-i18next';
 import { Carousel } from '../../reuseables/Carousel';
-import { ImageSearch } from '@material-ui/icons';
+import { CheckBoxOutlineBlank, ImageSearch } from '@material-ui/icons';
 import { UserItem } from '../../user/UserItem';
 import { FaultViewControls } from './FaultViewControls';
 import { FaultLink } from './FaultLink';
@@ -14,7 +14,10 @@ import { UserList } from '../../reuseables/UserList';
 import dateFormat from 'dateformat'
 import { LanguageContext } from '../../../context/LanguageContext';
 import { CommentSection } from '../../reuseables/CommentSection';
-import { getFault } from '../../../api/faultsApi';
+import { getFault, updateFault, updateFaultOwner } from '../../../api/faultsApi';
+import { UpsertFault } from './UpsertFault';
+import { UpdateOwner } from '../../reuseables/UpdateOwner';
+import { updateSystemAdditionalData } from '../../../api/systemsApi';
 
 
 
@@ -30,6 +33,8 @@ export const FaultView = ({ fid }) => {
     const [ fault, setFault ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(true);
     const { faultId } = useParams();
+    const [ editFault, setEditFault ] = useState(null);
+    const [ changeOwner, setChangeOwner ] = useState(false);
     const [ notExist, setNotExist ] = useState(false)
 
     useEffect(() => {
@@ -37,11 +42,9 @@ export const FaultView = ({ fid }) => {
         if (!faultId && !fid) {
             setNotExist(true);
         }
-        console.log(faultId)
         getFault(faultId || fid)
         .then(data => {
             setFault(data);
-            console.log(data)
         })
         .finally(() => {
             setIsLoading(false);
@@ -56,19 +59,52 @@ export const FaultView = ({ fid }) => {
         
     }, [fid, faultId])
 
+    const updateFaultDetails = (details) => {
+        updateFault(details)
+        .then(data => {
+            if (data) {
+                if (location.pathname === `/workspace/faults/${data.faultId}`) {
+                    setFault(data);
+                    setEditFault(null);
+                } else {
+                    history.push(`/workspace/faults/${data.faultId}`);
+                }
+                
+            }
+            return;
+        })
+    }
+
+    const updateOwner = (userId) => {
+        updateFaultOwner(fault._id, userId)
+        .then(data => {
+            setFault({
+                ...fault, 
+                owner: data.owner
+            });
+            setChangeOwner(false);
+        })
+    }
 
     return (
         isLoading ? 
         <LinearProgress />
         :
+        <React.Fragment>
             <Grid container className={classes.container} justify='space-between' alignItems='flex-start'>
                 <Grid item xs={12} className={classes.controls}>
                     <div className={classes.faultId}>
                         <FaultLink faultId={fault.faultId} size={18} />
                     </div>
-                    <FaultViewControls id={fault._id} faultId={fault.faultId} />                
+                    <FaultViewControls 
+                        id={fault._id} 
+                        faultId={fault.faultId}
+                        editFault={() => setEditFault(fault._id)}
+                        updateOwner={() => setChangeOwner(true)} 
+
+                    />                
                 </Grid>
-                <Grid item xs={12} sm={12} md={11} lg={8} xl={6}  className={classes.rightContainer} >
+                <Grid item xs={12} sm={12} md={11} lg={8} xl={8}  className={classes.rightContainer} >
                     <div className={classes.asset}>
                         {getFullAddress(fault.asset)}
                     </div>  
@@ -104,6 +140,7 @@ export const FaultView = ({ fid }) => {
                     <UserList 
                         users={fault.following}
                         removeTooltip={t("faultsModule.controls.removeFollower")}
+                        addTooltip={t("faultsModule.controls.addFollowing")}
                         placeholder={t("faultsModule.noFollowers")}
                         title={t("faultsModule.followingUsers")}
                         handleRemove={() => null}
@@ -116,12 +153,49 @@ export const FaultView = ({ fid }) => {
                         avatar={fault.owner.avatar}
                     />
                 </Grid>
-
-            </Grid>      
+            </Grid>
+            <UpdateOwner 
+                handleClose={() => setChangeOwner(false)}
+                handleSave={updateOwner}
+                isOpen={changeOwner}
+                currentOwner={fault.owner}
+                title={t("faultsModule.updateOwner")}
+                instructions={t("faultsModule.updateOwnerInstructions")}
+            />
+            {
+                Boolean(editFault) &&
+                <Modal
+                    open={Boolean(editFault)}
+                    onClose={() => setEditFault(null)}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                        timeout: 500
+                    }}
+                    className={classes.modal}
+                >
+                    <div style={{ outline: 'none'}}>
+                        <UpsertFault 
+                            faultId={editFault}
+                            handleClose={() => setEditFault(null)}
+                            handleUpdate={updateFaultDetails}
+                        />
+                    </div>  
+                </Modal>
+            }
+            
+        </React.Fragment>      
     )
 }
 
 const useStyles = makeStyles(theme => ({
+    
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(10px)'   
+    },
     container: {
         overflowY: 'overlay',
         height: '100%'
@@ -130,7 +204,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        margin: '0 30px',
+        padding: '0 30px',
         [theme.breakpoints.down('sm')]: {
             alignItems: 'center'
         }
@@ -157,7 +231,6 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '10px',
         padding: '20px',
         color: 'white',
-        border: '1px solid rgba(255,255,255, 0.2)',
         width: '90%'
     },
     leftContainer: {

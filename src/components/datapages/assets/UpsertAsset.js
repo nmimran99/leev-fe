@@ -1,26 +1,29 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText } from '@material-ui/core';
+import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, LinearProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { LanguageContext } from '../../../context/LanguageContext';
 import { ClearRounded } from '@material-ui/icons';
 import { AuthContext } from '../../../context/AuthContext';
 import { createUserOptions } from '../../../api/userApi';
 import clsx from 'clsx'
+import { getAsset } from '../../../api/assetsApi';
 
 
 
 
-export const CreateAsset = ({ handleClose, handleSave }) => {
+export const UpsertAsset = ({ handleClose, handleSave, assetId, handleUpdate }) => {
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
     const { auth } = useContext(AuthContext);
+    const [ mode, setMode ] = useState(handleUpdate ? 'update' : 'create')
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
     const { t, i18n } = useTranslation();
     const [ errors, setErrors ] = useState([]);
     const [ userList, setUserList ] = useState([]);
     const [ addInfoContext, setAddInfoContext ] = useState(null)
+    const [ isLoading, setIsLoading ] = useState(true)
     const [ details, setDetails ] = useState({
-        tenantId: auth.user.tenant,
+        tenant: auth.user.tenant,
         address: {
             country: '',
             province: '',
@@ -35,6 +38,28 @@ export const CreateAsset = ({ handleClose, handleSave }) => {
         addInfo: null,
         createdBy: auth.user._id 
     });
+
+    useEffect(() => {
+        createUserOptions()
+        .then(data => {
+            setUserList(data);
+            return Promise.resolve(assetId)
+        })
+        .then(res => {
+            if (!res) {
+                setIsLoading(false);
+                return;
+            }
+            getAsset(res, true)
+            .then(data => {
+                setDetails(data);
+                setIsLoading(false)
+            }) 
+        })
+        
+    },[])
+
+ 
 
     const validateFields = () => {
         return new Promise((resolve,reject) => {
@@ -54,20 +79,17 @@ export const CreateAsset = ({ handleClose, handleSave }) => {
         })
     }
 
-    useEffect(() => {
-        createUserOptions()
-        .then(data => {
-            setUserList(data);
-        })
-    }, [userList])
-
     const handleConfirm = () => {
         validateFields()
         .then(res => {
-            if (res) {
+            if (!res) return
+            if ( mode === 'create') {
                 handleSave(details);
-                return;
-            };
+            } else {
+                console.log(details)
+                handleUpdate(details)
+            }
+            
         })      
     }
 
@@ -96,6 +118,8 @@ export const CreateAsset = ({ handleClose, handleSave }) => {
 
 
     return (
+        isLoading ? 
+        <LinearProgress /> :
         <Fade in={true}>
             <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
                 <Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
@@ -107,7 +131,7 @@ export const CreateAsset = ({ handleClose, handleSave }) => {
                         <Grid container>
                             <Grid item xs={12} className={classes.headerRow}>
                                 <div className={classes.title}>
-                                    {t("assetsModule.createAsset")}
+                                    {mode === 'create' ? t("assetsModule.createAsset") : t("assetsModule.editAsset")}
                                 </div>
                                 <div className={classes.close}>
                                     <IconButton
@@ -133,7 +157,7 @@ export const CreateAsset = ({ handleClose, handleSave }) => {
                                                     variant={"outlined"}
                                                     label={t(`assetsModule.${f}`)}
                                                     error={ errors.filter(e => e.field === `${f}`).length > 0 }
-                                                    value={ details[f] }
+                                                    value={ details.address[f] }
                                                     onChange={handleChange({type: 'address', field: `${f}`})}
                                                     className={classes.textField}
                                                     size={'medium'}
@@ -166,7 +190,17 @@ export const CreateAsset = ({ handleClose, handleSave }) => {
                                                     classes: {
                                                         paper: classes.menupaper,
                                   
-                                                    }
+                                                    },
+                                                    anchorOrigin: {
+                                                        vertical: "bottom",
+                                                        horizontal: "center",
+                                                    },
+                                                    transformOrigin: {
+                                                        vertical: "top",
+                                                        horizontal: "center",
+                                                    },
+                                                    getContentAnchorEl: null,
+                                                    disablePortal: true
                                                 }}
                                 
                                             >
@@ -211,7 +245,17 @@ export const CreateAsset = ({ handleClose, handleSave }) => {
                                                     classes: {
                                                         paper: classes.menupaper,
                                              
-                                                    }
+                                                    },
+                                                    anchorOrigin: {
+                                                        vertical: "bottom",
+                                                        horizontal: "center",
+                                                    },
+                                                    transformOrigin: {
+                                                        vertical: "top",
+                                                        horizontal: "center",
+                                                    },
+                                                    getContentAnchorEl: null,
+                                                    disablePortal: true
                                                 }}
                                              
                                             >
@@ -237,7 +281,7 @@ export const CreateAsset = ({ handleClose, handleSave }) => {
                                 </Grid>
                             </Grid>
                             {
-                                Boolean(addInfoContext) &&
+                                (Boolean(addInfoContext) || mode === 'update') &&
                                 <Grid item xs={12} md={6} className={classes.section}>
                                     <Grid item xl={12}>
                                         <div className={classes.sectionTitle}>
@@ -366,16 +410,19 @@ const useStyles = makeStyles(theme => ({
         }   
     },
     menupaper: {
-        background: 'rgba(0,0,0,0.8)',
+        background: 'rgba(0,0,0,0.6)',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255,255,255,0.2)',
-        marginTop: '55px',
         marginRight: '7px',
-        marginLeft: '-5px'
+        marginLeft: '-5px',
+        
 
     },
     menuitem: {
-        color: 'white'
+        color: 'white',
+        '&:hover':{
+            background: 'rgba(255,255,255,0.2)'
+        }
     },
     controls: {
         borderTop: '1px solid rgba(255,255,255,0.2)',

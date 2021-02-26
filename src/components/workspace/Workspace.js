@@ -65,8 +65,8 @@ const useStyles = makeStyles(theme => ({
         backdropFilter: "blur(22px)",
         marginTop: '10px',
         border: "1px solid rgba(255,255,255,0.2)",
-        borderRadius: '25px',
-        boxShadow: "rgba(0,0,0,0.4) 0px 0px 5px 5px",
+        borderRadius: '5px',
+        boxShadow: "rgba(0,0,0,0.4) 0px 0px 3px 2px",
         padding: "0 10px",
         [theme.breakpoints.down('sm')]: {
             border: 'none',
