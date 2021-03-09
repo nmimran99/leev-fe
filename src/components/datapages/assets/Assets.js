@@ -3,7 +3,7 @@ import { Grid, LinearProgress, makeStyles } from '@material-ui/core'
 import { getAssets, removeAsset,getFullAddress, applyFilters } from '../../../api/assetsApi'
 import { Asset } from './Asset'
 import { AssetsControls } from './AssetsControls'
-import { AlertDialog } from '../../reuseables/AlertDialoge'
+import { AlertDialog } from '../../reuseables/AlertDialog'
 import { queryParamsToObject } from '../../../api/genericApi';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ export const Assets = () => {
     const { t, i18n } = useTranslation();
     const [ assets, setAssets ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
-    const [ alertDialoge , setAlertDialoge ] = useState(null)
+    const [ alertDialog , setAlertDialog ] = useState(null)
 
     useEffect(() => {
         if(!isLoading) return;
@@ -42,17 +42,17 @@ export const Assets = () => {
     }, [location.search])
 
     const removeAsset = (assetId, data) => {
-        setAlertDialoge({
+        setAlertDialog({
             handleConfirm: async () => {
                 const res = await removeAsset(assetId);
                 if (res) {
-                    setAlertDialoge(null)
+                    setAlertDialog(null)
                     setIsLoading(true);
                 } else {
                     console.log(res)
                 }
             },
-            handleCancel: () => setAlertDialoge(null),
+            handleCancel: () => setAlertDialog(null),
             text: `${t("assetsModule.deleteConfirmation")} ${getFullAddress(data)}?`,
             title: `${t("assetsModule.deleteAsset")}`
         })
@@ -87,10 +87,10 @@ export const Assets = () => {
                 </Grid>
             </Grid>
             {
-                Boolean(alertDialoge) &&
+                Boolean(alertDialog) &&
                 <AlertDialog 
-                    open={Boolean(alertDialoge)}
-                    alertDialoge={alertDialoge}
+                    open={Boolean(alertDialog)}
+                    alertDialog={alertDialog}
                 />
             }
             

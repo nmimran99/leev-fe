@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, LinearProgress } from '@material-ui/core';
+import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, LinearProgress, Modal, Backdrop } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { LanguageContext } from '../../../context/LanguageContext';
 import { ClearRounded } from '@material-ui/icons';
@@ -120,224 +120,241 @@ export const UpsertAsset = ({ handleClose, handleSave, assetId, handleUpdate }) 
     return (
         isLoading ? 
         <LinearProgress /> :
-        <Fade in={true}>
-            <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
-                <Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
-                    <Paper
-                        elevation={6}
-                        className={classes.paper}
-                        style={{ direction: lang.dir }}
-                    >
-                        <Grid container>
-                            <Grid item xs={12} className={classes.headerRow}>
-                                <div className={classes.title}>
-                                    {mode === 'create' ? t("assetsModule.createAsset") : t("assetsModule.editAsset")}
-                                </div>
-                                <div className={classes.close}>
-                                    <IconButton
-                                        className={classes.iconBtn}
-                                        onClick={handleClose}
-                                    >
-                                        <ClearRounded className={classes.icon}/>
-                                    </IconButton>
-                                </div>
-                            </Grid>
-                            <Grid item xs={12} className={classes.section}>
-                                <Grid item xs={12}>
-                                    <div className={classes.sectionTitle}>
-                                        {t("assetsModule.addressDetails")}
+        <Modal
+            open={true}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500
+            }}
+            className={classes.modal}
+        >
+            <Fade in={true}>
+                <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
+                    <Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
+                        <Paper
+                            elevation={6}
+                            className={classes.paper}
+                            style={{ direction: lang.dir }}
+                        >
+                            <Grid container>
+                                <Grid item xs={12} className={classes.headerRow}>
+                                    <div className={classes.title}>
+                                        {mode === 'create' ? t("assetsModule.createAsset") : t("assetsModule.editAsset")}
+                                    </div>
+                                    <div className={classes.close}>
+                                        <IconButton
+                                            className={classes.iconBtn}
+                                            onClick={handleClose}
+                                        >
+                                            <ClearRounded className={classes.icon}/>
+                                        </IconButton>
                                     </div>
                                 </Grid>
-                                <Grid item xs={12} className={classes.fields}>
-                                    <Grid container justify='flex-start'>
-                                        {
-                                            Object.keys(details.address).map((f,i) =>
-                                            <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer} key={i}>
-                                                <TextField
-                                                    variant={"outlined"}
-                                                    label={t(`assetsModule.${f}`)}
-                                                    error={ errors.filter(e => e.field === `${f}`).length > 0 }
-                                                    value={ details.address[f] }
-                                                    onChange={handleChange({type: 'address', field: `${f}`})}
-                                                    className={classes.textField}
-                                                    size={'medium'}
-                                                    helperText={ errors.filter(e => e.field === `${f}`).length > 0 ? t("errors.isRequired"): null }
-                                                />
-                                            </Grid>
-                                            )
-                                            
-                                        }
-                                    </Grid>
-                                </Grid>
-                               
-                            </Grid>
-                            <Grid item xs={12} sm={5} className={classes.section}>
-                                <Grid item xs={12}>
-                                    <div className={classes.sectionTitle}>
-                                        {t("assetsModule.assetType")}
-                                    </div>
-                                </Grid>
-                                <Grid item xs={12} className={classes.fields}>
-                                    <Grid container justify='flex-start'>
-                                        <Grid item xs={12} className={classes.textContainer}>
-                                            <Select
-                                                variant={"outlined"}
-                                                error={ errors.filter(e => e.field === `type`).length > 0 }
-                                                value={ details.type }
-                                                onChange={handleChange({type: '', field: `type`})}
-                                                className={classes.selectInput}
-                                                MenuProps={{
-                                                    classes: {
-                                                        paper: classes.menupaper,
-                                  
-                                                    },
-                                                    anchorOrigin: {
-                                                        vertical: "bottom",
-                                                        horizontal: "center",
-                                                    },
-                                                    transformOrigin: {
-                                                        vertical: "top",
-                                                        horizontal: "center",
-                                                    },
-                                                    getContentAnchorEl: null,
-                                                    disablePortal: true
-                                                }}
-                                
-                                            >
-                                                <MenuItem 
-                                                    value={'building'}
-                                                    style={{ direction: lang.dir }}
-                                                    className={classes.menuitem}
-                                                >
-                                                    {t("assetsModule.building")}
-                                                </MenuItem>
-                                                <MenuItem 
-                                                    value={'apartment'}
-                                                    style={{ direction: lang.dir }}
-                                                    className={classes.menuitem}
-                                                >
-                                                    {t("assetsModule.apartment")}
-                                                </MenuItem>
-                                            </Select>
-                                            {
-                                                errors.filter(e => e.field === `type`).length > 0 &&
-                                                <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                            }
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} sm={5}  className={classes.section}>
-                                <Grid item xs={12}>
-                                    <div className={classes.sectionTitle}>
-                                        {t("assetsModule.owner")}
-                                    </div>
-                                </Grid>
-                                <Grid item xs={12} className={classes.fields}>
-                                    <Grid item xs={12} className={classes.textContainer}>
-                                            <Select
-                                                variant={"outlined"}
-                                                error={ errors.filter(e => e.field === `owner`).length > 0 }
-                                                value={ details.owner }
-                                                onChange={handleChange({type: '', field: `owner`})}
-                                                className={classes.selectInput}
-                                                MenuProps={{
-                                                    classes: {
-                                                        paper: classes.menupaper,
-                                             
-                                                    },
-                                                    anchorOrigin: {
-                                                        vertical: "bottom",
-                                                        horizontal: "center",
-                                                    },
-                                                    transformOrigin: {
-                                                        vertical: "top",
-                                                        horizontal: "center",
-                                                    },
-                                                    getContentAnchorEl: null,
-                                                    disablePortal: true
-                                                }}
-                                             
-                                            >
-                                                {
-                                                    userList.map((user, i) => 
-                                                        <MenuItem 
-                                                            key={i}
-                                                            value={user.value}
-                                                            style={{ direction: lang.dir }}
-                                                            className={classes.menuitem}
-                                                        >
-                                                            {user.label}
-                                                        </MenuItem>
-                                                    )
-                                                }
-                                            </Select>
-                                            {
-                                                errors.filter(e => e.field === `type`).length > 0 &&
-                                                <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                            }
-                                            
-                                        </Grid>
-                                </Grid>
-                            </Grid>
-                            {
-                                (Boolean(addInfoContext) || mode === 'update') &&
-                                <Grid item xs={12} md={6} className={classes.section}>
-                                    <Grid item xl={12}>
+                                <Grid item xs={12} className={classes.section}>
+                                    <Grid item xs={12}>
                                         <div className={classes.sectionTitle}>
-                                            {t("assetsModule.additionalDetails")}
+                                            {t("assetsModule.addressDetails")}
                                         </div>
                                     </Grid>
-                                    <Grid item xl={12} className={classes.fields}>
+                                    <Grid item xs={12} className={classes.fields}>
                                         <Grid container justify='flex-start'>
                                             {
-                                                Object.keys(details.addInfo).map((f,i) => 
-                                                    <Grid item xs={12} sm={6} className={classes.textContainer} key={i}>
-                                                        <TextField
-                                                            variant={"outlined"}
-                                                            label={t(`assetsModule.${f}`)}
-                                                            error={ errors.filter(e => e.field === `${f}`).length > 0 }
-                                                            value={ details.addInfo[f] }
-                                                            onChange={handleChange({type: 'addInfo', field: `${f}`})}
-                                                            className={classes.textField}
-                                                            size={'medium'}
-                                                            InputProps={{
-                                                                classes: {
-                                                                    root: classes.rootInput
-                                                                }
-                                                            }}
-                                                        />
-                                                    </Grid>
-                                                ) 
+                                                Object.keys(details.address).map((f,i) =>
+                                                <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer} key={i}>
+                                                    <TextField
+                                                        variant={"outlined"}
+                                                        label={t(`assetsModule.${f}`)}
+                                                        error={ errors.filter(e => e.field === `${f}`).length > 0 }
+                                                        value={ details.address[f] }
+                                                        onChange={handleChange({type: 'address', field: `${f}`})}
+                                                        className={classes.textField}
+                                                        size={'medium'}
+                                                        helperText={ errors.filter(e => e.field === `${f}`).length > 0 ? t("errors.isRequired"): null }
+                                                    />
+                                                </Grid>
+                                                )
+                                                
                                             }
                                         </Grid>
                                     </Grid>
+                                
                                 </Grid>
-                            }
-                            <Grid item xs={12} className={classes.controls}>
-                                <Button
-                                    className={clsx(classes.control, classes.save)}
-                                    onClick={handleConfirm}
-                                >
-                                    {t("controls.confirm")}
-                                </Button>
-                                <Button
-                                    className={clsx(classes.control, classes.cancel)}
-                                    onClick={handleClose}
-                                >
-                                    {t("controls.cancel")}
-                                </Button>
+                                <Grid item xs={12} sm={5} className={classes.section}>
+                                    <Grid item xs={12}>
+                                        <div className={classes.sectionTitle}>
+                                            {t("assetsModule.assetType")}
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} className={classes.fields}>
+                                        <Grid container justify='flex-start'>
+                                            <Grid item xs={12} className={classes.textContainer}>
+                                                <Select
+                                                    variant={"outlined"}
+                                                    error={ errors.filter(e => e.field === `type`).length > 0 }
+                                                    value={ details.type }
+                                                    onChange={handleChange({type: '', field: `type`})}
+                                                    className={classes.selectInput}
+                                                    MenuProps={{
+                                                        classes: {
+                                                            paper: classes.menupaper,
+                                    
+                                                        },
+                                                        anchorOrigin: {
+                                                            vertical: "bottom",
+                                                            horizontal: "center",
+                                                        },
+                                                        transformOrigin: {
+                                                            vertical: "top",
+                                                            horizontal: "center",
+                                                        },
+                                                        getContentAnchorEl: null,
+                                                        disablePortal: true
+                                                    }}
+                                    
+                                                >
+                                                    <MenuItem 
+                                                        value={'building'}
+                                                        style={{ direction: lang.dir }}
+                                                        className={classes.menuitem}
+                                                    >
+                                                        {t("assetsModule.building")}
+                                                    </MenuItem>
+                                                    <MenuItem 
+                                                        value={'apartment'}
+                                                        style={{ direction: lang.dir }}
+                                                        className={classes.menuitem}
+                                                    >
+                                                        {t("assetsModule.apartment")}
+                                                    </MenuItem>
+                                                </Select>
+                                                {
+                                                    errors.filter(e => e.field === `type`).length > 0 &&
+                                                    <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
+                                                }
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} sm={5}  className={classes.section}>
+                                    <Grid item xs={12}>
+                                        <div className={classes.sectionTitle}>
+                                            {t("assetsModule.owner")}
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} className={classes.fields}>
+                                        <Grid item xs={12} className={classes.textContainer}>
+                                                <Select
+                                                    variant={"outlined"}
+                                                    error={ errors.filter(e => e.field === `owner`).length > 0 }
+                                                    value={ details.owner }
+                                                    onChange={handleChange({type: '', field: `owner`})}
+                                                    className={classes.selectInput}
+                                                    MenuProps={{
+                                                        classes: {
+                                                            paper: classes.menupaper,
+                                                
+                                                        },
+                                                        anchorOrigin: {
+                                                            vertical: "bottom",
+                                                            horizontal: "center",
+                                                        },
+                                                        transformOrigin: {
+                                                            vertical: "top",
+                                                            horizontal: "center",
+                                                        },
+                                                        getContentAnchorEl: null,
+                                                        disablePortal: true
+                                                    }}
+                                                
+                                                >
+                                                    {
+                                                        userList.map((user, i) => 
+                                                            <MenuItem 
+                                                                key={i}
+                                                                value={user.value}
+                                                                style={{ direction: lang.dir }}
+                                                                className={classes.menuitem}
+                                                            >
+                                                                {user.label}
+                                                            </MenuItem>
+                                                        )
+                                                    }
+                                                </Select>
+                                                {
+                                                    errors.filter(e => e.field === `type`).length > 0 &&
+                                                    <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
+                                                }
+                                                
+                                            </Grid>
+                                    </Grid>
+                                </Grid>
+                                {
+                                    (Boolean(addInfoContext) || mode === 'update') &&
+                                    <Grid item xs={12} md={6} className={classes.section}>
+                                        <Grid item xl={12}>
+                                            <div className={classes.sectionTitle}>
+                                                {t("assetsModule.additionalDetails")}
+                                            </div>
+                                        </Grid>
+                                        <Grid item xl={12} className={classes.fields}>
+                                            <Grid container justify='flex-start'>
+                                                {
+                                                    Object.keys(details.addInfo).map((f,i) => 
+                                                        <Grid item xs={12} sm={6} className={classes.textContainer} key={i}>
+                                                            <TextField
+                                                                variant={"outlined"}
+                                                                label={t(`assetsModule.${f}`)}
+                                                                error={ errors.filter(e => e.field === `${f}`).length > 0 }
+                                                                value={ details.addInfo[f] }
+                                                                onChange={handleChange({type: 'addInfo', field: `${f}`})}
+                                                                className={classes.textField}
+                                                                size={'medium'}
+                                                                InputProps={{
+                                                                    classes: {
+                                                                        root: classes.rootInput
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </Grid>
+                                                    ) 
+                                                }
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                }
+                                <Grid item xs={12} className={classes.controls}>
+                                    <Button
+                                        className={clsx(classes.control, classes.save)}
+                                        onClick={handleConfirm}
+                                    >
+                                        {t("controls.confirm")}
+                                    </Button>
+                                    <Button
+                                        className={clsx(classes.control, classes.cancel)}
+                                        onClick={handleClose}
+                                    >
+                                        {t("controls.cancel")}
+                                    </Button>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Paper>
+                        </Paper>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Fade>
+            </Fade>
+        </Modal>
     )
 }
 
 
 const useStyles = makeStyles(theme => ({
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(10px)'   
+    },
     gridCont: {
         height: 'fit-content'
     },

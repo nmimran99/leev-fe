@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, Button, useMediaQuery, Grid } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { StatusTag } from '../../reuseables/StatusTag';
@@ -11,28 +11,32 @@ export const FaultMinified = ({ data }) => {
     const classes = useStyles();
     const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
     const { t, i18n } = useTranslation();
+    const [ minifiedData, setMinifiedData ] = useState(data);
+
+    useEffect(() => {
+        setMinifiedData(data);
+    }, [data])
 
     return (
         <Grid container className={classes.container} alignItems='flex-start'>
             <Grid container justify='space-between' alignItems='center' className={classes.topRow}>
-                <Grid item xs={9} >
+                <Grid item xs={12} >
                     <div className={classes.asset}>
-                        { getFullAddress(data.asset, true)}
+                        { getFullAddress(minifiedData.asset, true)}
                     </div>    
                 </Grid>
-                <Grid item xs={3} className={classes.link}>
-                    <FaultLink faultId={data.faultId} size={14} />
-                </Grid>
+                
             </Grid>
             <Grid xs={12} item className={classes.title}>
-                { data.title }
+                { minifiedData.title }
             </Grid> 
             <Grid container justify='space-between' alignItems='center' className={classes.bottomRow}>
-                <Grid item xs={7} className={classes.userData}>
-                    <UserItem size={13} avatarSize={40} user={data.owner._id} showPhone/>
+                <Grid item xs={5} className={classes.userData}>
+                    <UserItem size={13} avatarSize={40} user={minifiedData.owner}/>
+                    <FaultLink faultId={minifiedData.faultId} size={14} />
                 </Grid>
-                <Grid item xs={5} className={classes.status} >
-                    <StatusTag status={data.status} type={'fault'}/>
+                <Grid item xs={7} className={classes.status} >
+                    <StatusTag status={minifiedData.status} type={'fault'}/>
                 </Grid>  
             </Grid>   
         </Grid>
@@ -49,10 +53,10 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         color: "white",
-        fontSize: "18px",
-        padding: '10px 0',
+        fontSize: "16px",
+        padding: '15px 5px',
         display: "-webkit-box",
-        WebkitLineClamp: "3",
+        WebkitLineClamp: "2",
         WebkitBoxOrient: "vertical",
         overflow: "hidden",
         textOverflow: "ellipsis",
@@ -63,14 +67,13 @@ const useStyles = makeStyles(theme => ({
         maxHeight: '60px'
     },
     userData: {
-        padding: '10px 0px'
+        padding: '5px 0px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start'
     },
     bottomRow: {
         height: '50px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        maxHeight: '50px'
     },
     asset: {
         color: 'white',
@@ -89,7 +92,7 @@ const useStyles = makeStyles(theme => ({
     },
     status: {
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'flex-end'
     },
     link: {
         display: 'flex',

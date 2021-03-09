@@ -2,35 +2,35 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Grid, makeStyles, Paper, FormControl, IconButton, useMediaQuery, Fade, Modal, Backdrop,Select, MenuItem, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
-import { getUserList } from '../../api/userApi';
 import clsx from 'clsx'
 import { LanguageContext } from '../../context/LanguageContext';
+import { getStatusList } from '../../api/genericApi';
 
 
 
-export const UpdateOwner = ({ handleClose, handleSave, isOpen, currentOwner, title, instructions }) => {
+export const UpdateStatus = ({ handleClose, handleSave, isOpen, currentStatus, title, instructions, module }) => {
 
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
     const { t, i18n } = useTranslation();
-    const [ userList, setUserList ] = useState([]);
-    const [ selectedUser, setSelectedUser ] = useState('')
+    const [ statusList, setStatusList ] = useState([]);
+    const [ selectedStatus, setSelectedStatus ] = useState('')
     
     useEffect(() => {
-        getUserList()
+        getStatusList('faults')
         .then(data => {
-            if (currentOwner) {
-                setSelectedUser(currentOwner._id)
+            console.log(data)
+            if (currentStatus) {
+                setSelectedStatus(currentStatus._id)
             }
-            setUserList(data.filter(u => u._id !== currentOwner._id ));
+            setStatusList(data.filter(s => s._id !== currentStatus._id ));
         })
     }, [])
 
     const handleChange = event => {
-        setSelectedUser(event.target.value)
+        setSelectedStatus(event.target.value)
     }
-
 
     return (
         <Modal
@@ -64,7 +64,7 @@ export const UpdateOwner = ({ handleClose, handleSave, isOpen, currentOwner, tit
                             </div>
                             <FormControl variant='outlined' className={classes.textInput} >
                                 <Select
-                                    value={selectedUser}
+                                    value={selectedStatus}
                                     onChange={handleChange}
                                     className={classes.menu}
                                     MenuProps={{
@@ -74,15 +74,15 @@ export const UpdateOwner = ({ handleClose, handleSave, isOpen, currentOwner, tit
                                     }}
                                 >
                                     {
-                                        userList.map( (user, i) => {
+                                        statusList.map( (status, i) => {
                                             return (
                                                 <MenuItem
                                                     className={classes.menuitem}
-                                                    value={user._id} 
+                                                    value={status._id} 
                                                     key={i}
                                                     style={{ direction: lang.code === 'he' ? 'rtl' : 'ltr'}}
                                                 >
-                                                    {`${user.firstName} ${user.lastName}`}
+                                                    {t(`${module}Module.statuses.${status.statusId}`)}
                                                 </MenuItem>
                                             )
                                         })
@@ -92,8 +92,8 @@ export const UpdateOwner = ({ handleClose, handleSave, isOpen, currentOwner, tit
                             <div className={classes.controls}>
                                 <Button
                                     className={clsx(classes.control, classes.save)}
-                                    onClick={() => handleSave(selectedUser)}
-                                    disabled={!selectedUser}
+                                    onClick={() => handleSave(selectedStatus)}
+                                    disabled={!selectedStatus}
                                 >
                                     {t("alert.confirm")}
                                 </Button>

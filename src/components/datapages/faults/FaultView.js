@@ -14,14 +14,18 @@ import { UserList } from '../../reuseables/UserList';
 import dateFormat from 'dateformat'
 import { LanguageContext } from '../../../context/LanguageContext';
 import { CommentSection } from '../../reuseables/CommentSection';
-import { getFault, updateFault, updateFaultOwner } from '../../../api/faultsApi';
+import { addFollowingUser, getFault, removeFollowingUser, saveFaultComment, updateFault, updateFaultComment, updateFaultOwner, updateFaultStatus } from '../../../api/faultsApi';
 import { UpsertFault } from './UpsertFault';
 import { UpdateOwner } from '../../reuseables/UpdateOwner';
 import { updateSystemAdditionalData } from '../../../api/systemsApi';
+import { AddFollower } from '../../reuseables/AddFollower';
+import { AuthContext } from '../../../context/AuthContext';
+import { UpdateStatus } from '../../reuseables/UpdateStatus';
+import { StatusTag } from '../../reuseables/StatusTag';
 
 
 
-export const FaultView = ({ fid }) => {
+export const FaultView = ({ fid, faultData, updateFaultState }) => {
     
     const history = useHistory();
     const location = useLocation();
@@ -29,35 +33,34 @@ export const FaultView = ({ fid }) => {
     const { t, i18n } = useTranslation();
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
+    const { auth } = useContext(AuthContext);
     const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
     const [ fault, setFault ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(true);
     const { faultId } = useParams();
     const [ editFault, setEditFault ] = useState(null);
     const [ changeOwner, setChangeOwner ] = useState(false);
-    const [ notExist, setNotExist ] = useState(false)
-
+    const [ addFollowerModal, setAddFollowerModal ] = useState(null);
+    const [ changeStatus, setChangeStatus ] = useState(null);
+    const [ notExist, setNotExist ] = useState(false);
+    
     useEffect(() => {
-        if (!isLoading) return;
-        if (!faultId && !fid) {
-            setNotExist(true);
-        }
-        getFault(faultId || fid)
+        if (faultData) {
+            setFault(faultData);
+            setIsLoading(false);
+            return;
+        };
+        getFault(faultId || fid, false)
         .then(data => {
+            if (!data) {
+                history.push('/workspace/faults');
+            }
             setFault(data);
         })
         .finally(() => {
             setIsLoading(false);
         })
-
-    }, [isLoading])
-
-    useEffect(() => {
-        if (fid || faultId) {
-            setIsLoading(true);
-        }
-        
-    }, [fid, faultId])
+    }, [faultData, faultId])
 
     const updateFaultDetails = (details) => {
         updateFault(details)
@@ -73,6 +76,10 @@ export const FaultView = ({ fid }) => {
             }
             return;
         })
+        .catch(e => {
+            console.log(e.message);
+            history.push(`/workspace/faults`);
+        })
     }
 
     const updateOwner = (userId) => {
@@ -86,36 +93,96 @@ export const FaultView = ({ fid }) => {
         })
     }
 
+    const removeFollower = async userId => {
+        const res = await removeFollowingUser(fault._id, userId);
+        if (res) {
+            setFault({
+                ...fault,
+                following: res.following
+            })
+        }
+    }
+
+    const addFollower = (userId) => async event => {
+        event.stopPropagation();
+        const res = await addFollowingUser(fault._id, userId);
+        if (res) {
+            setFault({
+                ...fault,
+                following: res.following
+            });
+            setAddFollowerModal(null);
+        }
+    }
+
+
+    const handleChangeStatus = async (statusId) => {
+        const res = await updateFaultStatus(fault._id, statusId);
+        if (res) {
+            setFault({
+                ...fault,
+                status: res.status
+            });
+            if (updateFaultState) {
+                updateFaultState(res._id, 'status', res.status);
+            }
+            setChangeStatus(null);     
+        }
+    }
+
+    const handleSaveComment = async (faultId, userId, text) => {
+        const res = await saveFaultComment(faultId, userId, text);
+        updateFaultState(res._id, 'comments', res.comments);
+        return Promise.resolve(res);
+    }
+
+    const handleUpdateComment = async (faultId, commentId, text) => {
+        const res = await updateFaultComment(faultId, commentId, text);
+        updateFaultState(res._id, 'comments', res.comments);
+        return Promise.resolve(res);
+
+    }
+
     return (
         isLoading ? 
         <LinearProgress />
         :
         <React.Fragment>
             <Grid container className={classes.container} justify='space-between' alignItems='flex-start'>
-                <Grid item xs={12} className={classes.controls}>
-                    <div className={classes.faultId}>
-                        <FaultLink faultId={fault.faultId} size={18} />
-                    </div>
-                    <FaultViewControls 
-                        id={fault._id} 
-                        faultId={fault.faultId}
-                        editFault={() => setEditFault(fault._id)}
-                        updateOwner={() => setChangeOwner(true)} 
-
-                    />                
+                <Grid container className={classes.controls} >
+                    <Grid item xs={12} className={classes.controlsGriditem}>
+                        <div className={classes.faultId}>
+                            <FaultLink faultId={fault.faultId} size={18} />
+                        </div>
+                        <FaultViewControls 
+                            id={fault._id} 
+                            faultId={fault.faultId}
+                            editFault={() => setEditFault(fault._id)}
+                            updateOwner={() => setChangeOwner(true)} 
+                            changeStatus={() => setChangeStatus(true)}
+                        />
+                    </Grid>   
+                    <Grid item xs={12} className={classes.controlsGriditem}
+                        style={{ justifyContent: downSm ? 'center' : 'flex-start'}}
+                    >
+                        <StatusTag 
+                                status={fault.status}
+                                type='fault'
+                                size={'16px'}
+                            /> 
+                    </Grid>
+                                 
                 </Grid>
                 <Grid item xs={12} sm={12} md={11} lg={8} xl={8}  className={classes.rightContainer} >
                     <div className={classes.asset}>
                         {getFullAddress(fault.asset)}
                     </div>  
-               
                     <div className={classes.title}>
                         { fault.title }
                     </div>
-                    
                     <div className={classes.desc}>
                         <div className={classes.openDate}>
-                            {`${t("faultsModule.createDate")} ${dateFormat(fault.createdAt, lang.dateformat )} `}
+                            {`${t("faultsModule.createDate")} ${dateFormat(fault.createdAt, lang.dateformat )}`}
                         </div>
                         {fault.description}
                     </div>
@@ -124,6 +191,7 @@ export const FaultView = ({ fid }) => {
                         <Carousel 
                             images={fault.images}
                             isOpen={Boolean(fault.images.length)}
+                            size={300}
                         />
                     }
                 </Grid>
@@ -133,6 +201,7 @@ export const FaultView = ({ fid }) => {
                             user={fault.owner}
                             showTitle
                             showPhone
+                            showName
                             size={12}
                             avatarSize={50}    
                         />
@@ -143,14 +212,15 @@ export const FaultView = ({ fid }) => {
                         addTooltip={t("faultsModule.controls.addFollowing")}
                         placeholder={t("faultsModule.noFollowers")}
                         title={t("faultsModule.followingUsers")}
-                        handleRemove={() => null}
-                        handleAdd={() => null}
+                        handleRemove={removeFollower}
+                        handleAdd={() => setAddFollowerModal(true)}
                     />
                 </Grid>
                 <Grid item xs={12} className={classes.comments}>
                     <CommentSection 
-                        comments={fault.comments}
-                        avatar={fault.owner.avatar}
+                        parent={fault}
+                        saveComment={handleSaveComment}
+                        updateComment={handleUpdateComment}
                     />
                 </Grid>
             </Grid>
@@ -163,25 +233,36 @@ export const FaultView = ({ fid }) => {
                 instructions={t("faultsModule.updateOwnerInstructions")}
             />
             {
+                changeStatus &&
+                <UpdateStatus 
+                    handleClose={() => setChangeStatus(false)}
+                    handleSave={handleChangeStatus}
+                    isOpen={changeStatus}
+                    currentStatus={fault.status}
+                    title={t("faultsModule.changeStatus")}
+                    instructions={t("faultsModule.changeStatusInstructions")}
+                    module={'faults'}
+                />
+            }
+            {
+                addFollowerModal &&
+                <AddFollower 
+                    handleClose={() => setAddFollowerModal(false)}
+                    handleSave={addFollower}
+                    isOpen={addFollowerModal}
+                    followerList={fault.following}
+                    title={t("faultsModule.addFollower")}
+                    instructions={t("faultsModule.addFollowerInstructions")}
+                />
+            }
+            
+            {
                 Boolean(editFault) &&
-                <Modal
-                    open={Boolean(editFault)}
-                    onClose={() => setEditFault(null)}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                        timeout: 500
-                    }}
-                    className={classes.modal}
-                >
-                    <div style={{ outline: 'none'}}>
-                        <UpsertFault 
-                            faultId={editFault}
-                            handleClose={() => setEditFault(null)}
-                            handleUpdate={updateFaultDetails}
-                        />
-                    </div>  
-                </Modal>
+                <UpsertFault 
+                    faultId={editFault}
+                    handleClose={() => setEditFault(null)}
+                    handleUpdate={updateFaultDetails}
+                />
             }
             
         </React.Fragment>      
@@ -189,13 +270,6 @@ export const FaultView = ({ fid }) => {
 }
 
 const useStyles = makeStyles(theme => ({
-    
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backdropFilter: 'blur(10px)'   
-    },
     container: {
         overflowY: 'overlay',
         height: '100%'
@@ -216,13 +290,14 @@ const useStyles = makeStyles(theme => ({
         background: 'black',
         width: 'fit-content',
         padding: '10px 20px',
-        borderRadius: '25px',
-        boxShadow: 'rgba(0,0,0,0.25) 0 0 5px 2px'
+        borderRadius: '50px',
+        boxShadow: 'rgba(0,0,0,0.25) 0 0 5px 2px',
+        textAlign: 'center'
     },
     title: {
         color: 'white',
         fontSize: '22px',
-        padding: '20px 0',
+        padding: '15px 0',
         alignSelf: 'flex-end',
         width: '100%'
     },
@@ -231,7 +306,8 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '10px',
         padding: '20px',
         color: 'white',
-        width: '90%'
+        width: '90%',
+        wordBreak: 'break-word'
     },
     leftContainer: {
         display: 'flex',
@@ -255,10 +331,18 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '20px 30px'
+        padding: '20px 30px 0px 30px',
+    },
+    controlsGriditem: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        margin: '10px 0'
     },
     faultId: {
-        padding: '10px 0'
+        padding: '10px 0',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     linked: {
         display: 'flex',
@@ -308,12 +392,15 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '50px'
     },
     comments: {
-        background: 'rgba(0,0,0,0.2)',
+        background: 'rgba(0,0,0,0.4)',
         margin: '20px 30px',
         borderRadius: '10px',
         [theme.breakpoints.down('sm')]: {
             margin: '20px 0px',
         }
+    },
+    status: {
+        margin: '10px 0'
     }
     
 }))

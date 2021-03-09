@@ -74,7 +74,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                 </Typography>
                             </div>
                             <div className={classes.owner}>
-                                <UserItem user={data.owner} showPhone avatarSize={'40px'} size={12}/>
+                                <UserItem user={data.owner} showPhone showName avatarSize={'40px'} size={12}/>
                             </div>
                             {
                                 (controlsVisible || !matches) &&
@@ -179,24 +179,11 @@ export const Asset = ({assetData, order, removeAsset }) => {
                         </div>
                         {   
                             editMode === "address" &&
-                            <Modal
-                                open={editMode === "address"}
-                                onClose={() => setEditMode(null)}
-                                closeAfterTransition
-                                BackdropComponent={Backdrop}
-                                BackdropProps={{
-                                    timeout: 500
-                                }}
-                                className={classes.modal}
-                            >
-                                 <div style={{ outline: 'none'}}>
-                                    <UpsertAsset 
-                                        assetId={data._id} 
-                                        handleUpdate={handleUpdate}
-                                        handleClose={() => setEditMode(false)}
-                                    />
-                                </div>
-                            </Modal>
+                            <UpsertAsset 
+                                assetId={data._id} 
+                                handleUpdate={handleUpdate}
+                                handleClose={() => setEditMode(false)}
+                            />   
                         }
                     </Paper>
                 </ClickAwayListener>
@@ -210,12 +197,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
 
 
 const useStyles = makeStyles(theme => ({  
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backdropFilter: 'blur(10px)'   
-    },
+   
     assetContainer: {
         margin: '10px',
         background: 'white',

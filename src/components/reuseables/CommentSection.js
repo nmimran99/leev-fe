@@ -1,19 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { makeStyles, useMediaQuery, Avatar, FormControl, OutlinedInput, Grid, ClickAwayListener, IconButton, Button } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router';
-import AddRoundedIcon from '@material-ui/icons/AddRounded';
+import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
+import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
 import { useTranslation } from 'react-i18next';
-import { UserItem } from '../user/UserItem';
-import { ClearRounded } from '@material-ui/icons';
 import SendRoundedIcon from '@material-ui/icons/SendRounded';
 import clsx from 'clsx'
 import { LanguageContext } from '../../context/LanguageContext';
 import { AuthContext } from '../../context/AuthContext';
 import { getDatediffString } from '../../api/genericApi';
+import _ from 'lodash'
+import { green, red } from '@material-ui/core/colors';
 
 
 
-export const CommentSection = ({ comments, avatar, saveComment }) => {
+export const CommentSection = ({ parent, saveComment, updateComment }) => {
     
     const history = useHistory();
     const location = useLocation();
@@ -22,9 +23,18 @@ export const CommentSection = ({ comments, avatar, saveComment }) => {
     const { lang } = useContext(LanguageContext);
     const { auth } = useContext(AuthContext);
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
-    const [ commentList, setCommentList ] = useState(comments || []);
+    const [ commentList, setCommentList ] = useState(parent.comments || []);
+    const [ parentId, setParentId ] = useState(parent._id)
     const [ text, setText ] = useState('');
-    const [ textFocused, setTextFocused ] = useState(false)
+    const [ textFocused, setTextFocused ] = useState(false);
+    const [ editComment, setEditComment ] = useState(null);
+    const [ numOfComments, setNumOfComments ] = useState(3); 
+    
+    useEffect(() => {
+        setCommentList(parent.comments);
+        setParentId(parent._id);
+    }, [parent])
+
 
     const handleChange = event => {
         setText(event.target.value)
@@ -32,9 +42,9 @@ export const CommentSection = ({ comments, avatar, saveComment }) => {
 
     const handleSendComment = event => {
         event.stopPropagation();
-        saveComment(text)
+        saveComment(parentId, auth.user._id, text)
         .then(data => {
-            
+            setCommentList(data.comments)
         })
         .finally(() => {
             setText('');
@@ -43,6 +53,18 @@ export const CommentSection = ({ comments, avatar, saveComment }) => {
         
     }
 
+    const handleEditChange = event => {
+        setEditComment({
+            ...editComment,
+            text: event.target.value
+        })
+    }
+
+    const handleUpdateComment = async () => {
+        const res = await updateComment(parentId, editComment._id, editComment.text);
+        setCommentList(res.comments);
+        setEditComment(null);
+    }
 
     return (
         <Grid container >
@@ -52,7 +74,19 @@ export const CommentSection = ({ comments, avatar, saveComment }) => {
                 </div>
             </Grid>
             {
-                commentList.map((c,i) => 
+                numOfComments < commentList.length &&
+                <Grid item xs={12}>
+                    <Button
+                        className={classes.showMore}
+                        onClick={() => setNumOfComments(numOfComments + 3)}
+                    >
+                        {t("comments.showMore")}
+                    </Button>
+                </Grid>
+                
+            }
+            {
+                _.takeRight(commentList, numOfComments).map((c,i) => 
                     <Grid item xs={10} className={clsx(classes.comment)} key={i}>
                         <div className={classes.commentContainer}>
                             <Avatar className={classes.avatar} alt={'abc'} src={c.user.avatar} style={{ height: '50px', width: '50px' }}/>
@@ -60,22 +94,58 @@ export const CommentSection = ({ comments, avatar, saveComment }) => {
                                 <div className={classes.commenter}>
                                     {`${c.user.firstName} ${c.user.lastName}`}
                                 </div>
-                                <div className={classes.commentText}>
-                                    {`${c.text}`}
-                                </div>
+                                {
+                                    (Boolean(editComment) && editComment._id === c._id) ? 
+                                    <div className={classes.editContainer}>
+                                        <FormControl variant='outlined' className={classes.form}>
+                                            <OutlinedInput
+                                                value={ editComment.text || '' }
+                                                onChange={handleEditChange}
+                                                placeholder={t("comments.add")}
+                                                className={clsx(classes.textInput, textFocused ? classes.focused : null)}
+                                                onFocus={() => setTextFocused(true)}
+                                                multiline
+                                                classes={{
+                                                    inputMultiline: classes.multiLine
+                                                }}
+                                            />
+                                            
+                                        </FormControl>
+                                        <IconButton 
+                                            className={classes.save}
+                                            onClick={handleUpdateComment}
+                                        >
+                                            <SaveRoundedIcon className={classes.icon}/>
+                                        </IconButton>
+                                        <IconButton 
+                                            className={classes.cancel}
+                                            onClick={() => setEditComment(null)}
+                                        >
+                                            <ClearRoundedIcon className={classes.icon} />
+                                        </IconButton>
+                                    </div>
+                                    :
+                                    <div className={classes.commentText}>
+                                        {`${c.text}`}
+                                    </div>
+                                }
+                                
                             </div>
                         </div>
                         <div className={classes.commentFooter}>
-                            <div className={classes.footerField}> 
+                            {/* <div className={classes.footerField}> 
                                 <Button className={classes.footerBtn}> 
                                     {t("comments.reply")}
                                 </Button>
-                            </div>
+                            </div> */}
                             {
                                 c.user._id == auth.user._id &&
                                 <div className={classes.footerField}>
-                                    {` · `}
-                                    <Button className={classes.footerBtn}>
+                                    {/* {` · `} */}
+                                    <Button 
+                                        className={classes.footerBtn}
+                                        onClick={() => setEditComment(c)}
+                                    >
                                         {t("comments.edit")}
                                     </Button>
                                 </div>
@@ -95,6 +165,7 @@ export const CommentSection = ({ comments, avatar, saveComment }) => {
                 
             }
             
+           
             <ClickAwayListener onClickAway={() => setTextFocused(false)}> 
                 <Grid item xs={12} sm={12} md={8} lg={6} xl={6} className={classes.addComment}>
                     <FormControl variant='outlined' className={classes.form}>
@@ -147,7 +218,7 @@ const useStyles = makeStyles(theme => ({
 
     },
     textInput: {
-        
+        padding: '15px 10px',
         borderRadius: '42px',
         '& input': {
             color: 'white',
@@ -193,7 +264,7 @@ const useStyles = makeStyles(theme => ({
         padding: '10px 30px 10px 0px',
         margin: '0px 10px',
         background: 'rgba(0,0,0,0.4)',
-        borderRadius: '50px',
+        borderRadius: '35px',
         
     },
     commenter: {
@@ -240,6 +311,36 @@ const useStyles = makeStyles(theme => ({
     },
     multiLine: {
         padding: '0px 20px'
-    }
+    },
+    showMore: {
+        margin: '5px 30px',
+        color: 'white',
+        fontSize: '16px',
+        padding: '5px',
+        '&:hover': {
+            boxShadow: 'none',
+            background: 'inherit',
+            textDecoration: 'underline'
+        }
+    },
+    save: {
+        background: green[800],
+        padding: '8px',
+        margin: '18px 5px',
+        
+    },
+    cancel: {
+        background: red[800],
+        padding: '8px',
+        margin: '18px 5px',
+       
+    },
+    editContainer: {
+        height: 'auto',
+        margin: 'auto 0',
+        width: '100%',
+        dispaly: 'flex',
+        justifyContent: 'center'
+    },
 
 }))

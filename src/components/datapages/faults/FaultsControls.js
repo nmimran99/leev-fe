@@ -1,8 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import { makeStyles, Grid, useMediaQuery, Collapse, Button, ButtonGroup } from '@material-ui/core';
 import { SearchBoxSelect } from '../../reuseables/SearchBoxSelect';
-import { SearchBox } from '../../reuseables/SearchBox';
-import { FilterBySelect } from '../../reuseables/FilterBySelect';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import { SortBy } from '../../reuseables/SortBy';
 import { getAssetsSuggestions } from '../../../api/systemsApi';
@@ -22,26 +20,6 @@ import ViewWeekRoundedIcon from '@material-ui/icons/ViewWeekRounded';
 import clsx from 'clsx'
 import { removeQueryParam } from '../../../api/genericApi';
 
-const sortOptions = [
-    {
-        text: 'מס"ד תקלה',
-        field: 'faultIdentifier'
-    },
-    {
-        text: 'נכס',
-        field: 'asset'
-    },
-    {
-        text: 'סטטוס תקלה',
-        field: 'faultStatus'
-    },
-    {
-        text: 'ממונה על תקלה',
-        field: 'owner'
-    }
-    
-    
-]
 
 
 export const FaultsControls = ({ viewType, setViewType }) => {
@@ -76,11 +54,11 @@ export const FaultsControls = ({ viewType, setViewType }) => {
     }, [location.search])
 
     const handleReloaded = async (assetId) => {
-        const res = await getAsset(assetId);
+        const res = await getAsset(assetId, false);
         if (res) {
             return {
-                label: getFullAddress(res.data),
-                value: res.data._id
+                label: getFullAddress(res),
+                value: res._id
             }
         }   
     }
@@ -152,7 +130,6 @@ export const FaultsControls = ({ viewType, setViewType }) => {
                             filterIcon={<PersonRoundedIcon className={classes.icon }/>}
                             filterField={'owner'}
                         />
-                        <SortBy menuOptions={sortOptions}/>
                         <ButtonGroup
                             className={classes.typeGroup}
                         >

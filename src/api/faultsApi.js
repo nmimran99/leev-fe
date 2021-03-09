@@ -2,7 +2,9 @@ import { ImageSearch } from '@material-ui/icons';
 import axios from 'axios'
 import i18next from 'i18next';
 import { getFullAddress } from './assetsApi';
+import { getFullName } from './genericApi';
 import { getSystemsByAsset } from './systemsApi';
+
 
 export const getFaultsStatusList = async () => {
     try {
@@ -10,19 +12,21 @@ export const getFaultsStatusList = async () => {
         if (res.status === 200) {
             return res.data;
         }
-    } catch (e){
-        return e.response;
-    } 
+    } catch(e) {
+        console.log(e)
+        return null;
+    }
 }
 
 export const getFaultsStatusListSuggestions = async () => {
     const data = await getFaultsStatusList();
     let statusList = [];
-    if (data.statusList.length) { 
-        data.statusList.forEach(st => {
+    console.log(data)
+    if (data.length) { 
+        data.forEach(st => {
             statusList.push({
                 label: i18next.t(`faultsModule.statuses.${st.statusId}`),
-                value: st.statusId
+                value: st._id
             })
         });
     }
@@ -37,8 +41,9 @@ export const getMinifiedFaults = async (filters) => {
         }
         
         return [];
-    } catch (e){
-        return e.response;
+    } catch(e) {
+        console.log(e)
+        return null;
     }
 }
 
@@ -51,8 +56,9 @@ export const getFaults = async (filters) => {
         }
         
         return [];
-    } catch (e){
-        return e.response;
+    } catch(e) {
+        console.log(e)
+        return null;
     }
 }
 
@@ -63,26 +69,32 @@ export const getFault = async (faultId, plain) => {
             return res.data;
         } 
         return null;
-    } catch (e){
-        return e.response;
+    } catch(e) {
+        console.log(e)
+        return null;
     }
 }
 
 
 
 export const getSystemsByAssetOptions = async (asset) => {
-    const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/systems/getSystemsOptions`, { asset });
-    let options = [];
-    if (!res) return [];
-    res.data.forEach(t => {
-        if (asset) {
-            options.push({ label: t.name, value: t._id})
-        } else {
-            options.push({ label: `${t.name}, ${getFullAddress(t.asset)}`, value: t._id})
-        }
-        
-    });
-    return options;
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/systems/getSystemsOptions`, { asset });
+        let options = [];
+        if (!res) return [];
+        res.data.forEach(t => {
+            if (asset) {
+                options.push({ label: t.name, value: t._id})
+            } else {
+                options.push({ label: `${t.name}, ${getFullAddress(t.asset)}`, value: t._id})
+            }
+            
+        });
+        return options;
+    } catch(e) {
+        console.log(e)
+        return null;
+    }
 }
 
 export const createNewFault = async details => {
@@ -108,7 +120,7 @@ export const createNewFault = async details => {
         };
     } catch(e) {
         console.log(e)
-        return e.message
+        return null;
     }
 }
 
@@ -119,6 +131,8 @@ export const updateFault = async (details) => {
             for (let i = 0; i < details.images.length; i++) {
                 formData.append("images", details.images[i]);
               }
+        } else if (f[0] === 'uploadedImages') { 
+            formData.append("uploadedImages", JSON.stringify(f[1]))
         } else {
             formData.append(f[0], f[1])
         }
@@ -135,7 +149,7 @@ export const updateFault = async (details) => {
         };
     } catch(e) {
         console.log(e)
-        return e.message
+        return null;
     }
 
 }
@@ -147,7 +161,70 @@ export const updateFaultOwner = async (faultId, userId) => {
             return res.data;
         } 
         return null;
-    } catch (e){
-        return e.response;
+    } catch(e) {
+        console.log(e)
+        return null;
     }
 }
+
+export const removeFollowingUser = async (faultId, userId) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/removeFollower`, { faultId, userId });
+        if (res) {
+            return res.data;
+        }
+    } catch (e) {
+        console.log(e.message);
+        return null;
+    }
+}
+
+
+export const addFollowingUser = async (faultId, userId) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/addFollower`, { faultId, userId });
+        if (res) {
+            return res.data;
+        }
+    } catch (e) {
+        console.log(e.message);
+        return null;
+    }
+}
+
+export const saveFaultComment = async (faultId, userId, text) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/addFaultComment`, { faultId, userId, text });
+        if (res) {
+            return res.data;
+        }
+    } catch (e) {
+        console.log(e.message);
+        return null;
+    }
+}
+
+export const updateFaultComment = async (faultId, commentId, text) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/updateFaultComment`, { faultId, commentId, text });
+        if (res) {
+            return res.data;
+        }
+    } catch (e) {
+        console.log(e.message);
+        return null;
+    }
+}
+
+export const updateFaultStatus = async (faultId, status ) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/faults/changeFaultStatus`, { faultId, status });
+        if (res) {
+            return res.data;
+        }
+    } catch (e) {
+        console.log(e.message);
+        return null;
+    }
+}
+

@@ -10,15 +10,15 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
-export const AlertDialog = ({ alertDialoge , open }) => {
+export const AlertDialog = ({ alertDialog , open }) => {
 
         const classes = useStyles();
         const { lang } = useContext(LanguageContext);
         const { t, i18n } = useTranslation();
   return (
     <Dialog
-        open={open}
-        onClose={alertDialoge.handleCancel}
+        open={true}
+        onClose={alertDialog.handleCancel}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         style={{ direction: lang.dir}}
@@ -35,25 +35,25 @@ export const AlertDialog = ({ alertDialoge , open }) => {
         }}
     >
     <DialogTitle id="alert-dialog-title" style={{ direction: lang.dir}} className={classes.title}>
-        {alertDialoge.title}
+        {alertDialog.title}
     </DialogTitle>
     <DialogContent>
         <DialogContentText id="alert-dialog-description" style={{ direction: lang.dir}} className={classes.text}>
-        { alertDialoge.text }
+        { alertDialog.text }
         </DialogContentText>
     </DialogContent>
     <DialogActions className={classes.controls}>
         <Button
             className={clsx(classes.control, classes.save)}
-            onClick={alertDialoge.handleConfirm}
+            onClick={alertDialog.handleConfirm}
         >
-            { alertDialoge.confirmText || t("alert.confirm") }
+            { alertDialog.confirmText || t("alert.confirm") }
         </Button>
         <Button
             className={clsx(classes.control, classes.cancel)}
-            onClick={alertDialoge.handleCancel}
+            onClick={alertDialog.handleCancel}
         >
-            { alertDialoge.cancelText || t("alert.cancel") }
+            { alertDialog.cancelText || t("alert.cancel") }
         </Button>
     </DialogActions>
     </Dialog>

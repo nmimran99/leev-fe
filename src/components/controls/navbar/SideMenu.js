@@ -38,6 +38,7 @@ export const SideMenu = ({toggleMenu}) => {
                     <div className={classes.userContainer}>   
                         <UserItem 
                             showTitle
+                            showName
                             user={auth.user}
                         />
                     </div>

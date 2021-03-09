@@ -1,6 +1,6 @@
 import heLocale from "date-fns/locale/he";
 import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, Chip, Input, Avatar, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
+import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, Chip, Input, Avatar, RadioGroup, FormControlLabel, Radio, Backdrop, Modal } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { useTranslation } from 'react-i18next';
@@ -178,154 +178,254 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
     
 
     return (
-        <Fade in={true}>
-            <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
-                <Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
-                    <Paper
-                        elevation={6}
-                        className={classes.paper}
-                        style={{ direction: lang.dir }}
-                    >
-                        <Grid container>
-                            <Grid item xs={12} className={classes.headerRow}>
-                                <div className={classes.title}>
-                                    {mode === 'update' ? t("systemsModule.updateSystemDetails") : t("systemsModule.createSystem")}
-                                </div>
-                                <div className={classes.close}>
-                                    <IconButton
-                                        className={classes.iconBtn}
-                                        onClick={handleClose}
-                                    >
-                                        <ClearRounded className={classes.icon}/>
-                                    </IconButton>
-                                </div>
-                            </Grid>
-                            {
-                                mode === 'create' &&
-                                <React.Fragment>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.section}>
-                                        <Grid item xs={12}>
-                                            <div className={classes.sectionTitle}>
-                                                {t("systemsModule.generalDetails")}
-                                            </div>
+        <Modal
+            open={true}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500
+            }}
+            className={classes.modal}
+        >
+            <Fade in={true}>
+                <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
+                    <Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
+                        <Paper
+                            elevation={6}
+                            className={classes.paper}
+                            style={{ direction: lang.dir }}
+                        >
+                            <Grid container>
+                                <Grid item xs={12} className={classes.headerRow}>
+                                    <div className={classes.title}>
+                                        {mode === 'update' ? t("systemsModule.updateSystemDetails") : t("systemsModule.createSystem")}
+                                    </div>
+                                    <div className={classes.close}>
+                                        <IconButton
+                                            className={classes.iconBtn}
+                                            onClick={handleClose}
+                                        >
+                                            <ClearRounded className={classes.icon}/>
+                                        </IconButton>
+                                    </div>
+                                </Grid>
+                                {
+                                    mode === 'create' &&
+                                    <React.Fragment>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.section}>
+                                            <Grid item xs={12}>
+                                                <div className={classes.sectionTitle}>
+                                                    {t("systemsModule.generalDetails")}
+                                                </div>
+                                            </Grid>
+                                            <Grid item xs={12} className={classes.fields}>
+                                                <Grid container justify='flex-start'>
+                                                    <Grid item xs={12} className={classes.textContainer}>
+                                                        <TextField
+                                                            variant={"outlined"}
+                                                            label={t(`systemsModule.systemName`)}
+                                                            error={ errors.filter(e => e.field === `name`).length > 0 }
+                                                            value={ details.name }
+                                                            onChange={handleChange('name')}
+                                                            className={classes.textField}
+                                                            size={'medium'}
+                                                            helperText={ errors.filter(e => e.field === `name`).length > 0 ? t("errors.isRequired"): null }
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={12} className={classes.fields}>
-                                            <Grid container justify='flex-start'>
-                                                <Grid item xs={12} className={classes.textContainer}>
-                                                    <TextField
+                                        <Grid item xs={12} sm={6} md={6} lg={6} xl={6} className={classes.section}>
+                                            <Grid item xs={12}>
+                                                <div className={classes.sectionTitle}>
+                                                    {t("systemsModule.owningAsset")}
+                                                </div>
+                                            </Grid>
+                                            <Grid item xs={12} className={classes.fields}>
+                                                <Grid container justify='flex-start'>
+                                                    <Grid item xs={12} className={classes.textContainer}>
+                                                    <Select
                                                         variant={"outlined"}
-                                                        label={t(`systemsModule.systemName`)}
-                                                        error={ errors.filter(e => e.field === `name`).length > 0 }
-                                                        value={ details.name }
-                                                        onChange={handleChange('name')}
-                                                        className={classes.textField}
-                                                        size={'medium'}
-                                                        helperText={ errors.filter(e => e.field === `name`).length > 0 ? t("errors.isRequired"): null }
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={6} xl={6} className={classes.section}>
-                                        <Grid item xs={12}>
-                                            <div className={classes.sectionTitle}>
-                                                {t("systemsModule.owningAsset")}
-                                            </div>
-                                        </Grid>
-                                        <Grid item xs={12} className={classes.fields}>
-                                            <Grid container justify='flex-start'>
-                                                <Grid item xs={12} className={classes.textContainer}>
-                                                <Select
-                                                    variant={"outlined"}
-                                                    error={ errors.filter(e => e.field === `asset`).length > 0 }
-                                                    value={ details.asset }
-                                                    onChange={handleChange(`asset`)}
-                                                    className={classes.selectInput}
-                                                    MenuProps={{
-                                                        anchorOrigin: {
-                                                            vertical: "bottom",
-                                                            horizontal: "center",
-                                                        },
-                                                        transformOrigin: {
-                                                            vertical: "top",
-                                                            horizontal: "center",
-                                                        },
-                                                        getContentAnchorEl: null,
-                                                        disablePortal: true,
-                                                        classes: {
-                                                            paper: classes.menupaper,
-                                                    
+                                                        error={ errors.filter(e => e.field === `asset`).length > 0 }
+                                                        value={ details.asset }
+                                                        onChange={handleChange(`asset`)}
+                                                        className={classes.selectInput}
+                                                        MenuProps={{
+                                                            anchorOrigin: {
+                                                                vertical: "bottom",
+                                                                horizontal: "center",
+                                                            },
+                                                            transformOrigin: {
+                                                                vertical: "top",
+                                                                horizontal: "center",
+                                                            },
+                                                            getContentAnchorEl: null,
+                                                            disablePortal: true,
+                                                            classes: {
+                                                                paper: classes.menupaper,
+                                                        
+                                                            }
+                                                        }}
+                                                        
+                                                    >
+                                                        {
+                                                            assets.map((asset, i) => 
+                                                                <MenuItem 
+                                                                    key={i}
+                                                                    value={asset.value}
+                                                                    style={{ direction: lang.dir }}
+                                                                    className={classes.menuitem}
+                                                                >
+                                                                    {asset.text}
+                                                                </MenuItem>
+                                                            )
                                                         }
-                                                    }}
-                                                    
-                                                >
+                                                    </Select>
                                                     {
-                                                        assets.map((asset, i) => 
-                                                            <MenuItem 
-                                                                key={i}
-                                                                value={asset.value}
-                                                                style={{ direction: lang.dir }}
-                                                                className={classes.menuitem}
-                                                            >
-                                                                {asset.text}
-                                                            </MenuItem>
-                                                        )
+                                                        errors.filter(e => e.field === 'asset').length > 0 &&
+                                                        <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
                                                     }
-                                                </Select>
-                                                {
-                                                    errors.filter(e => e.field === 'asset').length > 0 &&
-                                                    <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                                }
+                                                    </Grid>
                                                 </Grid>
                                             </Grid>
                                         </Grid>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4}  className={classes.section}>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4}  className={classes.section}>
+                                            <Grid item xs={12}>
+                                                <div className={classes.sectionTitle}>
+                                                    {t("systemsModule.systemOwner")}
+                                                </div>
+                                            </Grid>
+                                            <Grid item xs={12} className={classes.fields}>
+                                                <Grid item xs={12} className={classes.textContainer}>
+                                                    <Select
+                                                        variant={"outlined"}
+                                                        error={ errors.filter(e => e.field === `owner`).length > 0 }
+                                                        value={ details.owner }
+                                                        onChange={handleChange(`owner`)}
+                                                        className={classes.selectInput}
+                                                        MenuProps={{
+                                                            anchorOrigin: {
+                                                                vertical: "bottom",
+                                                                horizontal: "center",
+                                                            },
+                                                            transformOrigin: {
+                                                                vertical: "top",
+                                                                horizontal: "center",
+                                                            },
+                                                            getContentAnchorEl: null,
+                                                            disablePortal: true,
+                                                            classes: {
+                                                                paper: classes.menupaper,
+                                                        
+                                                            }
+                                                        }}
+                                                        renderValue={(selected) => {
+                                                            let user = userList.find( f => f._id === selected);
+                                                            return (
+                                                                
+                                                                    <Chip
+                                                                        size={'medium'}
+                                                                        avatar={<Avatar style={{ height: '40px', width: '40px'}} src={user.avatar} />}
+                                                                        label={getFullName(user)}
+                                                                        className={classes.chip}
+                                                                        
+                                                                    />
+                                                            
+                                                            )
+                                                        }}
+                                                    >
+                                                        {
+                                                            userList.map((user, i) => 
+                                                                <MenuItem 
+                                                                    key={i}
+                                                                    value={user.value}
+                                                                    style={{ direction: lang.dir }}
+                                                                    className={classes.menuitem}
+                                                                >
+                                                                    <div className={classes.userCont}>
+                                                                        <UserItem
+                                                                            showName
+                                                                            user={user}
+                                                                            avatarSize={40}
+                                                                            size={13}
+                                                                        />
+                                                                    </div>
+                                                                    
+                                                                </MenuItem>
+                                                            )
+                                                        }
+                                                    </Select>
+                                                    {
+                                                        errors.filter(e => e.field === 'owner').length > 0 &&
+                                                        <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
+                                                    }
+                                                    
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={7} xl={7} className={classes.section}>
                                         <Grid item xs={12}>
                                             <div className={classes.sectionTitle}>
-                                                {t("systemsModule.systemOwner")}
+                                                {t("systemsModule.linkedUsers")}
                                             </div>
                                         </Grid>
                                         <Grid item xs={12} className={classes.fields}>
                                             <Grid item xs={12} className={classes.textContainer}>
-                                                <Select
-                                                    variant={"outlined"}
-                                                    error={ errors.filter(e => e.field === `owner`).length > 0 }
-                                                    value={ details.owner }
-                                                    onChange={handleChange(`owner`)}
-                                                    className={classes.selectInput}
-                                                    MenuProps={{
-                                                        anchorOrigin: {
-                                                            vertical: "bottom",
-                                                            horizontal: "center",
-                                                        },
-                                                        transformOrigin: {
-                                                            vertical: "top",
-                                                            horizontal: "center",
-                                                        },
-                                                        getContentAnchorEl: null,
-                                                        disablePortal: true,
-                                                        classes: {
-                                                            paper: classes.menupaper,
-                                                    
-                                                        }
-                                                    }}
-                                                    renderValue={(selected) => {
-                                                        let user = userList.find( f => f._id === selected);
-                                                        return (
-                                                            
-                                                                <Chip
-                                                                    size={'medium'}
-                                                                    avatar={<Avatar style={{ height: '40px', width: '40px'}} src={user.avatar} />}
-                                                                    label={getFullName(user)}
-                                                                    className={classes.chip}
-                                                                    
-                                                                />
-                                                        
-                                                        )
-                                                    }}
-                                                >
+                                            <Select
+                                                variant={"outlined"}
+                                                multiple
+                                                value={details.linkedUsers}
+                                                onChange={handleChangeMultiple}
+                                                className={classes.selectInput}
+                                                MenuProps={{
+                                                    classes: {
+                                                        paper: classes.menupaper,
+                                                
+                                                    },
+                                                    anchorOrigin: {
+                                                        vertical: "bottom",
+                                                        horizontal: "center",
+                                                    },
+                                                    transformOrigin: {
+                                                        vertical: "top",
+                                                        horizontal: "center",
+                                                    },
+                                                    getContentAnchorEl: null,
+                                                    disablePortal: true,
+                                                    classes: {
+                                                        paper: classes.menupaper,
+                                    
+                                                    }
+                                                }}
+                                                renderValue={(selected) => (
+                                                    <div className={classes.chips}>
                                                     {
+                                                        selected.map((value) => {
+                                                            let user = userList.find( f => f._id === value);
+                                                            return (
+                                                                <div className={classes.chipsCont}>
+                                                                    <Chip
+                                                                        clickable
+                                                                        size={'medium'}
+                                                                        avatar={<Avatar style={{ height: '40px', width: '40px'}} src={user.avatar} />}
+                                                                        label={getFullName(user)}
+                                                                        onDelete={handleLinkedRemove(value)}
+                                                                        deleteIcon={<ClearRounded className={classes.removeIcon}/>}
+                                                                        onMouseDown={e => e.stopPropagation()}
+                                                                        className={classes.chip}
+                                                                    />
+                                                                </div>
+                                                            )
+
+                                                            
+                                                        })
+                                                    }
+                                                    </div>
+                                                )}
+                                    
+                                                >
+                                                {
                                                         userList.map((user, i) => 
                                                             <MenuItem 
                                                                 key={i}
@@ -335,9 +435,10 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
                                                             >
                                                                 <div className={classes.userCont}>
                                                                     <UserItem
+                                                                        showName
                                                                         user={user}
                                                                         avatarSize={40}
-                                                                        size={13}
+                                                                        size={14}
                                                                     />
                                                                 </div>
                                                                 
@@ -345,405 +446,323 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
                                                         )
                                                     }
                                                 </Select>
-                                                {
-                                                    errors.filter(e => e.field === 'owner').length > 0 &&
-                                                    <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                                }
                                                 
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={7} xl={7} className={classes.section}>
-                                    <Grid item xs={12}>
-                                        <div className={classes.sectionTitle}>
-                                            {t("systemsModule.linkedUsers")}
+                                    </React.Fragment>
+                                }
+                                <Grid item xs={12} className={classes.section}>
+                                    <Grid item xs={4}>
+                                        <div 
+                                            className={classes.sectionTitle}
+                                        >
+                                            {t("systemsModule.additionalDetails")}
                                         </div>
                                     </Grid>
-                                    <Grid item xs={12} className={classes.fields}>
-                                        <Grid item xs={12} className={classes.textContainer}>
-                                        <Select
-                                            variant={"outlined"}
-                                            multiple
-                                            value={details.linkedUsers}
-                                            onChange={handleChangeMultiple}
-                                            className={classes.selectInput}
-                                            MenuProps={{
-                                                classes: {
-                                                    paper: classes.menupaper,
-                                            
-                                                },
-                                                anchorOrigin: {
-                                                    vertical: "bottom",
-                                                    horizontal: "center",
-                                                },
-                                                transformOrigin: {
-                                                    vertical: "top",
-                                                    horizontal: "center",
-                                                },
-                                                getContentAnchorEl: null,
-                                                disablePortal: true,
-                                                classes: {
-                                                    paper: classes.menupaper,
-                                
-                                                }
-                                            }}
-                                            renderValue={(selected) => (
-                                                <div className={classes.chips}>
-                                                {
-                                                    selected.map((value) => {
-                                                        let user = userList.find( f => f._id === value);
-                                                        return (
-                                                            <div className={classes.chipsCont}>
-                                                                <Chip
-                                                                    clickable
-                                                                    size={'medium'}
-                                                                    avatar={<Avatar style={{ height: '40px', width: '40px'}} src={user.avatar} />}
-                                                                    label={getFullName(user)}
-                                                                    onDelete={handleLinkedRemove(value)}
-                                                                    deleteIcon={<ClearRounded className={classes.removeIcon}/>}
-                                                                    onMouseDown={e => e.stopPropagation()}
-                                                                    className={classes.chip}
-                                                                />
-                                                            </div>
-                                                        )
+                                    <Grid container className={classes.fields}>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.location`)}
+                                                value={ addData.general.location }
+                                                onChange={handleChangeAddData({ type: 'general', field: 'location'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.manufacturingYear`)}
+                                                value={ addData.general.manufacturingYear }
+                                                onChange={handleChangeAddData({ type: 'general', field: 'manufacturingYear'})}
+                                                className={classes.textField}
+                                                size={'medium'}
 
-                                                        
-                                                    })
-                                                }
-                                                </div>
-                                            )}
-                                
-                                            >
-                                            {
-                                                    userList.map((user, i) => 
-                                                        <MenuItem 
-                                                            key={i}
-                                                            value={user.value}
-                                                            style={{ direction: lang.dir }}
-                                                            className={classes.menuitem}
-                                                        >
-                                                            <div className={classes.userCont}>
-                                                                <UserItem
-                                                                    user={user}
-                                                                    avatarSize={40}
-                                                                    size={14}
-                                                                />
-                                                            </div>
-                                                            
-                                                        </MenuItem>
-                                                    )
-                                                }
-                                            </Select>
-                                            
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.SID`)}
+                                                value={ addData.general.SID }
+                                                onChange={handleChangeAddData({ type: 'general', field: 'SID'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                                </React.Fragment>
-                            }
-                            <Grid item xs={12} className={classes.section}>
-                                <Grid item xs={4}>
-                                    <div 
-                                        className={classes.sectionTitle}
-                                    >
-                                        {t("systemsModule.additionalDetails")}
-                                    </div>
-                                </Grid>
-                                <Grid container className={classes.fields}>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.location`)}
-                                            value={ addData.general.location }
-                                            onChange={handleChangeAddData({ type: 'general', field: 'location'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.manufacturingYear`)}
-                                            value={ addData.general.manufacturingYear }
-                                            onChange={handleChangeAddData({ type: 'general', field: 'manufacturingYear'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.SID`)}
-                                            value={ addData.general.SID }
-                                            onChange={handleChangeAddData({ type: 'general', field: 'SID'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} className={classes.section}>
-                                <Grid item xs={4}>
-                                    <div 
-                                        className={classes.sectionTitle}
-                                    >
-                                        {t("systemsModule.manufacturer")}
-                                    </div>
-                                </Grid>
-                                <Grid container className={classes.fields}>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.manufacturerDetails.name`)}
-                                            value={ addData.manufacturer.name }
-                                            onChange={handleChangeAddData({ type: 'manufacturer', field: 'name'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.manufacturerDetails.contactName`)}
-                                            value={ addData.manufacturer.contactName }
-                                            onChange={handleChangeAddData({ type: 'manufacturer', field: 'contactName'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.manufacturerDetails.email`)}
-                                            value={  addData.manufacturer.email }
-                                            onChange={handleChangeAddData({ type: 'manufacturer', field: 'email'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.manufacturerDetails.phoneNumber`)}
-                                            value={ addData.manufacturer.phoneNumber }
-                                            onChange={handleChangeAddData({ type: 'manufacturer', field: 'phoneNumber'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.manufacturerDetails.extension`)}
-                                            value={ addData.manufacturer.extension }
-                                            onChange={handleChangeAddData({ type: 'manufacturer', field: 'extension'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} className={classes.section}>
-                                <Grid item xs={4}>
-                                    <div 
-                                        className={classes.sectionTitle}
-                                    >
-                                        {t("systemsModule.supplier")}
-                                    </div>
-                                </Grid>
-                                <Grid container className={classes.fields}>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.supplierDetails.name`)}
-                                            value={ addData.supplier.name }
-                                            onChange={handleChangeAddData({ type: 'supplier', field: 'name'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.supplierDetails.contactName`)}
-                                            value={ addData.supplier.contactName }
-                                            onChange={handleChangeAddData({ type: 'supplier', field: 'contactName'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.supplierDetails.email`)}
-                                            value={  addData.supplier.email }
-                                            onChange={handleChangeAddData({ type: 'supplier', field: 'email'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.supplierDetails.phoneNumber`)}
-                                            value={ addData.supplier.phoneNumber }
-                                            onChange={handleChangeAddData({ type: 'supplier', field: 'phoneNumber'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.supplierDetails.extension`)}
-                                            value={ addData.supplier.extension }
-                                            onChange={handleChangeAddData({ type: 'supplier', field: 'extension'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} className={classes.section}>
-                                <Grid item xs={4}>
-                                    <div 
-                                        className={classes.sectionTitle}
-                                    >
-                                        {t("systemsModule.insurance")}
-                                    </div>
-                                </Grid>
-                                <Grid container className={classes.fields}>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.insuranceDetails.name`)}
-                                            value={ addData.insurance.name }
-                                            onChange={handleChangeAddData({ type: 'insurance', field: 'name'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.insuranceDetails.contactName`)}
-                                            value={ addData.insurance.contactName }
-                                            onChange={handleChangeAddData({ type: 'insurance', field: 'contactName'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.insuranceDetails.email`)}
-                                            value={  addData.insurance.email }
-                                            onChange={handleChangeAddData({ type: 'insurance', field: 'email'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.insuranceDetails.phoneNumber`)}
-                                            value={ addData.insurance.phoneNumber }
-                                            onChange={handleChangeAddData({ type: 'insurance', field: 'phoneNumber'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t(`systemsModule.insuranceDetails.extension`)}
-                                            value={ addData.insurance.extension }
-                                            onChange={handleChangeAddData({ type: 'insurance', field: 'extension'})}
-                                            className={classes.textField}
-                                            size={'medium'}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
-                                            <DatePicker
-                                                
-                                                format="dd/MM/yyyy"
-                                                label={t(`systemsModule.insuranceDetails.expiryDate`)}
-                                                value={addData.insurance.expiryDate}
-                                                onChange={handleChangeInsuranceExpiry}
-                                                inputVariant={"outlined"}
-                                                className={classes.textField}
-                                                autoOk={true}
-                                                disablePast={true}
-                                               
-                                            />
-                                        </MuiPickersUtilsProvider>
-                                    </Grid>
-                                    
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} className={classes.section}>
-                                <Grid item xs={4}>
-                                    <div 
-                                        className={classes.sectionTitle}
-                                    >
-                                        {t("systemsModule.warranty")}
-                                    </div>
-                                </Grid>
-                                <Grid container className={classes.fields}>
-                                    <Grid item xs={12} sm={6} md={6} lg={8} xl={8} className={classes.textContainer}>
-                                        <RadioGroup
-                                            value={addData.warranty.issuer}
-                                            onChange={handleChangeAddData({ type: 'warranty', field: 'issuer'})}
-                                            className={classes.radioGroup}
+                                <Grid item xs={12} className={classes.section}>
+                                    <Grid item xs={4}>
+                                        <div 
+                                            className={classes.sectionTitle}
                                         >
-                                            <FormControlLabel value='supplier' control={<Radio color={'white'} className={classes.radioBtn}/>} label={t("systemsModule.warrantyDetails.supplier")}/>
-                                            <FormControlLabel value='manufacturer' control={<Radio color={'white'} className={classes.radioBtn} />} label={t("systemsModule.warrantyDetails.manufacturer")}/>
-                                            <FormControlLabel value='' control={<Radio color={'white'} className={classes.radioBtn} />} label={t("systemsModule.warrantyDetails.nowarranty")}/>
-                                        </RadioGroup>
+                                            {t("systemsModule.manufacturer")}
+                                        </div>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
-                                            <DatePicker
-                                                format="dd/MM/yyyy"
-                                                label={t(`systemsModule.warrantyDetails.expiryDate`)}
-                                                value={addData.warranty.expiryDate}
-                                                onChange={handleChangeWarrantyExpiry}
-                                                inputVariant={"outlined"}
+                                    <Grid container className={classes.fields}>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.manufacturerDetails.name`)}
+                                                value={ addData.manufacturer.name }
+                                                onChange={handleChangeAddData({ type: 'manufacturer', field: 'name'})}
                                                 className={classes.textField}
-                                                autoOk={true}
-                                                disablePast={true}
+                                                size={'medium'}
                                             />
-                                        </MuiPickersUtilsProvider>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.manufacturerDetails.contactName`)}
+                                                value={ addData.manufacturer.contactName }
+                                                onChange={handleChangeAddData({ type: 'manufacturer', field: 'contactName'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.manufacturerDetails.email`)}
+                                                value={  addData.manufacturer.email }
+                                                onChange={handleChangeAddData({ type: 'manufacturer', field: 'email'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.manufacturerDetails.phoneNumber`)}
+                                                value={ addData.manufacturer.phoneNumber }
+                                                onChange={handleChangeAddData({ type: 'manufacturer', field: 'phoneNumber'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.manufacturerDetails.extension`)}
+                                                value={ addData.manufacturer.extension }
+                                                onChange={handleChangeAddData({ type: 'manufacturer', field: 'extension'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
                                     </Grid>
-                                    
+                                </Grid>
+                                <Grid item xs={12} className={classes.section}>
+                                    <Grid item xs={4}>
+                                        <div 
+                                            className={classes.sectionTitle}
+                                        >
+                                            {t("systemsModule.supplier")}
+                                        </div>
+                                    </Grid>
+                                    <Grid container className={classes.fields}>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.supplierDetails.name`)}
+                                                value={ addData.supplier.name }
+                                                onChange={handleChangeAddData({ type: 'supplier', field: 'name'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.supplierDetails.contactName`)}
+                                                value={ addData.supplier.contactName }
+                                                onChange={handleChangeAddData({ type: 'supplier', field: 'contactName'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.supplierDetails.email`)}
+                                                value={  addData.supplier.email }
+                                                onChange={handleChangeAddData({ type: 'supplier', field: 'email'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.supplierDetails.phoneNumber`)}
+                                                value={ addData.supplier.phoneNumber }
+                                                onChange={handleChangeAddData({ type: 'supplier', field: 'phoneNumber'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.supplierDetails.extension`)}
+                                                value={ addData.supplier.extension }
+                                                onChange={handleChangeAddData({ type: 'supplier', field: 'extension'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} className={classes.section}>
+                                    <Grid item xs={4}>
+                                        <div 
+                                            className={classes.sectionTitle}
+                                        >
+                                            {t("systemsModule.insurance")}
+                                        </div>
+                                    </Grid>
+                                    <Grid container className={classes.fields}>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.insuranceDetails.name`)}
+                                                value={ addData.insurance.name }
+                                                onChange={handleChangeAddData({ type: 'insurance', field: 'name'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.insuranceDetails.contactName`)}
+                                                value={ addData.insurance.contactName }
+                                                onChange={handleChangeAddData({ type: 'insurance', field: 'contactName'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.insuranceDetails.email`)}
+                                                value={  addData.insurance.email }
+                                                onChange={handleChangeAddData({ type: 'insurance', field: 'email'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.insuranceDetails.phoneNumber`)}
+                                                value={ addData.insurance.phoneNumber }
+                                                onChange={handleChangeAddData({ type: 'insurance', field: 'phoneNumber'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <TextField
+                                                variant={"outlined"}
+                                                label={t(`systemsModule.insuranceDetails.extension`)}
+                                                value={ addData.insurance.extension }
+                                                onChange={handleChangeAddData({ type: 'insurance', field: 'extension'})}
+                                                className={classes.textField}
+                                                size={'medium'}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
+                                                <DatePicker
+                                                    
+                                                    format="dd/MM/yyyy"
+                                                    label={t(`systemsModule.insuranceDetails.expiryDate`)}
+                                                    value={addData.insurance.expiryDate}
+                                                    onChange={handleChangeInsuranceExpiry}
+                                                    inputVariant={"outlined"}
+                                                    className={classes.textField}
+                                                    autoOk={true}
+                                                    disablePast={true}
+                                                
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </Grid>
+                                        
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} className={classes.section}>
+                                    <Grid item xs={4}>
+                                        <div 
+                                            className={classes.sectionTitle}
+                                        >
+                                            {t("systemsModule.warranty")}
+                                        </div>
+                                    </Grid>
+                                    <Grid container className={classes.fields}>
+                                        <Grid item xs={12} sm={6} md={6} lg={8} xl={8} className={classes.textContainer}>
+                                            <RadioGroup
+                                                value={addData.warranty.issuer}
+                                                onChange={handleChangeAddData({ type: 'warranty', field: 'issuer'})}
+                                                className={classes.radioGroup}
+                                            >
+                                                <FormControlLabel value='supplier' control={<Radio color={'white'} className={classes.radioBtn}/>} label={t("systemsModule.warrantyDetails.supplier")}/>
+                                                <FormControlLabel value='manufacturer' control={<Radio color={'white'} className={classes.radioBtn} />} label={t("systemsModule.warrantyDetails.manufacturer")}/>
+                                                <FormControlLabel value='' control={<Radio color={'white'} className={classes.radioBtn} />} label={t("systemsModule.warrantyDetails.nowarranty")}/>
+                                            </RadioGroup>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
+                                                <DatePicker
+                                                    format="dd/MM/yyyy"
+                                                    label={t(`systemsModule.warrantyDetails.expiryDate`)}
+                                                    value={addData.warranty.expiryDate}
+                                                    onChange={handleChangeWarrantyExpiry}
+                                                    inputVariant={"outlined"}
+                                                    className={classes.textField}
+                                                    autoOk={true}
+                                                    disablePast={true}
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </Grid>
+                                        
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} className={classes.controls}>
+                                    <Button
+                                        className={clsx(classes.control, classes.save)}
+                                        onClick={handleConfirm}
+                                    >
+                                        {t("controls.confirm")}
+                                    </Button>
+                                    <Button
+                                        className={clsx(classes.control, classes.cancel)}
+                                        onClick={handleClose}
+                                    >
+                                        {t("controls.cancel")}
+                                    </Button>
                                 </Grid>
                             </Grid>
-                            <Grid item xs={12} className={classes.controls}>
-                                <Button
-                                    className={clsx(classes.control, classes.save)}
-                                    onClick={handleConfirm}
-                                >
-                                    {t("controls.confirm")}
-                                </Button>
-                                <Button
-                                    className={clsx(classes.control, classes.cancel)}
-                                    onClick={handleClose}
-                                >
-                                    {t("controls.cancel")}
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Paper>
+                        </Paper>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Fade>
+            </Fade>
+        </Modal>
     )
 }
 
 
 const useStyles = makeStyles(theme => ({
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(10px)'   
+    },
     gridCont: {
         height: 'fit-content'
     },

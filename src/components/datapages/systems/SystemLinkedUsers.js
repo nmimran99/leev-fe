@@ -4,7 +4,7 @@ import { UserItem } from '../../user/UserItem';
 import { getFullName } from '../../../api/genericApi';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
 import { useTranslation } from 'react-i18next';
-import { AlertDialog } from '../../reuseables/AlertDialoge';
+import { AlertDialog } from '../../reuseables/AlertDialog';
 import { addUser, removeSystemUser } from '../../../api/systemsApi';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import { AddLinkedUser } from './AddLinkedUser';
@@ -96,6 +96,7 @@ export const SystemLinkedUsers = ({ userList, setData, systemId, isOpen }) => {
                                             user={linkedUser}
                                             showTitle
                                             showPhone
+                                            showName
                                             avatarSize={'50px'}
                                             size={13}
                                         />
@@ -121,7 +122,7 @@ export const SystemLinkedUsers = ({ userList, setData, systemId, isOpen }) => {
                     {
                         Boolean(alertDialog) &&
                         <AlertDialog 
-                            alertDialoge={alertDialog}
+                            alertDialog={alertDialog}
                             open={Boolean(alertDialog)}
                         />
                     }    

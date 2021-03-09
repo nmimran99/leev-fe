@@ -11,7 +11,8 @@ export const FaultLink = ({ faultId, size }) => {
         >
            <span style={{
                color: 'white',
-               fontSize: `${size}px`
+               fontSize: `${size}px`,
+               whiteSpace: 'nowrap'
            }}>
              {faultId}
            </span>

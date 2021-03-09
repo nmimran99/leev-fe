@@ -1,7 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import { Backdrop, Grid, IconButton, makeStyles, Modal, Paper, useMediaQuery } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { UpdateSystemOwner } from './UpdateSystemOwner';
 import { updateSystemOwner, updateSystemAdditionalData } from '../../../api/systemsApi';
 import { SystemName } from './SystemName';
 import { SystemLinkedUsers } from './SystemLinkedUsers';
@@ -160,23 +159,12 @@ export const System = ({ systemData }) => {
                 />
                 {   
                     Boolean(editDetails) &&
-                    <Modal
-                        open={Boolean(editDetails)}
-                        onClose={() => setEditDetails(null)}
-                        closeAfterTransition
-                        BackdropComponent={Backdrop}
-                        BackdropProps={{
-                            timeout: 500
-                        }}
-                        className={classes.modal}
-                    >
-                        <UpsertSystem 
-                            handleClose={() => setEditDetails(null)}
-                            systemId={editDetails}
-                            handleUpdate={updateSystemData}
-                            data={data.data}
-                        />
-                    </Modal>
+                    <UpsertSystem 
+                        handleClose={() => setEditDetails(null)}
+                        systemId={editDetails}
+                        handleUpdate={updateSystemData}
+                        data={data.data}
+                    />
                 }
             
             </Paper>
@@ -185,12 +173,7 @@ export const System = ({ systemData }) => {
 }
 
 const useStyles = makeStyles(theme => ({
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backdropFilter: 'blur(10px)'   
-    },
+    
     paper: {
         background: 'rgba(0,0,0,0.4)',
         border: '1px solid rgba(255,255,255,0.2)',

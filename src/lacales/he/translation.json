@@ -49,7 +49,9 @@
         "createAsset": "יצירת נכס",
         "editAsset": "ערוך פרטי נכס",
         "updateAssetOwner": "עידכון מנהל נכס",
-        "updateAssetOwnerInstructions": "בחר משתמש שיתפקד כמנהל הנכס"
+        "updateAssetOwnerInstructions": "בחר משתמש שיתפקד כמנהל הנכס",
+        "addFollower": "הוסף משתמש עוקב",
+        "addFollowerIntructions": "בחר משתמש על מנת להוסיף לרשימת העוקבים אחר התקלה"
     },
     "systemsModule": {
         "filterBySystemName": "סנן לפי שם מערכת",
@@ -126,8 +128,8 @@
         "statuses" : {
             "ready": "מוכן לביצוע",
             "inProgress": "בביצוע",
-            "Pending": "ממתין לפעולה", 
-            "Close": "סגור"
+            "pending": "ממתין לפעולה", 
+            "closed": "סגור"
         },
         "showFilters": "הצג מסננים",
         "hideFilters": "הסתר מסננים",
@@ -140,7 +142,8 @@
             "editDetails": "ערוך פרטי תקלה",
             "changeOwner": "החלף ממונה על תקלה",
             "addFollowing": "הוסף משתמשים עוקבים",
-            "removeFollower": "הסר משתמש מרשימת העוקבים"
+            "removeFollower": "הסר משתמש מרשימת העוקבים",
+            "changeStatus": "שינוי סטטוס"
         },
         "noFollowers": "לתקלה זו אין כרגע עוקבים.",
         "followingUsers": "עוקבים",
@@ -150,6 +153,7 @@
             "updateFaultDetails": "עדכן פרטי תקלה",
             "createFault": "יצירת תקלה",
             "title": "כותרת התקלה",
+            "titleLimit": "תווים נותרוnu",
             "description": "פירוט התקלה",
             "followingUsers": "עוקבים",
             "asset": "נכס",
@@ -157,11 +161,16 @@
             "faultOwner": "ממונה",
             "faultImages": "תמונות מקושרות",
             "uploadImages": "העלה תמונות",
-            "addFaultImages": "הוספת תמונות מוספות",
-            "imagesSelected": "תמונות נבחרו"
+            "addFaultImages": "הוספת תמונות נוספות",
+            "imagesSelected": "תמונות נבחרו",
+            "uploadedImages": "עריכת תמונות קיימות"
         },
         "updateOwner": "עידכון ממונה על תקלה",
-        "updateOwnerInstructions": "בחר משתמש על מנת לעדכן ממונה על תקלה"   
+        "updateOwnerInstructions": "בחר משתמש על מנת לעדכן ממונה על תקלה",
+        "addFollower": "הוספת עוקב לתקלה",
+        "addFollowerInstructions": "בחר משתמש על מנת להוסיפו לרשימת העוקבים",
+        "changeStatus": "שינוי סטטוס",
+        "changeStatusInstructions": "בחר סטטוס על מנת לשנות את סטטוס התקלה"   
         
     },
     "createMenu": {
@@ -186,7 +195,8 @@
         "add": "כתוב תגובה...",
         "edit": "ערוך",
         "delete": "מחק",
-        "reply": "הגב"
+        "reply": "הגב",
+        "showMore": "הצג תגובות קודמות..."
     },
     "dates": {
         "year": "שנה",
@@ -209,7 +219,7 @@
         "shortday": "ימים",
         "shorthour": "שעות",
         "shortminute": "דקות",
-        "shortsecind": "שניות"
+        "shortsecond": "שניות"
     },
     "controls": {
         "confirm": "אישור",
@@ -220,6 +230,11 @@
         "isRequired": "שדה זה הינו חובה"
     },
     "general": {
-        "noData": "אין מידע" 
+        "noData": "אין מידע",
+        "removeUserConfirmation": {
+            "part1": "האם אתה בטוח שברצונך להסיר את",
+            "part2": "מרשימת העוקבים?"
+        },
+        "removeUserFromFollowing": "הסרת משתמש מרשימת עוקבים" 
     }
 }

@@ -49,7 +49,9 @@
         "createAsset": "Create An Asset",
         "editAsset": "Edit Asset Details",
         "updateAssetOwner": "Upade Asset Manager",
-        "updateAssetOwnerInstructions": "Choose a user to act as asset manager"
+        "updateAssetOwnerInstructions": "Choose a user to act as asset manager",
+        "addFollower": "Add following user",
+        "addFollowerIntructions": "Choose a user to add to the fault following list"
     },
     "systemsModule": {
         "filterBySystemName": "Filter by system name",
@@ -125,8 +127,8 @@
         "statuses" : {
             "ready": "Ready",
             "inProgress": "In Progress",
-            "Pending": "Pending for Action", 
-            "Close": "Closed"
+            "pending": "Pending for Action", 
+            "closed": "Closed"
         },
         "showFilters": "Show Filters",
         "hideFilters": "Hide Filters",
@@ -139,7 +141,8 @@
             "editDetails": "Edit Fault Details",
             "changeOwner": "Change Assigned User",
             "addFollowing": "Add Following Users",
-            "removeFollower": "Remove user from following"
+            "removeFollower": "Remove user from following",
+            "changeStatus": "Change Status"
         },
         "noFollowers": "There are no followers to this fault yet.",
         "followingUsers": "Following",
@@ -149,6 +152,7 @@
             "updateFaultDetails": "Update Fault Details",
             "createFault": "Create Fault",
             "title": "Fault Title",
+            "titleLimit": "characters left",
             "description": "Fault Description",
             "followingUsers": "Follwing",
             "asset": "Asset",
@@ -157,10 +161,13 @@
             "faultImages": "Fault Related Images",
             "uploadImages": "Upload Images",
             "addFaultImages": "Add More Images",
-            "imagesSelected": "Images Selected"
+            "imagesSelected": "Images Selected",
+            "uploadedImages": "Edit existing images"
         },
         "updateOwner": "Update Fault Owner",
-        "updateOwnerInstructions": "Choose user to update as fault owner"
+        "updateOwnerInstructions": "Choose user to update as fault owner",
+        "addFollower": "Add Fault Follower",
+        "addFollowerInstructions": "Choose a user to add to the following list"
         
     },
     "createMenu": {
@@ -185,7 +192,8 @@
         "add": "Write a comment...",
         "edit": "Edit",
         "delete": "Delete",
-        "reply": "Reply"
+        "reply": "Reply",
+        "showMore": "Show previous comments..."
     },
     "dates": {
         "year": "Year",
@@ -208,7 +216,7 @@
         "shortday": "d",
         "shorthour": "h",
         "shortminute": "m",
-        "shortsecind": "s"
+        "shortsecond": "s"
     },
     "controls": {
         "confirm": "Confirm",
@@ -219,6 +227,11 @@
         "isRequired": "This field is required"
     }, 
     "general": {
-        "noData": "No Data" 
+        "noData": "No Data",
+        "removeUserConfirmation": {
+            "part1": "Are you sure you want to remove",
+            "part2": "from the following list?"
+        },
+        "removeUserFromFollowing": "Remove User from Following List"
     }
 }

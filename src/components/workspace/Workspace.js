@@ -6,6 +6,7 @@ import { Switch, Route } from 'react-router-dom'
 import { Systems } from '../datapages/systems/Systems'
 import greyJpg from '../../assets/images/grey.jpg'
 import { Faults } from '../datapages/faults/Faults'
+import { FaultsContextProvider } from '../../context/FaultsContext'
 
 
 export const Workspace = ({}) => {
@@ -15,29 +16,29 @@ export const Workspace = ({}) => {
 
     return(
         <React.Fragment>
-            <Grid container 
-                className={classes.mainContainer} 
-                justify='center' 
-                alignItems='flex-start'
-                 
-            >
-                <Controls />
-                <Grid item xs={12} md={12} lg={11} xl={9} className={classes.mainData} >
-                    <Switch>
-                        <Route path={'/workspace/assets'}>
-                            <Assets />
-                        </Route>
-                        <Route path={'/workspace/systems'}>
-                            <Systems />
-                        </Route>
-                        <Route path={'/workspace/faults'}>
-                            <Faults />
-                        </Route>
-                    </Switch>
+            <FaultsContextProvider>
+                <Grid container 
+                    className={classes.mainContainer} 
+                    justify='center' 
+                    alignItems='flex-start'
+                    
+                >
+                    <Controls />
+                    <Grid item xs={12} md={12} lg={11} xl={9} className={classes.mainData} >
+                        <Switch>
+                            <Route path={'/workspace/assets'}>
+                                <Assets />
+                            </Route>
+                            <Route path={'/workspace/systems'}>
+                                <Systems />
+                            </Route>
+                            <Route path={'/workspace/faults'}>
+                                <Faults />
+                            </Route>
+                        </Switch>
+                    </Grid>
                 </Grid>
-            </Grid>
-            
-            
+            </FaultsContextProvider>  
         </React.Fragment>
         
     )

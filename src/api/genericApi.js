@@ -20,7 +20,7 @@ export const queryParamsToObject = (search) => {
     return decoded;
 }
 
-export const removeQueryParam = (search, paramName) => {
+export const removeQueryParam = (search, paramName) => {  
     let params = new URLSearchParams(search);
     params.delete(paramName);
     return params.toString() ? '?' + params.toString() : '';
@@ -39,6 +39,28 @@ export const addQueryParam = (search, paramList) => {
             params.append(param.name, param.value);
         }
     })
+    return '?' + params.toString();
+}
+
+export const updateQueryParams = (search, add, remove) => {
+    let params = new URLSearchParams(search);
+    if (remove) {
+        remove.forEach(pName => {
+            params.delete(pName)
+        })
+    };
+    if (add) {
+        add.forEach(param => {
+            if (param.value instanceof Array ) {
+                param.value = JSON.stringify(param.value);
+            }
+            if (params.get(param.name)) {
+                params.set(param.name, param.value)
+            } else {
+                params.append(param.name, param.value);
+            }
+        })
+    };
     return '?' + params.toString();
 }
 
@@ -68,7 +90,7 @@ export const getDatediffString = (fromDate) => {
     let diff;
     if (diffInSecs < 60) {
         diff = (diffInSecs).toString();
-        return  diff + i18next.t("dates.shortsecond")
+        return  diff + ' ' + i18next.t("dates.shortsecond")
     }
     if (diffInSecs > 60 && diffInSecs < 3600) {
         diff = Math.round((diffInSecs / 60)).toString();
@@ -94,4 +116,17 @@ export const getDatediffString = (fromDate) => {
         diff = Math.round((diffInSecs / 31556926)).toString();
         return diff + ' ' + i18next.t("dates.shortyear")
     };
+}
+
+export const getStatusList = async (module) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/statuses/getStatusList`, { module });
+        if (res) {
+            return res.data;
+        };
+        return [];
+    } catch(e) {
+        console.log(e.message);
+        return null;
+    }
 }

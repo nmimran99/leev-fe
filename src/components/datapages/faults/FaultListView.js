@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { makeStyles, Grid, useMediaQuery, List, ListItem } from '@material-ui/core';
+import React, { useState, useEffect, useContext } from 'react';
+import { makeStyles, Grid, useMediaQuery, List, ListItem, LinearProgress } from '@material-ui/core';
 import { FaultMinified } from './FaultMinified';
 import { useHistory, useLocation } from 'react-router';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { addQueryParam } from '../../../api/genericApi';
 import { FaultView } from './FaultView';
+import { FaultsContext } from '../../../context/FaultsContext';
 
 export const FaultListView = ({ faults }) => {
     
@@ -13,15 +14,46 @@ export const FaultListView = ({ faults }) => {
     const query = useQuery(location.search);
     const classes = useStyles();
     const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
-    const [ faultView, setFaultView ] = useState(null)
+    const { setFaults } = useContext(FaultsContext);
+    const [ faultView, setFaultView ] = useState(null);
+    const [ faultsData, setFaultsData ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(true);
 
+    useEffect(() => {
+        setFaultsData(faults);
+        setIsLoading(false);
+    }, [faults])
 
+    // const updateMinifiedStatus = (faultId, status) => {
+    //     setIsLoading(true);
+    //     let faultIndex = faultsData.findIndex(f => f._id === faultId);
+    //     if (!faultIndex && faultIndex != 0) return;
+    //     let lf = faultsData;
+    //     lf[faultIndex].status = status;
+    //     setFaults(lf);
+    //     setIsLoading(false);
+    // }
+
+    
+    const updateFaultState = (faultId, field, data) => {
+        setIsLoading(true);
+        let faultIndex = faultsData.findIndex(f => f._id === faultId);
+        if (!faultIndex && faultIndex != 0) return;
+        let lf = faultsData;
+        lf[faultIndex][field] = data;
+        setFaults(lf);
+        setIsLoading(false);
+    }
+ 
     return (
         <Grid container className={classes.main} justify='flex-start'>
             <Grid item xs={12} md={5} lg={3} xl={3} className={classes.faultList}>
                 <List className={classes.list}>
-                {
-                    faults.map((f,i) => 
+                {   
+                    isLoading ? 
+                    null
+                    :
+                    faultsData.map((f,i) => 
                         <ListItem 
                             button 
                             className={classes.item}
@@ -41,7 +73,11 @@ export const FaultListView = ({ faults }) => {
                 !downSm &&
                 Boolean(faultView) &&
                 <Grid item md={7} lg={9} xl={9} className={classes.faultPresenter}>
-                    <FaultView fid={faultView.faultId}/>
+                    <FaultView 
+                        fid={faultView.faultId}
+                        updateFaultState={updateFaultState}
+                        faultData={faultView}
+                    />
                 </Grid>
             }
             
@@ -52,9 +88,10 @@ export const FaultListView = ({ faults }) => {
 const useStyles = makeStyles(theme => ({
     main: {
         border: '1px solid rgba(255,255,255,0.2)',
-        height: '100%',
+        height: '70vh',
         [theme.breakpoints.down('sm')]: {
             border: '0',
+            height: 'auto'
         }
     },
     faultList: {

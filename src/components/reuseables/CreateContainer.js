@@ -52,44 +52,32 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
     const handleSaveFault = details => {
         createNewFault(details)
         .then(data => {
-            console.log(data)
             handleClose();
             history.push(`/workspace/faults/${data.faultId}`)
         })
     }
 
     return (
-        <Modal
-            open={isOpen}
-            onClose={handleClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-                timeout: 500
-            }}
-            className={classes.modal}
-        >
-            <div style={{ outline: 'none'}}>
-                {
-                    itemType === 'asset' ?
-                    <UpsertAsset 
-                        handleClose={handleClose}
-                        handleSave={handleSaveAsset}
-                    /> : 
-                    itemType ==='system' ? 
-                    <UpsertSystem 
-                        handleClose={handleClose}
-                        handleSave={handleSaveSystem}
-                    />
-                    : 
-                    itemType === 'fault' ?
-                    <UpsertFault 
-                        handleClose={handleClose}
-                        handleSave={handleSaveFault}
-                    /> : null
-                }
-            </div>
-        </Modal>
+        <React.Fragment>
+            {
+                itemType === 'asset' ?
+                <UpsertAsset 
+                    handleClose={handleClose}
+                    handleSave={handleSaveAsset}
+                /> : 
+                itemType ==='system' ? 
+                <UpsertSystem 
+                    handleClose={handleClose}
+                    handleSave={handleSaveSystem}
+                />
+                : 
+                itemType === 'fault' ?
+                <UpsertFault 
+                    handleClose={handleClose}
+                    handleSave={handleSaveFault}
+                /> : null
+            }
+        </React.Fragment>
     )
 }
 

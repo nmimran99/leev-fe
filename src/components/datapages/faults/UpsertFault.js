@@ -1,6 +1,6 @@
 import heLocale from "date-fns/locale/he";
 import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, Chip, Input, Avatar, RadioGroup, FormControlLabel, Radio, LinearProgress } from '@material-ui/core';
+import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, Chip, Input, Avatar, RadioGroup, FormControlLabel, Radio, LinearProgress, Backdrop, Modal } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,7 @@ import { UserItem } from '../../user/UserItem';
 import { getFullName } from '../../../api/genericApi';
 import { createSystemMenuOptions, getAssetsSuggestions, getSystemsByAsset } from '../../../api/systemsApi';
 import { getFault } from "../../../api/faultsApi";
+import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 
 
 
@@ -37,9 +38,13 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
         owner: '',
         following: [],
         createdBy: auth.user._id,
-        images: []
+        images: [],
+        uploadedImages: []
     });
 
+    useEffect(() => {
+        console.log(details)
+    }, [details])
 
     useEffect(() => {
         createUserOptions()
@@ -60,7 +65,7 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
             .then(res => {
                let data = res[1];
                if (!data) return;
-               setDetails({ ...data, images: []});
+               setDetails({ ...data, images: [], uploadedImages: data.images});
             })
             .finally(() => {
                 setIsLoading(false)
@@ -138,19 +143,7 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
         }
     }
 
-    const handleChangeMultiple = (event) => {
-        setDetails({...details, 
-            following: event.target.value
-        });
-    };
 
-    const handleFollowingRemove = (followingUser) => event => {
-        event.stopPropagation();
-        setDetails({ ...details, 
-            following: details.following.filter(fu => fu !== followingUser)
-        })
-        
-    }
     
     const handleFileUpload = event => {
         setDetails({
@@ -159,300 +152,352 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
         })
     }
 
+    const removeImage = i => event => {
+        let im = details.uploadedImages;
+        im.splice(i, 1);
+        setDetails({ ...details, uploadedImages: im})
+    }
+
     return (
         isLoading ? 
         <LinearProgress /> :
-        <Fade in={true}>
-            <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
-                <Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
-                    <Paper
-                        elevation={6}
-                        className={classes.paper}
-                        style={{ direction: lang.dir }}
-                    >
-                        <Grid container>
-                            <Grid item xs={12} className={classes.headerRow}>
-                                <div className={classes.title}>
-                                    {mode === 'update' ? t("faultsModule.upsert.updateFaultDetails") : t("faultsModule.upsert.createFault")}
-                                </div>
-                                <div className={classes.close}>
-                                    <IconButton
-                                        className={classes.iconBtn}
-                                        onClick={handleClose}
-                                    >
-                                        <ClearRounded className={classes.icon}/>
-                                    </IconButton>
-                                </div>
-                            </Grid>                     
-                            <Grid item xs={12} sm={6} md={6} lg={6} xl={6} className={classes.section}>
-                                <Grid item xs={12}>
-                                    <div className={classes.sectionTitle}>
-                                        {t("faultsModule.upsert.asset")}
+        <Modal
+            open={true}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500
+            }}
+            className={classes.modal}
+        >
+            <Fade in={true}>
+                <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
+                    <Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
+                        <Paper
+                            elevation={6}
+                            className={classes.paper}
+                            style={{ direction: lang.dir }}
+                        >
+                            <Grid container>
+                                <Grid item xs={12} className={classes.headerRow}>
+                                    <div className={classes.title}>
+                                        {mode === 'update' ? t("faultsModule.upsert.updateFaultDetails") : t("faultsModule.upsert.createFault")}
                                     </div>
-                                </Grid>
-                                <Grid item xs={12} className={classes.fields}>
-                                    <Grid container justify='flex-start'>
-                                        <Grid item xs={12} className={classes.textContainer}>
-                                        <Select
-                                            variant={"outlined"}
-                                            error={ errors.filter(e => e.field === `asset`).length > 0 }
-                                            value={ details.asset }
-                                            onChange={handleChange(`asset`)}
-                                            className={classes.selectInput}
-                                            MenuProps={{
-                                                anchorOrigin: {
-                                                    vertical: "bottom",
-                                                    horizontal: "center",
-                                                },
-                                                transformOrigin: {
-                                                    vertical: "top",
-                                                    horizontal: "center",
-                                                },
-                                                getContentAnchorEl: null,
-                                                classes: {
-                                                    paper: classes.menupaper,
-                                            
-                                                }
-                                            }}
-                                            
+                                    <div className={classes.close}>
+                                        <IconButton
+                                            className={classes.iconBtn}
+                                            onClick={handleClose}
                                         >
-                                            {
-                                                assets.map((asset, i) => 
-                                                    <MenuItem 
-                                                        key={i}
-                                                        value={asset.value}
-                                                        style={{ direction: lang.dir }}
-                                                        className={classes.menuitem}
-                                                    >
-                                                        {asset.text}
-                                                    </MenuItem>
-                                                )
-                                            }
-                                        </Select>
-                                        {
-                                            errors.filter(e => e.field === 'asset').length > 0 &&
-                                            <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                        }
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={4} xl={4} className={classes.section}>
-                                <Grid item xs={12}>
-                                    <div className={classes.sectionTitle}>
-                                        {t("faultsModule.upsert.system")}
+                                            <ClearRounded className={classes.icon}/>
+                                        </IconButton>
                                     </div>
-                                </Grid>
-                                <Grid item xs={12} className={classes.fields}>
-                                    <Grid container justify='flex-start'>
-                                        <Grid item xs={12} className={classes.textContainer}>
-                                        <Select
-                                            variant={"outlined"}
-                                            error={ errors.filter(e => e.field === `system`).length > 0 }
-                                            value={ details.system }
-                                            onChange={handleChange(`system`)}
-                                            className={classes.selectInput}
-                                            MenuProps={{
-                                                anchorOrigin: {
-                                                    vertical: "bottom",
-                                                    horizontal: "center",
-                                                },
-                                                transformOrigin: {
-                                                    vertical: "top",
-                                                    horizontal: "center",
-                                                },
-                                                getContentAnchorEl: null,
-                                                classes: {
-                                                    paper: classes.menupaper,
-                                            
-                                                }
-                                            }}
-                                            
-                                        >
-                                            {
-                                                systems.map((system, i) => 
-                                                    <MenuItem 
-                                                        key={i}
-                                                        value={system.value}
-                                                        style={{ direction: lang.dir }}
-                                                        className={classes.menuitem}
-                                                    >
-                                                        {system.text}
-                                                    </MenuItem>
-                                                )
-                                            }
-                                        </Select>
-                                        {
-                                            errors.filter(e => e.field === 'asset').length > 0 &&
-                                            <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                        }
-                                        </Grid>
+                                </Grid>                     
+                                <Grid item xs={12} sm={6} md={6} lg={6} xl={6} className={classes.section}>
+                                    <Grid item xs={12}>
+                                        <div className={classes.sectionTitle}>
+                                            {t("faultsModule.upsert.asset")}
+                                        </div>
                                     </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} className={classes.section}>
-                                <Grid item xs={12}>
-                                    <div className={classes.sectionTitle}>
-                                        {t("faultsModule.upsert.generalDetails")}
-                                    </div>
-                                </Grid>
-                                <Grid item xs={12} className={classes.fields}>
-                                    <Grid container justify='flex-start'>
-                                        <Grid item xs={12} className={classes.textContainer}>
-                                            <TextField
+                                    <Grid item xs={12} className={classes.fields}>
+                                        <Grid container justify='flex-start'>
+                                            <Grid item xs={12} className={classes.textContainer}>
+                                            <Select
                                                 variant={"outlined"}
-                                                label={t(`faultsModule.upsert.title`)}
-                                                error={ errors.filter(e => e.field === `title`).length > 0 }
-                                                value={ details.title }
-                                                onChange={handleChange('title')}
-                                                className={classes.textField}
-                                                size={'medium'}
-                                                helperText={ errors.filter(e => e.field === `title`).length > 0 ? t("errors.isRequired"): null }
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} className={classes.textContainer}>
-                                            <TextField
-                                                variant={"outlined"}
-                                                label={t(`faultsModule.upsert.description`)}
-                                                value={ details.description }
-                                                onChange={handleChange('description')}
-                                                className={classes.textField}
-                                                size={'medium'}
-                                                multiline={true}
-                                                rows={7}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={6} lg={4} xl={4}  className={classes.section}>
-                                <Grid item xs={12}>
-                                    <div className={classes.sectionTitle}>
-                                        {t("faultsModule.upsert.faultOwner")}
-                                    </div>
-                                </Grid>
-                                <Grid item xs={12} className={classes.fields}>
-                                    <Grid item xs={12} className={classes.textContainer}>
-                                        <Select
-                                            variant={"outlined"}
-                                            error={ errors.filter(e => e.field === `owner`).length > 0 }
-                                            value={ details.owner }
-                                            onChange={handleChange(`owner`)}
-                                            className={classes.selectInput}
-                                            MenuProps={{
-                                                anchorOrigin: {
-                                                    vertical: "bottom",
-                                                    horizontal: "center",
-                                                },
-                                                transformOrigin: {
-                                                    vertical: "top",
-                                                    horizontal: "center",
-                                                },
-                                                getContentAnchorEl: null,
-                                                classes: {
-                                                    paper: classes.menupaper,
-                                            
+                                                error={ errors.filter(e => e.field === `asset`).length > 0 }
+                                                value={ details.asset }
+                                                onChange={handleChange(`asset`)}
+                                                className={classes.selectInput}
+                                                MenuProps={{
+                                                    anchorOrigin: {
+                                                        vertical: "bottom",
+                                                        horizontal: "center",
+                                                    },
+                                                    transformOrigin: {
+                                                        vertical: "top",
+                                                        horizontal: "center",
+                                                    },
+                                                    getContentAnchorEl: null,
+                                                    classes: {
+                                                        paper: classes.menupaper,
+                                                
+                                                    }
+                                                }}
+                                                
+                                            >
+                                                {
+                                                    assets.map((asset, i) => 
+                                                        <MenuItem 
+                                                            key={i}
+                                                            value={asset.value}
+                                                            style={{ direction: lang.dir }}
+                                                            className={classes.menuitem}
+                                                        >
+                                                            {asset.text}
+                                                        </MenuItem>
+                                                    )
                                                 }
-                                            }}
-                                            renderValue={(selected) => {
-                                                let user = userList.find( f => f._id === selected);
-                                                return (
-                                                    
-                                                        <Chip
-                                                            size={'medium'}
-                                                            avatar={<Avatar style={{ height: '40px', width: '40px'}} src={user.avatar} />}
-                                                            label={getFullName(user)}
-                                                            className={classes.chip}
-                                                            
-                                                        />
-                                                
-                                                )
-                                            }}
-                                        >
+                                            </Select>
                                             {
-                                                userList.map((user, i) => 
-                                                    <MenuItem 
-                                                        key={i}
-                                                        value={user.value}
-                                                        style={{ direction: lang.dir }}
-                                                        className={classes.menuitem}
-                                                    >
-                                                        <div className={classes.userCont}>
-                                                            <UserItem
-                                                                user={user}
-                                                                avatarSize={40}
-                                                                size={13}
-                                                            />
-                                                        </div>
-                                                        
-                                                    </MenuItem>
-                                                )
+                                                errors.filter(e => e.field === 'asset').length > 0 &&
+                                                <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
                                             }
-                                        </Select>
-                                        {
-                                            errors.filter(e => e.field === 'owner').length > 0 &&
-                                            <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
-                                        }
-                                        
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            
-                            <Grid item xs={12} md={6} className={classes.section}>
-                                        <Grid item xs={12}>
-                                            <div className={classes.sectionTitle}>
-                                                {mode === 'create' ? t("faultsModule.upsert.faultImages") : t("faultsModule.upsert.addFaultImages")}
-                                            </div>
-                                        </Grid>
-                                        <Grid item xs={12} className={classes.fields}>
-                                            <Grid container justify='flex-start'>
-                                                <Grid item xs={12} className={classes.textContainer}>
-                                                    <Button
-                                                        component={'label'}
-                                                        variant={'contained'}
-                                                        className={classes.uploadBtn}
-                                                    >
-                                                        { t("faultsModule.upsert.uploadImages")}
-                                                        <input 
-                                                            accepts='image/*'
-                                                            type='file'
-                                                            multiple
-                                                            onChange={handleFileUpload}
-                                                            hidden  
-                                                        />
-                                                    </Button>
-                                                    <span className={classes.filesUploaded}>
-                                                        {`${details.images.length} ${t("faultsModule.upsert.imagesSelected")}` }
-                                                    </span>
-                                                </Grid>
-                                                
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                            <Grid item xs={12} className={classes.controls}>
-                                <Button
-                                    className={clsx(classes.control, classes.save)}
-                                    onClick={handleConfirm}
-                                >
-                                    {t("controls.confirm")}
-                                </Button>
-                                <Button
-                                    className={clsx(classes.control, classes.cancel)}
-                                    onClick={handleClose}
-                                >
-                                    {t("controls.cancel")}
-                                </Button>
+                                </Grid>
+                                <Grid item xs={12} sm={6} md={4} lg={4} xl={4} className={classes.section}>
+                                    <Grid item xs={12}>
+                                        <div className={classes.sectionTitle}>
+                                            {t("faultsModule.upsert.system")}
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} className={classes.fields}>
+                                        <Grid container justify='flex-start'>
+                                            <Grid item xs={12} className={classes.textContainer}>
+                                            <Select
+                                                variant={"outlined"}
+                                                error={ errors.filter(e => e.field === `system`).length > 0 }
+                                                value={ details.system }
+                                                onChange={handleChange(`system`)}
+                                                className={classes.selectInput}
+                                                MenuProps={{
+                                                    anchorOrigin: {
+                                                        vertical: "bottom",
+                                                        horizontal: "center",
+                                                    },
+                                                    transformOrigin: {
+                                                        vertical: "top",
+                                                        horizontal: "center",
+                                                    },
+                                                    getContentAnchorEl: null,
+                                                    classes: {
+                                                        paper: classes.menupaper,
+                                                
+                                                    }
+                                                }}
+                                                
+                                            >
+                                                {
+                                                    systems.map((system, i) => 
+                                                        <MenuItem 
+                                                            key={i}
+                                                            value={system.value}
+                                                            style={{ direction: lang.dir }}
+                                                            className={classes.menuitem}
+                                                        >
+                                                            {system.text}
+                                                        </MenuItem>
+                                                    )
+                                                }
+                                            </Select>
+                                            {
+                                                errors.filter(e => e.field === 'asset').length > 0 &&
+                                                <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
+                                            }
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} className={classes.section}>
+                                    <Grid item xs={12}>
+                                        <div className={classes.sectionTitle}>
+                                            {t("faultsModule.upsert.generalDetails")}
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} className={classes.fields}>
+                                        <Grid container justify='flex-start'>
+                                            <Grid item xs={12} className={classes.textContainer}>
+                                                <TextField
+                                                    variant={"outlined"}
+                                                    label={t(`faultsModule.upsert.title`)}
+                                                    error={ errors.filter(e => e.field === `title`).length > 0 }
+                                                    value={ details.title }
+                                                    onChange={handleChange('title')}
+                                                    className={classes.textField}
+                                                    size={'medium'}
+                                                    helperText={ errors.filter(e => e.field === `title`).length > 0 ? t("errors.isRequired") : `${60 - details.title.length} ${t("faultsModule.upsert.titleLimit")}` }
+                                                    inputProps={{
+                                                        maxlength: 60
+                                                    }}
+                                                    FormHelperTextProps={{
+                                                        style: { color: errors.filter(e => e.field === `title`).length > 0 ? 'rgb(244, 67, 54)' : 'rgba(255,255,255,0.6)' }
+                                                    }}
+                                                    
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} className={classes.textContainer}>
+                                                <TextField
+                                                    variant={"outlined"}
+                                                    label={t(`faultsModule.upsert.description`)}
+                                                    value={ details.description }
+                                                    onChange={handleChange('description')}
+                                                    className={classes.textField}
+                                                    size={'medium'}
+                                                    multiline={true}
+                                                    rows={7}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} sm={6} md={6} lg={4} xl={4}  className={classes.section}>
+                                    <Grid item xs={12}>
+                                        <div className={classes.sectionTitle}>
+                                            {t("faultsModule.upsert.faultOwner")}
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} className={classes.fields}>
+                                        <Grid item xs={12} className={classes.textContainer}>
+                                            <Select
+                                                variant={"outlined"}
+                                                error={ errors.filter(e => e.field === `owner`).length > 0 }
+                                                value={ details.owner }
+                                                onChange={handleChange(`owner`)}
+                                                className={classes.selectInput}
+                                                MenuProps={{
+                                                    anchorOrigin: {
+                                                        vertical: "bottom",
+                                                        horizontal: "center",
+                                                    },
+                                                    transformOrigin: {
+                                                        vertical: "top",
+                                                        horizontal: "center",
+                                                    },
+                                                    getContentAnchorEl: null,
+                                                    classes: {
+                                                        paper: classes.menupaper,
+                                                
+                                                    }
+                                                }}
+                                                renderValue={(selected) => {
+                                                    let user = userList.find( f => f._id === selected);
+                                                    return (
+                                                        
+                                                            <Chip
+                                                                size={'medium'}
+                                                                avatar={<Avatar style={{ height: '40px', width: '40px'}} src={user.avatar} />}
+                                                                label={getFullName(user)}
+                                                                className={classes.chip}
+                                                                
+                                                            />
+                                                    
+                                                    )
+                                                }}
+                                            >
+                                                {
+                                                    userList.map((user, i) => 
+                                                        <MenuItem 
+                                                            key={i}
+                                                            value={user.value}
+                                                            style={{ direction: lang.dir }}
+                                                            className={classes.menuitem}
+                                                        >
+                                                            <div className={classes.userCont}>
+                                                                <UserItem
+                                                                    user={user}
+                                                                    avatarSize={40}
+                                                                    size={13}
+                                                                    showName
+                                                                />
+                                                            </div>
+                                                            
+                                                        </MenuItem>
+                                                    )
+                                                }
+                                            </Select>
+                                            {
+                                                errors.filter(e => e.field === 'owner').length > 0 &&
+                                                <FormHelperText style={{ color: '#f44336', marginRight: '15px'}}>{t("errors.isRequired")}</FormHelperText>
+                                            }
+                                            
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                
+                                <Grid item xs={12} md={6} className={classes.section}>
+                                            <Grid item xs={12}>
+                                                <div className={classes.sectionTitle}>
+                                                    {mode === 'create' ? t("faultsModule.upsert.faultImages") : t("faultsModule.upsert.addFaultImages")}
+                                                </div>
+                                            </Grid>
+                                            <Grid item xs={12} className={classes.fields}>
+                                                <Grid container justify='flex-start'>
+                                                    <Grid item xs={12} className={classes.textContainer}>
+                                                        <Button
+                                                            component={'label'}
+                                                            variant={'contained'}
+                                                            className={classes.uploadBtn}
+                                                        >
+                                                            { t("faultsModule.upsert.uploadImages")}
+                                                            <input 
+                                                                accepts='image/*'
+                                                                type='file'
+                                                                multiple
+                                                                onChange={handleFileUpload}
+                                                                hidden  
+                                                            />
+                                                        </Button>
+                                                        <span className={classes.filesUploaded}>
+                                                            {`${details.images.length} ${t("faultsModule.upsert.imagesSelected")}` }
+                                                        </span>
+                                                    </Grid>
+                                                    {
+                                                        Boolean(details.uploadedImages.length) &&
+                                                        <React.Fragment>
+                                                            <Grid item xs={12} className={classes.uploadedImagesTitle}>
+                                                                {t("faultsModule.upsert.uploadedImages")}
+                                                            </Grid>
+                                                            {
+                                                                details.uploadedImages.map((image, i) => 
+                                                                    <Grid item xs={12} className={classes.imageRow} key={i}>
+                                                                        <img src={image} className={classes.previewImage} />
+                                                                        <IconButton     
+                                                                            onClick={removeImage(i)}
+                                                                            className={classes.removeImageBtn}
+                                                                        >
+                                                                            <DeleteOutlineRoundedIcon className={classes.removeImage}/>
+                                                                        </IconButton>
+                                                                    </Grid>
+                                                                )
+                                                            }
+                                                        </React.Fragment> 
+                                                    } 
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                <Grid item xs={12} className={classes.controls}>
+                                    <Button
+                                        className={clsx(classes.control, classes.save)}
+                                        onClick={handleConfirm}
+                                    >
+                                        {t("controls.confirm")}
+                                    </Button>
+                                    <Button
+                                        className={clsx(classes.control, classes.cancel)}
+                                        onClick={handleClose}
+                                    >
+                                        {t("controls.cancel")}
+                                    </Button>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Paper>
+                        </Paper>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Fade>
+            </Fade>
+        </Modal>
     )
 }
 
 
 const useStyles = makeStyles(theme => ({
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(10px)'   
+    },
+    
     gridCont: {
         height: 'fit-content'
     },
@@ -648,5 +693,31 @@ const useStyles = makeStyles(theme => ({
             boxShadow: 'inset white 0 0 2px 1px',
             background: 'rgba(0,0,0,0.3)'
         }
+    },
+    imageRow: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '10px 5px',
+        borderBottom: '1px solid rgba(255,255,255,0.2)'
+    },
+    previewImage: {
+        height: '50px',
+        width: '100px'
+    },
+    removeImageBtn: {
+        color: 'rgba(255,255,255,0.5)',
+        border: '1px solid rgba(255,255,255,0.5)',
+        borderRadius: '50px',
+        padding: '6px',
+        '&:hover': {
+            color: 'white',
+            borderColor: 'white'
+        }
+    },
+    uploadedImagesTitle: {
+        color: 'white',
+        padding: '10px 5px',
+        borderBottom: '1px solid rgba(255,255,255,0.2)'
     }
 }))

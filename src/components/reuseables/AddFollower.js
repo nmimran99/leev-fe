@@ -2,25 +2,25 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Grid, makeStyles, Paper, FormControl, IconButton, useMediaQuery, Fade, Modal, Backdrop,Select, MenuItem, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
-import { LanguageContext } from '../../../context/LanguageContext';
-import { getUserList } from '../../../api/userApi';
+import { getUserList } from '../../api/userApi';
 import clsx from 'clsx'
+import { LanguageContext } from '../../context/LanguageContext';
 
 
 
-export const UpdateSystemOwner = ({ handleClose, handleSave, isOpen, currentOwner }) => {
+export const AddFollower = ({ handleClose, handleSave, isOpen, followerList, title, instructions }) => {
 
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
     const { t, i18n } = useTranslation();
     const [ userList, setUserList ] = useState([]);
-    const [ selectedUser, setSelectedUser ] = useState(null)
+    const [ selectedUser, setSelectedUser ] = useState('')
     
     useEffect(() => {
         getUserList()
-        .then(data => {
-            setUserList(data.filter(u => u._id !== currentOwner._id ));
+        .then(data => {  
+            setUserList(data.filter(u => Boolean(!followerList.find(f => f._id === u._id))));
         })
     }, [])
 
@@ -50,14 +50,14 @@ export const UpdateSystemOwner = ({ handleClose, handleSave, isOpen, currentOwne
                         >
                             <div className={classes.header}>
                                 <div className={classes.title}>
-                                    {t("systemsModule.updateSystemOwnerTitle")}
+                                    {title}
                                 </div>
                                 <IconButton className={classes.closeBtn} onClick={handleClose}>
                                     <ClearRoundedIcon className={classes.icon}/>
                                 </IconButton>  
                             </div>
                             <div className={classes.instructions}>
-                                {t("systemsModule.chooseManagerToUpdate")}
+                                {instructions}
                             </div>
                             <FormControl variant='outlined' className={classes.textInput} >
                                 <Select
@@ -67,7 +67,7 @@ export const UpdateSystemOwner = ({ handleClose, handleSave, isOpen, currentOwne
                                     MenuProps={{
                                         classes: {
                                             paper: classes.menupaper,
-                                            autoWidth: true
+                                           
                                         }
                                     }}
                                 >
@@ -90,7 +90,7 @@ export const UpdateSystemOwner = ({ handleClose, handleSave, isOpen, currentOwne
                             <div className={classes.controls}>
                                 <Button
                                     className={clsx(classes.control, classes.save)}
-                                    onClick={() => handleSave(selectedUser)}
+                                    onClick={handleSave(selectedUser)}
                                     disabled={!selectedUser}
                                 >
                                     {t("alert.confirm")}

@@ -9,34 +9,28 @@ import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import clsx from 'clsx';
 import { green, red, yellow } from '@material-ui/core/colors';
 
-export const StatusTag = ({status, type}) => {
+export const StatusTag = ({status, type, size}) => {
 
     const classes = useStyles();
     const { t, i18n } = useTranslation();
+    
     return (
         <div 
-            className={clsx(classes.statusTag,
-                status.statusId  === 'ready' ? 
-                classes.ready :
-                status.statusId  === 'inProgress' ? 
-                classes.inProgress :
-                status.statusId  === 'Pending' ?
-                classes.Pending :
-                status.statusId  === 'Close' ?
-                classes.Close : null
-            )}>
+            className={clsx(classes.statusTag,classes[status.statusId])}
+            style={{ fontSize: size || '14px'}}    
+        >
             {
                 status.statusId  === 'ready' ? 
                 <PlayCircleOutlineIcon className={classes.icon}/> :
                 status.statusId  === 'inProgress' ? 
                 <CachedIcon className={classes.icon} /> :
-                status.statusId  === 'Pending' ?
+                status.statusId  === 'pending' ?
                 <HourglassEmptyRoundedIcon className={classes.icon}className={classes.icon} /> : 
-                status.statusId  === 'Close' ?
+                status.statusId  === 'closed' ?
                 <CheckCircleOutlineRoundedIcon className={classes.icon} /> : null
             }
             <div className={classes.title}>
-                { t(`faultsModule.statuses.${status.statusId}`)}
+                {t(`faultsModule.statuses.${status.statusId}`)}
             </div>
             
         </div>
@@ -48,9 +42,8 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         width: 'fit-content',
-        padding: '0 5px',
-        borderRadius: '5px',
-        fontSize: '14px',
+        padding: '0 10px',
+        borderRadius: '25px',
         whiteSpace: 'nowrap'
 
     },
@@ -66,11 +59,13 @@ const useStyles = makeStyles(theme => ({
         color: 'black',
         
     },
-    Pending: {
-        background: red[600]
+    pending: {
+        background: red[600],
+        color: 'white'
     },
-    Close: {
-        background: green[800]
+    closed: {
+        background: green[800],
+        color: 'white'
     },
     icon: {
         fontSize: '20px',

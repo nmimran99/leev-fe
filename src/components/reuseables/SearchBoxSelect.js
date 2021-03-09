@@ -171,9 +171,9 @@ const useStyles = makeStyles(theme => ({
         margin: '5px',
         padding: '0 5px',
         maxWidth: '450px',
-        height: '43px',
+        minHeight: '43px',
         border: '1px solid rgba(255,255,255,0.2)',
-        borderRadius: '25px',
+        borderRadius: '50px',
         display: 'flex',
         alignItems: 'center',
         transition: 'box-shadow 0.2s ease-in',
@@ -229,7 +229,8 @@ const useStyles = makeStyles(theme => ({
         boxShadow: 'rgba(0,0,0,0.25) 0px 0px 3px 1px',
         display: 'flex',
         alignItems: 'center',
-        color: 'white'
+        color: 'white',
+        margin: '3px 0'
     },
     tagLabel: {
         padding: '0 5px'

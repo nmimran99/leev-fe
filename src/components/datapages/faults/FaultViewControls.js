@@ -5,9 +5,10 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import CreateIcon from '@material-ui/icons/Create';
 import TransferWithinAStationRoundedIcon from '@material-ui/icons/TransferWithinAStationRounded';
 import GroupAddRoundedIcon from '@material-ui/icons/GroupAddRounded';
+import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 
 
-export const FaultViewControls = ({ id, faultId, editFault, updateOwner }) => {
+export const FaultViewControls = ({ id, faultId, editFault, updateOwner, changeStatus }) => {
 
     const classes = useStyles();
     const { t, i18n } = useTranslation();
@@ -42,11 +43,12 @@ export const FaultViewControls = ({ id, faultId, editFault, updateOwner }) => {
                     <TransferWithinAStationRoundedIcon className={classes.icon}/>
                 </IconButton>
             </Tooltip>
-            <Tooltip title={t("faultsModule.controls.addFollowing")}>
+            <Tooltip title={t("faultsModule.controls.changeStatus")}>
                 <IconButton
                     className={classes.iconBtn}
+                    onClick={changeStatus}
                 >
-                    <GroupAddRoundedIcon className={classes.icon}/>
+                    <DoubleArrowIcon className={classes.icon}/>
                 </IconButton>
             </Tooltip>
         </div>
@@ -62,11 +64,12 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '50px',
         color: 'white',
         margin: '0 5px',
+        padding: '10px',
         '&:hover': {
             background: 'rgba(0,0,0,0.7)'
         }
     },
     icon: {
-
+        fontSize: '20px',
     }
 }))

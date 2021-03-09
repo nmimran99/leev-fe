@@ -72,6 +72,7 @@ export const SystemControls = ({ editName, expanded, owner, showLinkedUsersToggl
                         user={owner}
                         avatarSize={40}
                         showPhone
+                        showName
                         size={13}
                     />
                 </div> 

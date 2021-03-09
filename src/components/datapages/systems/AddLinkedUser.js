@@ -68,7 +68,6 @@ export const AddLinkedUser = ({ handleClose, handleSave, isOpen, linkedUsers }) 
                                     MenuProps={{
                                         classes: {
                                             paper: classes.menupaper,
-                                            autoWidth: true
                                         }
                                     }}
                                 >

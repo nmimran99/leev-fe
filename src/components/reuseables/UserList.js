@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, useMediaQuery, List, ListItem, IconButton, Tooltip } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import { useTranslation } from 'react-i18next';
 import { UserItem } from '../user/UserItem';
 import { ClearRounded } from '@material-ui/icons';
+import { AlertDialog } from './AlertDialog';
+import { getFullName } from '../../api/genericApi';
 
 
 
@@ -14,12 +16,34 @@ export const UserList = ({ users, handleRemove, removeTooltip, handleAdd, addToo
     const location = useLocation();
     const classes = useStyles();
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
+    const { t, i18n } = useTranslation();
     const [ userList, setUserList ] = useState(users || []);
     const [ liHover, setLiHover ] = useState(null)
+    const [ alertDialog, setAlertDialog ] = useState(null);
+
+    useEffect(() => {
+        setUserList(users)
+    }, [users]);
+
+    useEffect(() => {
+        console.log(alertDialog)
+    }, [alertDialog])
 
     const toggleHover = index => event => {
         event.stopPropagation();
         setLiHover(index);
+    }
+
+    const removeUser = user => event => {
+        setAlertDialog({
+            handleConfirm: async () => {
+                const res = await handleRemove(user._id);  
+                setAlertDialog(null)
+            },
+            handleCancel: () => setAlertDialog(null),
+            text: `${t("general.removeUserConfirmation.part1")} ${getFullName(user)} ${t("general.removeUserConfirmation.part2")}?`,
+            title: `${t("general.removeUserFromFollowing")}`
+        })
     }
     return (
            
@@ -55,13 +79,14 @@ export const UserList = ({ users, handleRemove, removeTooltip, handleAdd, addToo
                                 size={11}
                                 showTitle
                                 showPhone
+                                showName
                             />
                             {
                                 (liHover === i || downSm )&&
                                 <Tooltip title={removeTooltip}>
                                     <IconButton 
                                         className={classes.removeUser}
-                                        onClick={handleRemove(user._id)}
+                                        onClick={removeUser(user)}
                                     >
                                         <ClearRounded className={classes.icon}/>
                                     </IconButton>
@@ -76,7 +101,14 @@ export const UserList = ({ users, handleRemove, removeTooltip, handleAdd, addToo
                     </ListItem>
                 }
             </List>
-
+            {
+                Boolean(alertDialog) &&
+                <AlertDialog 
+                    isOpen={Boolean(alertDialog)}
+                    alertDialog={alertDialog}
+                />
+            }
+            
         </div>
             
 
