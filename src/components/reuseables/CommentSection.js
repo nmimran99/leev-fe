@@ -1,28 +1,25 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Avatar, FormControl, OutlinedInput, Grid, ClickAwayListener, IconButton, Button } from '@material-ui/core';
-import { useHistory, useLocation } from 'react-router';
-import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
-import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
-import { useTranslation } from 'react-i18next';
-import SendRoundedIcon from '@material-ui/icons/SendRounded';
-import clsx from 'clsx'
-import { LanguageContext } from '../../context/LanguageContext';
-import { AuthContext } from '../../context/AuthContext';
-import { getDatediffString } from '../../api/genericApi';
-import _ from 'lodash'
+import { Avatar, Button, ClickAwayListener, FormControl, Grid, IconButton, makeStyles, OutlinedInput, useMediaQuery } from '@material-ui/core';
 import { green, red } from '@material-ui/core/colors';
+import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
+import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
+import SendRoundedIcon from '@material-ui/icons/SendRounded';
+import clsx from 'clsx';
+import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useHistory, useLocation } from 'react-router';
+import { getDatediffString } from '../../api/genericApi';
+import { AuthContext } from '../../context/AuthContext';
+import { LanguageContext } from '../../context/LanguageContext';
 
 
 
 export const CommentSection = ({ parent, saveComment, updateComment }) => {
-    
-    const history = useHistory();
-    const location = useLocation();
+
     const classes = useStyles();
-    const { t, i18n }= useTranslation();
+    const { t, }= useTranslation();
     const { lang } = useContext(LanguageContext);
     const { auth } = useContext(AuthContext);
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
     const [ commentList, setCommentList ] = useState(parent.comments || []);
     const [ parentId, setParentId ] = useState(parent._id)
     const [ text, setText ] = useState('');
@@ -87,7 +84,7 @@ export const CommentSection = ({ parent, saveComment, updateComment }) => {
             }
             {
                 _.takeRight(commentList, numOfComments).map((c,i) => 
-                    <Grid item xs={10} className={clsx(classes.comment)} key={i}>
+                    <Grid item xs={12} className={clsx(classes.comment)} key={i}>
                         <div className={classes.commentContainer}>
                             <Avatar className={classes.avatar} alt={'abc'} src={c.user.avatar} style={{ height: '50px', width: '50px' }}/>
                             <div className={classes.data}>

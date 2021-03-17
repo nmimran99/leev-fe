@@ -1,14 +1,14 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Modal, Backdrop } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import { LanguageContext } from '../../context/LanguageContext';
-import { UpsertAsset } from '../datapages/assets/UpsertAsset';
-import { createNewAsset } from '../../api/assetsApi';
+import { makeStyles } from '@material-ui/core';
+import React from 'react';
 import { useHistory, useLocation } from 'react-router';
-import { UpsertSystem } from '../datapages/systems/UpsertSystem';
-import { createNewSystem } from '../../api/systemsApi';
-import { UpsertFault } from '../datapages/faults/UpsertFault';
+import { createNewAsset } from '../../api/assetsApi';
 import { createNewFault } from '../../api/faultsApi';
+import { createNewSystem } from '../../api/systemsApi';
+import { createNewTask } from '../../api/tasksApi';
+import { UpsertAsset } from '../datapages/assets/UpsertAsset';
+import { UpsertFault } from '../datapages/faults/UpsertFault';
+import { UpsertSystem } from '../datapages/systems/UpsertSystem';
+import { UpsertTask } from '../datapages/tasks/UpsertTask';
 
 
 
@@ -17,15 +17,10 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
 
     const location = useLocation();
     const history = useHistory();
-    const classes = useStyles();
-    const { lang } = useContext(LanguageContext);
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
-    const { t, i18n } = useTranslation();
  
     const handleSaveAsset = details => {
         createNewAsset(details)
         .then(data => {
-            console.log(data)
             if (location.pathname === '/workspace/assets') {
                 console.log('here')
                 history.go(0);
@@ -57,6 +52,15 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
         })
     }
 
+    const handleSaveTask = details => {
+        console.log(details)
+        createNewTask(details)
+        .then(data => {
+            handleClose();
+            history.push(`/workspace/tasks/${data.taskId}`)
+        })
+    }
+
     return (
         <React.Fragment>
             {
@@ -75,6 +79,12 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
                 <UpsertFault 
                     handleClose={handleClose}
                     handleSave={handleSaveFault}
+                /> 
+                : 
+                itemType === 'task' ?
+                <UpsertTask 
+                    handleClose={handleClose}
+                    handleSave={handleSaveTask}
                 /> : null
             }
         </React.Fragment>

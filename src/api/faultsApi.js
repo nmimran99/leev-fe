@@ -1,9 +1,6 @@
-import { ImageSearch } from '@material-ui/icons';
-import axios from 'axios'
+import axios from 'axios';
 import i18next from 'i18next';
 import { getFullAddress } from './assetsApi';
-import { getFullName } from './genericApi';
-import { getSystemsByAsset } from './systemsApi';
 
 
 export const getFaultsStatusList = async () => {
@@ -69,28 +66,6 @@ export const getFault = async (faultId, plain) => {
             return res.data;
         } 
         return null;
-    } catch(e) {
-        console.log(e)
-        return null;
-    }
-}
-
-
-
-export const getSystemsByAssetOptions = async (asset) => {
-    try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/systems/getSystemsOptions`, { asset });
-        let options = [];
-        if (!res) return [];
-        res.data.forEach(t => {
-            if (asset) {
-                options.push({ label: t.name, value: t._id})
-            } else {
-                options.push({ label: `${t.name}, ${getFullAddress(t.asset)}`, value: t._id})
-            }
-            
-        });
-        return options;
     } catch(e) {
         console.log(e)
         return null;

@@ -1,26 +1,22 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { makeStyles, Grid, LinearProgress, useMediaQuery } from '@material-ui/core';
-import { useTranslation } from 'react-i18next'
-import { FaultsControls } from './FaultsControls';
+import { Grid, LinearProgress, makeStyles, useMediaQuery } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
-import { useQuery } from '../../reuseables/customHooks/useQuery';
-import { addQueryParam, removeQueryParam, updateQueryParams } from '../../../api/genericApi';
-import { FaultListView } from './FaultListView';
-import { applyFilters, getFaults, getFaultsQueryParams, getMinifiedFaults } from '../../../api/faultsApi';
-import { FaultBlockView } from './FaultBlockView';
+import { getFaults } from '../../../api/faultsApi';
+import { updateQueryParams } from '../../../api/genericApi';
 import { FaultsContext } from '../../../context/FaultsContext';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useQuery } from '../../reuseables/customHooks/useQuery';
+import { FaultBlockView } from './FaultBlockView';
+import { FaultListView } from './FaultListView';
+import { FaultsControls } from './FaultsControls';
 
 export const FaultViews = () => {
-
 
     const history = useHistory();
     const location = useLocation();
     const query = useQuery(location.search);
     const classes = useStyles();
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const { faults, setFaults } = useContext(FaultsContext)
     const [ viewType, setViewType ] = useState(query['viewType'] || 'list');
     const [ isLoading, setIsLoading ] = useState(true);
@@ -74,14 +70,9 @@ export const FaultViews = () => {
                         <FaultListView 
                             faults={faults}
                         /> :
-                        <DndProvider
-                            backend={HTML5Backend}
-                        >
-                            <FaultBlockView 
-                                faults={faults}
-                            />
-                        </DndProvider>
-                        
+                        <FaultBlockView 
+                            faults={faults}
+                        />     
                     }
                     
                 </Grid>

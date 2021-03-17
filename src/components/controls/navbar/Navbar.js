@@ -24,7 +24,6 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu}) => {
 
     return (
         <AppBar
-            position='fixed'
             className={classes.navbar}
         >
             <Grid container alignItems='center' justify='space-between' style={{ height: '64px'}}>
@@ -96,9 +95,7 @@ const useStyles = makeStyles(theme => ({
         padding: "0 8px",
         background: "rgba(0,0,0,0.8)",
         backdropFilter: "blur(22px)",
-        boxShadow: "rgba(0,0,0,0.4) 0px 0px 5px 2px"
-      
-        
+        boxShadow: "rgba(0,0,0,0.4) 0px 0px 5px 2px"   
 
     },
     menuButton: {

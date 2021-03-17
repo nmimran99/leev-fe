@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { makeStyles, Grid, useMediaQuery, List, ListItem, LinearProgress } from '@material-ui/core';
-import { FaultMinified } from './FaultMinified';
+import { Grid, List, ListItem, makeStyles, useMediaQuery } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
-import { useQuery } from '../../reuseables/customHooks/useQuery';
-import { addQueryParam } from '../../../api/genericApi';
-import { FaultView } from './FaultView';
 import { FaultsContext } from '../../../context/FaultsContext';
+import { useQuery } from '../../reuseables/customHooks/useQuery';
+import { FaultMinified } from './FaultMinified';
+import { FaultView } from './FaultView';
 
 export const FaultListView = ({ faults }) => {
     
-    const history = useHistory();
     const location = useLocation();
-    const query = useQuery(location.search);
     const classes = useStyles();
     const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
     const { setFaults } = useContext(FaultsContext);
@@ -23,23 +20,12 @@ export const FaultListView = ({ faults }) => {
         setFaultsData(faults);
         setIsLoading(false);
     }, [faults])
-
-    // const updateMinifiedStatus = (faultId, status) => {
-    //     setIsLoading(true);
-    //     let faultIndex = faultsData.findIndex(f => f._id === faultId);
-    //     if (!faultIndex && faultIndex != 0) return;
-    //     let lf = faultsData;
-    //     lf[faultIndex].status = status;
-    //     setFaults(lf);
-    //     setIsLoading(false);
-    // }
-
-    
+   
     const updateFaultState = (faultId, field, data) => {
         setIsLoading(true);
         let faultIndex = faultsData.findIndex(f => f._id === faultId);
-        if (!faultIndex && faultIndex != 0) return;
-        let lf = faultsData;
+        if (!faultIndex && faultIndex !== 0) return;
+        let lf = [...faultsData];
         lf[faultIndex][field] = data;
         setFaults(lf);
         setIsLoading(false);
@@ -107,7 +93,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     list: {
-        background: 'rgba(0,0,0,0.3)',
+        background: 'rgba(0,0,0,0.4)',
         padding: 0,
         overflowY: 'unset'
     },

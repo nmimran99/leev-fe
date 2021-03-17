@@ -10,7 +10,8 @@ import { FilterByMultiSelect } from '../../reuseables/FilterByMultiSelect';
 import { useHistory, useLocation } from 'react-router';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { getFullAddress, getAsset } from '../../../api/assetsApi';
-import { getSystemsByAssetOptions, getFaultsStatusListSuggestions } from '../../../api/faultsApi';
+import { getFaultsStatusListSuggestions } from '../../../api/faultsApi';
+import { getSystemsByAssetOptions } from '../../../api/systemsApi'
 import DonutSmallIcon from '@material-ui/icons/DonutSmall';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';

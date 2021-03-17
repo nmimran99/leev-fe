@@ -51,7 +51,11 @@ export const AddMenu = ({toggleAddMenu, toggleAdd}) => {
                             </ListItemIcon>
                             <ListItemText primary={t("createMenu.createUser")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
-                        <ListItem button={true} className={classes.listItem}>
+                        <ListItem 
+                            button={true} 
+                            className={classes.listItem}
+                            onClick={toggleAdd('task')}
+                        >
                             <ListItemIcon className={classes.listItemIcon}>
                                 <PostAddIcon />
                             </ListItemIcon>

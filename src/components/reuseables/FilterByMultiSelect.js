@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { makeStyles, Grid, ClickAwayListener, FormControl, OutlinedInput, Button, Menu, MenuItem, IconButton } from '@material-ui/core'
-import { useHistory, useLocation } from 'react-router-dom';
-import { addQueryParam, specialStringPurge, removeQueryParam } from '../../api/genericApi';
-import { useQuery } from './customHooks/useQuery';
+import { Button, IconButton, makeStyles, Menu, MenuItem } from '@material-ui/core';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
-import clsx from 'clsx';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { addQueryParam, removeQueryParam } from '../../api/genericApi';
 import { LanguageContext } from '../../context/LanguageContext';
+import { useQuery } from './customHooks/useQuery';
 
 export const FilterByMultiSelect = ({ filterField, placeholder, filterIcon, optionsFunc }) => {
     

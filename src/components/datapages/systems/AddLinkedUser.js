@@ -169,7 +169,8 @@ const useStyles = makeStyles(theme => ({
     menupaper: {
         background: 'rgba(0,0,0,0.3)',
         backdropFilter: 'blur(10px)',
-
+        maxHeight: '200px',
+        overflowY: 'auto',
     },
     menuitem: {
         color: 'white'

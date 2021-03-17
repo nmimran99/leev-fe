@@ -137,8 +137,7 @@
         "filterByStatus": "סנן על פי סטטוס",
         "listMode": "מצב רשימה",
         "blocksMode": "מצב בלוקים",
-        "controls": {
-            "openInNew": "פתח בחלון חדש",
+        "controls": {    
             "editDetails": "ערוך פרטי תקלה",
             "changeOwner": "החלף ממונה על תקלה",
             "addFollowing": "הוסף משתמשים עוקבים",
@@ -173,6 +172,71 @@
         "changeStatusInstructions": "בחר סטטוס על מנת לשנות את סטטוס התקלה"   
         
     },
+    "tasksModule": {
+        "tasks": "משימות",
+        "statuses" : {
+            "ready": "מוכן לביצוע",
+            "inProgress": "בביצוע",
+            "pending": "ממתין לפעולה", 
+            "closed": "סגור"
+        },
+        "showFilters": "הצג מסננים",
+        "hideFilters": "הסתר מסננים",
+        "filterByTaskOwner": "סנן על פי ממונה על משימה",
+        "filterByStatus": "סנן על פי סטטוס",
+        "controls": {
+            "editDetails": "ערוך פרטי משימה",
+            "changeOwner": "החלף ממונה על משימה",
+            "addRelatedUser": "הוסף משתמשים עוקבים",
+            "removeRelatedUser": "הסר משתמש מרשימת העוקבים",
+            "changeStatus": "שינוי סטטוס",
+            "schedule": "קבע מועדים",
+            "taskMenu": "תפריט משימה"
+        },
+        "noRelatedUsers": "למשימה זו אין כרגע משתמשים מקושרים.",
+        "relatedUsers": "משתמשים מקושרים",
+        "createDate": "נוצר בתאריך",
+        "upsert": {
+            "generalDetails": "פרטים כלליים",
+            "updateTaskDetails": "עדכן פרטי משימה",
+            "createTask": "יצירת משימה",
+            "title": "כותרת המשימה",
+            "titleLimit": "תווים נותרו",
+            "description": "פירוט המשימה",
+            "followingUsers": "עוקבים",
+            "asset": "נכס",
+            "system": "מערכת",
+            "taskOwner": "ממונה",
+            "taskImages": "תמונות מקושרות",
+            "uploadImages": "העלה תמונות",
+            "addTaskImages": "הוספת תמונות נוספות",
+            "imagesSelected": "תמונות נבחרו",
+            "uploadedImages": "עריכת תמונות קיימות",
+            "isUsingSteps": "האם למשימה זו יש שלבים?",
+            "stepsDetails": "פרטי שלבים",
+            "steps": "שלבים",
+            "step": "שלב",
+            "isSequential": "השלמת שלבים לפי הסדר",
+            "addStep": "הוסף שלב נוסף",
+            "repeatableTask": "חזרות",
+            "isRepeatable": "משימה מחזורית",
+            "notificationsInstructions": "הגדרת משימה זו כמשימה חוזרת תאפשר גישה לקביעת התראות וחידוש המשימה באופן מחזורי.",
+            "repeatEvery": "חזור כל",
+            "addScheduling": "הוסף חזרה"
+        },
+        "updateOwner": "עידכון ממונה על משימה",
+        "updateOwnerInstructions": "בחר משתמש על מנת לעדכן ממונה על משימה",
+        "addRelatedUser": "קישור משתמש למשימה",
+        "addRelatedUserInstructions": "בחר משתמש על מנת לקשרו לתקלה",
+        "changeStatus": "שינוי סטטוס",
+        "changeStatusInstructions": "בחר סטטוס על מנת לשנות את סטטוס המשימה",
+        "taskNotLinkedToAsset": "משימה זו אינה מקושרת לנכס או מערכת",
+        "taskSteps": "שלבים למשימה",
+        "step": "שלב",
+        "startDtae": "תאריך התחלה",
+        "startDateText": "תאריך תחילת משימה"        
+        
+    },
     "createMenu": {
         "addAsset": "הוסף נכס",
         "addSystem": "הוסף מערכת",
@@ -199,6 +263,20 @@
         "showMore": "הצג תגובות קודמות..."
     },
     "dates": {
+        "sunday": "ראשון",
+        "monday": "שני",
+        "tuesday": "שלישי",
+        "wednesday": "רביעי",
+        "thursday": "חמישי",
+        "friday": "שישי",
+        "saturday": "שבת",
+        "sundayshort": "א'",
+        "mondayshort": "ב'",
+        "tuesdayshort": "ג'",
+        "wednesdayshort": "ד'",
+        "thursdayshort": "ה'",
+        "fridayshort": "ו'",
+        "saturdayshort": "ש'",
         "year": "שנה",
         "years": "שנים",
         "month": "חודש",
@@ -219,7 +297,20 @@
         "shortday": "ימים",
         "shorthour": "שעות",
         "shortminute": "דקות",
-        "shortsecond": "שניות"
+        "shortsecond": "שניות",
+        "date": "תאריך",
+        "january": "ינואר",
+        "february": "פברואר",
+        "march": "מרץ",
+        "april": "אפריל",
+        "may": "מאי",
+        "june": "יוני",
+        "july": "יולי",
+        "august": "אוגוסט",
+        "september": "ספטמבר",
+        "october": "אוקטובר",
+        "november": "נובמבר",
+        "december": "דצמבר"
     },
     "controls": {
         "confirm": "אישור",
@@ -235,6 +326,18 @@
             "part1": "האם אתה בטוח שברצונך להסיר את",
             "part2": "מרשימת העוקבים?"
         },
-        "removeUserFromFollowing": "הסרת משתמש מרשימת עוקבים" 
+        "removeUserFromFollowing": "הסרת משתמש מרשימת עוקבים",
+        "openFor": "נפתח לפני",
+        "openInNew": "פתח בחלון חדש",
+        "createDate": "נוצר בתאריך"
+    },
+    "scheduler": {
+        "startDate": "תאריך התחלה",
+        "startDateText": "תאריך החזרה הראשונה",
+        "repeatEvery": "חזור בכל",
+        "nextIteration": "חזרה הבאה בתאריך",
+        "inTime": "בשעה",
+        "inDay": "ביום"
+
     }
 }

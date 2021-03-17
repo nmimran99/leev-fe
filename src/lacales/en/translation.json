@@ -137,7 +137,6 @@
         "listMode": "List Mode",
         "blocksMode": "Blocks Mode",
         "controls": {
-            "openInNew": "Open in a new tab",
             "editDetails": "Edit Fault Details",
             "changeOwner": "Change Assigned User",
             "addFollowing": "Add Following Users",
@@ -170,6 +169,68 @@
         "addFollowerInstructions": "Choose a user to add to the following list"
         
     },
+    "tasksModule": {
+        "tasks": "Tasks",
+        "statuses" : {
+            "ready": "Ready",
+            "inProgress": "In Progress",
+            "pending": "Pending for Action", 
+            "closed": "Closed"
+        },
+        "showFilters": "Show Filters",
+        "hideFilters": "Hide Filters",
+        "filterByTaskOwner": "Filter By Fault Owner",
+        "filterByStatus": "Filter by Status",
+        "listMode": "List Mode",
+        "controls": {
+            "editDetails": "Edit Task Details",
+            "changeOwner": "Change Assigned User",
+            "addRelatedUsers": "Add Related Users",
+            "removeRelatedUser": "Remove related user?",
+            "changeStatus": "Change Status",
+            "schedule": "Schedule Task",
+            "taskMenu": "Task Menu"
+        },
+        "noRelatedUsers": "There are no related users to this task yet.",
+        "relatedUsers": "Related Users",
+        "addRelatedUser": "Add Related User",
+        "createDate": "Created at",
+        "upsert": {
+            "generalDetails": "General Details",
+            "updateTaskDetails": "Update Task Details",
+            "createTask": "Create Task",
+            "title": "Fault Title",
+            "titleLimit": "characters left",
+            "description": "Task Description",
+            "relatedUsers": "Related Users",
+            "asset": "Asset",
+            "system": "System",
+            "taskOwner": "Owner",
+            "taskImages": "Task Related Images",
+            "uploadImages": "Upload Images",
+            "addTaskImages": "Add More Images",
+            "imagesSelected": "Images Selected",
+            "uploadedImages": "Edit existing images",
+            "isUsingSteps": "Does this task have steps?",
+            "stepsDetails": "Steps Details",
+            "steps": "Steps",
+            "step": "Step",
+            "isSequential": "Complete step in order",
+            "addStep": "Add Another Step",
+            "repeatableTask": "Repetitions",
+            "isRepeatable": "Repatable Task",
+            "notificationsInstructions": "Defining this task as repeatable will grant access to task alert scheduling and periodical repetitions",
+            "repeatEvery": "Repeat every",
+            "addScheduling": "Add Scheduling"
+        },
+        "updateOwner": "Update Task Owner",
+        "updateOwnerInstructions": "Choose user to update as task owner",
+        "addRelatedUserInstructions": "Choose a user to relate to this task",
+        "taskNotLinkedToAsset": "This task is not linked to any asset or system",
+        "taskSteps": "Task Steps",
+        "step": "Step"
+        
+    },
     "createMenu": {
         "addAsset": "Add Asset",
         "addSystem": "Add System",
@@ -196,6 +257,20 @@
         "showMore": "Show previous comments..."
     },
     "dates": {
+        "sunday": "Sunday",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sundayshort": "Su",
+        "mondayshort": "Mo",
+        "tuesdayshort": "Tu",
+        "wednesdayshort": "We",
+        "thursdayshort": "Th",
+        "fridayshort": "Fr",
+        "saturdayshort": "Sa",
         "year": "Year",
         "years": "Years",
         "month": "Month",
@@ -216,7 +291,20 @@
         "shortday": "d",
         "shorthour": "h",
         "shortminute": "m",
-        "shortsecond": "s"
+        "shortsecond": "s",
+        "date": "Date",
+        "january": "January",
+        "february": "February",
+        "march": "March",
+        "april": "April",
+        "may": "May",
+        "june": "June",
+        "july": "July",
+        "august": "August",
+        "september": "September",
+        "october": "October",
+        "november": "November",
+        "december": "December"
     },
     "controls": {
         "confirm": "Confirm",
@@ -232,6 +320,17 @@
             "part1": "Are you sure you want to remove",
             "part2": "from the following list?"
         },
-        "removeUserFromFollowing": "Remove User from Following List"
+        "removeUserFromFollowing": "Remove User from Following List",
+        "openFor": "Open for",
+        "openInNew": "Open in a new tab",
+        "createDate": "Created at" 
+    },
+    "scheduler": {
+        "startDate": "Start Date",
+        "startDateText": "First Iteration Date",
+        "repeatEvery": "Repeat Every",
+        "nextIteration": "Next Scheduled Date",
+        "inTime": "Time of the day",
+        "inDay": "Day of the week"
     }
 }

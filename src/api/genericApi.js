@@ -130,3 +130,21 @@ export const getStatusList = async (module) => {
         return null;
     }
 }
+
+export const updateArrayStateField = (arr, itemId, fieldName, fieldValue) => {
+    return new Promise((resolve, reject) => {
+        arr.forEach((t,i) => {
+            if (t._id === itemId || i === itemId) {
+                t[fieldName] = fieldValue
+            }
+        })
+        resolve(arr);
+    });
+}
+
+export const updateStateField = (currState, fieldName, fieldValue) => {
+    return new Promise((resolve, reject) => {
+        currState[fieldName] = fieldValue;
+        resolve(currState);
+    });
+}

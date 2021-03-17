@@ -5,12 +5,12 @@ export const LanguageContext = createContext();
 
 export const LanguageContextProvider = (props) => {
     const [ lang, setLang ] = useState({
-        name: 'hebrew',
-        code: 'he',
-        dir: 'rtl',
-        dateformat: 'dd/mm/yyyy HH:MM',
-        dateonly: 'dd/mm/yyyy',
-        timeonly: 'HH:MM'
+        name: 'english',
+        code: 'en',
+        dir: 'ltr',
+        dateformat: 'dd/MM/yyyy HH:mm',
+        dateonly: 'dd/MM/yyyy',
+        timeonly: 'HH:mm'
     })
 
     useEffect(() => {

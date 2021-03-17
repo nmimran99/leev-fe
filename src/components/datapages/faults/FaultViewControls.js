@@ -1,11 +1,10 @@
-import React from 'react';
-import { makeStyles, Grid, IconButton, Tooltip } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { IconButton, makeStyles, Tooltip } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
-import TransferWithinAStationRoundedIcon from '@material-ui/icons/TransferWithinAStationRounded';
-import GroupAddRoundedIcon from '@material-ui/icons/GroupAddRounded';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import TransferWithinAStationRoundedIcon from '@material-ui/icons/TransferWithinAStationRounded';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 export const FaultViewControls = ({ id, faultId, editFault, updateOwner, changeStatus }) => {
@@ -19,7 +18,7 @@ export const FaultViewControls = ({ id, faultId, editFault, updateOwner, changeS
     
     return (
         <div className={classes.container}> 
-            <Tooltip title={t("faultsModule.controls.openInNew")}>
+            <Tooltip title={t("general.openInNew")}>
                 <IconButton
                     className={classes.iconBtn}
                     onClick={openInNewWindow}

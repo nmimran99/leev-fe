@@ -1,12 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, LinearProgress, Modal, Backdrop } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import { LanguageContext } from '../../../context/LanguageContext';
+import { Backdrop, Button, Fade, FormHelperText, Grid, IconButton, LinearProgress, makeStyles, MenuItem, Modal, Paper, Select, TextField, useMediaQuery } from '@material-ui/core';
 import { ClearRounded } from '@material-ui/icons';
-import { AuthContext } from '../../../context/AuthContext';
-import { createUserOptions } from '../../../api/userApi';
-import clsx from 'clsx'
+import clsx from 'clsx';
+import React, { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getAsset } from '../../../api/assetsApi';
+import { createUserOptions } from '../../../api/userApi';
+import { AuthContext } from '../../../context/AuthContext';
+import { LanguageContext } from '../../../context/LanguageContext';
 
 
 
@@ -16,8 +16,7 @@ export const UpsertAsset = ({ handleClose, handleSave, assetId, handleUpdate }) 
     const { lang } = useContext(LanguageContext);
     const { auth } = useContext(AuthContext);
     const [ mode, setMode ] = useState(handleUpdate ? 'update' : 'create')
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const [ errors, setErrors ] = useState([]);
     const [ userList, setUserList ] = useState([]);
     const [ addInfoContext, setAddInfoContext ] = useState(null)
@@ -366,8 +365,10 @@ const useStyles = makeStyles(theme => ({
         overflowY: 'overlay',
         [theme.breakpoints.down('sm')]: {
             height: '81vh',
+            top: 0,
             borderRadius: '0',
-            border: '0'
+            border: '0',
+            padding: '10px 5px'
         },
         '&:focus': {
             outline: 'none'
@@ -410,6 +411,9 @@ const useStyles = makeStyles(theme => ({
         padding: '10px 20px',
         borderRadius: '0px 10px 10px 10px',
         background: 'rgba(0,0,0,0.4)',
+        [theme.breakpoints.down('sm')]: {
+            padding: '10px',
+        }
     },
     textContainer: {
         padding: '5px',
@@ -432,7 +436,8 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid rgba(255,255,255,0.2)',
         marginRight: '7px',
         marginLeft: '-5px',
-        
+        maxHeight: '200px',
+        overflowY: 'auto',
 
     },
     menuitem: {

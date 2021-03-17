@@ -8,27 +8,26 @@ export const ProtectedWorkspace = ({ children, isAuthenticated,...rest}) => {
     const { auth, setAuth } = useContext(AuthContext);
     const [ isLoading, setIsLoading ] = useState(true);
 
-    const checkUserAuthentication = async () => {
-        let token = await handleLS('wb_token', 'get');
-        if (!token) {
+    useEffect(() => {
+        const checkUserAuthentication = async () => {
+            let token = await handleLS('wb_token', 'get');
+            if (!token) {
+                setIsLoading(false);
+                return;
+            };
+            let res = await authenticate(token);
+            if (res.auth) {
+               setAuth({
+                    isAuth: res.auth,
+                    user: res.user,
+                    token: res.token.token,
+                    refreshToken: res.token.refreshToken
+                });
+                  
+            }
             setIsLoading(false);
             return;
-        };
-        let res = await authenticate(token);
-        if (res.auth) {
-           setAuth({
-                isAuth: res.auth,
-                user: res.user,
-                token: res.token.token,
-                refreshToken: res.token.refreshToken
-            });
-              
         }
-        setIsLoading(false);
-        return;
-      }
-
-    useEffect(() => {
         checkUserAuthentication();
     }, []);
 

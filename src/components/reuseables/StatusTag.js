@@ -30,7 +30,7 @@ export const StatusTag = ({status, type, size}) => {
                 <CheckCircleOutlineRoundedIcon className={classes.icon} /> : null
             }
             <div className={classes.title}>
-                {t(`faultsModule.statuses.${status.statusId}`)}
+                {t(`${type}sModule.statuses.${status.statusId}`)}
             </div>
             
         </div>
@@ -51,8 +51,9 @@ const useStyles = makeStyles(theme => ({
         padding: '7px 10px 7px 0px'
     },
     ready: {
-        background: 'rgba(255,255,255,0.4)',
-        color: 'black'
+       
+        background: red[600],
+        color: 'white'
     },
     inProgress: {
         background: yellow[500],
@@ -60,8 +61,8 @@ const useStyles = makeStyles(theme => ({
         
     },
     pending: {
-        background: red[600],
-        color: 'white'
+        background: 'rgba(255,255,255,0.4)',
+        color: 'black'
     },
     closed: {
         background: green[800],

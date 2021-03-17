@@ -1,17 +1,17 @@
-import heLocale from "date-fns/locale/he";
-import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, Chip, Input, Avatar, RadioGroup, FormControlLabel, Radio, Backdrop, Modal } from '@material-ui/core';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { Avatar, Backdrop, Button, Chip, Fade, FormControlLabel, FormHelperText, Grid, IconButton, makeStyles, MenuItem, Modal, Paper, Radio, RadioGroup, Select, TextField, useMediaQuery } from '@material-ui/core';
+import { ClearRounded } from '@material-ui/icons';
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import clsx from 'clsx';
+import heLocale from "date-fns/locale/he";
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LanguageContext } from '../../../context/LanguageContext';
-import { CheckBox, ClearRounded } from '@material-ui/icons';
-import { AuthContext } from '../../../context/AuthContext';
-import { createUserOptions } from '../../../api/userApi';
-import clsx from 'clsx'
-import { UserItem } from '../../user/UserItem';
 import { getFullName } from '../../../api/genericApi';
 import { getAssetsSuggestions } from '../../../api/systemsApi';
+import { createUserOptions } from '../../../api/userApi';
+import { AuthContext } from '../../../context/AuthContext';
+import { LanguageContext } from '../../../context/LanguageContext';
+import { UserItem } from '../../user/UserItem';
 
 
 
@@ -19,9 +19,7 @@ import { getAssetsSuggestions } from '../../../api/systemsApi';
 export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, data }) => {
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
-    const { auth } = useContext(AuthContext);
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const [ mode, setMode ] = useState(handleUpdate ? 'update' : 'create')
     const [ errors, setErrors ] = useState([]);
     const [ assets, setAssets ] = useState([]);
@@ -184,11 +182,11 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
             closeAfterTransition
             BackdropComponent={Backdrop}
             BackdropProps={{
-                timeout: 500
+                timeout: 300
             }}
             className={classes.modal}
         >
-            <Fade in={true}>
+            <Fade in={true} timeout={300}>
                 <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
                     <Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
                         <Paper
@@ -779,7 +777,9 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('sm')]: {
             height: '81vh',
             borderRadius: '0',
-            border: '0'
+            top: 0,
+            border: '0',
+            padding: '10px 5px'
         },
     },
     headerRow: {
@@ -822,6 +822,9 @@ const useStyles = makeStyles(theme => ({
         padding: '10px 20px',
         borderRadius: '0px 10px 10px 10px',
         background: 'rgba(0,0,0,0.4)',
+        [theme.breakpoints.down('sm')]: {
+            padding: '10px',
+        }
     },
     textContainer: {
         padding: '5px',
@@ -843,7 +846,9 @@ const useStyles = makeStyles(theme => ({
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255,255,255,0.2)',
         marginRight: '7px',
-        marginLeft: '-5px'
+        marginLeft: '-5px',
+        maxHeight: '200px',
+        overflowY: 'auto',
 
     },
     menuitem: {

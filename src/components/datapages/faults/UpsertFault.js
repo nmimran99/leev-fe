@@ -1,19 +1,16 @@
-import heLocale from "date-fns/locale/he";
-import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, useMediaQuery, Paper, Grid, Fade, IconButton, Button, TextField, Select, MenuItem, FormHelperText, Chip, Input, Avatar, RadioGroup, FormControlLabel, Radio, LinearProgress, Backdrop, Modal } from '@material-ui/core';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import { Avatar, Backdrop, Button, Chip, Fade, FormHelperText, Grid, IconButton, LinearProgress, makeStyles, MenuItem, Modal, Paper, Select, TextField, useMediaQuery } from '@material-ui/core';
+import { ClearRounded } from '@material-ui/icons';
+import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
+import clsx from 'clsx';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LanguageContext } from '../../../context/LanguageContext';
-import { CheckBox, ClearRounded } from '@material-ui/icons';
-import { AuthContext } from '../../../context/AuthContext';
-import { createUserOptions } from '../../../api/userApi';
-import clsx from 'clsx'
-import { UserItem } from '../../user/UserItem';
+import { getFault } from "../../../api/faultsApi";
 import { getFullName } from '../../../api/genericApi';
 import { createSystemMenuOptions, getAssetsSuggestions, getSystemsByAsset } from '../../../api/systemsApi';
-import { getFault } from "../../../api/faultsApi";
-import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
+import { createUserOptions } from '../../../api/userApi';
+import { AuthContext } from '../../../context/AuthContext';
+import { LanguageContext } from '../../../context/LanguageContext';
+import { UserItem } from '../../user/UserItem';
 
 
 
@@ -22,8 +19,7 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
     const { auth } = useContext(AuthContext);
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const [ mode, setMode ] = useState(handleUpdate ? 'update' : 'create')
     const [ errors, setErrors ] = useState([]);
     const [ assets, setAssets ] = useState([]);
@@ -143,8 +139,6 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
         }
     }
 
-
-    
     const handleFileUpload = event => {
         setDetails({
             ...details,
@@ -318,7 +312,7 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
                                                     size={'medium'}
                                                     helperText={ errors.filter(e => e.field === `title`).length > 0 ? t("errors.isRequired") : `${60 - details.title.length} ${t("faultsModule.upsert.titleLimit")}` }
                                                     inputProps={{
-                                                        maxlength: 60
+                                                        maxLength: 60
                                                     }}
                                                     FormHelperTextProps={{
                                                         style: { color: errors.filter(e => e.field === `title`).length > 0 ? 'rgb(244, 67, 54)' : 'rgba(255,255,255,0.6)' }
@@ -507,11 +501,12 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '10px',
         padding: '10px 20px',
         overflowY: 'overlay',
-        height: '80vh',
         [theme.breakpoints.down('sm')]: {
             height: '81vh',
+            top: 0,
             borderRadius: '0',
-            border: '0'
+            border: '0',
+            padding: '10px 5px'
         },
         '&:focus': {
             outline: 'none'
@@ -557,6 +552,9 @@ const useStyles = makeStyles(theme => ({
         padding: '10px 20px',
         borderRadius: '0px 10px 10px 10px',
         background: 'rgba(0,0,0,0.4)',
+        [theme.breakpoints.down('sm')]: {
+            padding: '10px',
+        }
     },
     textContainer: {
         padding: '5px',
@@ -577,7 +575,7 @@ const useStyles = makeStyles(theme => ({
         background: 'rgba(0,0,0,0.8)',
         backdropFilter: 'blur(10px)',
         height: '200px',
-        overflowY: 'overlay',
+        overflowY: 'auto',
         border: '1px solid rgba(255,255,255,0.2)',
         marginRight: '7px',
         marginLeft: '-5px'

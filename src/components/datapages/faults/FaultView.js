@@ -1,27 +1,22 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { makeStyles, Grid, useMediaQuery, List, ListItem, IconButton, Tooltip, LinearProgress, Backdrop, Modal } from '@material-ui/core';
-import { useHistory, useLocation, useParams } from 'react-router';
-import { useQuery } from '../../reuseables/customHooks/useQuery';
-import { getFullAddress } from '../../../api/assetsApi';
+import { Grid, LinearProgress, makeStyles, useMediaQuery } from '@material-ui/core';
+import dateFormat from 'dateformat';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Carousel } from '../../reuseables/Carousel';
-import { CheckBoxOutlineBlank, ImageSearch } from '@material-ui/icons';
-import { UserItem } from '../../user/UserItem';
-import { FaultViewControls } from './FaultViewControls';
-import { FaultLink } from './FaultLink';
-import { ClearRounded } from '@material-ui/icons';
-import { UserList } from '../../reuseables/UserList';
-import dateFormat from 'dateformat'
-import { LanguageContext } from '../../../context/LanguageContext';
-import { CommentSection } from '../../reuseables/CommentSection';
+import { useHistory, useLocation, useParams } from 'react-router';
+import { getFullAddress } from '../../../api/assetsApi';
 import { addFollowingUser, getFault, removeFollowingUser, saveFaultComment, updateFault, updateFaultComment, updateFaultOwner, updateFaultStatus } from '../../../api/faultsApi';
-import { UpsertFault } from './UpsertFault';
-import { UpdateOwner } from '../../reuseables/UpdateOwner';
-import { updateSystemAdditionalData } from '../../../api/systemsApi';
+import { LanguageContext } from '../../../context/LanguageContext';
 import { AddFollower } from '../../reuseables/AddFollower';
-import { AuthContext } from '../../../context/AuthContext';
-import { UpdateStatus } from '../../reuseables/UpdateStatus';
+import { Carousel } from '../../reuseables/Carousel';
+import { CommentSection } from '../../reuseables/CommentSection';
 import { StatusTag } from '../../reuseables/StatusTag';
+import { UpdateOwner } from '../../reuseables/UpdateOwner';
+import { UpdateStatus } from '../../reuseables/UpdateStatus';
+import { UserList } from '../../reuseables/UserList';
+import { UserItem } from '../../user/UserItem';
+import { FaultLink } from './FaultLink';
+import { FaultViewControls } from './FaultViewControls';
+import { UpsertFault } from './UpsertFault';
 
 
 
@@ -29,11 +24,9 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
     
     const history = useHistory();
     const location = useLocation();
-    const query = useQuery(location.search);
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
-    const { auth } = useContext(AuthContext);
     const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
     const [ fault, setFault ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(true);
@@ -42,7 +35,6 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
     const [ changeOwner, setChangeOwner ] = useState(false);
     const [ addFollowerModal, setAddFollowerModal ] = useState(null);
     const [ changeStatus, setChangeStatus ] = useState(null);
-    const [ notExist, setNotExist ] = useState(false);
     
     useEffect(() => {
         if (faultData) {
@@ -115,7 +107,6 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
         }
     }
 
-
     const handleChangeStatus = async (statusId) => {
         const res = await updateFaultStatus(fault._id, statusId);
         if (res) {
@@ -132,13 +123,17 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 
     const handleSaveComment = async (faultId, userId, text) => {
         const res = await saveFaultComment(faultId, userId, text);
-        updateFaultState(res._id, 'comments', res.comments);
+        if(updateFaultState) {
+            updateFaultState(res._id, 'comments', res.comments);
+        };
         return Promise.resolve(res);
     }
 
     const handleUpdateComment = async (faultId, commentId, text) => {
         const res = await updateFaultComment(faultId, commentId, text);
-        updateFaultState(res._id, 'comments', res.comments);
+        if(updateFaultState) {
+            updateFaultState(res._id, 'comments', res.comments);
+        }
         return Promise.resolve(res);
 
     }
@@ -173,7 +168,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
                     </Grid>
                                  
                 </Grid>
-                <Grid item xs={12} sm={12} md={11} lg={8} xl={8}  className={classes.rightContainer} >
+                <Grid item xs={12} sm={12} md={8} lg={8} xl={9}  className={classes.rightContainer} >
                     <div className={classes.asset}>
                         {getFullAddress(fault.asset)}
                     </div>  
@@ -195,7 +190,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
                         />
                     }
                 </Grid>
-                <Grid item xs={12} md={12} lg={3} xl={4} className={classes.leftContainer}>
+                <Grid item xs={8} sm={12} md={4} lg={3} xl={3} className={classes.leftContainer}>
                     <div className={classes.owner}>
                         <UserItem 
                             user={fault.owner}
@@ -272,7 +267,10 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 const useStyles = makeStyles(theme => ({
     container: {
         overflowY: 'overlay',
-        height: '100%'
+        height: '100%',
+        [theme.breakpoints.down('sm')]: {
+            height: 'auto'
+        }
     },
     rightContainer: {
         display: 'flex',
@@ -280,7 +278,8 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'flex-start',
         padding: '0 30px',
         [theme.breakpoints.down('sm')]: {
-            alignItems: 'center'
+            alignItems: 'center',
+            padding: '0 15px'
         }
         
     },

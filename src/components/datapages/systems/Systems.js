@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Grid, LinearProgress, makeStyles, Paper, useMediaQuery } from '@material-ui/core';
-import { SystemsControls } from './SystemsControls';
+import { Grid, LinearProgress, makeStyles, useMediaQuery } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { useLocation } from 'react-router';
 import { queryParamsToObject } from '../../../api/genericApi';
-import { getSystemsByAsset } from '../../../api/systemsApi';
-import { applyFilters } from '../../../api/systemsApi';
+import { applyFilters, getSystemsByAsset } from '../../../api/systemsApi';
+import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { System } from './System';
+import { SystemsControls } from './SystemsControls';
 import { SystemsHeader } from './SystemsHeader';
-import { UpsertSystem } from './UpsertSystem';
 
 export const Systems = () => {
 
     const classes = useStyles();
     const location = useLocation();
     const query = useQuery(location.search);
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const [ systems, setSystems ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(false);
  

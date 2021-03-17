@@ -37,7 +37,8 @@ export const Controls = () => {
     return (
         <React.Fragment>
             <Grid container className={classes.controlsContainer} justify='center'>
-                <Grid item xs={11} md={11}>
+                <Grid item xs={12} 
+                >
                     <Navbar 
                         toggleMenu={toggleMenu} 
                         menuOpen={menuOpen}

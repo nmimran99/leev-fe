@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { makeStyles, Grid, LinearProgress, useMediaQuery } from '@material-ui/core';
-import { Route, useHistory, useLocation, useRouteMatch, Switch } from 'react-router';
-import { useQuery } from '../../reuseables/customHooks/useQuery';
-import { FaultViews } from './FaultViews'
+import { Grid } from '@material-ui/core';
+import React from 'react';
+import { Route, Switch, useRouteMatch } from 'react-router';
 import { FaultView } from './FaultView';
+import { FaultViews } from './FaultViews';
 
 
 
 export const Faults = () => {
-
-
-    const history = useHistory();
-    const location = useLocation();
-    const query = useQuery(location.search);
-    const classes = useStyles();
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
-
-
-    const { path, url } = useRouteMatch();
+    
+    const { path } = useRouteMatch();
 
 
     return (
@@ -34,7 +25,3 @@ export const Faults = () => {
         
     )
 }
-
-const useStyles = makeStyles(theme => ({
-
-}))

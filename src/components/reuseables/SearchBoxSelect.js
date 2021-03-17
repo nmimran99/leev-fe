@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'
-import { useHistory, useLocation } from 'react-router-dom';
-import { addQueryParam, removeQueryParam, queryParamsToObject, specialStringPurge} from '../../api/genericApi';
-import { OutlinedInput, FormControl, makeStyles, Grid, ClickAwayListener, IconButton, Menu, MenuItem } from '@material-ui/core'
-import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
+import { ClickAwayListener, FormControl, IconButton, makeStyles, Menu, MenuItem, OutlinedInput } from '@material-ui/core';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
-import { useQuery } from './customHooks/useQuery';
+import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import clsx from 'clsx';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { addQueryParam, removeQueryParam } from '../../api/genericApi';
 import { LanguageContext } from '../../context/LanguageContext';
+import { useQuery } from './customHooks/useQuery';
 
 export const SearchBoxSelect = ({ placeholder, filterField, suggestionsFunc, reloadedLabel, reloadedValue }) => {
     
@@ -52,23 +52,13 @@ export const SearchBoxSelect = ({ placeholder, filterField, suggestionsFunc, rel
         if (searchText) {
             const data = await suggestionsFunc(searchText);
             setMenuOptions(data || []);
-            setAnchorEl(input.current)
-            
-
-                 
+            setAnchorEl(input.current)      
         } else {
             history.push({
                 path: location.pathname,
                 search: removeQueryParam(location.search, filterField)
             });
         }
-        // if (searchText) {
-        //     history.push({
-        //         path: location.pathname,
-        //         search: addQueryParam(location.search, [{ name: 'searchText', value: searchText}])
-        //     });
-        //     return; 
-        // }   
     }
     
     const getTag = val => {

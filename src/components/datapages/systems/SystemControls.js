@@ -73,7 +73,7 @@ export const SystemControls = ({ editName, expanded, owner, showLinkedUsersToggl
                         avatarSize={40}
                         showPhone
                         showName
-                        size={13}
+                        size={12}
                     />
                 </div> 
             </div>
@@ -130,11 +130,6 @@ const useStyles = makeStyles(theme => ({
         padding: '5px 20px 5px 10px',
         display: 'grid',
         placeItems: 'center',
-        border: '1px solid rgba(255,255,255,0.2)',
-        borderRadius: '5px',
-        '&:hover': {
-            background: 'rgba(0,0,0,0.8)'
-        },
         [theme.breakpoints.down('md')]: {
             marginTop: '5px',
             borderRadius: '50px',

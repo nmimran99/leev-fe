@@ -137,3 +137,23 @@ export const createSystemMenuOptions = (systems) => {
         resolve(options);
     })
 }
+
+export const getSystemsByAssetOptions = async (asset) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/systems/getSystemsOptions`, { asset });
+        let options = [];
+        if (!res) return [];
+        res.data.forEach(t => {
+            if (asset) {
+                options.push({ label: t.name, value: t._id})
+            } else {
+                options.push({ label: `${t.name}, ${getFullAddress(t.asset)}`, value: t._id})
+            }
+            
+        });
+        return options;
+    } catch(e) {
+        console.log(e)
+        return null;
+    }
+}

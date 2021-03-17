@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles, useMediaQuery, List, ListItem, IconButton, Tooltip } from '@material-ui/core';
-import { useHistory, useLocation } from 'react-router';
-import AddRoundedIcon from '@material-ui/icons/AddRounded';
-import { useTranslation } from 'react-i18next';
-import { UserItem } from '../user/UserItem';
+import { IconButton, List, ListItem, makeStyles, Tooltip, useMediaQuery } from '@material-ui/core';
 import { ClearRounded } from '@material-ui/icons';
-import { AlertDialog } from './AlertDialog';
+import AddRoundedIcon from '@material-ui/icons/AddRounded';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getFullName } from '../../api/genericApi';
+import { UserItem } from '../user/UserItem';
+import { AlertDialog } from './AlertDialog';
 
 
 
 export const UserList = ({ users, handleRemove, removeTooltip, handleAdd, addTooltip, title, placeholder, width }) => {
     
-    const history = useHistory();
-    const location = useLocation();
     const classes = useStyles();
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const [ userList, setUserList ] = useState(users || []);
     const [ liHover, setLiHover ] = useState(null)
     const [ alertDialog, setAlertDialog ] = useState(null);
@@ -178,7 +175,8 @@ const useStyles = makeStyles(theme => ({
         color: 'white',
         padding: '10px 20px',
         width: '90%',
-        margin: '10px auto'
+        margin: '10px auto',
+        fontSize: '13px'
     }
     
 }))

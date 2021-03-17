@@ -156,16 +156,14 @@ export const System = ({ systemData }) => {
                     isOpen={showAdditionalDetails}
                     systemId={data._id}
                     toggleEdit={() => setEditDetails(data._id)}
+                />           
+                <UpsertSystem 
+                    handleClose={() => setEditDetails(null)}
+                    systemId={editDetails}
+                    handleUpdate={updateSystemData}
+                    data={data.data}
                 />
-                {   
-                    Boolean(editDetails) &&
-                    <UpsertSystem 
-                        handleClose={() => setEditDetails(null)}
-                        systemId={editDetails}
-                        handleUpdate={updateSystemData}
-                        data={data.data}
-                    />
-                }
+              
             
             </Paper>
         </Grid>
@@ -249,11 +247,7 @@ const useStyles = makeStyles(theme => ({
         padding: '5px 20px 5px 10px',
         display: 'grid',
         placeItems: 'center',
-        border: '1px solid rgba(255,255,255,0.2)',
         borderRadius: '5px',
-        '&:hover': {
-            background: 'rgba(0,0,0,0.8)'
-        },
         [theme.breakpoints.down('md')]: {
             marginTop: '5px',
             borderRadius: '50px',

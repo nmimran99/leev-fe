@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
-import { Controls } from '../controls/Controls'
-import { makeStyles, Grid, useMediaQuery } from '@material-ui/core'
-import { Assets } from '../datapages/assets/Assets'
-import { Switch, Route } from 'react-router-dom'
-import { Systems } from '../datapages/systems/Systems'
+import { Grid, makeStyles } from '@material-ui/core'
+import React from 'react'
+import { Route, Switch } from 'react-router-dom'
 import greyJpg from '../../assets/images/grey.jpg'
-import { Faults } from '../datapages/faults/Faults'
 import { FaultsContextProvider } from '../../context/FaultsContext'
+import { Controls } from '../controls/Controls'
+import { Assets } from '../datapages/assets/Assets'
+import { Faults } from '../datapages/faults/Faults'
+import { Systems } from '../datapages/systems/Systems'
+import { Tasks } from '../datapages/tasks/Tasks'
 
 
 export const Workspace = ({}) => {
 
     const classes = useStyles();
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
     return(
         <React.Fragment>
@@ -35,6 +35,9 @@ export const Workspace = ({}) => {
                             <Route path={'/workspace/faults'}>
                                 <Faults />
                             </Route>
+                            <Route path={'/workspace/tasks'}>
+                                <Tasks />
+                            </Route>
                         </Switch>
                     </Grid>
                 </Grid>
@@ -51,12 +54,11 @@ const useStyles = makeStyles(theme => ({
         zIndex: 2,
         backgroundRepeat: 'no-reaper',
         backgroundSize: 'cover',
-        
         overflowY: 'auto',
         [theme.breakpoints.down('sm')]: { 
             '&::-webkit-scrollbar': { 
                 display:  'none'
-            } 
+            }
         }   
     },
     

@@ -92,7 +92,7 @@ export const applyFilters = (filters, assets) => {
                 if (filters.owner instanceof Array) {
                     return filters.owner.indexOf(asset.owner._id) !== -1
                 }
-                return  asset.owner._id == filters.owner
+                return  asset.owner._id === filters.owner
             })
         }
         resolve(assets);

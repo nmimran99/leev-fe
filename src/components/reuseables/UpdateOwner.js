@@ -173,7 +173,9 @@ const useStyles = makeStyles(theme => ({
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255,255,255,0.2)',
         marginTop: '55px',
-        marginRight: '7px'
+        marginRight: '7px',
+        maxHeight: '200px',
+        overflowY: 'auto',
 
     },
     menuitem: {

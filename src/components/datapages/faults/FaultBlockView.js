@@ -1,24 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles, Grid, useMediaQuery, List, ListItem } from '@material-ui/core';
-import { FaultMinified } from './FaultMinified';
-import { useHistory, useLocation } from 'react-router';
-import { useQuery } from '../../reuseables/customHooks/useQuery';
-import { FaultView } from './FaultView';
-import { useTranslation } from 'react-i18next';
-import { StatusTag } from '../../reuseables/StatusTag';
+import { Grid, List, makeStyles } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { getStatusList } from '../../../api/genericApi';
-import { Link } from 'react-router-dom';
+import { StatusTag } from '../../reuseables/StatusTag';
 import { FaultBlock } from './FaultBlock';
 
 export const FaultBlockView = ({ faults }) => {
     
-    const history = useHistory();
-    const location = useLocation();
-    const query = useQuery(location.search);
     const classes = useStyles();
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
-    const { t, i18n } = useTranslation();
-    const [ faultView, setFaultView ] = useState(null);
     const [ faultsData, setFaultsData ] = useState([]);
     const [ statuses, setStatuses ] = useState([]);
 
@@ -45,7 +33,7 @@ export const FaultBlockView = ({ faults }) => {
                         <Grid item xs={12} lg={3} xl={3} className={classes.gridItem} key={i}>                     
                             <div className={classes.block}>
                                 <div className={classes.blockTitle}>
-                                    <StatusTag status={s}/>
+                                    <StatusTag type='fault' status={s}/>
                                 </div>
                                 
                                 <List className={classes.blockFaults} >
@@ -64,9 +52,6 @@ export const FaultBlockView = ({ faults }) => {
     )
 }
 
-const ItemTypes = {
-    FAULT: 'fault'
-}
 
 const useStyles = makeStyles(theme => ({
    container: {

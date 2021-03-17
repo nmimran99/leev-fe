@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../context/AuthContext'
-import { makeStyles, Avatar, Typography, Button } from '@material-ui/core'
+import { Avatar, makeStyles, Typography } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { getUserDataById } from '../../api/userApi';
 
 
 export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, size }) => {
-
-    const { auth } = useContext(AuthContext)
+    
     const [ userData, setUserData ] = useState(user)
     const [ isLoading, setIsLoading ] = useState(true);
     const classes = useStyles();

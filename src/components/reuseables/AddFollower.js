@@ -42,7 +42,7 @@ export const AddFollower = ({ handleClose, handleSave, isOpen, followerList, tit
         >
             <Fade in={isOpen}>
                 <Grid container justify='center' alignItems='center' style={{ outline: '0'}}>
-                    <Grid item xs={10} sm={7} md={5} lg={3} xl={3}>
+                    <Grid item xs={11} sm={7} md={5} lg={3} xl={3}>
                         <Paper 
                             className={classes.paper} 
                             style={{ direction: lang.dir }}
@@ -170,9 +170,10 @@ const useStyles = makeStyles(theme => ({
         background: 'rgba(0,0,0,0.3)',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255,255,255,0.2)',
-        marginTop: '55px',
-        marginRight: '7px'
-
+        maxHeight: '200px',
+        overflowY: 'auto',
+        marginTop: '60px',
+        marginRight: '7px',
     },
     menuitem: {
         color: 'white'
