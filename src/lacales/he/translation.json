@@ -222,7 +222,8 @@
             "isRepeatable": "משימה מחזורית",
             "notificationsInstructions": "הגדרת משימה זו כמשימה חוזרת תאפשר גישה לקביעת התראות וחידוש המשימה באופן מחזורי.",
             "repeatEvery": "חזור כל",
-            "addScheduling": "הוסף חזרה"
+            "addScheduling": "הוסף חזרה",
+            "scheduleTitle": "מחזורי משימה"
         },
         "updateOwner": "עידכון ממונה על משימה",
         "updateOwnerInstructions": "בחר משתמש על מנת לעדכן ממונה על משימה",
@@ -236,6 +237,34 @@
         "startDtae": "תאריך התחלה",
         "startDateText": "תאריך תחילת משימה"        
         
+    },
+    "documentsModule": {
+        "upsert": {
+            "generalDetails": "פרטים כלליים",
+            "updateDocumentDetails": "עידכון פרטי מסמך",
+            "createDocument": "יצירת מסמך",
+            "description": "תיאור מסמך",
+            "linkDocInstructions": "קשר מסמך זה לפריט קיים",
+            "asset": "נכס",
+            "system": "מערכת",
+            "user": "משתמש",
+            "uploadDocument": "העלה מסמך",
+            "fileSelected": "מסמך נבחר",
+            "noFileSelected": "לא נבחר מסמך",
+            "document": "מסמך",
+            "task": "משימה",
+            "fault": "תקלה",
+            "filetype": "סוג קובץ"
+        },
+        "controls": {
+            "documentMenu": "תפריט מסמך",
+            "editDetails": "ערוך פרטי מסמך",
+            "downloadFile": "הורדה",
+            "deleteFile": "מחיקת מסמך"
+        },
+        "deleteFilePrompt": "האם אתה בטוח שברצונך למחוק את המסמך ",
+        "deleteFileTitle": "מחיקת מסמך",
+        "documents": "מסמכים"
     },
     "createMenu": {
         "addAsset": "הוסף נכס",
@@ -312,6 +341,18 @@
         "november": "נובמבר",
         "december": "דצמבר"
     },
+    "filters": {
+        "filterBySystemName": "סנן על פי שם מערכת",
+        "filterByAsset": "סנן על פי נכס",
+        "filterBySystemOwner": "סנן על פי ממונה על מערכת",
+        "showFilters": "הצג מסננים",
+        "hideFilters": "הסתר מסננים",
+        "filterByTaskOwner": "סנן על פי ממונה על משימה",
+        "filterByStatus": "סנן על פי סטטוס",
+        "filterByUser": "סנן על פי משתמש",
+        "filterByFault": "סנן על פי תקלה",
+        "filterByTask": "סנן על פי משימה"
+    },
     "controls": {
         "confirm": "אישור",
         "cancel": "ביטול",
@@ -329,7 +370,8 @@
         "removeUserFromFollowing": "הסרת משתמש מרשימת עוקבים",
         "openFor": "נפתח לפני",
         "openInNew": "פתח בחלון חדש",
-        "createDate": "נוצר בתאריך"
+        "createDate": "נוצר בתאריך",
+        "none": "ללא" 
     },
     "scheduler": {
         "startDate": "תאריך התחלה",
@@ -337,7 +379,25 @@
         "repeatEvery": "חזור בכל",
         "nextIteration": "חזרה הבאה בתאריך",
         "inTime": "בשעה",
-        "inDay": "ביום"
+        "inDay": "ביום",
+        "noItems": "אין חזרות מוגדרות"
 
+    },
+    "notificationsModule": {
+        "notifications": "התראות",
+        "statusUpdate":{
+            "header": "%%type%% %%itemid%%",
+            "body": "%%name%% שינה את הסטטוס ל%%status%%"
+        },
+        "ownerChange": {
+            "header": "%%type%% %%itemid%%",
+            "body": "%%name%% שינה את ממונה התקלה ל%%owner%%"
+        },
+        "fault": "תקלה",
+        "task": "משימה",
+        "new": "חדש",
+        "earlier": "התראות קודמות",
+        "markAsRead": "סמן כנקרא",
+        "markAsUnread": "סמן כלא נקרא"
     }
 }

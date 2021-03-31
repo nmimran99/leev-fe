@@ -245,7 +245,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
                     handleClose={() => setAddFollowerModal(false)}
                     handleSave={addFollower}
                     isOpen={addFollowerModal}
-                    followerList={fault.following}
+                    followerList={[...fault.following, fault.owner]}
                     title={t("faultsModule.addFollower")}
                     instructions={t("faultsModule.addFollowerInstructions")}
                 />

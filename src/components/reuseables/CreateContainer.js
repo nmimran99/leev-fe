@@ -2,10 +2,12 @@ import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { createNewAsset } from '../../api/assetsApi';
+import { uploadDocument } from '../../api/documentsApi';
 import { createNewFault } from '../../api/faultsApi';
 import { createNewSystem } from '../../api/systemsApi';
 import { createNewTask } from '../../api/tasksApi';
 import { UpsertAsset } from '../datapages/assets/UpsertAsset';
+import { UpsertDocument } from '../datapages/documents/UpsertDocument';
 import { UpsertFault } from '../datapages/faults/UpsertFault';
 import { UpsertSystem } from '../datapages/systems/UpsertSystem';
 import { UpsertTask } from '../datapages/tasks/UpsertTask';
@@ -61,6 +63,14 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
         })
     }
 
+    const handleSaveDocument = details => {
+        uploadDocument(details)
+        .then(data => {
+            handleClose();
+            history.push(`/workspace/docs`)
+        })
+    }
+
     return (
         <React.Fragment>
             {
@@ -85,6 +95,12 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
                 <UpsertTask 
                     handleClose={handleClose}
                     handleSave={handleSaveTask}
+                />
+                : 
+                itemType === 'document' ?
+                <UpsertDocument 
+                    handleClose={handleClose}
+                    handleSave={handleSaveDocument}
                 /> : null
             }
         </React.Fragment>

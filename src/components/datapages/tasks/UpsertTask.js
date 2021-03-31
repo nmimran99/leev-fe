@@ -544,7 +544,7 @@ export const UpsertTask = ({ handleClose, handleSave, handleUpdate, taskId}) => 
                                                         >
                                                             { t("tasksModule.upsert.uploadImages")}
                                                             <input 
-                                                                accepts='image/*'
+                                                                accept='image/*'
                                                                 type='file'
                                                                 multiple
                                                                 onChange={handleFileUpload}

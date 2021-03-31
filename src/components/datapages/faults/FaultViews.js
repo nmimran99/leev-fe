@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import { getFaults } from '../../../api/faultsApi';
 import { updateQueryParams } from '../../../api/genericApi';
+import { AuthContext } from '../../../context/AuthContext';
 import { FaultsContext } from '../../../context/FaultsContext';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { FaultBlockView } from './FaultBlockView';
@@ -16,6 +17,7 @@ export const FaultViews = () => {
     const location = useLocation();
     const query = useQuery(location.search);
     const classes = useStyles();
+    const { auth } = useContext(AuthContext);
     const { t } = useTranslation();
     const { faults, setFaults } = useContext(FaultsContext)
     const [ viewType, setViewType ] = useState(query['viewType'] || 'list');
@@ -24,7 +26,7 @@ export const FaultViews = () => {
 
     useEffect(() => {
         if (!isLoading) return;
-        getFaults(query)
+        getFaults(auth.user.tenant, query)
         .then(data => {
             if (data) {
                 setFaults(data)

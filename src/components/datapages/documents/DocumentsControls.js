@@ -1,13 +1,11 @@
 import {
-	Button,
-	Collapse,
-	Grid,
-	makeStyles,
-	useMediaQuery,
+    Button,
+    Collapse,
+    Grid,
+    makeStyles,
+    useMediaQuery
 } from '@material-ui/core';
 import { ClearRounded } from '@material-ui/icons';
-import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
-import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
@@ -15,18 +13,25 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import { getAsset, getFullAddress } from '../../../api/assetsApi';
+import {
+    getFaultOptionsByAssetOrSystem
+} from '../../../api/faultsApi';
 import { removeQueryParam } from '../../../api/genericApi';
 import {
-	getAssetsSuggestions,
-	getSystemsByAssetOptions,
+    getAssetsSuggestions,
+    getSystemsByAssetOptions
 } from '../../../api/systemsApi';
-import { getTasksStatusListSuggestions } from '../../../api/tasksApi';
+import { getTaskOptionsByAssetOrSystem } from '../../../api/tasksApi';
 import { createUserOptions } from '../../../api/userApi';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { FilterByMultiSelect } from '../../reuseables/FilterByMultiSelect';
 import { SearchBoxSelect } from '../../reuseables/SearchBoxSelect';
+import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
+import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 
-export const TasksControls = () => {
+
+export const DocumentsControls = ({}) => {
 	const history = useHistory();
 	const location = useLocation();
 	const query = useQuery(location.search);
@@ -42,7 +47,8 @@ export const TasksControls = () => {
 				if (data) {
 					setReloadedValue(data);
 				}
-			});
+            });
+            
 		} else {
 			setReloadedValue({
 				label: '',
@@ -93,7 +99,7 @@ export const TasksControls = () => {
 							onClick={toggleCollapse}
 						>
 							{t(
-								`tasksModule.${
+								`filters.${
 									collapsed ? 'hide' : 'show'
 								}Filters`
 							)}
@@ -107,7 +113,7 @@ export const TasksControls = () => {
 						{reloadedValue && (
 							<SearchBoxSelect
 								suggestionsFunc={getAssetsSuggestions}
-								placeholder={t('systemsModule.filterByAsset')}
+								placeholder={t('filters.filterByAsset')}
 								filterField={'asset'}
 								reloadedLabel={reloadedValue.label}
 								reloadedValue={reloadedValue.value}
@@ -118,35 +124,49 @@ export const TasksControls = () => {
 								optionsFunc={() =>
 									getSystemsByAssetOptions(query.asset)
 								}
-								placeholder={t(
-									'systemsModule.filterBySystemName'
-								)}
+								placeholder={t('filters.filterBySystemName')}
 								filterIcon={
-									<BlurOnRoundedIcon
-										className={classes.icon}
-									/>
+									<BlurOnRoundedIcon className={classes.icon} />
 								}
 								filterField={'system'}
 							/>
 						)}
-						<FilterByMultiSelect
-							optionsFunc={getTasksStatusListSuggestions}
-							placeholder={t('tasksModule.filterByStatus')}
-							filterIcon={
-								<DoubleArrowIcon className={classes.icon} />
-							}
-							filterField={'status'}
-						/>
 					</Grid>
 
 					<Grid item xs={12} className={classes.gridItem}>
 						<FilterByMultiSelect
 							optionsFunc={createUserOptions}
-							placeholder={t('tasksModule.filterByTaskOwner')}
+							placeholder={t('filters.filterByUser')}
 							filterIcon={
 								<PersonRoundedIcon className={classes.icon} />
 							}
-							filterField={'owner'}
+							filterField={'user'}
+						/>
+						<FilterByMultiSelect
+							optionsFunc={() =>
+								getFaultOptionsByAssetOrSystem(
+									query.asset,
+									query.system
+								)
+							}
+							placeholder={t('filters.filterByFault')}
+							filterIcon={
+								<WarningRoundedIcon className={classes.icon} />
+							}
+							filterField={'fault'}
+						/>
+						<FilterByMultiSelect
+							optionsFunc={() =>
+								getTaskOptionsByAssetOrSystem(
+									query.asset,
+									query.system
+								)
+							}
+							placeholder={t('filters.filterByTask')}
+							filterIcon={
+								<DescriptionRoundedIcon className={classes.icon} />
+							}
+							filterField={'task'}
 						/>
 					</Grid>
 				</Grid>

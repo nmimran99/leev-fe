@@ -1,4 +1,5 @@
 import axios from 'axios';
+axios.defaults.headers.common['token'] = localStorage.getItem('wb_token');
 
 export const attemptToSignin = async (payload) => {
     try {

@@ -1,21 +1,17 @@
 import {
-    Button,
 	Grid,
 	IconButton,
 	makeStyles,
 	MenuItem,
 	Select,
-	TextField,
+	TextField
 } from '@material-ui/core';
 import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getNextIterationDate } from '../../../api/genericApi';
 import { LanguageContext } from '../../../context/LanguageContext';
-import { CustomDateTimePicker } from '../datepickers/CustomDateTimePicker';
-import { CustomTimePicker } from '../datepickers/CustomTimePicker';
-import { format, addYears, addDays, addWeeks } from 'date-fns';
-import clsx from 'clsx';
-import { DayOfWeek } from './DayOfWeek'
+import { CustomDatePicker } from '../datepickers/CustomeDatePicker';
 
 const days = [
 	'sunday',
@@ -51,10 +47,9 @@ export const ScheduleItem = ({
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { t } = useTranslation();
-    const [schedule, setSchedule] = useState(scData);
+	const [schedule, setSchedule] = useState(scData);
 
 	useEffect(() => {
-        console.log(schedule)
 		updateSchedules(schedule, index);
 	}, [schedule]);
 
@@ -65,43 +60,32 @@ export const ScheduleItem = ({
 		});
 	};
 
-	const handleChangeTime = (time) => {
-		setSchedule({
-			...schedule,
-			time: time,
-		});
-	};
-
 	const handleChange = (fieldName, payload) => (event) => {
-        console.log(fieldName, payload)
+		console.log(fieldName, payload);
 		setSchedule({
 			...schedule,
 			[fieldName]: payload ? payload : event.target.value,
 		});
 	};
 
-	const getNextIterationDate = () => {
-		if (schedule.interval === 'year') {
-			return format(
-				addYears(new Date(schedule.startDate), 1),
-				lang.dateformat
-			);
-        }
+	const handleCalcNextIteration = () => {
+		return getNextIterationDate(
+			schedule.startDate,
+			schedule.interval,
+			schedule.intervalNumber,
+			lang.dateonly
+		);
 	};
 
 	return (
 		<Grid container className={classes.textContainer}>
 			<Grid container className={classes.gridItem}>
-				<Grid item xs={4} lg={6} xl={6}>
-					<div className={classes.label}>
-						{t('scheduler.startDateText')}
-					</div>
-				</Grid>
-				<Grid item xs={8} lg={6} xl={6}>
-					<CustomDateTimePicker
+				<Grid item xs={12}>
+					<CustomDatePicker
 						label={t('scheduler.startDate')}
 						data={schedule.startDate}
 						handleChange={handleChangeStartDate}
+						disablePast
 					/>
 				</Grid>
 			</Grid>
@@ -111,7 +95,20 @@ export const ScheduleItem = ({
 						{t('scheduler.repeatEvery')}
 					</div>
 				</Grid>
-				<Grid item xs={8} lg={6} xl={6}>
+				<Grid item xs={3} xl={2} className={classes.intervalNumber}>
+					<TextField
+						variant={'outlined'}
+						value={schedule.intervalNumber}
+						onChange={handleChange('intervalNumber')}
+						className={classes.textField}
+						size={'medium'}
+						type="tel"
+						inputProps={{
+							maxLength: 2
+						}}
+					/>
+				</Grid>
+				<Grid item xs={5} lg={6} xl={4}>
 					<Select
 						variant={'outlined'}
 						value={schedule.interval}
@@ -132,68 +129,42 @@ export const ScheduleItem = ({
 							},
 						}}
 					>
-						{intervals.map((interval, i) => (
-							<MenuItem
-								key={i}
-								value={interval}
-								style={{
-									direction: lang.dir,
-								}}
-								className={classes.menuitem}
-							>
-								{t(`dates.${interval}`)}
-							</MenuItem>
-						))}
+						{intervals.map((interval, i) => {
+							if (
+								schedule.intervalNumber > 1 &&
+								interval === 'date'
+							)
+								return;
+							return (
+								<MenuItem
+									key={i}
+									value={interval}
+									style={{
+										direction: lang.dir,
+									}}
+									className={classes.menuitem}
+								>
+									{schedule.intervalNumber > 1
+										? t(`dates.${interval}s`)
+										: t(`dates.${interval}`)}
+								</MenuItem>
+							);
+						})}
 					</Select>
 				</Grid>
 			</Grid>
-			{schedule.interval === 'year' && (
-				<Grid item xs={12}>
-					<div className={classes.nextIteration}>
-						{`${t(
-							'scheduler.nextIteration'
-						)} ${getNextIterationDate()}`}
-					</div>
-				</Grid>
-			)}
-			{schedule.interval === 'day' && (
-				<Grid container className={classes.gridItem}>
-					<Grid item xs={4} lg={6} xl={6}>
-						<div className={classes.label}>
-							{t('scheduler.inTime')}
+			{Boolean(schedule.interval) &&
+				Boolean(schedule.intervalNumber) &&
+				Boolean(schedule.startDate) && (
+					<Grid item xs={12}>
+						<div className={classes.nextIteration}>
+							{`${t(
+								'scheduler.nextIteration'
+							)} ${handleCalcNextIteration()}`}
 						</div>
 					</Grid>
-					<Grid item xs={8} lg={6} xl={6}>
-						<CustomTimePicker
-							data={schedule.time}
-							handleChange={handleChangeTime}
-						/>
-					</Grid>
-				</Grid>
-			)}
-			{schedule.interval === 'week' && (
-				<Grid container className={classes.gridItem}>
-					<Grid item xs={4} md={3} lg={3} xl={3}>
-						<div
-							className={classes.label}
-							onClick={handleChange('')}
-						>
-							{t('scheduler.inDay')}
-						</div>
-					</Grid>
-					<Grid item xs={8} md={9} lg={9} xl={9}>
-						<div className={classes.dayContainer}>
-							{days.map((d, i) => (
-								<DayOfWeek 
-                                    day={d}
-                                    handleClick={handleChange('day', i+1)}
-                                    isChecked={schedule.day === i+1}
-                                />
-							))}
-						</div>
-					</Grid>
-				</Grid>
-			)}
+				)}
+
 			<Grid item xs={12} className={classes.remove}>
 				<IconButton
 					className={classes.iconBtn}
@@ -270,7 +241,7 @@ const useStyles = makeStyles((theme) => ({
 		border: '1px solid rgba(255,255,255,0.6)',
 		borderRadius: '50px',
 		padding: '5px 30px 5px 15px',
-		margin: '5px',
+		margin: '5px 5px 15px',
 		whiteSpace: 'nowrap',
 		'&:hover': {
 			background: 'rgba(255,255,255,0.8)',
@@ -353,5 +324,8 @@ const useStyles = makeStyles((theme) => ({
 	dayChosen: {
 		background: 'white',
 		color: 'black',
+	},
+	intervalNumber: {
+		paddingRight: '10px',
 	},
 }));

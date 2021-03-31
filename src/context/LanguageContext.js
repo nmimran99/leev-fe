@@ -5,9 +5,9 @@ export const LanguageContext = createContext();
 
 export const LanguageContextProvider = (props) => {
     const [ lang, setLang ] = useState({
-        name: 'english',
-        code: 'en',
-        dir: 'ltr',
+        name: 'hebrew',
+        code: 'he',
+        dir: 'rtl',
         dateformat: 'dd/MM/yyyy HH:mm',
         dateonly: 'dd/MM/yyyy',
         timeonly: 'HH:mm'

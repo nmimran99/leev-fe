@@ -179,3 +179,30 @@ export const getTasksStatusListSuggestions = async () => {
     }
     return statusList;
 }
+
+export const updateTaskSchedule = async (taskId, schedule) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/tasks/updateTaskSchedule`, { taskId, schedule });
+        if (res.status === 200) {
+            return res.data;
+        }
+    } catch(e) {
+        console.log(e)
+        return null;
+    }
+}
+
+export const getTaskOptionsByAssetOrSystem = async (asset, system) => {
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/tasks/getTaskOptions`, { asset, system });
+        let options = [];
+        if (!res) return [];
+        res.data.forEach(t => {
+            options.push({ label: t.taskId, value: t._id})
+        });
+        return options;
+    } catch(e) {
+        console.log(e)
+        return null;
+    }
+}

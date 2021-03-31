@@ -221,7 +221,8 @@
             "isRepeatable": "Repatable Task",
             "notificationsInstructions": "Defining this task as repeatable will grant access to task alert scheduling and periodical repetitions",
             "repeatEvery": "Repeat every",
-            "addScheduling": "Add Scheduling"
+            "addScheduling": "Add Scheduling",
+            "scheduleTitle": "Tasks Schedules"
         },
         "updateOwner": "Update Task Owner",
         "updateOwnerInstructions": "Choose user to update as task owner",
@@ -230,6 +231,36 @@
         "taskSteps": "Task Steps",
         "step": "Step"
         
+    },
+    "documentsModule": {
+        "upsert": {
+            "generalDetails": "General Details",
+            "updateDocumentDetails": "Update Document Details",
+            "createDocument": "Create Document",
+            "description": "Document Description",
+            "linkDocInstructions": "Link this document to an existing item",
+            "asset": "Asset",
+            "system": "System",
+            "user": "User",
+            "uploadDocument": "Upload A Dcoument",
+            "fileSelected": "File Selected",
+            "noFileSelected": "No file was selected",
+            "document": "Document",
+            "task": "Task",
+            "fault": "Fault",
+            "filetype": "File Type"
+        },
+        "controls": {
+            "documentMenu": "Document Menu",
+            "editDetails": "Edit Document Details",
+            "downloadFile": "Download",
+            "deleteFile": "Delete File"
+        },
+        "deleteFilePrompt": "Are you sure you want to delete the document ",
+        "deleteFileTitle": "Delete Document",
+        "showFilters": "Show Filters",
+        "hideFilters": "Hide Filters",
+        "documents": "Documents"
     },
     "createMenu": {
         "addAsset": "Add Asset",
@@ -306,6 +337,18 @@
         "november": "November",
         "december": "December"
     },
+    "filters": {
+        "filterBySystemName": "Filter by system name",
+        "filterByAsset": "Filter by asset",
+        "filterBySystemOwner": "Filter by system owner",
+        "showFilters": "Show Filters",
+        "hideFilters": "Hide Filters",
+        "filterByTaskOwner": "Filter by Task Owner",
+        "filterByStatus": "Filter by Status",
+        "filterByUser": "Filter by User",
+        "filterByFault": "Filter by Fault",
+        "filterByTask": "Filter by Task"
+    },
     "controls": {
         "confirm": "Confirm",
         "cancel": "Cancel",
@@ -323,7 +366,8 @@
         "removeUserFromFollowing": "Remove User from Following List",
         "openFor": "Open for",
         "openInNew": "Open in a new tab",
-        "createDate": "Created at" 
+        "createDate": "Created at",
+        "none": "None" 
     },
     "scheduler": {
         "startDate": "Start Date",
@@ -331,6 +375,24 @@
         "repeatEvery": "Repeat Every",
         "nextIteration": "Next Scheduled Date",
         "inTime": "Time of the day",
-        "inDay": "Day of the week"
+        "inDay": "Day of the week",
+        "noItems": "The are no scheduled iterations"
+    },
+    "notificationsModule": {
+        "notifications": "Notifications",
+        "statusUpdate": {
+            "header": "%%type%% %%itemid%%",
+            "body": "%%name%% updated the status to %%status%%"
+        },
+        "ownerChange": {
+            "header": "%%type%% %%itemid%%",
+            "body": "%%name%% changed the owner to %%owner%%"
+        },
+        "fault": "Fault",
+        "task": "Task",
+        "new": "New",
+        "earlier": "Earlier",
+        "markAsRead": "Mark as Read",
+        "markAsUnread": "Mark as Unread"
     }
 }

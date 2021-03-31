@@ -1,4 +1,5 @@
 import axios from 'axios';
+import i18next from 'i18next';
 import { getAssets, getFullAddress } from './assetsApi'
 
 export const createNewSystem = async (details) => {
@@ -11,7 +12,7 @@ export const createNewSystem = async (details) => {
 
 export const getAssetsSuggestions = async (searchText) => {
     const res = await getAssets();
-    let result = [];
+    let result = [{ text: i18next.t("general.none"), value: ''}];
     if (!searchText) { 
         res.data.forEach(asset => {
             result.push({ 

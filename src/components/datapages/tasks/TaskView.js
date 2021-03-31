@@ -18,6 +18,7 @@ import {
 	addTaskRelatedUser,
 	removeTaskRelatedUser,
 	updateTask,
+	updateTaskSchedule
 } from '../../../api/tasksApi';
 import { LanguageContext } from '../../../context/LanguageContext';
 import { AddFollower } from '../../reuseables/AddFollower';
@@ -139,7 +140,16 @@ export const TaskView = () => {
 		const res = await updateTaskComment(taskId, commentId, text);
 		return Promise.resolve(res);
     };
-    
+	
+	const handleUpdateSchedule = async (schedule) => {
+		const res = await updateTaskSchedule(task._id, schedule);
+		if (res) {
+			setTask({
+				...task,
+				schedule: res.schedule
+			})
+		}
+	}
 	return isLoading ? (
 		<LinearProgress />
 	) : (
@@ -323,7 +333,7 @@ export const TaskView = () => {
 					handleClose={() => setAddRelatedUserModal(false)}
 					handleSave={addRelatedUser}
 					isOpen={addRelatedUserModal}
-					followerList={task.relatedUsers}
+					followerList={[...task.relatedUsers, task.owner]}
 					title={t('tasksModule.addRelatedUser')}
 					instructions={t('tasksModule.addRelatedUserInstructions')}
 				/>
@@ -339,10 +349,8 @@ export const TaskView = () => {
                 Boolean(scheduling) &&
                 <Scheduler 
                     scData={task.schedule}
-                    addScheduling={()=>null}
-                    removeScheduling={()=>null}
-                    changeSchedule={()=>null}
-                    handleClose={() => setScheduling(null)}
+					handleClose={() => setScheduling(null)}
+					handleSave={handleUpdateSchedule}
                 />
             }
 		</React.Fragment>

@@ -61,7 +61,7 @@ export const theme = createMuiTheme({
               backgroundColor: 'black',
             },
             dayDisabled: {
-              color: 'rgba(255,255,255,0.5)',
+              color: 'rgba(0,0,0,0.4)',
             },
             current: {
               color: 'black',

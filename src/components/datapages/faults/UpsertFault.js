@@ -27,6 +27,7 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
     const [ userList, setUserList ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
     const [ details, setDetails ] = useState({
+        tenant: auth.user.tenant,
         title: '',
         description: '',
         asset: '',
