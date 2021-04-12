@@ -12,12 +12,12 @@ import { useTranslation } from 'react-i18next';
 import { updateArrayStateField } from '../../../api/genericApi';
 import { updateNotificationRead } from '../../../api/notificationsApi';
 import { NotificationsContext } from '../../../context/NotificationsContext';
-import { Notification } from './Notiofication';
+import { Notification } from './Notification';
 
 export const Notifications = ({
 	open,
 	toggleNotifications,
-	setNotificationPage
+	fetchNotifications
 }) => {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation();

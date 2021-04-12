@@ -11,6 +11,9 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import { useHistory } from 'react-router-dom'; 
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../../../context/AuthContext';
+import { clearUserLS } from '../../../api/userApi';
+import { NotificationsContext } from '../../../context/NotificationsContext';
+
 
 export const SideMenu = ({toggleMenu}) => {
 
@@ -19,6 +22,7 @@ export const SideMenu = ({toggleMenu}) => {
     const { t, i18n } = useTranslation();
     const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
     const { auth } = useContext(AuthContext);
+    const { setNotfications } = useContext(NotificationsContext);
 
     const closeMenu = () => {
         if (matches) {
@@ -29,6 +33,12 @@ export const SideMenu = ({toggleMenu}) => {
     const handleClick = type => event => {
         toggleMenu();
         history.push(`/workspace/${type}`)
+    }
+
+    const userLogout = async () => {
+        await clearUserLS();
+        history.push('/login')
+
     }
 
     return (
@@ -91,7 +101,9 @@ export const SideMenu = ({toggleMenu}) => {
                             </ListItemIcon>
                             <ListItemText primary={t("sideMenu.settings")} className={classes.listItemText} disableTypography={true}/>
                         </ListItem>
-                        <ListItem button={true} >
+                        <ListItem button={true} 
+                            onClick={userLogout}
+                        >
                             <ListItemIcon className={classes.listItemIcon}>
                                 <ExitToAppRoundedIcon fontSize={'medium'} />
                             </ListItemIcon>

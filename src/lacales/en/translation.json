@@ -378,15 +378,31 @@
         "inDay": "Day of the week",
         "noItems": "The are no scheduled iterations"
     },
+    "mapModule": {
+        "presenting": "Showing",
+        "outOf": "Out of"
+    },
     "notificationsModule": {
         "notifications": "Notifications",
-        "statusUpdate": {
+        "statusChange": {
             "header": "%%type%% %%itemid%%",
             "body": "%%name%% updated the status to %%status%%"
         },
         "ownerChange": {
             "header": "%%type%% %%itemid%%",
             "body": "%%name%% changed the owner to %%owner%%"
+        },
+        "addComment": {
+            "header": "%%type%% %%itemid%%",
+            "body": "%%name%% commented: %%comment%%"
+        },
+        "relatedUserAdded": {
+            "header": "%%type%% %%itemid%%",
+            "body": "%%name%% added you to %%itemid%% as a related user"
+        },
+        "itemCreated": {
+            "header": "%%type%% %%itemid%%",
+            "body": "%%type%% %%itemid%% created by %%name%%"
         },
         "fault": "Fault",
         "task": "Task",

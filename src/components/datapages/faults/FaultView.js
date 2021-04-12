@@ -79,8 +79,12 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
         .then(data => {
             setFault({
                 ...fault, 
-                owner: data.owner
+                owner: data.owner,
+                following: data.following
             });
+            if (updateFaultState) {
+                updateFaultState(data._id, 'owner', data.owner);
+            }
             setChangeOwner(false);
         })
     }

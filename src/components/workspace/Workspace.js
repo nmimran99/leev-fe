@@ -10,13 +10,14 @@ import { Faults } from '../datapages/faults/Faults';
 import { Systems } from '../datapages/systems/Systems';
 import { Tasks } from '../datapages/tasks/Tasks';
 import { NotificationsContextProvider } from '../../context/NotificationsContext';
+import { MapView } from '../datapages/map/MapView'
 
 export const Workspace = ({}) => {
 	const classes = useStyles();
 
 	return (
 		<React.Fragment>
-			<NotificationsContextProvider>
+			
 				<FaultsContextProvider>
 					<Grid
 						container
@@ -24,7 +25,10 @@ export const Workspace = ({}) => {
 						justify="center"
 						alignItems="flex-start"
 					>
-						<Controls />
+						<NotificationsContextProvider>
+							<Controls />
+						</NotificationsContextProvider>
+						
 						<Grid
 							item
 							xs={12}
@@ -49,11 +53,14 @@ export const Workspace = ({}) => {
 								<Route path={'/workspace/docs'}>
 									<Documents />
 								</Route>
+								<Route path={'/workspace/map'}>
+									<MapView />
+								</Route>
 							</Switch>
 						</Grid>
 					</Grid>
 				</FaultsContextProvider>
-			</NotificationsContextProvider>
+		
 		</React.Fragment>
 	);
 };
@@ -81,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
 		border: '1px solid rgba(255,255,255,0.2)',
 		borderRadius: '5px',
 		boxShadow: 'rgba(0,0,0,0.4) 0px 0px 3px 2px',
-		padding: '0 10px',
+		
 		[theme.breakpoints.down('sm')]: {
 			border: 'none',
 			borderRadius: 0,

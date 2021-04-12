@@ -383,15 +383,31 @@
         "noItems": "אין חזרות מוגדרות"
 
     },
+    "mapModule": {
+        "presenting": "מציג",
+        "outOf": "מתוך"
+    },
     "notificationsModule": {
         "notifications": "התראות",
-        "statusUpdate":{
+        "statusChange":{
             "header": "%%type%% %%itemid%%",
             "body": "%%name%% שינה את הסטטוס ל%%status%%"
         },
         "ownerChange": {
             "header": "%%type%% %%itemid%%",
             "body": "%%name%% שינה את ממונה התקלה ל%%owner%%"
+        },
+        "addComment": {
+            "header": "%%type%% %%itemid%%",
+            "body": "%%name%% הגיב: %%comment%%"
+        },
+        "relatedUserAdded": {
+            "header": "%%type%% %%itemid%%",
+            "body": "%%name%% הוסיף אותך ל%%type%% %%itemid%% כמשתמש מקושר"
+        },
+        "itemCreated": {
+            "header": "%%type%% %%itemid%%",
+            "body": "%%type%% %%itemid%% נוצרה על ידי %%name%%"
         },
         "fault": "תקלה",
         "task": "משימה",

@@ -1,5 +1,6 @@
 import { Grid, makeStyles } from '@material-ui/core';
 import React, { useState, useEffect, useContext } from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { getNotifications } from '../../api/notificationsApi';
 import { NotificationsContext } from '../../context/NotificationsContext';
 import { CreateContainer } from '../reuseables/CreateContainer';
@@ -10,21 +11,25 @@ import { SideMenu } from './navbar/SideMenu';
 
 export const Controls = () => {
 	const classes = useStyles();
+	const history = useHistory();
+	const location = useLocation();
 	const { notifications, setNotifications } = useContext(NotificationsContext);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [addMenuOpen, setAddMenuOpen] = useState(false);
 	const [create, setCreate] = useState(null);
 	const [notificationsList, setNotificationsList] = useState(false);
-	const [notificationPage, setNotificationPage] = useState(0);
+	const [ mapActive, setMapActive ] = useState(location.pathname.includes('map'))
 	
 	useEffect(() => {
-        getNotifications(notificationPage)
-        .then(data => {
-            if (data) {
-				setNotifications(notificationPage ? [ ...notifications, ...data ] : data);
-            }
-        })
-    }, [notificationPage])
+        fetchNotifications(0);
+    }, [])
+
+	const fetchNotifications = async (notificationPage) => {
+		const data = await getNotifications(notificationPage)
+		if (data) {
+			setNotifications(notificationPage ? [ ...notifications, ...data ] : data);
+		}
+	}
 
 	const toggleMenu = () => {
 		if (menuOpen) {
@@ -42,6 +47,12 @@ export const Controls = () => {
 		}
 	};
 
+	const toggleMapView = () => {
+		history.push(
+			'/workspace/map?lat=32.063603&lng=34.785933'
+			);
+	
+	}
 	const openCreate = (itemType) => (event) => {
 		toggleAddMenu();
 		setCreate(itemType);
@@ -70,6 +81,7 @@ export const Controls = () => {
 						menuOpen={menuOpen}
 						toggleAddMenu={toggleAddMenu}
 						toggleNotifications={toggleNotifications}
+						toggleMapView={toggleMapView}
 					/>
 				</Grid>
 			</Grid>
@@ -81,7 +93,7 @@ export const Controls = () => {
 				<Notifications
 					open={notificationsList}
 					toggleNotifications={toggleNotifications}
-					setNotificationPage={setNotificationPage}
+					fetchNotifications={fetchNotifications}
 				/>
 			)}
 			{Boolean(create) && (

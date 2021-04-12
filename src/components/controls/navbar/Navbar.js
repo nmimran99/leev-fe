@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import clsx from 'clsx';
-import { makeStyles, AppBar, IconButton, Grid, Badge } from '@material-ui/core';
+import { makeStyles, AppBar, IconButton, Grid, Badge, Icon } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
 import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
@@ -8,11 +8,23 @@ import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded';
 import AddIcon from '@material-ui/icons/Add';
 import { NotificationsContext } from '../../../context/NotificationsContext';
 import { differenceInHours } from 'date-fns'
+import MapOutlinedIcon from '@material-ui/icons/MapOutlined';
+import { useLocation } from 'react-router';
+import notificationIcon from '../../../assets/icons/notification.svg';
+import plusIcon from '../../../assets/icons/plus28.svg';
+import mapIcon from '../../../assets/icons/map28.svg';
+import menuIcon from '../../../assets/icons/menu.svg';
 
-export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleNotifications }) => {
+export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, toggleNotifications }) => {
 	const classes = useStyles();
+	const location = useLocation();
 	const { notifications } = useContext(NotificationsContext);
 	const [ notifCount, setNotifCount ] = useState(0);
+	const [ mapActive, setMapActive ] = useState(location.pathname.includes('map'))
+
+	useEffect(() => {
+		setMapActive(location.pathname.includes('map'))
+	}, [location])
 
 	useEffect(() => {
 		let count = notifications
@@ -44,12 +56,9 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleNotification
 							onClick={toggleMenu}
 						>
 							{!menuOpen ? (
-								<MenuRoundedIcon
-									className={clsx(
-										classes.icon,
-										classes.menuButton
-									)}
-								/>
+								<Icon classes={{root: classes.iconRoot}}>
+								<img src={menuIcon} className={classes.imageIcon} />
+							</Icon>	
 							) : (
 								<ArrowForwardRoundedIcon
 									className={clsx(
@@ -70,9 +79,22 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleNotification
 							aria-label="Add"
 							className={classes.iconButton}
 							color={'inherit'}
+							onClick={toggleMapView}
+							disabled={mapActive}
+						>
+							<Icon classes={{root: classes.iconRoot}}>
+									<img src={mapIcon} className={classes.imageIcon} />
+								</Icon>	
+						</IconButton>
+						<IconButton
+							aria-label="Add"
+							className={classes.iconButton}
+							color={'inherit'}
 							onClick={toggleAddMenu}
 						>
-							<AddIcon className={classes.icon} />
+							<Icon classes={{root: classes.iconRoot}}>
+									<img src={plusIcon} className={classes.imageIcon} />
+								</Icon>	
 						</IconButton>
 						<IconButton
 							aria-label="Notifications"
@@ -87,9 +109,9 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleNotification
                                     badge: classes.badge
                                 }}
 							>
-								<NotificationsNoneOutlinedIcon
-									className={classes.icon}
-								/>
+								<Icon classes={{root: classes.iconRoot}}>
+									<img src={notificationIcon} className={classes.imageIcon} />
+								</Icon>	
 							</Badge>
 						</IconButton>
 					</div>
@@ -170,4 +192,15 @@ const useStyles = makeStyles((theme) => ({
         top: '12px',
         right: '12px'
 	},
+	imageIcon: {
+		height: '36px',
+		width: '36px'
+	},
+	iconRoot: {
+	textAlign: 'center',
+	width: '50px',
+	height: '50px',
+	display: 'grid',
+	placeItems: 'center'
+	}
 }));

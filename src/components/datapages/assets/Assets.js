@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Grid, LinearProgress, makeStyles } from '@material-ui/core'
-import { getAssets, removeAsset,getFullAddress, applyFilters } from '../../../api/assetsApi'
+import { getAssets, removeAsset as removeAssetDB,getFullAddress, applyFilters } from '../../../api/assetsApi'
 import { Asset } from './Asset'
 import { AssetsControls } from './AssetsControls'
 import { AlertDialog } from '../../reuseables/AlertDialog'
@@ -44,7 +44,7 @@ export const Assets = () => {
     const removeAsset = (assetId, data) => {
         setAlertDialog({
             handleConfirm: async () => {
-                const res = await removeAsset(assetId);
+                const res = await removeAssetDB(assetId);
                 if (res) {
                     setAlertDialog(null)
                     setIsLoading(true);

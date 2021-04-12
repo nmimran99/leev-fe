@@ -61,8 +61,8 @@ export const Notification = ({ data, updateNotificationReadStatus }) => {
         >
             <div className={classes.sideIconContainer}>
                 {
-                    ['statusUpdate', 'ownerChange'].includes(data.actionType)  ?
-                    <Avatar src={notification.actionBy.avatar} className={classes.avatar} /> : null
+     
+                    <Avatar src={notification.actionBy.avatar} className={classes.avatar} />
                 }
             </div>
             <div className={clsx(classes.contentContainer, notification.read && classes.read)}>

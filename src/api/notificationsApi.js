@@ -28,6 +28,16 @@ export const generateNotificationBody = (data) => {
     if (text.includes('%%owner%%')) {
         text = text.replace('%%owner%%', getFullName(data.data.owner));
     };
+    if (text.includes('%%comment%%')) {
+        let comment = data.data.commentText.length > 40 ? `"${data.data.commentText.substr(0, 40)} ..."` : `"${data.data.commentText}"`;
+        text = text.replace('%%comment%%', comment); 
+    }
+    if (text.includes('%%itemid%%')) {
+        text = text.replace('%%itemid%%', data.actionOn.externalId);
+    };
+    if (text.includes('%%type%%')){
+        text = text.replace('%%type%%', i18next.t(`notificationsModule.${data.actionOn.obejctType.slice(0,-1)}`));
+    };
     return text;
 }   
 

@@ -1,5 +1,4 @@
 import axios from 'axios';
-axios.defaults.headers.common['token'] = localStorage.getItem('wb_token');
 
 export const attemptToSignin = async (payload) => {
     try {
@@ -17,6 +16,7 @@ export const authenticate = async (token) => {
         let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/reloginUser`, token);
         if (res.status === 200) {
             await handleLS('wb_token', 'set', res.data.token);
+            axios.defaults.headers.common['token'] = localStorage.getItem('wb_token');
             return res.data;
         }
     } catch(e) {
@@ -90,3 +90,8 @@ export const createUserOptions = () => {
         return userList;
     })
 };
+
+export const clearUserLS = async () => {
+    axios.defaults.headers.common['token'] = null;
+    return Promise.all([handleLS('wb_user', 'remove'), handleLS('wb_token', 'remove')]); 
+}

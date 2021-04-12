@@ -65,6 +65,7 @@ export const Login = () => {
                 message: 'Internal server error. Please contact the system administrator.'
             }]); 
         } else if (res.status === 200) {
+            console.log(res.data)
             await handleLS('wb_token', 'set', res.data.token);
             await handleLS('wb_user', 'set', res.data.user);
             history.push('/');
