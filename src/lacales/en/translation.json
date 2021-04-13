@@ -380,7 +380,8 @@
     },
     "mapModule": {
         "presenting": "Showing",
-        "outOf": "Out of"
+        "outOf": "Out of",
+        "noFaults": "There are no faults for this asset"
     },
     "notificationsModule": {
         "notifications": "Notifications",

@@ -385,7 +385,8 @@
     },
     "mapModule": {
         "presenting": "מציג",
-        "outOf": "מתוך"
+        "outOf": "מתוך",
+        "noFaults": "אין תקלות לנכס זה"
     },
     "notificationsModule": {
         "notifications": "התראות",

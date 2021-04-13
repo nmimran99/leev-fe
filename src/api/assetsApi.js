@@ -40,6 +40,14 @@ export const getFullAddress = (data) => {
     return `${data.address.street} ${data.address.streetNumber}${data.address.entrance || ''}, ${data.address.city}${Boolean(unit) ? `, ${i18next.t("assetsModule.unit")} ${unit}` : ''}`
 }
 
+export const getShortAddress = (data) => {
+    return `${data.address.street} ${data.address.streetNumber}${data.address.entrance || ''}, ${data.address.city}`;
+}
+
+export const getUnit = (data) => {
+    let unit = data.type === 'apartment' ? data.addInfo.unit || '' : '';
+    return `${Boolean(unit) ? `${i18next.t("assetsModule.unit")} ${unit}` : ''}`
+}
 
 export const updateAsset = async (details) => {
     const { _id, owner, address, addInfo, type } = details;

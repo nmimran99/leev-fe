@@ -74,8 +74,18 @@ export const Map = ({ setData }) => {
 
 	const handleMarkerClick = (asset, index) => (event) => {
 		let fs = mapData.faults.filter((f) => f.asset._id == asset._id);
-		setData({ asset, faults: fs });
+		setData([{ asset, faults: fs }]);
 	};
+
+	const handleClusterClick = (cluster) => {
+		const markers = cluster.getMarkers();
+		let md = [];
+		markers.forEach(m => {
+			let fs = mapData.faults.filter((f) => f.asset._id == m.data._id);
+			md.push({asset: m.data, faults: fs});
+		});
+		setData(md);
+	}
 
 	return isLoaded ? (
 		<GoogleMap
@@ -85,6 +95,7 @@ export const Map = ({ setData }) => {
 			onDragEnd={onDragEnd}
 			center={{ lat: Number(query.lat), lng: Number(query.lng) }}
 			options={{
+				maxZoom: 18,
 				fullscreenControl: false,
 				streetViewControl: false,
 				mapTypeControl: false,
@@ -103,31 +114,37 @@ export const Map = ({ setData }) => {
 			}}
 		>
 			<MarkerClusterer
-				onClick={(cluster) => console.log(cluster)}
-				zoomOnClick={false}
+				onClick={handleClusterClick}
 				gridSize={30}
 				enableRetinaIcons
+				clusterClass={classes.mcLabel}
+				zoomOnClick={false}
 				styles={[
-					{
+					{	
 						textColor: 'white',
-						textSize: 11,
-						fontWeight: 500,
-						width: 25,
-						height: 25,
+						fontWeight: '500',
+						textSize: 12,
+						width: 20,
+						height: 20,
+						anchorText: [0,0],
 						url: 'https://img.icons8.com/nolan/50/company.png',
 					},
 				]}
 			>
 				{(clusterer) => {
-					let marks = markers.map((marker, i) => {
+					return markers.map((marker, i) => {
 						return (
 							<Marker
 								key={i}
+								options={{
+									data: marker
+								}}
 								label={{
+									
 									text: marker.faultCount.toString(),
 									className: classes.markerLabel,
 									color: 'white',
-									fontSize: '11px',
+									fontSize: '11px'
 								}}
 								icon={
 									'https://img.icons8.com/nolan/50/marker.png'
@@ -141,7 +158,7 @@ export const Map = ({ setData }) => {
 							/>
 						);
 					});
-					return marks;
+					return;
 				}}
 			</MarkerClusterer>
 		</GoogleMap>
@@ -206,4 +223,9 @@ const useStyles = makeStyles((theme) => ({
 			outline: 'none',
 		},
 	},
+	mcLabel: {
+		background: 'red',
+		borderRadius: '50px',
+		opacity: '0.8'
+	}
 }));
