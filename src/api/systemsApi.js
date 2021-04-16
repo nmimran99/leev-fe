@@ -11,10 +11,10 @@ export const createNewSystem = async (details) => {
 }
 
 export const getAssetsSuggestions = async (searchText) => {
-    const res = await getAssets();
+    const data = await getAssets();
     let result = [{ text: i18next.t("general.none"), value: ''}];
     if (!searchText) { 
-        res.data.forEach(asset => {
+        data.forEach(asset => {
             result.push({ 
                 text: getFullAddress(asset),
                 value: asset._id
@@ -22,7 +22,7 @@ export const getAssetsSuggestions = async (searchText) => {
         });
         return result;
     };
-    let filtered =  res.data.filter(asset => {
+    let filtered =  data.filter(asset => {
         return getFullAddress(asset).indexOf(searchText) !== -1
     });
     filtered.forEach(asset => {

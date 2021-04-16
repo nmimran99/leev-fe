@@ -10,7 +10,7 @@ import { TimeActive } from '../../reuseables/TimeActive';
 import { UserItem } from '../../user/UserItem';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
-export const TaskMinified = ({ data }) => {
+export const TaskMinified = ({ data, asList }) => {
 	const classes = useStyles();
 	const { t } = useTranslation();
 	const [task, setTask] = useState(data);
@@ -20,7 +20,7 @@ export const TaskMinified = ({ data }) => {
 	}, [data]);
 
 	return (
-		<Grid item xs={12} className={classes.gridItem}>
+		<Grid item xs={12} xl={asList ? 12 : 4} className={classes.gridItem}>
 			<Link
 				to={`/workspace/tasks/${task.taskId}`}
 				style={{ textDecoration: 'none' }}
@@ -67,12 +67,12 @@ export const TaskMinified = ({ data }) => {
 					<Grid item xs={12}>
 						<div className={classes.desc}>{task.description}</div>
 					</Grid>
-					<Grid item xs={12} sm={4}>
+					<Grid item xs={12} sm={12}>
 						<div className={classes.timeActive}>
 							<TimeActive createDate={task.createdAt} />
 						</div>
 					</Grid>
-					<Grid item xs={12} sm={8}>
+					<Grid item xs={12} sm={12}>
 						<div className={classes.identifiers}>
 							<div className={classes.taskLink}>
 								<ItemLink
@@ -100,7 +100,7 @@ export const TaskMinified = ({ data }) => {
 
 const useStyles = makeStyles((theme) => ({
 	container: {
-		background: 'rgba(0,0,0,0.4)',
+		
 		border: '1px solid rgba(255,255,255,0.2)',
 		borderRadius: '5px',
 		padding: '10px',
@@ -151,11 +151,10 @@ const useStyles = makeStyles((theme) => ({
 	identifiers: {
 		display: 'flex',
 		alignItems: 'center',
-		justifyContent: 'flex-end',
+		justifyContent: 'space-between',
 		padding: '10px 20px',
 		[theme.breakpoints.down('sm')]: {
-			padding: '10px 10px',
-			justifyContent: 'space-between',
+			padding: '10px 10px'
 		},
 	},
 	fullname: {
@@ -204,7 +203,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	timeActive: {
 		display: 'flex',
-		justifyContent: 'flex-start',
+		justifyContent: 'flex-end',
 		padding: '20px 10px 0',
 		[theme.breakpoints.down('sm')]: {
 			justifyContent: 'flex-end',

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export const getMapData = async (filters) => {
+
     try {
         const res = await axios.post(
             `${process.env.REACT_APP_BACKEND_URL}/map/getMapData`,
@@ -22,6 +23,16 @@ export const getMapData = async (filters) => {
         console.log(e.message);
         return null;
     }
+}
+
+export const getMapFilters = (query) => {
+    return new Promise((resolve, rejecet) => {
+        if (!query) resolve(null);
+        delete query.lat;
+        delete query.lng;
+        resolve(query);
+    })
+    
 }
 
 

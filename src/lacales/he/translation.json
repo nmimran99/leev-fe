@@ -386,7 +386,11 @@
     "mapModule": {
         "presenting": "מציג",
         "outOf": "מתוך",
-        "noFaults": "אין תקלות לנכס זה"
+        "noFaults": "אין תקלות לנכס זה",
+        "noTasks": "אין משימות לנכס זה",
+        "openFaults": "תקלות פתוחות",
+        "todaysTasks": "משימות פתוחות",
+        "filters": "מסננים"
     },
     "notificationsModule": {
         "notifications": "התראות",

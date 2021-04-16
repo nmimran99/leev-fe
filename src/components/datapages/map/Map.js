@@ -119,6 +119,7 @@ export const Map = ({ setData }) => {
 				enableRetinaIcons
 				clusterClass={classes.mcLabel}
 				zoomOnClick={false}
+				
 				styles={[
 					{	
 						textColor: 'white',

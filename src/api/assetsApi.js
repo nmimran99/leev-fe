@@ -13,11 +13,11 @@ export const getAsset = async (assetId, plain) => {
     } 
 };
 
-export const getAssets = async () => {
+export const getAssets = async (filters) => {
     try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/getAssets`);
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/assets/getAssets`, { filters });
         if (res.status === 200) {
-            return res;
+            return res.data;
         }
     } catch (e){
         return e.response;

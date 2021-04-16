@@ -381,7 +381,11 @@
     "mapModule": {
         "presenting": "Showing",
         "outOf": "Out of",
-        "noFaults": "There are no faults for this asset"
+        "noFaults": "There are no faults for this asset",
+        "noTasks": "There are no tasks for this asset",
+        "openFaults": "Open Faults",
+        "todaysTasks": "Open Tasks",
+        "filters": "Filters"
     },
     "notificationsModule": {
         "notifications": "Notifications",

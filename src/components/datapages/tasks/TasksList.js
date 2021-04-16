@@ -43,8 +43,8 @@ export const TasksList = () => {
                 <LinearProgress />
 				:
 				<Fade in={!isLoading}>
-					<Grid container className={classes.listContainer}>
-						{tasks.map((task, i) => (
+					<Grid container className={classes.listContainer} spacing={2}>
+						{tasks.map((task, i) => (					
 							<TaskMinified data={task} key={i} />
 						))}
 					</Grid>
@@ -58,7 +58,11 @@ export const TasksList = () => {
 
 const useStyles = makeStyles((theme) => ({
 	listContainer: {
-		padding: '8px 0',
+		padding: '10px',
+		
+	},
+	miniTask: {
+		background: 'rgba(0,0,0,0.6)',
 	},
 	pageModule: {
 		color: 'white',

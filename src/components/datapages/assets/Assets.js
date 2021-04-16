@@ -7,10 +7,12 @@ import { AlertDialog } from '../../reuseables/AlertDialog'
 import { queryParamsToObject } from '../../../api/genericApi';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '../../reuseables/customHooks/useQuery'
 
 export const Assets = () => {
 
     const location = useLocation();
+    const query = useQuery(location.search);
     const classes = useStyles();
     const { t, i18n } = useTranslation();
     const [ assets, setAssets ] = useState([]);
@@ -19,10 +21,10 @@ export const Assets = () => {
 
     useEffect(() => {
         if(!isLoading) return;
-        getAssets()
+        getAssets(query)
         .then(res => {
             if (res) {
-                return applyFilters(queryParamsToObject(location.search), res.data)   
+                return applyFilters(queryParamsToObject(location.search), res)   
             }
         })
         .then(data => {
