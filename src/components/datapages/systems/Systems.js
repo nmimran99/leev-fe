@@ -30,6 +30,7 @@ export const Systems = () => {
 
         getSystemsByAsset(queryParams.asset)
         .then(data => {
+            console.log(data)
             return applyFilters(queryParams, data);
         })
         .then(data => {

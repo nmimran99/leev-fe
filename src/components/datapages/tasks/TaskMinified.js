@@ -20,7 +20,7 @@ export const TaskMinified = ({ data, asList }) => {
 	}, [data]);
 
 	return (
-		<Grid item xs={12} xl={asList ? 12 : 4} className={classes.gridItem}>
+		<Grid item xs={12} xl={asList ? 12 : 6} className={classes.gridItem}>
 			<Link
 				to={`/workspace/tasks/${task.taskId}`}
 				style={{ textDecoration: 'none' }}
@@ -100,7 +100,7 @@ export const TaskMinified = ({ data, asList }) => {
 
 const useStyles = makeStyles((theme) => ({
 	container: {
-		
+		background: 'rgba(0,0,0,0.2)',
 		border: '1px solid rgba(255,255,255,0.2)',
 		borderRadius: '5px',
 		padding: '10px',

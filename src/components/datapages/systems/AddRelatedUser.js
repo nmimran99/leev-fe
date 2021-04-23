@@ -8,7 +8,7 @@ import clsx from 'clsx'
 
 
 
-export const AddLinkedUser = ({ handleClose, handleSave, isOpen, linkedUsers }) => {
+export const AddRelatedUser = ({ handleClose, handleSave, isOpen, relatedUsers }) => {
 
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
@@ -20,7 +20,7 @@ export const AddLinkedUser = ({ handleClose, handleSave, isOpen, linkedUsers }) 
     useEffect(() => {
         getUserList()
         .then(data => {
-            let ul = linkedUsers.map(l => l._id);
+            let ul = relatedUsers.map(l => l._id);
             setUserList(data.filter(u => ul.indexOf(u._id) === -1 ));
         })
     }, [])

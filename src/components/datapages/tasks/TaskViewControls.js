@@ -17,22 +17,28 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { LanguageContext } from '../../../context/LanguageContext';
 import clsx from 'clsx';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import { Can } from '../../reuseables/Can';
 
 export const TaskViewControls = ({
-	id,
-	taskId,
+	task,
 	editTask,
 	updateOwner,
 	changeStatus,
-	handleScheduler
+	handleScheduler,
 }) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { t, i18n } = useTranslation();
 	const [expanded, setExpanded] = useState(null);
+	const [data, setData] = useState(task);
+
+	useEffect(() => {
+		setData(task);
+		console.log(task);
+	}, [task]);
 
 	const openInNewWindow = () => {
-		window.open(`http://localhost:3000/workspace/tasks/${taskId}`);
+		window.open(`http://localhost:3000/workspace/tasks/${task.taskId}`);
 	};
 
 	const handleExpanded = (event) => {
@@ -48,7 +54,7 @@ export const TaskViewControls = ({
 				<MoreVertIcon className={classes.icon} />
 			</IconButton>
 			<Menu
-                onClick={() => setExpanded(null)}
+				onClick={() => setExpanded(null)}
 				className={classes.container}
 				anchorEl={expanded}
 				open={Boolean(expanded)}
@@ -68,15 +74,14 @@ export const TaskViewControls = ({
 				<div
 					style={{
 						direction: lang.code === 'he' ? 'rtl' : 'ltr',
-						
 					}}
 					className={classes.menuHeader}
 				>
 					{t('tasksModule.controls.taskMenu')}
 					<IconButton
-                        style={{ display: 'flex', justifyContent: 'flex-end' }}
-                        onClick={() => setExpanded(null)}
-                        className={classes.close}
+						style={{ display: 'flex', justifyContent: 'flex-end' }}
+						onClick={() => setExpanded(null)}
+						className={classes.close}
 					>
 						<CloseRoundedIcon className={classes.icon} />
 					</IconButton>
@@ -91,52 +96,95 @@ export const TaskViewControls = ({
 					</ListItemIcon>
 					{t('general.openInNew')}
 				</MenuItem>
-
-				<MenuItem
-					style={{ direction: lang.code === 'he' ? 'rtl' : 'ltr' }}
-					className={classes.iconBtn}
-					onClick={editTask}
+				<Can
+					module="tasks"
+					action="update"
+					userList={[
+						...data.relatedUsers.map((u) => u._id),
+						data.owner._id,
+					]}
 				>
-					<ListItemIcon>
-						<CreateIcon className={classes.icon} />
-					</ListItemIcon>
-					{t('tasksModule.controls.editDetails')}
-				</MenuItem>
+					<MenuItem
+						style={{
+							direction: lang.code === 'he' ? 'rtl' : 'ltr',
+						}}
+						className={classes.iconBtn}
+						onClick={editTask}
+					>
+						<ListItemIcon>
+							<CreateIcon className={classes.icon} />
+						</ListItemIcon>
+						{t('tasksModule.controls.editDetails')}
+					</MenuItem>
+				</Can>
 
-				<MenuItem
-					style={{ direction: lang.code === 'he' ? 'rtl' : 'ltr' }}
-					className={classes.iconBtn}
-					onClick={updateOwner}
+				<Can
+					module="tasks"
+					action="changeOwner"
+					userList={[
+						...data.relatedUsers.map((u) => u._id),
+						data.owner._id,
+					]}
 				>
-					<ListItemIcon>
-						<TransferWithinAStationRoundedIcon
-							className={classes.icon}
-						/>
-					</ListItemIcon>
-					{t('tasksModule.controls.changeOwner')}
-				</MenuItem>
+					<MenuItem
+						style={{
+							direction: lang.code === 'he' ? 'rtl' : 'ltr',
+						}}
+						className={classes.iconBtn}
+						onClick={updateOwner}
+					>
+						<ListItemIcon>
+							<TransferWithinAStationRoundedIcon
+								className={classes.icon}
+							/>
+						</ListItemIcon>
+						{t('tasksModule.controls.changeOwner')}
+					</MenuItem>
+				</Can>
 
-				<MenuItem
-					style={{ direction: lang.code === 'he' ? 'rtl' : 'ltr' }}
-					className={classes.iconBtn}
-					onClick={changeStatus}
+				<Can
+					module="tasks"
+					action="changeStatus"
+					userList={[
+						...data.relatedUsers.map((u) => u._id),
+						data.owner._id,
+					]}
 				>
-					<ListItemIcon>
-						<DoubleArrowIcon className={classes.icon} />
-					</ListItemIcon>
-					{t('tasksModule.controls.changeStatus')}
-				</MenuItem>
+					<MenuItem
+						style={{
+							direction: lang.code === 'he' ? 'rtl' : 'ltr',
+						}}
+						className={classes.iconBtn}
+						onClick={changeStatus}
+					>
+						<ListItemIcon>
+							<DoubleArrowIcon className={classes.icon} />
+						</ListItemIcon>
+						{t('tasksModule.controls.changeStatus')}
+					</MenuItem>
+				</Can>
 
-				<MenuItem
-					style={{ direction: lang.code === 'he' ? 'rtl' : 'ltr' }}
-					className={classes.iconBtn}
-					onClick={handleScheduler}
+				<Can
+					module="tasks"
+					action="changeSchedule"
+					userList={[
+						...data.relatedUsers.map((u) => u._id),
+						data.owner._id,
+					]}
 				>
-					<ListItemIcon>
-						<AccessAlarmRoundedIcon className={classes.icon} />
-					</ListItemIcon>
-					{t('tasksModule.controls.schedule')}
-				</MenuItem>
+					<MenuItem
+						style={{
+							direction: lang.code === 'he' ? 'rtl' : 'ltr',
+						}}
+						className={classes.iconBtn}
+						onClick={handleScheduler}
+					>
+						<ListItemIcon>
+							<AccessAlarmRoundedIcon className={classes.icon} />
+						</ListItemIcon>
+						{t('tasksModule.controls.schedule')}
+					</MenuItem>
+				</Can>
 			</Menu>
 		</div>
 	);
@@ -145,47 +193,47 @@ export const TaskViewControls = ({
 const useStyles = makeStyles((theme) => ({
 	container: {
 		display: 'flex',
-    },
-    expandIcon: {
-        color: 'white',
-        background: 'rgba(0,0,0,0.3)',
-        '&:hover': {
-            background: 'rgba(0,0,0,0.5)',
-        }
-    },
+	},
+	expandIcon: {
+		color: 'white',
+		background: 'rgba(0,0,0,0.3)',
+		'&:hover': {
+			background: 'rgba(0,0,0,0.5)',
+		},
+	},
 	iconBtn: {
-        color: 'white',
-        marginRight: '20px',
-        borderRadius: '0 25px 25px 0',
-        '&:hover': {
-            transform: 'scale(1.077)'
-        }
+		color: 'white',
+		marginRight: '20px',
+		borderRadius: '0 25px 25px 0',
+		'&:hover': {
+			transform: 'scale(1.077)',
+		},
 	},
 	icon: {
 		fontSize: '20px',
-		color: 'white'
+		color: 'white',
 	},
 	menu: {
 		background: 'rgba(0,0,0,0.7)',
 		backdropFilter: 'blur(10px)',
 		color: 'white',
 		boxShadow: 'rgba(0,0,0,0.4) 0 0 2px 1px',
-		borderRadius: '10px'
+		borderRadius: '10px',
 	},
 	menuitem: {
 		minWidth: '200px',
-    },
-    menuHeader: {
-        borderBottom: '1px solid rgba(255,255,255,0.2)',
-        marginBottom: '10px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '5px 10px 5px 20px',
-        alignItems: 'center',
-        outline: 'none'
-    },
-    close: {
-        padding: '6px',
-        margin: 0
-    }
+	},
+	menuHeader: {
+		borderBottom: '1px solid rgba(255,255,255,0.2)',
+		marginBottom: '10px',
+		display: 'flex',
+		justifyContent: 'space-between',
+		padding: '5px 10px 5px 20px',
+		alignItems: 'center',
+		outline: 'none',
+	},
+	close: {
+		padding: '6px',
+		margin: 0,
+	},
 }));

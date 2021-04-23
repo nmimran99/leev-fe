@@ -21,6 +21,7 @@ export const Assets = () => {
 
     useEffect(() => {
         if(!isLoading) return;
+        console.log('calling')
         getAssets(query)
         .then(res => {
             if (res) {

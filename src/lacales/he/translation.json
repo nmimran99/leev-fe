@@ -50,8 +50,8 @@
         "editAsset": "ערוך פרטי נכס",
         "updateAssetOwner": "עידכון מנהל נכס",
         "updateAssetOwnerInstructions": "בחר משתמש שיתפקד כמנהל הנכס",
-        "addFollower": "הוסף משתמש עוקב",
-        "addFollowerIntructions": "בחר משתמש על מנת להוסיף לרשימת העוקבים אחר התקלה"
+        "addRelatedUser": "הוסף משתמש עוקב",
+        "addRelatedUserIntructions": "בחר משתמש על מנת להוסיף לרשימת המקושרים התקלה"
     },
     "systemsModule": {
         "filterBySystemName": "סנן לפי שם מערכת",
@@ -60,7 +60,7 @@
         "initMessage": "אנא סנן על פי נכס על מנת לצפות במערכות המקושרות.",
         "moreDetails": "פרטים נוספים",
         "showUsers": "הצג אנשי שטח",
-        "changeManager": "שנה אחראי מערכת",
+        "changeOwner": "שנה אחראי מערכת",
         "showFaults": "הצג תקלות",
         "showTasks": "הצג משימות מקושרות",
         "showDocuments": "הצג מסמכים מקושרים",
@@ -82,7 +82,7 @@
         "createSystem": "יצירת מערכת",
         "generalDetails": "פרטים כלליים",
         "systemOwner": "אחראי על מערכת",
-        "linkedUsers": "משתמשים מקושרים",
+        "relatedUsers": "משתמשים מקושרים",
         "owningAsset": "נכס",
         "additionalDetails": "פרטי מערכת נוספים",
         "location": "מיקום מערכת",
@@ -122,7 +122,6 @@
             "issuer": "ספק האחריות"
         },
         "updateSystemDetails": "עידכון פרטי מערכת"
-
     },
     "faultsModule": {
         "statuses" : {
@@ -140,12 +139,12 @@
         "controls": {    
             "editDetails": "ערוך פרטי תקלה",
             "changeOwner": "החלף ממונה על תקלה",
-            "addFollowing": "הוסף משתמשים עוקבים",
-            "removeFollower": "הסר משתמש מרשימת העוקבים",
+            "addRelatedUser": "הוסף משתמש מקושר",
+            "removeRelatedUser": "הסר משתמש מרשימת המקושרים",
             "changeStatus": "שינוי סטטוס"
         },
-        "noFollowers": "לתקלה זו אין כרגע עוקבים.",
-        "followingUsers": "עוקבים",
+        "noRelatedUsers": "לתקלה זו אין כרגע משתמשים מקושרים.",
+        "relatedUsers": "משתמשים מקושרים",
         "createDate": "נוצר בתאריך",
         "upsert": {
             "generalDetails": "פרטים כלליים",
@@ -154,7 +153,7 @@
             "title": "כותרת התקלה",
             "titleLimit": "תווים נותרוnu",
             "description": "פירוט התקלה",
-            "followingUsers": "עוקבים",
+            "relatedUsers": "משתמשים מקושרים",
             "asset": "נכס",
             "system": "מערכת",
             "faultOwner": "ממונה",
@@ -166,11 +165,11 @@
         },
         "updateOwner": "עידכון ממונה על תקלה",
         "updateOwnerInstructions": "בחר משתמש על מנת לעדכן ממונה על תקלה",
-        "addFollower": "הוספת עוקב לתקלה",
-        "addFollowerInstructions": "בחר משתמש על מנת להוסיפו לרשימת העוקבים",
+        "addRelatedUser": "קישור משתמש לתקלה",
+        "addRelatedUserInstructions": "בחר משתמש על מנת להוסיפו לרשימת המקושרים לתקלה",
         "changeStatus": "שינוי סטטוס",
-        "changeStatusInstructions": "בחר סטטוס על מנת לשנות את סטטוס התקלה"   
-        
+        "changeStatusInstructions": "בחר סטטוס על מנת לשנות את סטטוס התקלה",   
+        "faultSuccesfullyCreated": "תקלה נוצרה בהצלחה"
     },
     "tasksModule": {
         "tasks": "משימות",
@@ -187,8 +186,8 @@
         "controls": {
             "editDetails": "ערוך פרטי משימה",
             "changeOwner": "החלף ממונה על משימה",
-            "addRelatedUser": "הוסף משתמשים עוקבים",
-            "removeRelatedUser": "הסר משתמש מרשימת העוקבים",
+            "addRelatedUser": "הוסף משתמש מקושר",
+            "removeRelatedUser": "הסר משתמש מרשימת המקושרים לתקלה",
             "changeStatus": "שינוי סטטוס",
             "schedule": "קבע מועדים",
             "taskMenu": "תפריט משימה"
@@ -203,7 +202,7 @@
             "title": "כותרת המשימה",
             "titleLimit": "תווים נותרו",
             "description": "פירוט המשימה",
-            "followingUsers": "עוקבים",
+            "relatedUsers": "משתמשים מקושרים",
             "asset": "נכס",
             "system": "מערכת",
             "taskOwner": "ממונה",
@@ -231,7 +230,7 @@
         "addRelatedUserInstructions": "בחר משתמש על מנת לקשרו לתקלה",
         "changeStatus": "שינוי סטטוס",
         "changeStatusInstructions": "בחר סטטוס על מנת לשנות את סטטוס המשימה",
-        "taskNotLinkedToAsset": "משימה זו אינה מקושרת לנכס או מערכת",
+        "taskNotRelatedToAsset": "משימה זו אינה מקושרת לנכס או מערכת",
         "taskSteps": "שלבים למשימה",
         "step": "שלב",
         "startDtae": "תאריך התחלה",
@@ -359,19 +358,44 @@
         "save": "שמירה"
     },
     "errors": {
-        "isRequired": "שדה זה הינו חובה"
+        "isRequired": "שדה זה הינו חובה",
+        "unauthorized": "אינך מורשה לבצע פעולה זו. אנא פנה למנהל המערכת.",
+        "noFileSelected": "לא נבחר מסמך"
+    },
+    "messages": {
+        "snackMessage": {
+            "itemOfType": "פריט מסוג",
+            "saved": "נשמר",
+            "updated": "עודכן",
+            "removed": "נמחק",
+            "withIdentifier": "עם מזהה",
+            "withSuccess": "בהצלחה"
+        }
     },
     "general": {
         "noData": "אין מידע",
         "removeUserConfirmation": {
             "part1": "האם אתה בטוח שברצונך להסיר את",
-            "part2": "מרשימת העוקבים?"
+            "part2": "מרשימת המשתמשים המקושרים"
         },
-        "removeUserFromFollowing": "הסרת משתמש מרשימת עוקבים",
+        "removeUserFromFollowing": "הסרת משתמש מרשימת המשתמשים המקושרים",
         "openFor": "נפתח לפני",
         "openInNew": "פתח בחלון חדש",
         "createDate": "נוצר בתאריך",
-        "none": "ללא" 
+        "none": "ללא",
+        "fault": "תקלה",
+        "asset": "נכס",
+        "system": "מערכת",
+        "task": "משימה",
+        "document": "מסמך",
+        "setting": "הגדרה",
+        "settings": "הגדרות",
+        "permission": "הרשאה",
+        "permissions": "הרשאות",
+        "roles": "תפקידים",
+        "role": "תפקיד",
+        "relatedUser": "משתמש מקושר",
+        "relatedUsers": "משתמשים מקושרים"
     },
     "scheduler": {
         "startDate": "תאריך התחלה",

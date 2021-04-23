@@ -21,7 +21,7 @@ import {
 	updateTaskSchedule
 } from '../../../api/tasksApi';
 import { LanguageContext } from '../../../context/LanguageContext';
-import { AddFollower } from '../../reuseables/AddFollower';
+import { AddRelatedUser } from '../../reuseables/AddRelatedUser';
 import { Carousel } from '../../reuseables/Carousel';
 import { CommentSection } from '../../reuseables/CommentSection';
 import { ItemLink } from '../../reuseables/ItemLink';
@@ -36,6 +36,7 @@ import { UpsertTask } from './UpsertTask';
 import { TaskViewControls } from './TaskViewControls';
 import { TimeActive } from '../../reuseables/TimeActive';
 import { Scheduler } from '../../reuseables/scheduler/Scheduler';
+import { SnackbarContext } from '../../../context/SnackbarContext';
 
 export const TaskView = () => {
 	const history = useHistory();
@@ -43,6 +44,7 @@ export const TaskView = () => {
 	const { t } = useTranslation();
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
+	const { setSnackbar } = useContext(SnackbarContext);
 	const downSm = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 	const [task, setTask] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
@@ -55,31 +57,33 @@ export const TaskView = () => {
 
 	useEffect(() => {
 		getTask(taskId)
-			.then((data) => {
-				if (!data) {
-					history.push('/workspace/tasks');
-				}
-				setTask(data);
-				console.log(data);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
+		.then((res) => {
+			if (!res) {
+				history.push('/workspace/tasks');
+			} else if (res.status === 403) {
+				setSnackbar(res);
+				history.push('/workspace/tasks');
+			}
+			setTask(res);
+		})
+		.finally(() => {
+			setIsLoading(false);
+		});
 	}, []);
 
 	const updateTaskDetails = (details) => {
 		updateTask(details)
-			.then((data) => {
-				if (data) {
-					if (
-						location.pathname === `/workspace/tasks/${data.taskId}`
-					) {
-						setTask(data);
-						setEditTask(null);
+			.then((res) => {
+				if (res.status === 403) {
+					setSnackbar(res);
+				} else if (res) {
+					if (location.pathname === `/workspace/tasks/${res.taskId}`) {
+						setTask(res);
 					} else {
-						history.push(`/workspace/tasks/${data.taskId}`);
+						history.push(`/workspace/tasks/${res.taskId}`);
 					}
 				}
+				setEditTask(null);
 				return;
 			})
 			.catch((e) => {
@@ -89,18 +93,25 @@ export const TaskView = () => {
 	};
 
 	const updateOwner = (userId) => {
-		updateTaskOwner(task._id, userId).then((data) => {
-			setTask({
-				...task,
-				owner: data.owner,
-			});
+		updateTaskOwner(task._id, userId)
+		.then((res) => {
+			if (res.status === 403) {
+				setSnackbar(res);
+			} else if (res) {
+				setTask({
+					...task,
+					owner: res.owner,
+				});
+			}
 			setChangeOwner(false);
 		});
 	};
 
 	const removeRelatedUser = async (userId) => {
 		const res = await removeTaskRelatedUser(task._id, userId);
-		if (res) {
+		if (res.status === 403) {
+			setSnackbar(res);
+		} else if (res) {
 			setTask({
 				...task,
 				relatedUsers: res.relatedUsers,
@@ -111,39 +122,53 @@ export const TaskView = () => {
 	const addRelatedUser = (userId) => async (event) => {
 		event.stopPropagation();
 		const res = await addTaskRelatedUser(task._id, userId);
-		if (res) {
+		if (res.status === 403) {
+			setSnackbar(res);
+		} else if (res) {
 			setTask({
 				...task,
 				relatedUsers: res.relatedUsers,
 			});
-			setAddRelatedUserModal(null);
 		}
+		setAddRelatedUserModal(null);
 	};
 
 	const handleChangeStatus = async (statusId) => {
 		const res = await updateTaskStatus(task._id, statusId);
-		if (res) {
+		if (res.status === 403) {
+			setSnackbar(res);
+		} else if (res) {
 			setTask({
 				...task,
 				status: res.status,
 			});
-			setChangeStatus(null);
 		}
+		setChangeStatus(null);
 	};
 
 	const handleSaveComment = async (taskId, userId, text) => {
 		const res = await saveTaskComment(taskId, userId, text);
+		if (res.status === 403) {
+			setSnackbar(res);
+			return Promise.resolve(null);
+		} 
 		return Promise.resolve(res);
 	};
 
 	const handleUpdateComment = async (taskId, commentId, text) => {
 		const res = await updateTaskComment(taskId, commentId, text);
+		if (res.status === 403) {
+			setSnackbar(res);
+			return Promise.resolve(null);
+		} 
 		return Promise.resolve(res);
     };
 	
 	const handleUpdateSchedule = async (schedule) => {
 		const res = await updateTaskSchedule(task._id, schedule);
-		if (res) {
+		if (res.status === 403) {
+			setSnackbar(res);
+		} else if (res) {
 			setTask({
 				...task,
 				schedule: res.schedule
@@ -197,8 +222,7 @@ export const TaskView = () => {
 							/>
 						</div>
 						<TaskViewControls
-							id={task._id}
-							taskId={task.taskId}
+							task={task}
 							editTask={() => setEditTask(task._id)}
 							updateOwner={() => setChangeOwner(true)}
                             changeStatus={() => setChangeStatus(true)}
@@ -297,6 +321,8 @@ export const TaskView = () => {
 						title={t('tasksModule.relatedUsers')}
 						handleRemove={removeRelatedUser}
 						handleAdd={() => setAddRelatedUserModal(true)}
+						module={'tasks'}
+						owner={task.owner}
 					/>
 				</Grid>
 				<Grid item xs={12} className={classes.comments}>
@@ -304,6 +330,7 @@ export const TaskView = () => {
 						parent={task}
 						saveComment={handleSaveComment}
 						updateComment={handleUpdateComment}
+						module={'tasks'}
 					/>
 				</Grid>
 			</Grid>
@@ -329,7 +356,7 @@ export const TaskView = () => {
 				/>
 			)}
 			{addRelatedUserModal && (
-				<AddFollower
+				<AddRelatedUser
 					handleClose={() => setAddRelatedUserModal(false)}
 					handleSave={addRelatedUser}
 					isOpen={addRelatedUserModal}

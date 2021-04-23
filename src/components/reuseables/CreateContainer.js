@@ -1,11 +1,14 @@
-import { makeStyles } from '@material-ui/core';
-import React from 'react';
+import { makeStyles, Snackbar } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import React, { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import { createNewAsset } from '../../api/assetsApi';
 import { uploadDocument } from '../../api/documentsApi';
 import { createNewFault } from '../../api/faultsApi';
 import { createNewSystem } from '../../api/systemsApi';
 import { createNewTask } from '../../api/tasksApi';
+import { SnackbarContext } from '../../context/SnackbarContext';
 import { UpsertAsset } from '../datapages/assets/UpsertAsset';
 import { UpsertDocument } from '../datapages/documents/UpsertDocument';
 import { UpsertFault } from '../datapages/faults/UpsertFault';
@@ -19,12 +22,18 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
 
     const location = useLocation();
     const history = useHistory();
+    const { t } = useTranslation();
+    const { snackbar, setSnackbar }  = useContext(SnackbarContext);
+
  
     const handleSaveAsset = details => {
         createNewAsset(details)
-        .then(data => {
+        .then(res => {
+            if (res.status === 403) {
+                setSnackbar(res);
+                return; 
+            }
             if (location.pathname === '/workspace/assets') {
-                console.log('here')
                 history.go(0);
             }
         })
@@ -35,8 +44,11 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
 
     const handleSaveSystem = details => {
         createNewSystem(details)
-        .then(data => {
-            console.log(data);
+        .then(res => {
+            if (res.status === 403) {
+                setSnackbar(res); 
+                return; 
+            }
             if (location.pathname === '/workspace/systems') {
                 history.go(0);
             }
@@ -48,26 +60,50 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
 
     const handleSaveFault = details => {
         createNewFault(details)
-        .then(data => {
+        .then(res => {
+            console.log(res)
+            if (res.status === 403) {
+                setSnackbar(res);
+                handleClose();  
+                return; 
+            };
+            setSnackbar({
+                text: "faultsModule.faultSuccesfullyCreated",
+                severity: 'success',
+            });
             handleClose();
-            history.push(`/workspace/faults/${data.faultId}`)
+            history.push(`/workspace/faults/${res.faultId}`)
+            
         })
     }
 
     const handleSaveTask = details => {
         console.log(details)
         createNewTask(details)
-        .then(data => {
-            handleClose();
-            history.push(`/workspace/tasks/${data.taskId}`)
+        .then(res => {
+            if (res.status === 403) {
+                setSnackbar(res); 
+                return; 
+            }
+            history.push(`/workspace/tasks/${res.taskId}`)
+        })
+        .finally(() => {
+            handleClose(); 
         })
     }
 
     const handleSaveDocument = details => {
         uploadDocument(details)
-        .then(data => {
-            handleClose();
+        .then(res => {
+            if (res.status === 403) {
+                setSnackbar(res);
+                handleClose();  
+                return; 
+            }
             history.push(`/workspace/docs`)
+        })
+        .finally(() => {
+            handleClose(); 
         })
     }
 

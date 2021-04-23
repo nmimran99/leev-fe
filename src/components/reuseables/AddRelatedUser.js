@@ -8,7 +8,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 
 
 
-export const AddFollower = ({ handleClose, handleSave, isOpen, followerList, title, instructions }) => {
+export const AddRelatedUser = ({ handleClose, handleSave, isOpen, followerList, title, instructions }) => {
 
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);

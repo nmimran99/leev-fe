@@ -43,7 +43,7 @@ export const TasksList = () => {
                 <LinearProgress />
 				:
 				<Fade in={!isLoading}>
-					<Grid container className={classes.listContainer} spacing={2}>
+					<Grid container className={classes.listContainer} spacing={4}>
 						{tasks.map((task, i) => (					
 							<TaskMinified data={task} key={i} />
 						))}
