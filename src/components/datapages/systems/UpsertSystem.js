@@ -28,7 +28,7 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
         name: '',
         asset: '',
         owner: '',
-        linkedUsers: []
+        relatedUsers: []
     });
     const [ addData, setAddData ] = useState(data || {
         general: {
@@ -140,15 +140,15 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
 
     const handleChangeMultiple = (event) => {
         setDetails({...details, 
-            linkedUsers: event.target.value
+            relatedUsers: event.target.value
         });
     };
 
-    const handleLinkedRemove = (linkedUser) => event => {
+    const handleLinkedRemove = (realtedUser) => event => {
         event.stopPropagation();
         console.log('clicked')
         setDetails({ ...details, 
-            linkedUsers: details.linkedUsers.filter(lu => lu !== linkedUser)
+            relatedUsers: details.relatedUsers.filter(lu => lu !== realtedUser)
         })
         
     }
@@ -365,7 +365,7 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
                                         <Grid item xs={12} sm={6} md={6} lg={7} xl={7} className={classes.section}>
                                         <Grid item xs={12}>
                                             <div className={classes.sectionTitle}>
-                                                {t("systemsModule.linkedUsers")}
+                                                {t("systemsModule.relatedUsers")}
                                             </div>
                                         </Grid>
                                         <Grid item xs={12} className={classes.fields}>
@@ -373,7 +373,7 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
                                             <Select
                                                 variant={"outlined"}
                                                 multiple
-                                                value={details.linkedUsers}
+                                                value={details.relatedUsers}
                                                 onChange={handleChangeMultiple}
                                                 className={classes.selectInput}
                                                 MenuProps={{

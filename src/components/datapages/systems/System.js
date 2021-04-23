@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
 	Backdrop,
 	Grid,
@@ -14,17 +14,19 @@ import {
 	updateSystemAdditionalData,
 } from '../../../api/systemsApi';
 import { SystemName } from './SystemName';
-import { SystemLinkedUsers } from './SystemLinkedUsers';
+import { SystemRelatedUsers } from './SystemRelatedUsers';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import ExpandLessRoundedIcon from '@material-ui/icons/ExpandLessRounded';
 import { SystemControls } from './SystemControls';
 import { SystemAdditionalDetails } from './SystemAdditionalDetails';
 import { UpsertSystem } from './UpsertSystem';
 import { UpdateOwner } from '../../reuseables/UpdateOwner';
+import { SnackbarContext } from '../../../context/SnackbarContext';
 
 export const System = ({ systemData }) => {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation();
+	const { setSnackbar } = useContext(SnackbarContext)
 	const downSm = useMediaQuery((theme) => theme.breakpoints.down('md'));
 	const [data, setData] = useState(systemData);
 	const [editOwner, setEditOwner] = useState(false);
@@ -51,7 +53,9 @@ export const System = ({ systemData }) => {
 
 	const updateOwner = async (owner) => {
 		const res = await updateSystemOwner(data._id, owner);
-		if (res) {
+		if (res.status === 403) {
+			setSnackbar(res)
+		} else if (res) {
 			setData(res);
 			setEditOwner(false);
 		}
@@ -60,7 +64,9 @@ export const System = ({ systemData }) => {
 	const updateSystemData = (systemData) => {
 		updateSystemAdditionalData(systemData)
 			.then((res) => {
-				if (res) {
+				if (res.status === 403) {
+					setSnackbar(res)
+				} else if (res) {
 					console.log(res);
 					setData(res);
 				}
@@ -108,8 +114,10 @@ export const System = ({ systemData }) => {
 	return (
 		<Grid item xs={12} sm={7} md={8} lg={11} xl={11}>
 			<Paper elevation={9} className={classes.paper}>
-				<div className={classes.mainRow}>
-					<div
+				<Grid container className={classes.mainRow}>
+					<Grid
+						item
+						lg={4}
 						className={classes.semiMainRow}
 						onClick={handleExpand}
 						style={{
@@ -141,21 +149,25 @@ export const System = ({ systemData }) => {
 								)}
 							</IconButton>
 						) : null}
-					</div>
-					<SystemControls
+					</Grid>
+					<Grid item lg={8}>
+						<SystemControls
 						editName={editName}
 						expanded={expanded}
-						owner={data.owner}
+						system={data}
 						showLinkedUsersToggle={showLinkedUsersToggle}
 						toggleEditOwner={toggleEditOwner}
 						toggleAdditionalDetails={showAdditionalDetailsToggle}
 					/>
-				</div>
-				<SystemLinkedUsers
+					</Grid>
+					
+				</Grid>
+				<SystemRelatedUsers
 					isOpen={showLinkedUsers}
-					userList={data.linkedUsers}
+					userList={data.relatedUsers}
 					setData={setData}
 					systemId={data._id}
+					data={data}
 				/>
 				<UpdateOwner
 					isOpen={editOwner}

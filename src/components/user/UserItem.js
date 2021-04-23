@@ -43,7 +43,7 @@ export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, siz
                         {
                             showTitle &&
                             <Typography className={classes.title} style={{ fontSize: `${size * 1.1}px` || '18px' }}>
-                                {userData.title || 'עובד כללי'}
+                                {userData.role.roleName || 'עובד כללי'}
                             </Typography>
                         }
                         {

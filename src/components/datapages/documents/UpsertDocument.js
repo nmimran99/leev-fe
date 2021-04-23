@@ -22,23 +22,15 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getFaults } from '../../../api/faultsApi';
 import { getFullName } from '../../../api/genericApi';
-import {
-	createSystemMenuOptions,
-	getAssetsSuggestions,
-	getSystemsByAsset,
-} from '../../../api/systemsApi';
+import { createSystemMenuOptions, getAssetsSuggestions, getSystemsByAsset } from '../../../api/systemsApi';
 import { getTasks } from '../../../api/tasksApi';
 import { createUserOptions } from '../../../api/userApi';
 import { AuthContext } from '../../../context/AuthContext';
 import { LanguageContext } from '../../../context/LanguageContext';
 import { UserItem } from '../../user/UserItem';
+import { getDocument } from '../../../api/documentsApi';
 
-export const UpsertDocument = ({
-	handleClose,
-	handleSave,
-	handleUpdate,
-	documentId,
-}) => {
+export const UpsertDocument = ({ handleClose, handleSave, documentId }) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { auth } = useContext(AuthContext);
@@ -51,7 +43,7 @@ export const UpsertDocument = ({
 	const [faults, setFaults] = useState([]);
 	const [userList, setUserList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const [mode, setMode] = useState(handleUpdate ? 'update' : 'create');
+	const [mode, setMode] = useState(documentId ? 'update' : 'create');
 	const [details, setDetails] = useState({
 		tenant: auth.user.tenant,
 		description: '',
@@ -72,6 +64,18 @@ export const UpsertDocument = ({
 			})
 			.then((data) => {
 				setAssets(data);
+				if (!documentId) {
+					return;
+				}
+				getDocument(documentId)        
+				.then(data => {
+					return Promise.all([loadSystemOptions(data.asset), Promise.resolve(data)]) 
+				})
+				.then(res => {
+					let data = res[1];
+					if (!data) return;
+					setDetails({ ...data, file: null });
+				});
 			})
 			.finally(() => {
 				setIsLoading(false);
@@ -79,7 +83,7 @@ export const UpsertDocument = ({
 	}, []);
 
 	useEffect(() => {
-        if (!details.asset) {
+		if (!details.asset) {
 			setTasks([]);
 			setFaults([]);
 			return;
@@ -116,8 +120,12 @@ export const UpsertDocument = ({
 	const validateFields = () => {
 		return new Promise((resolve, reject) => {
 			let errList = [];
-			
-
+			if (!details.description) {
+				errList.push({ field: 'description', text: t('errors.isRequired') });
+			}	
+			if (!details.file && mode === 'create') {
+				errList.push({ field: 'file', text: t('errors.isRequired') });
+			}
 			if (errList.length) {
 				setErrors(errList);
 				resolve(false);
@@ -138,7 +146,8 @@ export const UpsertDocument = ({
 	};
 
 	const handleConfirm = () => {
-		validateFields().then((res) => {
+		validateFields()
+		.then((res) => {
 			if (!res) return;
 			handleSave(details);
 		});
@@ -158,7 +167,7 @@ export const UpsertDocument = ({
 					task: '',
 					fault: '',
 					system: '',
-					asset: ''
+					asset: '',
 				});
 				setSystems([]);
 			}
@@ -169,11 +178,13 @@ export const UpsertDocument = ({
 	};
 
 	const handleFileUpload = (event) => {
-		console.log(event.target.files[0])
 		setDetails({
 			...details,
-			file: event.target.files[0],
+			file: event.target.files[0]
 		});
+		if (errors.length) {
+			setErrors(errors.filter((err) => err.field !== 'file'));
+		}
 	};
 
 	return isLoading ? (
@@ -190,45 +201,15 @@ export const UpsertDocument = ({
 			className={classes.modal}
 		>
 			<Fade in={true}>
-				<Grid
-					container
-					justify="center"
-					alignItems="center"
-					style={{ outline: '0' }}
-				>
-					<Grid
-						item
-						xs={12}
-						sm={10}
-						md={8}
-						lg={8}
-						xl={6}
-						className={classes.gridCont}
-					>
-						<Paper
-							elevation={6}
-							className={classes.paper}
-							style={{ direction: lang.dir }}
-						>
+				<Grid container justify="center" alignItems="center" style={{ outline: '0' }}>
+					<Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
+						<Paper elevation={6} className={classes.paper} style={{ direction: lang.dir }}>
 							<Grid container>
-								<Grid
-									item
-									xs={12}
-									className={classes.headerRow}
-								>
-									<div className={classes.title}>
-										{t(
-											'documentsModule.upsert.createDocument'
-										)}
-									</div>
+								<Grid item xs={12} className={classes.headerRow}>
+									<div className={classes.title}>{t('documentsModule.upsert.createDocument')}</div>
 									<div className={classes.close}>
-										<IconButton
-											className={classes.iconBtn}
-											onClick={handleClose}
-										>
-											<ClearRounded
-												className={classes.icon}
-											/>
+										<IconButton className={classes.iconBtn} onClick={handleClose}>
+											<ClearRounded className={classes.icon} />
 										</IconButton>
 									</div>
 								</Grid>
@@ -236,100 +217,63 @@ export const UpsertDocument = ({
 								<Grid item xs={12} className={classes.section}>
 									<Grid item xs={12}>
 										<div className={classes.sectionTitle}>
-											{t(
-												'documentsModule.upsert.generalDetails'
-											)}
+											{t('documentsModule.upsert.generalDetails')}
 										</div>
 									</Grid>
-									<Grid
-										item
-										xs={12}
-										className={classes.fields}
-									>
+									<Grid item xs={12} className={classes.fields}>
 										<Grid container justify="flex-start">
-											<Grid
-												item
-												xs={12}
-												className={
-													classes.textContainer
-												}
-											>
+											<Grid item xs={12} className={classes.textContainer}>
 												<TextField
+													error={errors.filter((e) => e.field === `description`).length > 0}
 													variant={'outlined'}
-													label={t(
-														`documentsModule.upsert.description`
-													)}
+													label={t(`documentsModule.upsert.description`)}
 													value={details.description}
-													onChange={handleChange(
-														'description'
-													)}
-													className={
-														classes.textField
-													}
+													onChange={handleChange('description')}
+													className={classes.textField}
 													size={'medium'}
+													helperText={
+														errors.filter((e) => e.field === `description`).length > 0
+															? t('errors.isRequired')
+															: null
+													}
+													FormHelperTextProps={{
+														style: {
+															color:
+																errors.filter((e) => e.field === `description`).length > 0
+																? 'rgb(244, 67, 54)'
+																: null,
+														},
+													}}
 												/>
 											</Grid>
 										</Grid>
 									</Grid>
 								</Grid>
-								<Grid
-									item
-									xs={12}
-									sm={6}
-									md={6}
-									lg={6}
-									xl={7}
-									className={classes.section}
-								>
+								<Grid item xs={12} sm={6} md={6} lg={6} xl={7} className={classes.section}>
 									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>
-											{t('documentsModule.upsert.asset')}
-										</div>
+										<div className={classes.sectionTitle}>{t('documentsModule.upsert.asset')}</div>
 									</Grid>
-									<Grid
-										item
-										xs={12}
-										className={classes.fields}
-									>
+									<Grid item xs={12} className={classes.fields}>
 										<Grid container justify="flex-start">
-											<Grid
-												item
-												xs={12}
-												className={
-													classes.textContainer
-												}
-											>
+											<Grid item xs={12} className={classes.textContainer}>
 												<Select
 													variant={'outlined'}
-													error={
-														errors.filter(
-															(e) =>
-																e.field ===
-																`asset`
-														).length > 0
-													}	
+													error={errors.filter((e) => e.field === `asset`).length > 0}
 													value={details.asset}
-													onChange={handleChange(
-														`asset`
-													)}
-													className={
-														classes.selectInput
-													}
+													onChange={handleChange(`asset`)}
+													className={classes.selectInput}
 													MenuProps={{
 														anchorOrigin: {
 															vertical: 'bottom',
-															horizontal:
-																'center',
+															horizontal: 'center',
 														},
 														transformOrigin: {
 															vertical: 'top',
-															horizontal:
-																'center',
+															horizontal: 'center',
 														},
 														getContentAnchorEl: null,
 														classes: {
-															paper:
-																classes.menupaper,
+															paper: classes.menupaper,
 														},
 													}}
 												>
@@ -338,20 +282,15 @@ export const UpsertDocument = ({
 															key={i}
 															value={asset.value}
 															style={{
-																direction:
-																	lang.dir,
+																direction: lang.dir,
 															}}
-															className={
-																classes.menuitem
-															}
+															className={classes.menuitem}
 														>
 															{asset.text}
 														</MenuItem>
 													))}
 												</Select>
-												{errors.filter(
-													(e) => e.field === 'asset'
-												).length > 0 && (
+												{errors.filter((e) => e.field === 'asset').length > 0 && (
 													<FormHelperText
 														style={{
 															color: '#f44336',
@@ -365,90 +304,48 @@ export const UpsertDocument = ({
 										</Grid>
 									</Grid>
 								</Grid>
-								<Grid
-									item
-									xs={12}
-									sm={6}
-									md={4}
-									lg={4}
-									xl={4}
-									className={classes.section}
-								>
+								<Grid item xs={12} sm={6} md={4} lg={4} xl={4} className={classes.section}>
 									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>
-											{t('documentsModule.upsert.system')}
-										</div>
+										<div className={classes.sectionTitle}>{t('documentsModule.upsert.system')}</div>
 									</Grid>
-									<Grid
-										item
-										xs={12}
-										className={classes.fields}
-									>
+									<Grid item xs={12} className={classes.fields}>
 										<Grid container justify="flex-start">
-											<Grid
-												item
-												xs={12}
-												className={
-													classes.textContainer
-												}
-											>
+											<Grid item xs={12} className={classes.textContainer}>
 												<Select
 													variant={'outlined'}
-													error={
-														errors.filter(
-															(e) =>
-																e.field ===
-																`system`
-														).length > 0
-													}
+													error={errors.filter((e) => e.field === `system`).length > 0}
 													value={details.system}
-													onChange={handleChange(
-														`system`
-													)}
-													className={
-														classes.selectInput
-													}
+													onChange={handleChange(`system`)}
+													className={classes.selectInput}
 													MenuProps={{
 														anchorOrigin: {
 															vertical: 'bottom',
-															horizontal:
-																'center',
+															horizontal: 'center',
 														},
 														transformOrigin: {
 															vertical: 'top',
-															horizontal:
-																'center',
+															horizontal: 'center',
 														},
 														getContentAnchorEl: null,
 														classes: {
-															paper:
-																classes.menupaper,
+															paper: classes.menupaper,
 														},
 													}}
 												>
-													{systems.map(
-														(system, i) => (
-															<MenuItem
-																key={i}
-																value={
-																	system.value
-																}
-																style={{
-																	direction:
-																		lang.dir,
-																}}
-																className={
-																	classes.menuitem
-																}
-															>
-																{system.text}
-															</MenuItem>
-														)
-													)}
+													{systems.map((system, i) => (
+														<MenuItem
+															key={i}
+															value={system.value}
+															style={{
+																direction: lang.dir,
+															}}
+															className={classes.menuitem}
+														>
+															{system.text}
+														</MenuItem>
+													))}
 												</Select>
-												{errors.filter(
-													(e) => e.field === 'asset'
-												).length > 0 && (
+												{errors.filter((e) => e.field === 'asset').length > 0 && (
 													<FormHelperText
 														style={{
 															color: '#f44336',
@@ -463,107 +360,57 @@ export const UpsertDocument = ({
 									</Grid>
 								</Grid>
 								{Boolean(tasks.length) && (
-									<Grid
-										item
-										xs={12}
-								
-										className={classes.section}
-									>
+									<Grid item xs={12} className={classes.section}>
 										<Grid item xs={12}>
-											<div
-												className={classes.sectionTitle}
-											>
-												{t(
-													'documentsModule.upsert.task'
-												)}
+											<div className={classes.sectionTitle}>
+												{t('documentsModule.upsert.task')}
 											</div>
 										</Grid>
-										<Grid
-											item
-											xs={12}
-											className={classes.fields}
-										>
-											<Grid
-												container
-												justify="flex-start"
-											>
-												<Grid
-													item
-													xs={12}
-													className={
-														classes.textContainer
-													}
-												>
+										<Grid item xs={12} className={classes.fields}>
+											<Grid container justify="flex-start">
+												<Grid item xs={12} className={classes.textContainer}>
 													<Select
 														variant={'outlined'}
-														error={
-															errors.filter(
-																(e) =>
-																	e.field ===
-																	`task`
-															).length > 0
-														}
+														error={errors.filter((e) => e.field === `task`).length > 0}
 														value={details.task}
-														onChange={handleChange(
-															`task`
-														)}
-														className={
-															classes.selectInput
-														}
+														onChange={handleChange(`task`)}
+														className={classes.selectInput}
 														MenuProps={{
 															anchorOrigin: {
-																vertical:
-																	'bottom',
-																horizontal:
-																	'center',
+																vertical: 'bottom',
+																horizontal: 'center',
 															},
 															transformOrigin: {
 																vertical: 'top',
-																horizontal:
-																	'center',
+																horizontal: 'center',
 															},
 															getContentAnchorEl: null,
 															classes: {
-																paper:
-																	classes.menupaper,
+																paper: classes.menupaper,
 															},
 														}}
 													>
-														{tasks.map(
-															(task, i) => (
-																<MenuItem
-																	key={i}
-																	value={
-																		task.value
-																	}
-																	style={{
-																		direction:
-																			lang.dir,
-																	}}
-																	className={
-																		classes.menuitem
-																	}
-																>
-																	{task.text}
-																</MenuItem>
-															)
-														)}
+														{tasks.map((task, i) => (
+															<MenuItem
+																key={i}
+																value={task.value}
+																style={{
+																	direction: lang.dir,
+																}}
+																className={classes.menuitem}
+															>
+																{task.text}
+															</MenuItem>
+														))}
 													</Select>
-													{errors.filter(
-														(e) =>
-															e.field === 'task'
-													).length > 0 && (
+													{errors.filter((e) => e.field === 'task').length > 0 && (
 														<FormHelperText
 															style={{
-																color:
-																	'#f44336',
-																marginRight:
-																	'15px',
+																color: '#f44336',
+																marginRight: '15px',
 															}}
 														>
-															{t(
-																'errors.isRequired'
-															)}
+															{t('errors.isRequired')}
 														</FormHelperText>
 													)}
 												</Grid>
@@ -572,107 +419,57 @@ export const UpsertDocument = ({
 									</Grid>
 								)}
 								{Boolean(faults.length) && (
-									<Grid
-										item
-										xs={12}
-										
-										className={classes.section}
-									>
+									<Grid item xs={12} className={classes.section}>
 										<Grid item xs={12}>
-											<div
-												className={classes.sectionTitle}
-											>
-												{t(
-													'documentsModule.upsert.fault'
-												)}
+											<div className={classes.sectionTitle}>
+												{t('documentsModule.upsert.fault')}
 											</div>
 										</Grid>
-										<Grid
-											item
-											xs={12}
-											className={classes.fields}
-										>
-											<Grid
-												container
-												justify="flex-start"
-											>
-												<Grid
-													item
-													xs={12}
-													className={
-														classes.textContainer
-													}
-												>
+										<Grid item xs={12} className={classes.fields}>
+											<Grid container justify="flex-start">
+												<Grid item xs={12} className={classes.textContainer}>
 													<Select
 														variant={'outlined'}
-														error={
-															errors.filter(
-																(e) =>
-																	e.field ===
-																	`fault`
-															).length > 0
-														}
+														error={errors.filter((e) => e.field === `fault`).length > 0}
 														value={details.fault}
-														onChange={handleChange(
-															`fault`
-														)}
-														className={
-															classes.selectInput
-														}
+														onChange={handleChange(`fault`)}
+														className={classes.selectInput}
 														MenuProps={{
 															anchorOrigin: {
-																vertical:
-																	'bottom',
-																horizontal:
-																	'center',
+																vertical: 'bottom',
+																horizontal: 'center',
 															},
 															transformOrigin: {
 																vertical: 'top',
-																horizontal:
-																	'center',
+																horizontal: 'center',
 															},
 															getContentAnchorEl: null,
 															classes: {
-																paper:
-																	classes.menupaper,
+																paper: classes.menupaper,
 															},
 														}}
 													>
-														{faults.map(
-															(fault, i) => (
-																<MenuItem
-																	key={i}
-																	value={
-																		fault.value
-																	}
-																	style={{
-																		direction:
-																			lang.dir,
-																	}}
-																	className={
-																		classes.menuitem
-																	}
-																>
-																	{fault.text}
-																</MenuItem>
-															)
-														)}
+														{faults.map((fault, i) => (
+															<MenuItem
+																key={i}
+																value={fault.value}
+																style={{
+																	direction: lang.dir,
+																}}
+																className={classes.menuitem}
+															>
+																{fault.text}
+															</MenuItem>
+														))}
 													</Select>
-													{errors.filter(
-														(e) =>
-															e.field === 'fault'
-													).length > 0 && (
+													{errors.filter((e) => e.field === 'fault').length > 0 && (
 														<FormHelperText
 															style={{
-																color:
-																	'#f44336',
-																marginRight:
-																	'15px',
+																color: '#f44336',
+																marginRight: '15px',
 															}}
 														>
-															{t(
-																'errors.isRequired'
-															)}
+															{t('errors.isRequired')}
 														</FormHelperText>
 													)}
 												</Grid>
@@ -680,38 +477,15 @@ export const UpsertDocument = ({
 										</Grid>
 									</Grid>
 								)}
-								<Grid
-									item
-									xs={12}
-									sm={6}
-									md={6}
-									lg={4}
-									xl={4}
-									className={classes.section}
-								>
+								<Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.section}>
 									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>
-											{t('documentsModule.upsert.user')}
-										</div>
+										<div className={classes.sectionTitle}>{t('documentsModule.upsert.user')}</div>
 									</Grid>
-									<Grid
-										item
-										xs={12}
-										className={classes.fields}
-									>
-										<Grid
-											item
-											xs={12}
-											className={classes.textContainer}
-										>
+									<Grid item xs={12} className={classes.fields}>
+										<Grid item xs={12} className={classes.textContainer}>
 											<Select
 												variant={'outlined'}
-												error={
-													errors.filter(
-														(e) =>
-															e.field === `user`
-													).length > 0
-												}
+												error={errors.filter((e) => e.field === `user`).length > 0}
 												value={details.owner}
 												onChange={handleChange(`user`)}
 												className={classes.selectInput}
@@ -726,37 +500,25 @@ export const UpsertDocument = ({
 													},
 													getContentAnchorEl: null,
 													classes: {
-														paper:
-															classes.menupaper,
+														paper: classes.menupaper,
 													},
 												}}
 												renderValue={(selected) => {
-													let user = userList.find(
-														(f) =>
-															f._id === selected
-													);
+													let user = userList.find((f) => f._id === selected);
 													return (
 														<Chip
 															size={'medium'}
 															avatar={
 																<Avatar
 																	style={{
-																		height:
-																			'40px',
-																		width:
-																			'40px',
+																		height: '40px',
+																		width: '40px',
 																	}}
-																	src={
-																		user.avatar
-																	}
+																	src={user.avatar}
 																/>
 															}
-															label={getFullName(
-																user
-															)}
-															className={
-																classes.chip
-															}
+															label={getFullName(user)}
+															className={classes.chip}
 														/>
 													);
 												}}
@@ -768,21 +530,10 @@ export const UpsertDocument = ({
 														style={{
 															direction: lang.dir,
 														}}
-														className={
-															classes.menuitem
-														}
+														className={classes.menuitem}
 													>
-														<div
-															className={
-																classes.userCont
-															}
-														>
-															<UserItem
-																user={user}
-																avatarSize={40}
-																size={13}
-																showName
-															/>
+														<div className={classes.userCont}>
+															<UserItem user={user} avatarSize={40} size={13} showName />
 														</div>
 													</MenuItem>
 												))}
@@ -791,68 +542,32 @@ export const UpsertDocument = ({
 									</Grid>
 								</Grid>
 								{mode === 'create' && (
-									<Grid
-										item
-										xs={12}
-										md={6}
-										className={classes.section}
-									>
+									<Grid item xs={12} md={6} className={classes.section}>
 										<Grid item xs={12}>
-											<div
-												className={classes.sectionTitle}
-											>
-												{t(
-													'documentsModule.upsert.document'
-												)}
+											<div className={classes.sectionTitle}>
+												{t('documentsModule.upsert.document')}
 											</div>
 										</Grid>
-										<Grid
-											item
-											xs={12}
-											className={classes.fields}
-										>
-											<Grid
-												container
-												justify="flex-start"
-											>
-												<Grid
-													item
-													xs={12}
-													className={
-														classes.textContainer
-													}
-												>
+										<Grid item xs={12} className={classes.fields}>
+											<Grid container justify="flex-start">
+												<Grid item xs={12} className={classes.textContainer}>
 													<Button
 														component={'label'}
 														variant={'contained'}
-														className={
-															classes.uploadBtn
-														}
+														className={clsx(classes.uploadBtn, errors.filter((e) => e.field === `file`).length > 0 ? classes.fileError : null)}
 													>
-														{t(
-															'documentsModule.upsert.uploadDocument'
-														)}
+														{t('documentsModule.upsert.uploadDocument')}
 														<input
 															accept=".doc,.docx,.pdf"
 															type="file"
-															onChange={
-																handleFileUpload
-															}
+															onChange={handleFileUpload}
 															hidden
 														/>
 													</Button>
-													<span
-														className={
-															classes.filesUploaded
-														}
-													>
+													<span className={classes.filesUploaded}>
 														{details.file
-															? `1 ${t(
-																	'documentsModule.upsert.fileSelected'
-															  )}`
-															: `${t(
-																	'documentsModule.upsert.noFileSelected'
-															  )}`}
+															? `1 ${t('documentsModule.upsert.fileSelected')}`
+															: `${t('documentsModule.upsert.noFileSelected')}`}
 													</span>
 												</Grid>
 											</Grid>
@@ -861,22 +576,10 @@ export const UpsertDocument = ({
 								)}
 
 								<Grid item xs={12} className={classes.controls}>
-									<Button
-										className={clsx(
-											classes.control,
-											classes.save
-										)}
-										onClick={handleConfirm}
-									>
+									<Button className={clsx(classes.control, classes.save)} onClick={handleConfirm}>
 										{t('controls.confirm')}
 									</Button>
-									<Button
-										className={clsx(
-											classes.control,
-											classes.cancel
-										)}
-										onClick={handleClose}
-									>
+									<Button className={clsx(classes.control, classes.cancel)} onClick={handleClose}>
 										{t('controls.cancel')}
 									</Button>
 								</Grid>
@@ -1138,4 +841,8 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '12px',
 		marginBottom: '10px',
 	},
+	fileError: {
+		borderColor: 'rgb(244, 67, 54)',
+		color: 'rgb(244, 67, 54)'
+	}
 }));

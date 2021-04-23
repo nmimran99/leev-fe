@@ -33,7 +33,7 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
         asset: '',
         system: '',
         owner: '',
-        following: [],
+        relatedUsers: [],
         createdBy: auth.user._id,
         images: [],
         uploadedImages: []

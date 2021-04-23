@@ -15,7 +15,7 @@ export const UpdateOwner = ({ handleClose, handleSave, isOpen, currentOwner, tit
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
     const { t, i18n } = useTranslation();
     const [ userList, setUserList ] = useState([]);
-    const [ selectedUser, setSelectedUser ] = useState('')
+    const [ selectedUser, setSelectedUser ] = useState(null)
     
     useEffect(() => {
         getUserList()
@@ -25,7 +25,7 @@ export const UpdateOwner = ({ handleClose, handleSave, isOpen, currentOwner, tit
             }
             setUserList(data.filter(u => u._id !== currentOwner._id ));
         })
-    }, [])
+    }, [currentOwner])
 
     const handleChange = event => {
         setSelectedUser(event.target.value)

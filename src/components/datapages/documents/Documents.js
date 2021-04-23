@@ -6,12 +6,16 @@ import {
 	getDocuments,
 	deleteDocument,
 	downloadDocument,
+	updateDocumentDetails,
 } from '../../../api/documentsApi';
+import { getSuccessMessage } from '../../../api/genericApi';
 import { AuthContext } from '../../../context/AuthContext';
+import { SnackbarContext } from '../../../context/SnackbarContext';
 import { AlertDialog } from '../../reuseables/AlertDialog';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { Document } from './Document';
 import { DocumentsControls } from './DocumentsControls';
+import { UpsertDocument } from './UpsertDocument';
 
 export const Documents = () => {
 	const classes = useStyles();
@@ -19,9 +23,11 @@ export const Documents = () => {
 	const query = useQuery(location.search);
 	const { auth } = useContext(AuthContext);
 	const { t } = useTranslation();
+	const { setSnackbar } = useContext(SnackbarContext);
 	const [docs, setDocs] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [alertDialog, setAlertDialog] = useState(null);
+	const [ edit, setEdit ] = useState(null)
 
 	useEffect(() => {
 		getDocuments(auth.user.tenant, query)
@@ -57,6 +63,24 @@ export const Documents = () => {
 		downloadDocument(url);
 	};
 
+	const handleSave = (documentId, details) => {
+		updateDocumentDetails(documentId, details)
+		.then(res => {
+			if (res.status === 403) {
+				setSnackbar(res);
+			} else if (res) {
+				setDocs(docs.map(d => {
+					if (d._id === res._id) {
+						return res;
+					}
+					return d;
+				}));
+				setSnackbar(getSuccessMessage('document', res.docId, 'updated'));
+			}
+		})
+		.finally(() => setEdit(null))
+	}
+
 	return (
 		<Grid container justify="center">
 			<div className={classes.pageModule}>
@@ -80,6 +104,7 @@ export const Documents = () => {
 								data={d}
 								deleteFile={deleteFile}
 								downloadFile={downloadFile}
+								setEdit={setEdit}
 							/>
 						</Grid>
 					))}
@@ -91,6 +116,14 @@ export const Documents = () => {
 					open={Boolean(alertDialog)}
 				/>
 			)}
+			{
+				edit &&
+				<UpsertDocument 
+					handleClose={() => setEdit(null)}
+					handleSave={handleSave}
+					documentId={edit}
+				/>
+			}
 		</Grid>
 	);
 };

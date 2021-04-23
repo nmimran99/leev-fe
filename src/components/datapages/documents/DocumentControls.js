@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { LanguageContext } from '../../../context/LanguageContext';
 
 export const DocumentControls = ({
-	editDetails,
+	editDocument,
 	downloadFile,
 	deleteFile,
 }) => {
@@ -72,7 +72,7 @@ export const DocumentControls = ({
 				<MenuItem
 					style={{ direction: lang.code === 'he' ? 'rtl' : 'ltr' }}
 					className={classes.iconBtn}
-					onClick={editDetails}
+					onClick={editDocument}
 				>
 					<ListItemIcon>
 						<CreateIcon className={classes.icon} />

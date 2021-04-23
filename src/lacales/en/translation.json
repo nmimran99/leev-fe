@@ -50,8 +50,8 @@
         "editAsset": "Edit Asset Details",
         "updateAssetOwner": "Upade Asset Manager",
         "updateAssetOwnerInstructions": "Choose a user to act as asset manager",
-        "addFollower": "Add following user",
-        "addFollowerIntructions": "Choose a user to add to the fault following list"
+        "addRelatedUser": "Add related user",
+        "addRelatedUserIntructions": "Choose a user to add to the fault related users list"
     },
     "systemsModule": {
         "filterBySystemName": "Filter by system name",
@@ -60,7 +60,7 @@
         "initMessage": "Please filter by asset to view related systems.",
         "moreDetails": "More Details",
         "showUsers": "Show Related Users",
-        "changeManager": "Change Assigned Manager",
+        "changeOwner": "Change Assigned Owner",
         "showFaults": "Show Faults",
         "showTasks": "Show My Tasks",
         "showDocuments": "Show Related Documents",
@@ -73,7 +73,7 @@
         "removeUser": "Remove user from system",
         "userRemoveConfrimText": "Are you sure you want to remove",
         "userRemoveConfrimLabel": "System User Remove",
-        "assignedUsers": "Professionals and Linked Users",
+        "assignedUsers": "Professionals and Related Users",
         "noUsersAssigned": "There are currently no users assigned to this system.",
         "addRelatedUserTitle": "Link a user to the system",
         "chooseUserToAdd": "Select a user to add to the system",
@@ -82,7 +82,7 @@
         "createSystem": "Create a System",
         "generalDetails": "General",
         "systemOwner": "System Manager",
-        "linkedUsers": "Linked Users",
+        "relatedUsers": "Related Users",
         "owningAsset": "Asset",
         "additionalDetails": "Additional System Details",
         "location": "System Location",
@@ -139,12 +139,12 @@
         "controls": {
             "editDetails": "Edit Fault Details",
             "changeOwner": "Change Assigned User",
-            "addFollowing": "Add Following Users",
-            "removeFollower": "Remove user from following",
+            "addRelatedUser": "Add Related User",
+            "removeRelatedUser": "Remove user from related users",
             "changeStatus": "Change Status"
         },
-        "noFollowers": "There are no followers to this fault yet.",
-        "followingUsers": "Following",
+        "noRelatedUsers": "There are no followers to this fault yet.",
+        "relatedUsers": "Related users",
         "createDate": "Created at",
         "upsert": {
             "generalDetails": "General Details",
@@ -153,7 +153,7 @@
             "title": "Fault Title",
             "titleLimit": "characters left",
             "description": "Fault Description",
-            "followingUsers": "Follwing",
+            "relatedUsers": "Follwing",
             "asset": "Asset",
             "system": "System",
             "faultOwner": "Owner",
@@ -165,9 +165,9 @@
         },
         "updateOwner": "Update Fault Owner",
         "updateOwnerInstructions": "Choose user to update as fault owner",
-        "addFollower": "Add Fault Follower",
-        "addFollowerInstructions": "Choose a user to add to the following list"
-        
+        "addRelatedUser": "Add Fault RelatedUser",
+        "addRelatedUserInstructions": "Choose a user to add to the related users list",
+        "faultSuccesfullyCreated": "Fault has been successfully created"
     },
     "tasksModule": {
         "tasks": "Tasks",
@@ -355,19 +355,44 @@
         "save": "Save"
     },
     "errors": {
-        "isRequired": "This field is required"
+        "isRequired": "This field is required",
+        "unauthorized": "You are not authorized to perform this action. Please consult your system administrator.",
+        "noFileSelected": "No file was selected"
+    },
+    "messages": {
+        "snackMessage": {
+            "itemOfType": "Item of type",
+            "saved": "has been saved",
+            "updated": "has been updated",
+            "removed": "has been removed",
+            "withIdentifier": "with identifier",
+            "withSuccess": "successfully"
+        }
     }, 
     "general": {
         "noData": "No Data",
         "removeUserConfirmation": {
             "part1": "Are you sure you want to remove",
-            "part2": "from the following list?"
+            "part2": "from the related users list?"
         },
-        "removeUserFromFollowing": "Remove User from Following List",
+        "removeUserFromFollowing": "Remove User from related users List",
         "openFor": "Open for",
         "openInNew": "Open in a new tab",
         "createDate": "Created at",
-        "none": "None" 
+        "none": "None",
+        "fault": "fault",
+        "asset": "asset",
+        "system": "system",
+        "task": "task",
+        "document": "document",
+        "setting": "setting",
+        "settings": "settings",
+        "permission": "permission",
+        "permissions": "permissions",
+        "roles": "roles",
+        "role": "role",
+        "relatedUser": "related User",
+        "relatedUsers": "related users" 
     },
     "scheduler": {
         "startDate": "Start Date",
@@ -381,7 +406,11 @@
     "mapModule": {
         "presenting": "Showing",
         "outOf": "Out of",
-        "noFaults": "There are no faults for this asset"
+        "noFaults": "There are no faults for this asset",
+        "noTasks": "There are no tasks for this asset",
+        "openFaults": "Open Faults",
+        "todaysTasks": "Open Tasks",
+        "filters": "Filters"
     },
     "notificationsModule": {
         "notifications": "Notifications",

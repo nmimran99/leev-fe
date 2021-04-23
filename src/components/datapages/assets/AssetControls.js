@@ -11,6 +11,14 @@ export const AssetControls = ({ removeAsset, toggleEditMode }) => {
 	return (
 		<Fade in={true} timeout={500}>
 			<div className={classes.container}>
+				{/* <Tooltip title={t('assetsModule.changeOwner')}>
+					<IconButton
+						className={classes.iconbutton}
+						onClick={toggleEditMode('address')}
+					>
+						<EditRoundedIcon className={classes.icon} />
+					</IconButton>
+				</Tooltip> */}
 				<Tooltip title={t('assetsModule.editAddress')}>
 					<IconButton
 						className={classes.iconbutton}

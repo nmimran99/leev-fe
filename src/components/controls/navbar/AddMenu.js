@@ -16,6 +16,7 @@ import PostAddIcon from '@material-ui/icons/PostAdd';
 import NoteAddOutlinedIcon from '@material-ui/icons/NoteAddOutlined';
 import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 import { useTranslation } from 'react-i18next';
+import { Can } from '../../reuseables/Can';
 
 export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
 	const classes = useStyles();
@@ -73,34 +74,40 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
 								disableTypography={true}
 							/>
 						</ListItem>
-						<ListItem
-							button={true}
-							className={classes.listItem}
-							onClick={toggleAdd('task')}
-						>
-							<ListItemIcon className={classes.listItemIcon}>
-								<PostAddIcon />
-							</ListItemIcon>
-							<ListItemText
-								primary={t('createMenu.createTask')}
-								className={classes.listItemText}
-								disableTypography={true}
-							/>
-						</ListItem>
-						<ListItem
-							button={true}
-							className={classes.listItem}
-							onClick={toggleAdd('fault')}
-						>
-							<ListItemIcon className={classes.listItemIcon}>
-								<QueueIcon />
-							</ListItemIcon>
-							<ListItemText
-								primary={t('createMenu.createFault')}
-								className={classes.listItemText}
-								disableTypography={true}
-							/>
-						</ListItem>
+						<Can module="tasks" action="create">
+							<ListItem
+								button={true}
+								className={classes.listItem}
+								onClick={toggleAdd('task')}
+							>
+								<ListItemIcon className={classes.listItemIcon}>
+									<PostAddIcon />
+								</ListItemIcon>
+								<ListItemText
+									primary={t('createMenu.createTask')}
+									className={classes.listItemText}
+									disableTypography={true}
+								/>
+							</ListItem>
+						</Can>
+
+						<Can module="faults" action="create">
+							<ListItem
+								button={true}
+								className={classes.listItem}
+								onClick={toggleAdd('fault')}
+							>
+								<ListItemIcon className={classes.listItemIcon}>
+									<QueueIcon />
+								</ListItemIcon>
+								<ListItemText
+									primary={t('createMenu.createFault')}
+									className={classes.listItemText}
+									disableTypography={true}
+								/>
+							</ListItem>
+						</Can>
+
 						<ListItem
 							button={true}
 							className={classes.listItem}

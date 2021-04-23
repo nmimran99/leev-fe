@@ -1,65 +1,58 @@
 import { Grid, IconButton, makeStyles } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getFullAddress } from '../../../api/assetsApi';
 import { getFileTypeName } from '../../../api/documentsApi';
 import { ItemLink } from '../../reuseables/ItemLink';
 import { UserItem } from '../../user/UserItem';
 import { DocumentControls } from './DocumentControls';
+import dateFormat from 'dateformat';
+import { LanguageContext } from '../../../context/LanguageContext';
 
-export const Document = ({ data, deleteFile, downloadFile }) => {
-    
-    const classes = useStyles();
-    const { t } = useTranslation();
-    
+export const Document = ({ data, deleteFile, downloadFile, setEdit }) => {
+	const classes = useStyles();
+	const { t } = useTranslation();
+	const { lang } = useContext(LanguageContext);
 
 	return (
 		<Grid container className={classes.docContainer}>
 			<Grid item xs={9} className={classes.descContainer}>
 				<div className={classes.description}>{data.description}</div>
 				<div className={classes.docId}>{data.docId}</div>
+				<div className={classes.createdAt}>{`${t('general.createDate')} ${dateFormat(
+					data.createdAt,
+					lang.dateonly
+				)}`}</div>
 			</Grid>
 			<Grid item xs={3} className={classes.controls}>
-				<DocumentControls 
+				<DocumentControls
 					deleteFile={deleteFile(data._id, data.description)}
 					downloadFile={() => downloadFile(data.url)}
-                />
+					editDocument={() => setEdit(data._id)}
+				/>
 			</Grid>
 			<Grid item xs={12} className={classes.dataContainer}>
 				<Grid container className={classes.relationContainer}>
 					<Grid item xs={12} className={classes.gridItem}>
-						<div className={classes.relationLabel}>
-							{t('documentsModule.upsert.asset')}
-						</div>
+						<div className={classes.relationLabel}>{t('documentsModule.upsert.asset')}</div>
 						<div className={classes.relationData}>
-							{data.asset
-								? getFullAddress(data.asset)
-								: t('general.noData')}
+							{data.asset ? getFullAddress(data.asset) : t('general.noData')}
 						</div>
 					</Grid>
 				</Grid>
 				<Grid container className={classes.relationContainer}>
 					<Grid item xs={6} className={classes.gridItem}>
-						<div className={classes.relationLabel}>
-							{t('documentsModule.upsert.system')}
-						</div>
+						<div className={classes.relationLabel}>{t('documentsModule.upsert.system')}</div>
 						<div className={classes.relationData}>
-							{data.system
-								? data.system.name
-								: t('general.noData')}
+							{data.system ? data.system.name : t('general.noData')}
 						</div>
 					</Grid>
 					<Grid item xs={6} className={classes.gridItem}>
-						<div className={classes.relationLabel}>
-							{t('documentsModule.upsert.fault')}
-						</div>
+						<div className={classes.relationLabel}>{t('documentsModule.upsert.fault')}</div>
 						<div className={classes.relationData}>
 							{data.fault ? (
-								<ItemLink
-									itemId={data.fault.faultId}
-									module="faults"
-								/>
+								<ItemLink itemId={data.fault.faultId} module="faults" />
 							) : (
 								t('general.noData')
 							)}
@@ -68,36 +61,21 @@ export const Document = ({ data, deleteFile, downloadFile }) => {
 				</Grid>
 				<Grid container className={classes.relationContainer}>
 					<Grid item xs={6} className={classes.gridItem}>
-						<div className={classes.relationLabel}>
-							{t('documentsModule.upsert.task')}
-						</div>
-						<div className={classes.relationData}>
-							{data.task ? data.task.taskId : t('general.noData')}
-						</div>
+						<div className={classes.relationLabel}>{t('documentsModule.upsert.task')}</div>
+						<div className={classes.relationData}>{data.task ? data.task.taskId : t('general.noData')}</div>
 					</Grid>
 					<Grid item xs={6} className={classes.gridItem}>
-						<div className={classes.relationLabel}>
-							{t('documentsModule.upsert.filetype')}
-						</div>
-						<div className={classes.relationData}>
-							{getFileTypeName(data.type)}
-						</div>
+						<div className={classes.relationLabel}>{t('documentsModule.upsert.filetype')}</div>
+						<div className={classes.relationData}>{getFileTypeName(data.type)}</div>
 					</Grid>
 				</Grid>
 				<Grid container className={classes.relationContainer}>
 					<Grid item xs={12} className={classes.gridItem}>
-						<div className={classes.relationLabel}>
-							{t('documentsModule.upsert.user')}
-						</div>
+						<div className={classes.relationLabel}>{t('documentsModule.upsert.user')}</div>
 						<div className={classes.relationData}>
 							{data.user ? (
 								<div className={classes.userContainer}>
-									<UserItem
-										user={data.user}
-										showName
-										size={11}
-										avatarSize={30}
-									/>
+									<UserItem user={data.user} showName size={11} avatarSize={30} />
 								</div>
 							) : (
 								t('general.noData')
@@ -126,7 +104,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	docId: {
 		fontSize: '13px',
-		padding: '5px'
+		padding: '7px',
 	},
 	relationContainer: {
 		padding: '5px 10px',
@@ -200,4 +178,12 @@ const useStyles = makeStyles((theme) => ({
 		padding: '5px 20px 5px 5px',
 		width: 'fit-content',
 	},
+	createdAt: {
+		fontSize: '12px',
+		background: 'rgba(0,0,0,0.4)',
+		borderRadius: '10px',
+		padding: '6px 15px',
+		width: 'fit-content',
+		margin: '5px 0 0 0'
+	}
 }));

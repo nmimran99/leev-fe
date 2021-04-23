@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { makeStyles, Grid, ClickAwayListener, Paper, Typography, Fade, useMediaQuery, IconButton, Tooltip, Backdrop, Modal } from '@material-ui/core'
+import React, { useContext, useState } from 'react'
+import { makeStyles, Grid, ClickAwayListener, Paper, Typography, Fade, useMediaQuery, IconButton, Tooltip, Backdrop, Modal, Snackbar } from '@material-ui/core'
 import clsx from 'clsx'
 import { UserItem } from '../../user/UserItem'
 import { AssetControls } from './AssetControls'
@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router'
 import { UpdateOwner } from '../../reuseables/UpdateOwner'
 import { UpsertAsset } from './UpsertAsset'
+import { SnackbarContext } from '../../../context/SnackbarContext'
 
 
 export const Asset = ({assetData, order, removeAsset }) => {
@@ -23,6 +24,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
     const classes = useStyles();
     const history = useHistory();
     const { t, i18n } = useTranslation();
+    const { setSnackbar } = useContext(SnackbarContext);
     const [ controlsVisible, setControlsVisible ] = useState(false);
     const [ editMode, setEditMode ] = useState(false);
     const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
@@ -39,16 +41,33 @@ export const Asset = ({assetData, order, removeAsset }) => {
 
     const handleUpdate = async (details) => {
         const res = await updateAsset(details);
-        if (res) {
-            setEditMode(false);
+        if (res.status === 403) {
+            setSnackbar(res);
+        } else if (res) {
             setData(res.data);
         }
+        setEditMode(false);
         
     }
 
     const handleReferralClick = type => event => {
         history.push(`${type}/?asset=${data._id}`)
     }
+
+    // const updateOwner = (userId) => {
+	// 	(task._id, userId)
+	// 	.then((res) => {
+	// 		if (res.status === 403) {
+	// 			setSnackbar(res);
+	// 		} else if (res) {
+	// 			setTask({
+	// 				...task,
+	// 				owner: res.owner,
+	// 			});
+	// 		}
+	// 		setChangeOwner(false);
+	// 	});
+	// };
 
 
     return (
@@ -185,6 +204,16 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                 handleClose={() => setEditMode(false)}
                             />   
                         }
+                        {/* {editMode === "owner" && (
+                            <UpdateOwner
+                                handleClose={() => setEditMode(false)}
+                                handleSave={updateOwner}
+                                isOpen={editMode === "owner"}
+                                currentOwner={asset.owner}
+                                title={t('assetsModule.updateOwner')}
+                                instructions={t('assetsModule.updateOwnerInstructions')}
+                            />
+                        )} */}
                     </Paper>
                 </ClickAwayListener>
             </Grid>
