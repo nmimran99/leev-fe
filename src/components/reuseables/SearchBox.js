@@ -6,7 +6,7 @@ import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import { useQuery } from './customHooks/useQuery';
 import clsx from 'clsx';
 
-export const SearchBox = ({ placeholder, filterField }) => {
+export const SearchBox = ({ placeholder, filterField, returnValue }) => {
     
     const classes = useStyles();
     const history = useHistory();
@@ -26,6 +26,10 @@ export const SearchBox = ({ placeholder, filterField }) => {
     }
 
     const handleSearch = searchText => {
+        if (returnValue) {
+            returnValue(searchText);
+            return;
+       }
         if (searchText) {
             history.push({
                 path: location.pathname,

@@ -57,7 +57,7 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, tog
 						>
 							{!menuOpen ? (
 								<Icon classes={{root: classes.iconRoot}}>
-								<img src={menuIcon} className={classes.imageIcon} />
+							<img src="https://img.icons8.com/ios-filled/24/4a90e2/thumbnail-view.png"/>
 							</Icon>	
 							) : (
 								<ArrowForwardRoundedIcon
@@ -83,7 +83,7 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, tog
 							disabled={mapActive}
 						>
 							<Icon classes={{root: classes.iconRoot}}>
-									<img src={mapIcon} className={classes.imageIcon} />
+							<img src="https://img.icons8.com/ios-filled/24/4a90e2/map.png"/>
 								</Icon>	
 						</IconButton>
 						<IconButton
@@ -93,7 +93,7 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, tog
 							onClick={toggleAddMenu}
 						>
 							<Icon classes={{root: classes.iconRoot}}>
-									<img src={plusIcon} className={classes.imageIcon} />
+							<img src="https://img.icons8.com/ios-filled/28/4a90e2/plus-2-math.png"/>
 								</Icon>	
 						</IconButton>
 						<IconButton
@@ -110,7 +110,7 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, tog
                                 }}
 							>
 								<Icon classes={{root: classes.iconRoot}}>
-									<img src={notificationIcon} className={classes.imageIcon} />
+								<img src="https://img.icons8.com/ios-filled/24/4a90e2/appointment-reminders--v1.png"/>
 								</Icon>	
 							</Badge>
 						</IconButton>
@@ -197,10 +197,10 @@ const useStyles = makeStyles((theme) => ({
 		width: '36px'
 	},
 	iconRoot: {
-	textAlign: 'center',
-	width: '50px',
-	height: '50px',
-	display: 'grid',
-	placeItems: 'center'
+		textAlign: 'center',
+		width: '50px',
+		height: '50px',
+		display: 'grid',
+		placeItems: 'center'
 	}
 }));

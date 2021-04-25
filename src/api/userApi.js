@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getFullName, getUnauthorizedMessage } from './genericApi';
 
 export const attemptToSignin = async (payload) => {
     try {
@@ -60,23 +61,39 @@ export const checkUserAuthentication = async () => {
 
 export const getUserList = async () => {
     try {
-        let res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/getUserList`);
+        let res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/getUserList`, {
+            headers: {
+                module: 'users',
+                requesttype: 'read'
+            }
+        });
         if (res.status === 200) {
             return res.data;
         }
     } catch(e) {
-        return e.response;
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
     }
 }
 
 export const getUserDataById = async (userId) => {
     try {
-        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/getUserDataById`, { userId });
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/getUserDataById`, { userId }, {
+            headers: {
+                module: 'users',
+                requesttype: "read"
+            }
+        });
         if (res.status === 200) {
             return res.data;
         }
     } catch(e) {
-        return e.response;
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
     }
 } 
 
@@ -95,3 +112,85 @@ export const clearUserLS = async () => {
     axios.defaults.headers.common['token'] = null;
     return Promise.all([handleLS('wb_user', 'remove'), handleLS('wb_token', 'remove')]); 
 }
+
+export const uploadAvatar = async (avatar) => {
+    if (!avatar) return;
+    let formData = new FormData();
+	formData.append('avatar', avatar);
+		
+	let config = {
+		headers: {
+			'Content-Type': `multipart/form-data`,
+			token: localStorage.getItem('wb_token'),
+			module: 'users',
+			requesttype: 'update',
+		},
+	};
+
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/users/uploadAvatar`,
+			formData,
+			config
+		);
+		if (res.status === 200) {
+			return res.data;
+		}
+	} catch (e) {
+		if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+	}
+}
+
+export const filterUsers = async (users, searchText) => {
+   const sArray = searchText.split(' ');
+   console.log(sArray)
+    const filteredUsers = users.filter(u => 
+        sArray.some(sa => u.firstName.includes(sa) ||
+        u.lastName.includes(sa) ||
+        u.phoneNumber.includes(sa) ||
+        u.role.roleName.includes(sa)    
+    ));
+    return Promise.resolve(filteredUsers);
+
+}
+
+export const createUser = async (details) => {
+    try {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/registerUser`, { ...details }, {
+            headers: {
+                module: 'users',
+                requesttype: "create"
+            }
+        });
+        if (res.status === 200) {
+            return res.data;
+        }
+    } catch(e) {
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+    }
+} 
+
+export const updateUserData = async (details) => {
+    try {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/updateUserData`, { ...details }, {
+            headers: {
+                module: 'users',
+                requesttype: 'update'
+            }
+        });
+        if (res.status === 200) {
+            return res.data;
+        }
+    } catch(e) {
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+    }
+} 

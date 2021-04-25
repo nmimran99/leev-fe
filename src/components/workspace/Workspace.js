@@ -14,11 +14,13 @@ import { MapView } from '../datapages/map/MapView';
 import { SnackbarContext } from '../../context/SnackbarContext';
 import { useTranslation } from 'react-i18next';
 import MuiAlert from '@material-ui/lab/Alert';
+import { Settings } from '../controls/settings/Settings';
 
 export const Workspace = ({}) => {
 	const classes = useStyles();
 	const { snackbar, setSnackbar } = useContext(SnackbarContext);
 	const { t } = useTranslation();
+	
 
 	return (
 		<React.Fragment>
@@ -59,7 +61,7 @@ export const Workspace = ({}) => {
 							</Route>
 							<Route path={'/workspace/map'}>
 								<MapView />
-							</Route>
+							</Route>						
 						</Switch>
 					</Grid>
 				</Grid>

@@ -349,6 +349,15 @@
         "filterByFault": "Filter by Fault",
         "filterByTask": "Filter by Task"
     },
+    "settings": {
+        "title": "Settings",
+        "profile": "Profile",
+        "general": "General",
+        "permissions": "Roles and Permissions",
+        "appearance": "Appearance",
+        "users": "Users",
+        "editUserDetails": "Edit Details"
+    },
     "controls": {
         "confirm": "Confirm",
         "cancel": "Cancel",
@@ -392,7 +401,8 @@
         "roles": "roles",
         "role": "role",
         "relatedUser": "related User",
-        "relatedUsers": "related users" 
+        "relatedUsers": "related users" ,
+        "user": "User"
     },
     "scheduler": {
         "startDate": "Start Date",
@@ -440,5 +450,25 @@
         "earlier": "Earlier",
         "markAsRead": "Mark as Read",
         "markAsUnread": "Mark as Unread"
+    },
+    "users": {
+        "birthDate": "Date of Birth",
+        "employedBy": "Employed By",
+        "phoneNumber": "Phone Number",
+        "status": "User Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "uploadAvatar": "Upload Avatar",
+        "addUser": "Add User",
+        "email": "Email Address",
+        "upsert": {
+            "generalDetails": "General Details",
+            "createUser": "Create user",
+            "role": "Assigned Role",
+            "activity": "Activation",
+            "userActive": "User is active",
+            "userInactive": "User is inactive",
+            "editUserDetails": "Update user details"
+        }
     }
 }

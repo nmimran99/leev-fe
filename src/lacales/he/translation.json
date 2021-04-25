@@ -352,6 +352,15 @@
         "filterByFault": "סנן על פי תקלה",
         "filterByTask": "סנן על פי משימה"
     },
+    "settings": {
+        "title": "הגדרות",
+        "profile": "פרופיל",
+        "general": "כללי",
+        "permissions": "הרשאות ותפקידים",
+        "appearance": "תצוגה",
+        "users": "משתמשים",
+        "editUserDetails": "ערוך פרטים"
+    },
     "controls": {
         "confirm": "אישור",
         "cancel": "ביטול",
@@ -395,7 +404,8 @@
         "roles": "תפקידים",
         "role": "תפקיד",
         "relatedUser": "משתמש מקושר",
-        "relatedUsers": "משתמשים מקושרים"
+        "relatedUsers": "משתמשים מקושרים",
+        "user": "משתמש"
     },
     "scheduler": {
         "startDate": "תאריך התחלה",
@@ -444,5 +454,27 @@
         "earlier": "התראות קודמות",
         "markAsRead": "סמן כנקרא",
         "markAsUnread": "סמן כלא נקרא"
+    },
+    "users": {
+        "birthDate": "תאריך לידה",
+        "employedBy": "מועסק על ידי",
+        "phoneNumber": "מספר טלפון",
+        "status": "סטטוס משתמש",
+        "active": "פעיל",
+        "inactive": "לא פעיל",
+        "uploadAvatar": "העלאת תמונת פרופיל",
+        "addUser": "הוסף משתמש",
+        "firstName": "שם פרטי",
+        "lastName": "שם משפחה",
+        "email": "כתובת דוא\"ל",
+        "upsert": {
+            "generalDetails": "פרטים כלליים",
+            "createUser": "הוספת משתמש",
+            "role": "תפקיד משוייך",
+            "activity": "פעילות",
+            "userActive": "משתמש פעיל",
+            "userInactive": "משתמש לא פעיל",
+            "editUserDetails": "עידכון פרטי משתמש"
+        }
     }
 }
