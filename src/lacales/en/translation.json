@@ -470,5 +470,17 @@
             "userInactive": "User is inactive",
             "editUserDetails": "Update user details"
         }
+    },
+    "chatbot": {
+        "notLoggedIn": {
+            "welcome": "Hi! My name is Libi, I will be helping you today!",
+            "notLoggedIn": "To get started, let's get you logged in.",
+            "requestEmail": "What is your Email address?",
+            "emailNotFound": "I could not find your Email address in our repository. Would you like to sign with with that email?",
+            "verificationEmailSent": "Great! I sent you a verification Email containing a 6 digit code. Could you please provide me with that code?",
+            "verificationSuccess": "Alrigt, Verification Succeeded!",
+            "verificationFailed": "Oops, there is something wrong with the code you have provided me, would you like to insert the code again?",
+            "requestRestart": "Press the Start Over button if you would want restart the login process."     
+        }
     }
 }

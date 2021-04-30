@@ -28,7 +28,7 @@ export const theme = createMuiTheme({
 				},
 				'&$focused $notchedOutline': {
 					borderColor: 'white',
-					borderWidth: 3,
+					borderWidth: 2,
 				},
 			},
 		},

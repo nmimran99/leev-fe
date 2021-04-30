@@ -13,6 +13,7 @@ import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 import { LanguageContext } from './context/LanguageContext';
 import { SnackbarContextProvider } from './context/SnackbarContext';
+import { Chatbot } from './components/chatbot/Chatbot';
 
 
 function App() {
@@ -38,6 +39,9 @@ function App() {
 									</FiltersContextProvider>
 								</SnackbarContextProvider>
 							</ProtectedWorkspace>
+							<Route path="/open/:assetId">
+								<Chatbot />
+							</Route>
 						</Switch>
 					</Router>
 				</ThemeProvider>

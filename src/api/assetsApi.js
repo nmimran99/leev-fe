@@ -190,3 +190,20 @@ export const createNewAsset = async (details) => {
 		return { error: true, reason: 'general', status: 500 };
 	}
 };
+
+export const getAssetExternal = async ( assetId ) => {
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/assets/getAssetExternal`,
+			{ assetId }
+		);
+		if (res) {
+			return res.data;
+		}
+	} catch (e) {
+		if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+	}
+}
