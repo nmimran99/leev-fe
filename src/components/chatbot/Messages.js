@@ -13,12 +13,11 @@ export const Messages = ({ data }) => {
 
     useEffect(() => {
         setMessages(data);
-        console.log(data)
     }, [data])
 
 	return (
 		<div className={classes.messagesContainer} >
-            <Fade in={data}>
+            <Fade in={Boolean(data.length)}>
             <div className={classes.topProfile}>
                 <Avatar src={logo} className={classes.avatar}/>
                 <div className={classes.welcome}>
@@ -59,10 +58,10 @@ const useStyles = makeStyles((theme) => ({
     },
     welcome: {
         color: 'white',
-        fontSize: '18px',
+        fontSize: '14px',
         margin: '5px',
         background: 'rgba(0,0,0,0.8)',
-        padding: '5px 25px',
+        padding: '10px 25px',
         borderRadius: '50px',
     },
     welcomeSub: {
@@ -71,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
         background: 'rgba(0,0,0,0.8)',
         borderRadius: '50px',
         padding: '10px 25px',
-        margin: '10px 0 30px'
+        margin: '5px 0 30px'
     },
     '@global': {
 		'*::-webkit-scrollbar': {

@@ -1,4 +1,5 @@
 import { Button, FormControl, Grid, IconButton, makeStyles, OutlinedInput } from '@material-ui/core';
+import { CancelScheduleSend } from '@material-ui/icons';
 import SendRoundedIcon from '@material-ui/icons/SendRounded';
 import clsx from 'clsx';
 import React, { useContext } from 'react';
@@ -12,8 +13,11 @@ export const MessageImage = ({ value, handleInputChange, handleSendInput, placeh
 
     const handleFileUpload = event => {
         let val = event.target.files;
-        console.log(event.target.files)
-        handleInputChange({ text: val.length , value: val, type: 'image'});
+        handleInputChange({ text: `${val.length} ${t("chatbot.imagesSelected")} ` , value: val, type: 'image'});
+    }
+
+    const handleNoImages = () => {
+        handleInputChange({ text: `${t("chatbot.noImages")}` , value: null, type: 'image'});
     }
 
 	return (
@@ -21,7 +25,7 @@ export const MessageImage = ({ value, handleInputChange, handleSendInput, placeh
 			<Button
                 component={'label'}
                 variant={'contained'}
-                className={classes.uploadBtn}
+                className={clsx(classes.uploadBtn, value.length ? classes.imagesUploaded : classes.noImages)}
             >
                 { value.length ? `${value.length} ${t("chatbot.imagesSelected")}` : t("chatbot.uploadImages")}
                 <input 
@@ -32,9 +36,20 @@ export const MessageImage = ({ value, handleInputChange, handleSendInput, placeh
                     hidden  
                 />
             </Button>
+            {
+                !value.length ? 
+                <Button
+                className={clsx(classes.noImagesBtn, classes.noImages)}
+                variant={'contained'}
+                onClick={handleNoImages}
+            >
+                {t("chatbot.noImages")}
+            </Button> : 
 			<IconButton className={classes.postBtn} onClick={handleSendInput}>
 				<SendRoundedIcon className={clsx(classes.icon, lang.dir === 'rtl' ? classes.mirror : null)} />
 			</IconButton>
+            }
+            
 		</Grid>
 	);
 };
@@ -58,6 +73,23 @@ const useStyles = makeStyles((theme) => ({
             boxShadow: 'inset white 0 0 2px 1px',
             background: 'rgba(0,0,0,0.3)'
         }
+    },
+    noImagesBtn: {
+        padding: '6px 10px',
+        borderRadius: '42px',
+        background: 'rgba(255,255,255,0.1)',
+        color: 'white',
+        margin: '0 5px 0 0px',
+        '&:hover': {
+            boxShadow: 'inset white 0 0 2px 1px',
+            background: 'rgba(0,0,0,0.3)'
+        }
+    },
+    imagesUploaded: {
+        width: '100%',
+    },
+    noImages: {
+        width: '50%'
     },
     postBtn: {
         background: '#3399ff',

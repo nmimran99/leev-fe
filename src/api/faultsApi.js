@@ -354,3 +354,37 @@ export const getFaultOptionsByAssetOrSystem = async (asset, system) => {
 		return null;
 	}
 };
+
+export const createExternalFault = async (details) => {
+	let formData = new FormData();
+	Object.entries(details).forEach((f) => {
+		if (f[0] === 'images' && details.images) {
+			for (let i = 0; i < details.images.length; i++) {
+				formData.append('images', details.images[i]);
+			}
+		} else {
+			formData.append(f[0], f[1]);
+		}
+	});
+
+	let config = {
+		headers: {
+			'Content-Type': `multipart/form-data`
+		},
+	};
+
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/faults/createExternalFault`,
+			formData,
+			config
+		);
+
+		if (res.status === 200) {
+			return res.data;
+		}
+	} catch (e) {
+		return { error: true, reason: 'general', status: 500 };
+	}
+}
+

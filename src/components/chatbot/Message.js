@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 export const Message = ({ data }) => {
 
-    console.log(data)
     const classes = useStyles();
     const { t } = useTranslation();
 
@@ -15,10 +14,7 @@ export const Message = ({ data }) => {
                 <Grid item xs={8} className={clsx(classes.message, data.isUser ? classes.userMessage : classes.systemMessage)}>
                     <div className={classes.messageText}>
                         {
-                            ['string', 'select'].includes(data.type)  
-                            ? data.text 
-                            : `${data.text} ${t("chatbot.imagesSelected")}`
-                            
+                            data.text
                         }
                     </div>
                 </Grid>

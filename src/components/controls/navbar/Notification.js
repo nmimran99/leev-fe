@@ -60,9 +60,8 @@ export const Notification = ({ data, updateNotificationReadStatus }) => {
             onClick={handleClick}
         >
             <div className={classes.sideIconContainer}>
-                {
-     
-                    <Avatar src={notification.actionBy.avatar} className={classes.avatar} />
+                {          
+                    <Avatar src={notification.actionBy ? notification.actionBy.avatar : null } alt={'ab'} className={classes.avatar} /> 
                 }
             </div>
             <div className={clsx(classes.contentContainer, notification.read && classes.read)}>

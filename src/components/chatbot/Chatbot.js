@@ -1,20 +1,17 @@
-import { Avatar, FormControl, Grid, IconButton, makeStyles, OutlinedInput,  } from '@material-ui/core';
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import { authenticate, handleLS } from '../../api/userApi';
-import { AuthContext } from '../../context/AuthContext';
-import { LanguageContext } from '../../context/LanguageContext';
-import { Messages } from './Messages';
-import * as scenarios from './Scenrio';
-import SendRoundedIcon from '@material-ui/icons/SendRounded';
-import clsx from 'clsx';
-import { MessageInput } from './MessageInput';
-import logo from '../../assets/logo/leev_logo.png';
-import logoBig from '../../assets/logo/leev_logo_white_long.png';
+import { Grid, makeStyles } from '@material-ui/core';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { getAssetExternal, getFullAddress } from '../../api/assetsApi';
-import { MessageSelector } from './MessageSelector';
+import { authenticate, handleLS } from '../../api/userApi';
+import logoBig from '../../assets/logo/leev_logo_white_long.png';
+import { AuthContext } from '../../context/AuthContext';
 import { MessageImage } from './MessageImage';
+import { MessageInput } from './MessageInput';
+import { Messages } from './Messages';
+import { MessageSelector } from './MessageSelector';
+import { MessageBoolean } from './MessageBoolean';
+import * as scenarios from './Scenrio';
 
 export const Chatbot = () => {
 
@@ -22,110 +19,149 @@ export const Chatbot = () => {
     const { auth, setAuth } = useContext(AuthContext);
     const { t } = useTranslation();
     const params = useParams();
+    const [ scenario, setScenario ] = useState(scenarios.openFault);
     const [ isLoading, setIsLoading ] = useState(true);
-    const [ scenario, setScenario ] = useState(scenarios.notLoggedIn) ;
     const [ scenarioStep, setScenarioStep ] = useState(null);
-   
     const [ messages, setMessages ] = useState([]);
     const [ mainAsset, setMainAsset ] = useState(null);
-
-    const [ inputValue, setInputValue ] = useState({ text: '', value: null, type: null });
-    const [ inputType, setInputType ] = useState(null);
+    const [ inputValue, setInputValue ] = useState({ text: '', value: '', type: '' });
     const [ optionalValues, setOptionalValues ] = useState([]);
+    const [ vault, setVault ] = useState({});
     const messageContainer = useRef();
-    
-    // const checkUserAuthentication = async () => {
-    //     let token = await handleLS('wb_token', 'get');
-    //     if (!token) {
-    //         setIsLoading(false);
-    //         return;
-    //     };
-    //     let res = await authenticate(token);
-    //     console.log(res)
-    //     if (res.auth) {
-    //        setAuth({
-    //             isAuth: res.auth,
-    //             user: res.user,
-    //             token: res.token.token,
-    //             refreshToken: res.token.refreshToken
-    //         });
-              
-    //     }
-    //     setIsLoading(false);
-    //     return;
-    //   }
 
-    // useEffect(() => {
-    //     checkUserAuthentication();
-    // }, []);
+    useEffect(() => {
+        const checkUserAuthentication = async () => {
+            let token = await handleLS('wb_token', 'get');
+            if (!token) {
+                setIsLoading(false);
+                return;
+            };
+            let res = await authenticate(token);
+            if (res.auth) {
+               setAuth({
+                    isAuth: res.auth,
+                    user: res.user,
+                    token: res.token.token,
+                    refreshToken: res.token.refreshToken
+                });
+                  
+            }
+            setIsLoading(false);
+            return;
+        }
+        checkUserAuthentication();
+    }, []);
 
-    // useEffect(() => {
-    //     if (auth.isAauth) {
-    //         setScenario(scenarios.loggedIn)
-    //         return;
-    //     }
-    //     setScenario(scenarios.notLoggedIn);
-    // }, [auth])
+
+    useEffect(() => {
+        if (messageContainer) {
+            messageContainer.current.scrollIntoView({ bahavior: 'smooth', block: 'start'}) 
+        }    
+    }, [ messages ])
+
 
     useEffect(() => {
         if (!params.assetId) {
-            setScenario(scenarios.assetNotFound);
+            scenario = scenarios.assetNotFound;
         }
         getAssetExternal(params.assetId)
         .then(data => {
             if (!data.asset || !data.systems) { 
-                setScenario(scenarios.assetNotFound);
+                scenario = scenarios.assetNotFound;
             }
             setMainAsset(data.asset);
             setOptionalValues([...data.systems.map((s,i) => ({ name: s.name, value: s._id }))]);
-            setScenario(scenarios.notLoggedIn);
-            setScenarioStep(1);
+            setScenario(prev => {
+                prev.submitInput(data.asset._id, 'asset');
+                return prev;
+            });
+            setScenarioStep(scenario.questions[0]);
         })
     }, [params])
 
 
     useEffect(() => {
-        if (!scenarioStep) {
-            return;
-        }
-        let currStep = scenario.questions.find(s => s.order === scenarioStep)
-        if (!currStep.actionRequired) {
-            setTimeout(() => {
-                setMessages([...messages, { text: currStep.text, isUser: false, type: 'string' } ])
-                setScenarioStep(scenarioStep + 1);
-                setInputType(null)
-            }, 1000); 
-            return;
-        }
-        setTimeout(() => {
-            setMessages([...messages, { text: currStep.text, isUser: false, type: 'string' } ])
-            setInputType(currStep.inputType)
-        }, 1000);
-        
+        if (!scenarioStep) return;
+        setTimeout(async () => {
+            setMessages([...messages, { text: scenarioStep.text, isUser: false, type: 'string' } ]);
+            if (!scenarioStep.actionRequired) { 
+                if (isLastStep()) {
+                    let sc = await scenarios.getNextScenario(scenario, auth);
+                    setScenario(sc);
+                    setScenarioStep(null);
+                    setScenarioStep(sc.questions[0]);
+                    return;
+                } 
+                setScenarioStep(scenario.questions[scenarioStep.order + 1]);
+            }
+        }, 1000);    
     }, [scenarioStep])
 
-    useEffect(() => {
-        if (messageContainer) {
-            messageContainer.current.scrollIntoView({ bahavior: 'smooth', block: 'start'}) 
-            console.log(messageContainer.current)
-        }    
-    }, [ messages ])
 
-    const handleInputChange = inputVal => {
+    const handleInputChange = async inputVal => {
+        if (!inputVal.value && inputVal.type === 'image') {
+            setMessages([...messages, { text: inputVal.text, isUser: true, type: inputVal.type } ]);
+            await handleSubmit();
+        }
+        if (inputVal.type === 'boolean') {
+            setScenario(prev => {
+                prev.submitInput(inputVal.value, scenarioStep.inputField);
+                return prev;
+            })
+            setMessages([...messages, { text: inputVal.text, isUser: true, type: inputVal.type } ]);
+            await handleSubmit();
+            setInputValue({ text: '', value: '', type: '' });
+            return;
+        }
         setInputValue(inputVal);
     }
 
+
     const handleSendInput = async () => {
+        setScenario(prev => {
+            prev.submitInput(inputValue.value, scenarioStep.inputField);
+            return prev;
+        })
         setMessages([...messages, { text: inputValue.text, isUser: true, type: inputValue.type } ]);
-        setInputValue({ text: '', value: null, type: null });
-        setInputType(null);
-        const submitFunc = scenario.questions[scenarioStep - 1].submitFunc;
-       // const res = await submitFunc(inputValue);
-        setScenarioStep(scenarioStep + 1)
-        // if (res) {
-        //     setScenarioStep(scenarioStep + 1)
-        // }
+        await handleSubmit();
+       
     }
+
+
+    const nextStep = async () => {
+        setInputValue({ text: '', value: '', type: '' });
+        if (isLastStep()) {
+            let sc = await scenarios.getNextScenario(scenario, auth);
+            setScenario(sc);
+            setScenarioStep(null);
+            setScenarioStep(sc.questions[0]);
+            return;
+        }
+        setScenarioStep(null);
+        setScenarioStep(scenario.questions[scenarioStep.order + 1])
+    }
+
+
+    const handleSubmit = async () => {
+        if (!scenarioStep.submit) {
+            nextStep();
+            return;
+        } 
+        let res = await scenario.submit(vault);
+        if (res) {
+            setVault({
+                ...vault, 
+                ...res
+            }); 
+            nextStep();
+        }
+        
+    }
+
+    const isLastStep = () => {
+        return scenarioStep.order + 1 === scenario.questions.length;
+    }
+
 
 	return (
 		<div className={classes.gridContainer} >
@@ -147,25 +183,31 @@ export const Chatbot = () => {
             </div>
             <Grid container className={classes.inputContainer} alignItems='center'>
                 {
-                    inputType === 'string' ? 
+                    scenarioStep ? 
+                    scenarioStep.inputType === 'string' ? 
                     <MessageInput 
                         handleInputChange={handleInputChange}
                         handleSendInput={handleSendInput}
+                        value={inputValue.value}
                     /> : 
-                    inputType === 'select' ? 
+                    scenarioStep.inputType === 'select' ? 
                     <MessageSelector
                         value={inputValue.value}
                         options={optionalValues}
                         handleInputChange={handleInputChange}
                         handleSendInput={handleSendInput}
                     /> : 
-                    inputType === 'image' ? 
+                    scenarioStep.inputType === 'image' ? 
                     <MessageImage 
                         value={inputValue.value || []}
                         handleInputChange={handleInputChange}
                         handleSendInput={handleSendInput}
                     /> : 
-                    null
+                    scenarioStep.inputType === 'boolean' ?
+                    <MessageBoolean 
+                        handleInputChange={handleInputChange}
+                    /> : null
+                    : null
                 }
                 
             </Grid>
@@ -220,22 +262,6 @@ const useStyles = makeStyles((theme) => ({
         height: '150px',
         width: '150px',
         margin: '10px'
-    },
-    welcome: {
-        color: 'white',
-        fontSize: '20px',
-        margin: '5px',
-        background: 'rgba(0,0,0,0.2)',
-        borderRadius: '50px',
-        padding: '10px 25px',
-    },
-    welcomeSub: {
-        color: 'rgba(255,255,255,0.7)',
-        fontSize: '12px',
-        background: 'rgba(0,0,0,0.2)',
-        borderRadius: '50px',
-        padding: '10px 25px',
-        margin: '10px 0 30px'
     },
     '@global': {
 		'*::-webkit-scrollbar': {
