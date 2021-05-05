@@ -6,6 +6,8 @@ import { AuthContextProvider } from './context/AuthContext'
 import './i18n';
 import { LanguageContextProvider } from './context/LanguageContext';
 
+alert(process.env.REACT_APP_BACKEND_URL)
+
 ReactDOM.render(
     <LanguageContextProvider>
       <AuthContextProvider>
