@@ -17,7 +17,7 @@ import {
     makeStyles 
 } from '@material-ui/core';
 import { Visibility, VisibilityOff, Error } from '@material-ui/icons';
-import colorSplash from '../../assets/images/colorsplash.jpg';
+import colorSplash from '../../assets/images/grey.jpg';
 import { attemptToSignin, handleLS } from '../../api/userApi';
 
 
