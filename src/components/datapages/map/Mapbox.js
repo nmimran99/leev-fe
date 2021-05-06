@@ -11,7 +11,12 @@ import useSupercluster from 'use-supercluster';
 import { getMapData } from '../../../api/mapApi';
 import { updateQueryParams } from '../../../api/genericApi';
 import clsx from 'clsx';
-import d3 from 'd3-ease';
+import mapboxgl from "mapbox-gl";
+
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
+mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+
 setRTLTextPlugin(
 	// find out the latest version at https://www.npmjs.com/package/@mapbox/mapbox-gl-rtl-text
 	'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',

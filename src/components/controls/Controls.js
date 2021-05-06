@@ -36,6 +36,9 @@ export const Controls = () => {
 		if (menuOpen) {
 			setMenuOpen(false);
 		} else {
+			if (addMenuOpen) {
+				setAddMenuOpen(false);
+			}
 			setMenuOpen(true);
 		}
 	};
@@ -44,6 +47,9 @@ export const Controls = () => {
 		if (addMenuOpen) {
 			setAddMenuOpen(false);
 		} else {
+			if (menuOpen) {
+				setMenuOpen(false);
+			}
 			setAddMenuOpen(true);
 		}
 	};
@@ -86,8 +92,8 @@ export const Controls = () => {
 					/>
 				</Grid>
 			</Grid>
-			{menuOpen && <SideMenu toggleMenu={toggleMenu} toggleSettings={toggleSettings} />}
-			{addMenuOpen && <AddMenu toggleAddMenu={toggleAddMenu} toggleAdd={openCreate} />}
+			{menuOpen && <SideMenu toggleMenu={toggleMenu} toggleSettings={toggleSettings} menuOpen={menuOpen}/>}
+			{addMenuOpen && <AddMenu toggleAddMenu={toggleAddMenu} toggleAdd={openCreate} addMenuOpen={addMenuOpen} />}
 			{notificationsList && (
 				<Notifications
 					open={notificationsList}

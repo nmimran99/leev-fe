@@ -102,12 +102,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 
 	mainData: {
-		minHeight: '90vh',
+		minHeight: 'calc(100vh - 64px)',
 		background: 'rgba(0,0,0,0.4)',
 		backdropFilter: 'blur(22px)',
-		marginTop: '10px',
-		border: '1px solid rgba(255,255,255,0.2)',
-		borderRadius: '5px',
 		boxShadow: 'rgba(0,0,0,0.4) 0px 0px 3px 2px',
 
 		[theme.breakpoints.down('sm')]: {

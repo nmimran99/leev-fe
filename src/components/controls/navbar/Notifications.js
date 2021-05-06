@@ -3,6 +3,7 @@ import {
 	Grow,
 	IconButton,
 	makeStyles,
+	Slide,
 	useMediaQuery,
 } from '@material-ui/core';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
@@ -41,7 +42,7 @@ export const Notifications = ({
 
 	return (
 		<ClickAwayListener onClickAway={toggleNotifications}>
-			<Grow in={open}>
+			<Slide in={open} direction={'up'} timeout={300}>
 				<div className={classes.container}>
 					<div className={classes.header}>
 						<div>{t('notificationsModule.notifications')}</div>
@@ -94,7 +95,7 @@ export const Notifications = ({
 						</React.Fragment>
 					</div>
 				</div>
-			</Grow>
+			</Slide>
 		</ClickAwayListener>
 	);
 };
@@ -103,24 +104,16 @@ const useStyles = makeStyles((theme) => ({
 	container: {
 		zIndex: 2,
 		width: '360px',
-		background: theme.palette.primary.main,
-		border: '1px solid rgba(255,255,255,0.2)',
+		background: 'rgba(0,0,0,0.4)',
 		backdropFilter: 'blur(10px)',
 		boxShadow: 'rgba(0,0,0,0.25) 0px 0px 6px 3px',
 		position: 'absolute',
-		borderRadius: '10px',
-		top: '70px',
-		right: '1%',
-		borderRadius: '10px',
-		height: 'fit-content',
-		maxHeight: '80vh',
+		right: 0,
+		top: '64px',
+		height: 'calc(100vh - 64px)',
 		[theme.breakpoints.down('sm')]: {
 			width: '100%',
-			right: '0',
-			maxHeight: '80vh',
-			border: 'none',
-			top: 0,
-			borderRadius: 0,
+			height: 'calc(100vh - 64px)',
 		},
 	},
 	list: {
@@ -130,9 +123,8 @@ const useStyles = makeStyles((theme) => ({
 		margin: 0,
 		overflow: 'overlay',
 		borderRadius: '0 0 10px 10px',
-		height: '70vh',
+		height: '100%',
 		[theme.breakpoints.down('sm')]: {
-			maxHeight: '80vh',
 			marginBottom: '50px',
 		},
 	},

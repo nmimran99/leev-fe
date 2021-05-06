@@ -263,12 +263,13 @@
         "documents": "Documents"
     },
     "createMenu": {
-        "addAsset": "Add Asset",
-        "addSystem": "Add System",
+        "header": "Creation Menu",
+        "addAsset": "Create Asset",
+        "addSystem": "Create System",
         "createUser": "Create User",
         "createTask": "Create Task",
         "createFault": "Create Fault",
-        "addDocument": "Add Document"
+        "addDocument": "Create Document"
     },
     "alert": {
         "confirm": "Confirm",

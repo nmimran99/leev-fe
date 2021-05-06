@@ -8,6 +8,9 @@ import {
 	Grow,
 	ClickAwayListener,
 	useMediaQuery,
+	Icon,
+	Slide,
+	IconButton,
 } from '@material-ui/core';
 import AddLocationOutlinedIcon from '@material-ui/icons/AddLocationOutlined';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
@@ -17,22 +20,25 @@ import NoteAddOutlinedIcon from '@material-ui/icons/NoteAddOutlined';
 import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 import { useTranslation } from 'react-i18next';
 import { Can } from '../../reuseables/Can';
+import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
 
-export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
+export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation();
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('sm'));
 
-	const closeMenu = () => {
-		if (matches) {
-			toggleAddMenu();
-		}
-	};
+
 
 	return (
-		<ClickAwayListener onClickAway={closeMenu}>
-			<Grow in={true}>
+		<ClickAwayListener onClickAway={toggleAddMenu}>
+			<Slide in={addMenuOpen} direction={'right'}>
 				<div className={classes.addMenuContainer}>
+					<div className={classes.header}>
+						<div>{t('createMenu.header')}</div>
+						<IconButton onClick={toggleAddMenu}>
+							<ClearRoundedIcon className={classes.icon} />
+						</IconButton>
+					</div>
 					<List className={classes.list}>
 						<ListItem
 							button={true}
@@ -40,9 +46,12 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
 							onClick={toggleAdd('asset')}
 						>
 							<ListItemIcon className={classes.listItemIcon}>
-								<AddLocationOutlinedIcon
+								{/* <AddLocationOutlinedIcon
 									className={classes.icon}
-								/>
+								/> */}
+								<Icon classes={{root: classes.iconRoot}}>
+								<img src="https://img.icons8.com/ios-filled/25/4a90e2/warehouse.png"/>
+								</Icon>
 							</ListItemIcon>
 							<ListItemText
 								primary={t('createMenu.addAsset')}
@@ -56,20 +65,12 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
 							onClick={toggleAdd('system')}
 						>
 							<ListItemIcon className={classes.listItemIcon}>
-								<BlurOnRoundedIcon className={classes.icon} />
+								<Icon classes={{root: classes.iconRoot}}>
+                            		<img src="https://img.icons8.com/ios-filled/25/4a90e2/system-task.png"/>
+								</Icon>
 							</ListItemIcon>
 							<ListItemText
 								primary={t('createMenu.addSystem')}
-								className={classes.listItemText}
-								disableTypography={true}
-							/>
-						</ListItem>
-						<ListItem button={true} className={classes.listItem}>
-							<ListItemIcon className={classes.listItemIcon}>
-								<GroupAddIcon />
-							</ListItemIcon>
-							<ListItemText
-								primary={t('createMenu.createUser')}
 								className={classes.listItemText}
 								disableTypography={true}
 							/>
@@ -81,7 +82,9 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
 								onClick={toggleAdd('task')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<PostAddIcon />
+									<Icon classes={{root: classes.iconRoot}}>
+										<img src="https://img.icons8.com/ios-filled/25/4a90e2/task-completed.png"/>
+									</Icon>
 								</ListItemIcon>
 								<ListItemText
 									primary={t('createMenu.createTask')}
@@ -98,7 +101,9 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
 								onClick={toggleAdd('fault')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<QueueIcon />
+									<Icon classes={{root: classes.iconRoot}}>
+										<img src="https://img.icons8.com/pastel-glyph/23/4a90e2/error--v2.png"/>
+									</Icon>
 								</ListItemIcon>
 								<ListItemText
 									primary={t('createMenu.createFault')}
@@ -114,7 +119,9 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
 							onClick={toggleAdd('document')}
 						>
 							<ListItemIcon className={classes.listItemIcon}>
-								<NoteAddOutlinedIcon />
+							<Icon classes={{root: classes.iconRoot}}>
+                            		<img src="https://img.icons8.com/pastel-glyph/25/4a90e2/regular-document--v2.png"/>
+								</Icon>
 							</ListItemIcon>
 							<ListItemText
 								primary={t('createMenu.addDocument')}
@@ -124,7 +131,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
 						</ListItem>
 					</List>
 				</div>
-			</Grow>
+			</Slide>
 		</ClickAwayListener>
 	);
 };
@@ -132,44 +139,70 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd }) => {
 const useStyles = makeStyles((theme) => ({
 	addMenuContainer: {
 		zIndex: 2,
-		width: '240px',
+		width: '280px',
 		background: theme.palette.primary.main,
-		border: '1px solid rgba(255,255,255,0.2)',
 		backdropFilter: 'blur(10px)',
 		boxShadow: 'rgba(0,0,0,0.25) 0px 0px 6px 3px',
 		position: 'absolute',
-		top: '80px',
-		right: '2%',
-		borderRadius: '10px',
+		top: '64px',
+		right: '0',
+		height: '100vh',
 		[theme.breakpoints.down('sm')]: {
-			maxHeight: '70vh',
-			overflow: 'scroll',
+			height: '100%',
+			top: '64px',
+			right: 0,
+			width: '100vw',
+			borderRadius: 0,
+			border: 'none',
+			padding: 0,
+			background: 'rgba(0,0,0,0.5)',
+			backdropFilter: 'blur(15px)',
 		},
 	},
 	list: {
-		width: '90%',
-		margin: '0px auto',
+		width: '100%',
+		padding: '10px 0',
 	},
 	listItem: {
 		color: 'theme.palette.primary.main',
-		margin: '7px auto',
-		borderRadius: '10px',
-		border: '1px solid rgba(255,255,255,0.2)',
+		padding: '10px 20px',
 		transition: 'background box-shadow 0.3s ease-in-out',
 		'&:hover': {
 			background: 'rgba(0,0,0,0.6)',
 			transition: 'background box-shadow 0.2s ease-in-out',
-			boxShadow: '0 8px 32px 0 rgb(0 0 0 / 80%)',
+			boxShadow: '0 8px 32px 0 rgb(0 0 0 / 80%)'
 		},
+
 	},
 	listItemIcon: {
 		color: 'white',
 	},
 	listItemText: {
-		fontSize: '14px',
+		fontSize: '16px',
 		color: 'white',
 	},
 	bottomList: {
 		padding: '10px 0',
+	},
+	iconRoot: {
+		textAlign: 'center',
+		width: '50px',
+		height: '35px',
+		display: 'grid',
+		placeItems: 'center'
+	},
+	header: {
+		height: '40px',
+		color: 'white',
+		display: 'flex',
+		fontSize: '18px',
+		alignItems: 'center',
+		borderBottom: '1px solid rgba(255,255,255,0.2)',
+		padding: '10px 20px',
+		justifyContent: 'space-between',
+		borderRadius: '10px 10px 0 0',
+	},
+	icon: {
+		color: 'white',
 	},
 }));

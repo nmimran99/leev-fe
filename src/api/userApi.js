@@ -8,7 +8,8 @@ export const attemptToSignin = async (payload) => {
             return res;
         }
     } catch (e){
-        return e.response;
+        console.log(e.message);
+        return { status: 401 }
     } 
 };
 

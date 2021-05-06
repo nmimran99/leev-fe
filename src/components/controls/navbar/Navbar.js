@@ -15,6 +15,7 @@ import plusIcon from '../../../assets/icons/plus28.svg';
 import mapIcon from '../../../assets/icons/map28.svg';
 import menuIcon from '../../../assets/icons/menu.svg';
 
+
 export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, toggleNotifications }) => {
 	const classes = useStyles();
 	const location = useLocation();
@@ -48,30 +49,22 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, tog
 				style={{ height: '64px' }}
 			>
 				{
-					<Grid item>
+					<Grid item className={classes.menuGridItem}>
 						<IconButton
 							aria-label="menu"
 							className={classes.iconButton}
 							color="inherit"
 							onClick={toggleMenu}
 						>
-							{!menuOpen ? (
-								<Icon classes={{root: classes.iconRoot}}>
-							<img src="https://img.icons8.com/ios-filled/24/4a90e2/thumbnail-view.png"/>
+							<Icon classes={{root: classes.iconRoot}}>
+								<img src="https://img.icons8.com/ios-filled/24/4a90e2/thumbnail-view.png"/>
 							</Icon>	
-							) : (
-								<ArrowForwardRoundedIcon
-									className={clsx(
-										classes.icon,
-										classes.menuButton
-									)}
-								/>
-							)}
 						</IconButton>
+						<div className={classes.logobox}>Leev</div>
 					</Grid>
 				}
 				<Grid item>
-					<div className={classes.logobox}>Leev</div>
+					
 				</Grid>
 				<Grid item>
 					<div className={classes.navbarIcons}>
@@ -123,9 +116,10 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, tog
 
 const useStyles = makeStyles((theme) => ({
 	logobox: {
-		fontSize: '28px',
+		fontSize: '30px',
 		color: 'white',
-		fontFamily: 'Crete',
+		fontFamily: 'Kaushan',
+		padding: '0 10px 5px'
 	},
 	navbar: {
 		height: '64px',
@@ -133,6 +127,10 @@ const useStyles = makeStyles((theme) => ({
 		background: 'rgba(0,0,0,0.8)',
 		backdropFilter: 'blur(22px)',
 		boxShadow: 'rgba(0,0,0,0.4) 0px 0px 5px 2px',
+	},
+	menuGridItem: {
+		display: 'flex',
+		alignItems: 'center'
 	},
 	menuButton: {},
 	navbarIcons: {

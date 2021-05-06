@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { grey } from '@material-ui/core/colors';
 import { 
@@ -25,6 +25,7 @@ export const Login = () => {
     
     const classes = useStyles();
     const history = useHistory();
+    const loginButton = useRef();
 
     const [ values, setValues ] = useState({
         email: '',
@@ -92,6 +93,12 @@ export const Login = () => {
         })
     }
 
+    const checkEnter = (e) => {
+        if (e.keyCode === 13) {
+            handleSubmit();
+        }
+    }
+
     return (
         <Grid container alignItems='center' justify='center' className={classes.mainContainer} >
             <Grid item alignItems='center' className={classes.loginContainer} xl={3} lg={3} md={6} sm={6} xs={11}>
@@ -126,6 +133,7 @@ export const Login = () => {
                             value={ values.password }
                             onChange={handleChange('password')}
                             labelWidth={40}
+                            onKeyDown={checkEnter}
                             endAdornment={
                                 <InputAdornment position='end'>
                                     <IconButton
@@ -161,7 +169,8 @@ export const Login = () => {
                         className={classes.submitButton}
                         color='primary'
                         onClick={handleSubmit}
-                        disabled={isLoading}   
+                        disabled={isLoading}
+                        ref={loginButton}   
                     >
                     {
                         isLoading ? 
@@ -193,18 +202,18 @@ const useStyles = makeStyles({
         backgroundSize: 'cover'
     },
     loginContainer: {   
-        borderRadius: '25px',
+        borderRadius: '10px',
         border: '1px solid rgba(255,255,255,0.18)',
         padding: '0',
-        background: 'rgba( 255, 255, 255, 0.3 )',
+        background: 'rgba(255, 255, 255, 0.2)',
         boxShadow: '0 8px 32px 0 rgb(0 0 0 / 37%)',
-        backdropFilter: 'blur( 10px )',
+        backdropFilter: 'blur(8px)',
         '-webkit-backdrop-filter': 'blur( 10px )'
     },
     bannerContainer: {
         height: '50px',
         width: '100%',
-        borderRadius: '25px 25px 0 0',
+        borderRadius: '10px 10px 0 0',
         padding: '0',
         display: 'grid',
         placeItems: 'center'
@@ -215,7 +224,7 @@ const useStyles = makeStyles({
         fontSize: '24px',
         position: 'relative',
         margin: 'auto',
-        fontFamily: 'Crete'
+        fontFamily: 'Kaushan'
     },
 
     headerContainer: {
@@ -228,7 +237,8 @@ const useStyles = makeStyles({
     header: {
         fontSize: '24px',
         fontWeight: '300',
-        height: '70%'
+        height: '70%',
+        color: 'white'
     },
    
     inputsContainer: {

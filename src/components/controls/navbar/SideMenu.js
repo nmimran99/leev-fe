@@ -1,42 +1,27 @@
-import React, { useContext } from 'react';
 import {
-	makeStyles,
-	List,
+	ClickAwayListener,
+	Icon, IconButton, List,
 	ListItem,
 	ListItemIcon,
-	ListItemText,
-	Grow,
-	ClickAwayListener,
-	useMediaQuery,
-    Icon,
+	ListItemText, makeStyles,
+	Slide, useMediaQuery
 } from '@material-ui/core';
-import BusinessRoundedIcon from '@material-ui/icons/BusinessRounded';
-import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
-import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
-import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
-import { UserItem } from '../../user/UserItem';
-import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { useHistory } from 'react-router-dom';
+import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AuthContext } from '../../../context/AuthContext';
+import { useHistory } from 'react-router-dom';
 import { clearUserLS } from '../../../api/userApi';
+import { AuthContext } from '../../../context/AuthContext';
 import { NotificationsContext } from '../../../context/NotificationsContext';
+import { UserItem } from '../../user/UserItem';
 
-export const SideMenu = ({ toggleMenu, toggleSettings }) => {
+export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 	const classes = useStyles();
 	const history = useHistory();
 	const { t, i18n } = useTranslation();
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('sm'));
 	const { auth } = useContext(AuthContext);
 	const { setNotfications } = useContext(NotificationsContext);
-
-	const closeMenu = () => {
-		if (matches) {
-			toggleMenu();
-		}
-	};
 
 	const handleClick = (type) => (event) => {
 		toggleMenu();
@@ -49,9 +34,14 @@ export const SideMenu = ({ toggleMenu, toggleSettings }) => {
 	};
 
 	return (
-		<ClickAwayListener onClickAway={closeMenu}>
-			<Grow in={true}>
+		<ClickAwayListener onClickAway={toggleMenu}>
+			<Slide in={menuOpen} direction={'left'}>
 				<div className={classes.sidemenuContainer}>
+					<div className={classes.closeBtn}>
+						<IconButton onClick={toggleMenu}>
+							<ClearRoundedIcon className={classes.icon} />
+						</IconButton>
+					</div>	
 					<div className={classes.userContainer}>
 						<UserItem showTitle showName user={auth.user} />
 					</div>
@@ -98,8 +88,8 @@ export const SideMenu = ({ toggleMenu, toggleSettings }) => {
 						</ListItem>
 						<ListItem button={true} className={classes.listItem} onClick={handleClick('faults')}>
 							<ListItemIcon className={classes.listItemIcon}>
-                            <Icon classes={{root: classes.iconRoot}}>
-                            <img src="https://img.icons8.com/pastel-glyph/23/4a90e2/error--v2.png"/>
+                            	<Icon classes={{root: classes.iconRoot}}>
+                            		<img src="https://img.icons8.com/pastel-glyph/23/4a90e2/error--v2.png"/>
 								</Icon>
                                 {/* <WarningRoundedIcon fontSize={'medium'} /> */}
 							</ListItemIcon>
@@ -111,8 +101,8 @@ export const SideMenu = ({ toggleMenu, toggleSettings }) => {
 						</ListItem>
 						<ListItem button={true} className={classes.listItem} onClick={handleClick('docs')}>
 							<ListItemIcon className={classes.listItemIcon}>
-                            <Icon classes={{root: classes.iconRoot}}>
-                            <img src="https://img.icons8.com/pastel-glyph/25/4a90e2/regular-document--v2.png"/>
+                            	<Icon classes={{root: classes.iconRoot}}>
+                            		<img src="https://img.icons8.com/pastel-glyph/25/4a90e2/regular-document--v2.png"/>
 								</Icon>
 								{/* <DescriptionRoundedIcon fontSize={'medium'} /> */}
 							</ListItemIcon>
@@ -153,54 +143,50 @@ export const SideMenu = ({ toggleMenu, toggleSettings }) => {
 						</ListItem>
 					</List>
 				</div>
-			</Grow>
+			</Slide>
 		</ClickAwayListener>
 	);
 };
 
 const useStyles = makeStyles((theme) => ({
 	userContainer: {
-		width: '85%',
-		margin: '20px auto',
-		padding: '15px 10px',
-		borderRadius: '10px',
-		border: '1px solid rgba(255,255,255,0.2)',
-		background: 'rgba(0,0,0,0.7)',
-		boxShadow: '0 8px 32px 0 rgb(0 0 0 / 37%)',
-		'&:hover': {
-			background: 'black',
-			transition: 'background 0.2s ease',
-			boxShadow: '0 8px 32px 0 rgb(0 0 0 / 80%)',
-		},
+		width: 'fit-content',
+		padding: '10px 20px',
+		margin: '40px 0 10px'
 	},
 	sidemenuContainer: {
 		zIndex: 2,
 		width: '300px',
-		background: theme.palette.primary.main,
-		backdropFilter: 'blur(10px)',
+		background: 'rgba(0,0,0,0.4)',
+		backdropFilter: 'blur(22px)',
 		boxShadow: 'rgba(0,0,0,0.25) 0px 0px 6px 3px',
 		position: 'absolute',
-		top: '80px',
-		left: '10px',
-		borderRadius: '10px',
-		border: '1px solid rgba(255,255,255,0.2)',
+		top: '64px',
+		left: '0px',
+		height: '100vh',
 		[theme.breakpoints.down('sm')]: {
-			maxHeight: '70vh',
+			height: '100%',
 			overflow: 'scroll',
+			width: '100vw',
+			left: 0,
+			border: 'none',
+			borderRadius: 0,
+			top: '64px',
+			background: 'rgba(0,0,0,0.5)',
+			backdropFilter: 'blur(15px)',
 		},
 	},
 	list: {
-		width: '90%',
+		width: '100%',
 		borderTop: '1px solid rgba(255,255,255,0.3)',
 		borderBottom: '1px solid rgba(255,255,255,0.3)',
 		margin: '0px auto',
-		padding: '20px 0',
+		padding: '10px 0',
 	},
 	listItem: {
 		color: 'theme.palette.primary.main',
-		margin: '7px auto',
-		borderRadius: '10px',
-		border: '1px solid rgba(255,255,255,0.2)',
+		margin: '0px auto',
+		borderRadius: '5px',
 		transition: 'background box-shadow 0.3s ease-in-out',
 		'&:hover': {
 			background: 'rgba(0,0,0,0.6)',
@@ -212,7 +198,7 @@ const useStyles = makeStyles((theme) => ({
 		color: 'white',
 	},
 	listItemText: {
-		fontSize: '14px',
+		fontSize: '16px',
 		color: 'white',
 	},
 	bottomList: {
@@ -224,5 +210,13 @@ const useStyles = makeStyles((theme) => ({
 		height: '35px',
 		display: 'grid',
 		placeItems: 'center'
-	}
+	},
+	closeBtn: {
+		position: 'absolute',
+		right: 0,
+		padding: '10px'
+	},
+	icon: {
+		color: 'white',
+	},
 }));

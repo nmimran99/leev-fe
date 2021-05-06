@@ -266,12 +266,13 @@
         "documents": "מסמכים"
     },
     "createMenu": {
-        "addAsset": "הוסף נכס",
-        "addSystem": "הוסף מערכת",
+        "header": "תפריט יצירה",
+        "addAsset": "צור נכס",
+        "addSystem": "צור מערכת",
         "createUser": "צור משתמש",
         "createTask": "צור משימה",
         "createFault": "צור תקלה",
-        "addDocument": "הוסף מסמך"
+        "addDocument": "צור מסמך"
     },
     "alert": {
         "confirm": "אישור",

@@ -4,6 +4,12 @@
 
 }
 
+@font-face {
+  font-family: "Kaushan";
+  src: url("./assets/fonts/kaushan/KaushanScript-Regular.ttf")
+
+}
+
 html,
 body {
     padding: 0;
