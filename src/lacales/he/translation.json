@@ -10,6 +10,7 @@
         "systems": "מערכות",
         "tasks": "משימות",
         "myTasks": "המשימות שלי",
+        "repeatableTasks": "משימות מחזוריות",
         "faults": "תקלות",
         "documents": "מסמכים",
         "settings": "הגדרות",
@@ -173,6 +174,9 @@
     },
     "tasksModule": {
         "tasks": "משימות",
+        "repeatableTasks": "משימות מחזוריות",
+        "repeatableTask": "משימה מחזורית",
+        "repeatableTaskInstructions": "פריט זה הינו תיאור של משימה מחזורית. בעת קביעת זמני החזרה, משימות חדשות יווצרו ויקושרו לפריט זה.",
         "statuses" : {
             "ready": "מוכן לביצוע",
             "inProgress": "בביצוע",
@@ -370,7 +374,8 @@
     "errors": {
         "isRequired": "שדה זה הינו חובה",
         "unauthorized": "אינך מורשה לבצע פעולה זו. אנא פנה למנהל המערכת.",
-        "noFileSelected": "לא נבחר מסמך"
+        "noFileSelected": "לא נבחר מסמך",
+        "serverError": "אירעה תקלת מערכת. אנא פנה למנהל המערכת."
     },
     "messages": {
         "snackMessage": {

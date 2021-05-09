@@ -149,6 +149,7 @@ export const TaskViewControls = ({
 						...data.relatedUsers.map((u) => u._id),
 						data.owner._id,
 					]}
+					shouldRender={!task.isRepeatable}
 				>
 					<MenuItem
 						style={{
@@ -163,7 +164,6 @@ export const TaskViewControls = ({
 						{t('tasksModule.controls.changeStatus')}
 					</MenuItem>
 				</Can>
-
 				<Can
 					module="tasks"
 					action="changeSchedule"
@@ -171,6 +171,7 @@ export const TaskViewControls = ({
 						...data.relatedUsers.map((u) => u._id),
 						data.owner._id,
 					]}
+					shouldRender={data.isRepeatable}
 				>
 					<MenuItem
 						style={{

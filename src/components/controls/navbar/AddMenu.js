@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
 	makeStyles,
 	List,
@@ -21,17 +21,19 @@ import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 import { useTranslation } from 'react-i18next';
 import { Can } from '../../reuseables/Can';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
+import { LanguageContext } from '../../../context/LanguageContext';
 
 export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation();
+	const { lang } = useContext(LanguageContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('sm'));
 
 
 
 	return (
 		<ClickAwayListener onClickAway={toggleAddMenu}>
-			<Slide in={addMenuOpen} direction={'right'}>
+			<Slide in={addMenuOpen} direction={lang.code == 'he' ? 'right' : 'left'}>
 				<div className={classes.addMenuContainer}>
 					<div className={classes.header}>
 						<div>{t('createMenu.header')}</div>

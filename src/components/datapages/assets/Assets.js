@@ -64,7 +64,7 @@ export const Assets = () => {
 
     return (
         <div>
-            <Grid container >
+            <Grid container justify='center'>
                 <Grid item xs={12}>
                     <div className={classes.pageModule}>
                         {t("assetsModule.assets")}
@@ -73,21 +73,24 @@ export const Assets = () => {
                 <Grid item xs={12} md={12} >
                     <AssetsControls />
                 </Grid>
-                <Grid container justify='center'>
-                    {
-                        isLoading ?
-                        <LinearProgress /> :
-                        assets.map((v,i) => 
-                            <Asset 
-                                assetData={v} 
-                                key={i} 
-                                order={i}
-                                removeAsset={removeAsset}
-                                
-                            />
-                        )    
-                    }
+                <Grid item lg={11} xl={9} >
+                    <Grid container justify='center'>
+                        {
+                            isLoading ?
+                            <LinearProgress /> :
+                            assets.map((v,i) => 
+                                <Asset 
+                                    assetData={v} 
+                                    key={i} 
+                                    order={i}
+                                    removeAsset={removeAsset}
+                                    
+                                />
+                            )    
+                        }
+                    </Grid>
                 </Grid>
+                
             </Grid>
             {
                 Boolean(alertDialog) &&

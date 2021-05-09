@@ -10,6 +10,7 @@
         "systems": "Systems",
         "tasks": "Tasks",
         "myTasks": "My Tasks",
+        "repeatableTasks": "Repeating Tasks",
         "faults": "Faults",
         "documents": "Documents",
         "settings": "Settings",
@@ -171,6 +172,9 @@
     },
     "tasksModule": {
         "tasks": "Tasks",
+        "repeatableTasks": "Repeatable Tasks",
+        "repeatableTask": "Repeatable Task",
+        "repeatableTaskInstructions": "This item is a abstraction of of repeatable task. New tasks will be created according to the scehduleing on  this item.",
         "statuses" : {
             "ready": "Ready",
             "inProgress": "In Progress",
@@ -367,7 +371,8 @@
     "errors": {
         "isRequired": "This field is required",
         "unauthorized": "You are not authorized to perform this action. Please consult your system administrator.",
-        "noFileSelected": "No file was selected"
+        "noFileSelected": "No file was selected",
+        "serverError": "Server error. Please contant your system administrator.s"
     },
     "messages": {
         "snackMessage": {

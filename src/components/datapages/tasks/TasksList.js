@@ -8,7 +8,7 @@ import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { TaskMinified } from './TaskMinified';
 import { TasksControls } from './TasksControls';
 
-export const TasksList = () => {
+export const TasksList = ({ repeatable }) => {
 	const classes = useStyles();
 	const location = useLocation();
 	const query = useQuery(location.search)
@@ -18,10 +18,9 @@ export const TasksList = () => {
 	const [tasks, setTasks] = useState([]);
 
 	useEffect(() => {
-		getTasks(auth.user.tenant, query)
+		getTasks({ ...query, isRepeatable: repeatable })
 			.then((data) => {
 				setTasks(data);
-				console.log(data);
 			})
 			.finally(() => {
 				setIsLoading(false);
@@ -34,7 +33,7 @@ export const TasksList = () => {
 
 	return (
 		<Grid container justify="center">
-			<div className={classes.pageModule}>{t('tasksModule.tasks')}</div>
+			<div className={classes.pageModule}>{repeatable ? t('tasksModule.repeatableTasks') : t('tasksModule.tasks')}</div>
 			<Grid item xs={12}>
 				<TasksControls />
 			</Grid>
@@ -43,7 +42,7 @@ export const TasksList = () => {
                 <LinearProgress />
 				:
 				<Fade in={!isLoading}>
-					<Grid container className={classes.listContainer} spacing={4}>
+					<Grid container className={classes.listContainer}>
 						{tasks.map((task, i) => (					
 							<TaskMinified data={task} key={i} />
 						))}
@@ -59,7 +58,9 @@ export const TasksList = () => {
 const useStyles = makeStyles((theme) => ({
 	listContainer: {
 		padding: '10px',
-		
+		[theme.breakpoints.down('sm')]: {
+			padding: '10px 0',
+		},
 	},
 	miniTask: {
 		background: 'rgba(0,0,0,0.6)',

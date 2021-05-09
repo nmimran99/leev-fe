@@ -68,13 +68,10 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	postBtn: {
-        background: '#3399ff',
+        background: '#42A5F5',
 		color: 'white',
         padding: '7px',
-		margin: ' 0 5px 1px',
-		'&:hover': {
-			background: 'rgba(0,0,0,0.4)',
-		},
+		margin: ' 0 5px 1px'
 	},
 	icon: {
         fontSize: '20px',

@@ -57,6 +57,11 @@ export const Controls = () => {
 	const toggleMapView = () => {
 		history.push('/workspace/map?lat=32.063603&lng=34.785933');
 	};
+
+	const toggleCalenderView = () => {
+		history.push('/workspace/calender');
+	}
+
 	const openCreate = (itemType) => (event) => {
 		toggleAddMenu();
 		setCreate(itemType);
@@ -88,6 +93,7 @@ export const Controls = () => {
 						toggleAddMenu={toggleAddMenu}
 						toggleNotifications={toggleNotifications}
 						toggleMapView={toggleMapView}
+						toggleCalenderView={toggleCalenderView}
 						
 					/>
 				</Grid>

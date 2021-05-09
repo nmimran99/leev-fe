@@ -10,6 +10,7 @@ import { getTask } from "../../../api/tasksApi";
 import { createUserOptions } from '../../../api/userApi';
 import { AuthContext } from '../../../context/AuthContext';
 import { LanguageContext } from '../../../context/LanguageContext';
+import { SnackbarContext } from '../../../context/SnackbarContext';
 import { UserItem } from '../../user/UserItem';
 import { TaskSteps } from "./TaskSteps";
 
@@ -17,6 +18,7 @@ export const UpsertTask = ({ handleClose, handleSave, handleUpdate, taskId}) => 
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
     const { auth } = useContext(AuthContext);
+    const { setSnackbar } = useContext(SnackbarContext);
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
     const { t, i18n } = useTranslation();
     const [ mode, setMode ] = useState(handleUpdate ? 'update' : 'create')
@@ -35,7 +37,6 @@ export const UpsertTask = ({ handleClose, handleSave, handleUpdate, taskId}) => 
         relatedUsers: [],
         createdBy: auth.user._id,
         isRepeatable: false,
-        schedule: [],
         isUsingSteps: false,
         steps: [],
         isSequential: false,
@@ -422,7 +423,9 @@ export const UpsertTask = ({ handleClose, handleSave, handleUpdate, taskId}) => 
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                                <Grid item xs={12} className={classes.section}>
+                                {
+                                    mode === 'create' &&
+                                    <Grid item xs={12} className={classes.section}>
                                     <Grid item xs={12}>
                                         <div className={classes.sectionTitle}>
                                             {t("tasksModule.upsert.repeatableTask")}
@@ -455,6 +458,8 @@ export const UpsertTask = ({ handleClose, handleSave, handleUpdate, taskId}) => 
                                         </Grid>
                                     </Grid>
                                 </Grid>
+                                }
+                                
                                 <Grid item xs={12} sm={6} md={6} lg={4} xl={4}  className={classes.section}>
                                     <Grid item xs={12}>
                                         <div className={classes.sectionTitle}>

@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     },
     systemMessage: {
         '&>div': {
-            background: '#FF6767',
+            background: '#42A5F5',
         },      
         justifyContent: 'flex-end'
     }

@@ -198,8 +198,7 @@ export const System = ({ systemData }) => {
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
-		background: 'rgba(0,0,0,0.4)',
-		border: '1px solid rgba(255,255,255,0.2)',
+		background: 'rgba(255,255,255,0.1)',
 		borderRadius: '5px',
 		margin: '4px 5px',
 	},

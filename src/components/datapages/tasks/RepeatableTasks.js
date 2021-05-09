@@ -4,7 +4,7 @@ import { Route, Switch, useRouteMatch } from 'react-router';
 import { TasksList } from './TasksList';
 import { TaskView } from './TaskView';
 
-export const Tasks = () => {
+export const RepeatableTasks = () => {
     
     const { path } = useRouteMatch();
     
@@ -13,7 +13,7 @@ export const Tasks = () => {
         <Grid container justify='center'>
             <Switch>
                 <Route exact path={path}>
-                    <TasksList repeatable={false} />        
+                    <TasksList repeatable={true} />        
                 </Route>
                 <Route path={`${path}/:taskId`}>
                     <TaskView repeatable />

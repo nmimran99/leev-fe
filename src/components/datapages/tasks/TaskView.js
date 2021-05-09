@@ -58,6 +58,7 @@ export const TaskView = () => {
 	useEffect(() => {
 		getTask(taskId)
 		.then((res) => {
+			console.log(res)
 			if (!res) {
 				history.push('/workspace/tasks');
 			} else if (res.status === 403) {
@@ -229,13 +230,28 @@ export const TaskView = () => {
                             handleScheduler={() => setScheduling(true)}
 						/>
 					</Grid>
-					<Grid item xs={12} className={classes.controlsGriditem}>
-						<StatusTag
-							status={task.status}
-							type="task"
-							size={'16px'}
-						/>
-					</Grid>
+					{
+						!task.isRepeatable ?
+						<Grid item xs={12} className={classes.controlsGriditem}>
+							<StatusTag
+								status={task.status}
+								type="task"
+								size={'16px'}
+							/>
+						</Grid> :
+						<Grid item xs={12} className={classes.controlsGriditem}>
+							<div className={classes.repeatableContainer}>
+								<div className={classes.repeatableMark}>
+									{t("tasksModule.repeatableTask")}
+								</div>
+								<div className={classes.repeatableMarkInstructions}>
+									{t("tasksModule.repeatableTaskInstructions")}
+								</div>
+							</div>
+							
+						</Grid>
+					}
+					
 				</Grid>
 				<Grid
 					item
@@ -325,14 +341,18 @@ export const TaskView = () => {
 						owner={task.owner}
 					/>
 				</Grid>
-				<Grid item xs={12} className={classes.comments}>
-					<CommentSection
-						parent={task}
-						saveComment={handleSaveComment}
-						updateComment={handleUpdateComment}
-						module={'tasks'}
-					/>
-				</Grid>
+				{
+					!task.isRepeatable &&
+					<Grid item xs={12} className={classes.comments}>
+						<CommentSection
+							parent={task}
+							saveComment={handleSaveComment}
+							updateComment={handleUpdateComment}
+							module={'tasks'}
+						/>
+					</Grid>
+				}
+				
 			</Grid>
 			{changeOwner && (
 				<UpdateOwner
@@ -580,4 +600,20 @@ const useStyles = makeStyles((theme) => ({
 			fontSize: '13px',
 		},
 	},
+	repeatableContainer : {
+		width: 'fit-content',
+		padding: '10px 30px',
+		color: 'white',
+		background: 'rgba(200,50,0,0.7)',
+		borderRadius: '5px'
+	},
+	repeatableMark: {
+		fontSize: '20px',
+		margin: '5px 0'
+	},
+	repeatableMarkInstructions: {
+		fontSize: '14px',
+		color: 'rgba(255,255,255,0.7)',
+		margin: '5px 0'
+	}
 }));

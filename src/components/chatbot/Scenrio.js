@@ -99,14 +99,28 @@ export const openFault = {
 export const followFault = {
 	type: 'followFault',
 	data: {
-		shouldFollow: false
+		shouldFollow: false,
+		assignStatus: null
 	},
 	submitInput: function(data, field) {
 		this.data[field] = data;
 		return Promise.resolve();
 	},
-	submit: function() {
-		return Promise.resolve(this.data);
+	submit: async function(vault) {
+		if (!this.data.shouldFollow) return false;
+		try {
+			console.log(vault.user)
+			if (!vault.user) return false;
+			console.log('here2');
+			let data = await assignUserToFault(vault.user._id, vault._id);
+			if (data) {
+				this.data.assignStatus = true;
+				return true;
+			}
+		} catch (e) {
+			console.log(e.message);
+			return false;
+		}
 	},
 	questions: [
 		{
@@ -188,45 +202,16 @@ export const assignFailed = {
 	]
 }
 
-export const signUp = {
-	type: 'signUp',
-	questions: [
-		{
-			order: 0,
-            text: i18next.t('chatbot.notLoggedIn.requestFirstName'),
-            actionRequired: true,
-			inputType: 'string',
-			inputField: 'firstName',
-            submitFunc: null
-		},
-		{
-			order: 1,
-            text: i18next.t('chatbot.notLoggedIn.requestLastName'),
-			actionRequired: true,
-			inputType: 'string',
-			inputField: 'lastName',
-            submitFunc: null
-		},
-		{
-			order: 2,
-            text: i18next.t('chatbot.notLoggedIn.requestPhoneNumber'),
-			actionRequired: true,
-			inputType: 'string',
-			inputField: 'phoneNumber',
-            submitFunc: null
-		}
-	]
-}
 
-export const userExists = {
-	type: 'userExists',
+export const userAssigned = {
+	type: 'userAssigned',
 	questions: [
 		{
 			order: 0,
-            text: i18next.t('chatbot.notLoggedIn.requestFirstName'),
-            actionRequired: true,
-			inputType: 'string',
-			inputField: 'firstName',
+            text: i18next.t('chatbot.notLoggedIn.emailSent'),
+            actionRequired: false,
+			inputType: null,
+			inputField: null,
             submitFunc: null
 		}
 	]
@@ -247,18 +232,20 @@ export const thankyou = {
 
 export const getNextScenario = (currentScenario, auth) => {
 	return new Promise((resolve, reject) => {
+		console.log(currentScenario.type)
 		if (currentScenario.type === 'openFault') {
 			resolve(followFault);
 		};
 		if (currentScenario.type === 'followFault') {
 			if (currentScenario.data.shouldFollow) {
-				if (auth.isAuth) {
-					resolve(userExists);
+				console.log('here')
+				if (currentScenario.data.assignStatus) {
+					resolve(userAssigned);
+				} else {
+					resolve(checkUserAuthentication);
 				}
-				resolve(checkUserAuthentication);
 			}
 			resolve(thankyou);
-
 		}
 		if (currentScenario.type === 'checkUserAuthentication') {
 			if (currentScenario.data.authenticated) {

@@ -16,15 +16,17 @@ import mapIcon from '../../../assets/icons/map28.svg';
 import menuIcon from '../../../assets/icons/menu.svg';
 
 
-export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, toggleNotifications }) => {
+export const Navbar = ({ toggleMenu, toggleAddMenu, toggleMapView, toggleNotifications, toggleCalenderView }) => {
 	const classes = useStyles();
 	const location = useLocation();
 	const { notifications } = useContext(NotificationsContext);
 	const [ notifCount, setNotifCount ] = useState(0);
-	const [ mapActive, setMapActive ] = useState(location.pathname.includes('map'))
+	const [ mapActive, setMapActive ] = useState(location.pathname.includes('map'));
+	const [ calenderActive, setCalenderActive ] = useState(location.pathname.includes('calender'));
 
 	useEffect(() => {
-		setMapActive(location.pathname.includes('map'))
+		setMapActive(location.pathname.includes('map'));
+		setCalenderActive(location.pathname.includes('calender'));
 	}, [location])
 
 	useEffect(() => {
@@ -64,10 +66,21 @@ export const Navbar = ({ toggleMenu, menuOpen, toggleAddMenu, toggleMapView, tog
 					</Grid>
 				}
 				<Grid item>
-					
+				
 				</Grid>
 				<Grid item>
 					<div className={classes.navbarIcons}>
+						<IconButton
+							aria-label="Add"
+							className={classes.iconButton}
+							color={'inherit'}
+							onClick={toggleCalenderView}
+							disabled={calenderActive}
+						>
+							<Icon classes={{root: classes.iconRoot}}>
+							<img src="https://img.icons8.com/ios-filled/24/4a90e2/tear-off-calendar.png"/>
+								</Icon>	
+						</IconButton>
 						<IconButton
 							aria-label="Add"
 							className={classes.iconButton}
@@ -125,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
 		height: '64px',
 		padding: '0 8px',
 		background: 'rgba(0,0,0,0.8)',
-		backdropFilter: 'blur(22px)',
+		backdropFilter: 'blur(8px)',
 		boxShadow: 'rgba(0,0,0,0.4) 0px 0px 5px 2px',
 	},
 	menuGridItem: {
@@ -196,7 +209,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	iconRoot: {
 		textAlign: 'center',
-		width: '50px',
+		width: '40px',
 		height: '50px',
 		display: 'grid',
 		placeItems: 'center'

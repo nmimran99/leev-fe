@@ -188,3 +188,7 @@ export const getUnauthorizedMessage = () => {
 export const getSuccessMessage = (type, idenitifer, action) => {
 	return { text: `${i18next.t("messages.snackMessage.itemOfType")} ${i18next.t(`general.${type}`)} ${i18next.t("messages.snackMessage.withIdentifier")} ${idenitifer} ${i18next.t(`messages.snackMessage.${action}`)} ${i18next.t(`messages.snackMessage.withSuccess`)}`, severity: 'success', status: 200 }
 }
+
+export const getServerError = () => {
+	return { text: i18next.t('errors.serverError'), severity: 'error', status: 500 }
+}

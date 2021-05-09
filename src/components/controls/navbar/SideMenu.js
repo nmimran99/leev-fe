@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { clearUserLS } from '../../../api/userApi';
 import { AuthContext } from '../../../context/AuthContext';
+import { LanguageContext } from '../../../context/LanguageContext';
 import { NotificationsContext } from '../../../context/NotificationsContext';
 import { UserItem } from '../../user/UserItem';
 
@@ -19,6 +20,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 	const classes = useStyles();
 	const history = useHistory();
 	const { t, i18n } = useTranslation();
+	const { lang } = useContext(LanguageContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('sm'));
 	const { auth } = useContext(AuthContext);
 	const { setNotfications } = useContext(NotificationsContext);
@@ -35,7 +37,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 
 	return (
 		<ClickAwayListener onClickAway={toggleMenu}>
-			<Slide in={menuOpen} direction={'left'}>
+			<Slide in={menuOpen} direction={lang.code == 'he' ? 'left' : 'right'}>
 				<div className={classes.sidemenuContainer}>
 					<div className={classes.closeBtn}>
 						<IconButton onClick={toggleMenu}>
@@ -82,6 +84,19 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 							</ListItemIcon>
 							<ListItemText
 								primary={t('sideMenu.myTasks')}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+						<ListItem button={true} className={classes.listItem} onClick={handleClick('repeatableTasks')}>
+							<ListItemIcon className={classes.listItemIcon}>
+                            <Icon classes={{root: classes.iconRoot}}>
+                            <img src="https://img.icons8.com/ios-filled/25/4a90e2/delivery-time.png"/>
+								</Icon>
+								{/* <AssignmentRoundedIcon fontSize={'medium'} /> */}
+							</ListItemIcon>
+							<ListItemText
+								primary={t('sideMenu.repeatableTasks')}
 								className={classes.listItemText}
 								disableTypography={true}
 							/>

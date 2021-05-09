@@ -15,7 +15,7 @@ import { ScheduleItem } from './ScheduleItem';
 import clsx from 'clsx';
 import { AuthContext } from '../../../context/AuthContext';
 
-const intervals = ['day', 'week', 'month', 'year', 'date'];
+const intervals = ['day', 'week', 'month', 'year'];
 const months = [
 	'january',
 	'february',
@@ -41,8 +41,7 @@ export const Scheduler = ({ scData, handleSave, handleClose }) => {
 			tenant: auth.user.tenant,
 			createdBy: auth.user._id,
 			startDate: '',
-			interval: '',
-			intervalNumber: 1
+			interval: ''
 		},
 	]);
 
@@ -68,8 +67,7 @@ export const Scheduler = ({ scData, handleSave, handleClose }) => {
 				tenant: auth.user.tenant,
 				createdBy: auth.user._id,
 				startDate: '',
-				interval: '',
-				intervalNumber: 1
+				interval: ''
 			},
 		]);
 	};
@@ -237,10 +235,10 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '24px'
     },
 	scheduleContainer: {
-		border: '1px solid rgba(255,255,255, 0.2)',
+		
 		borderRadius: '10px',
-		padding: '10px',
-		margin: '10px',
+		padding: '5px 0px',
+		margin: '0px',
 		height: 'fit-content',
 	},
 	textContainer: {

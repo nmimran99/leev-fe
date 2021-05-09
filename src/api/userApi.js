@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getFullName, getUnauthorizedMessage } from './genericApi';
+import { getFullName, getServerError, getUnauthorizedMessage } from './genericApi';
 
 export const attemptToSignin = async (payload) => {
     try {
@@ -76,7 +76,7 @@ export const getUserList = async () => {
         if (e.message.includes('403')) {
 			return getUnauthorizedMessage();
 		};
-		return { error: true, reason: 'general', status: 500 };
+		return getServerError();
     }
 }
 
@@ -95,19 +95,22 @@ export const getUserDataById = async (userId) => {
         if (e.message.includes('403')) {
 			return getUnauthorizedMessage();
 		};
-		return { error: true, reason: 'general', status: 500 };
+		return getServerError();
     }
 } 
 
 export const createUserOptions = () => {
     return getUserList()
     .then(data => {
+        if (!data) {
+            return [];
+        }
         let userList = [];
         data.forEach(user => {
             userList.push({label: `${user.firstName} ${user.lastName}`, value: user._id, ...user  })
         });
         return userList;
-    })
+    });
 };
 
 export const clearUserLS = async () => {
@@ -142,7 +145,7 @@ export const uploadAvatar = async (avatar) => {
 		if (e.message.includes('403')) {
 			return getUnauthorizedMessage();
 		};
-		return { error: true, reason: 'general', status: 500 };
+		return getServerError();
 	}
 }
 
@@ -174,7 +177,7 @@ export const createUser = async (details) => {
         if (e.message.includes('403')) {
 			return getUnauthorizedMessage();
 		};
-		return { error: true, reason: 'general', status: 500 };
+		return getServerError();
     }
 } 
 
@@ -193,6 +196,6 @@ export const updateUserData = async (details) => {
         if (e.message.includes('403')) {
 			return getUnauthorizedMessage();
 		};
-		return { error: true, reason: 'general', status: 500 };
+		return getServerError();
     }
 } 

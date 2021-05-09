@@ -4,8 +4,10 @@ import { usePermissions } from './customHooks/usePermissions';
 
 
 
-export const Can = ({ module, action, userList, children }) => {
+export const Can = ({ module, action, userList, shouldRender, children }) => {
+    
     const isPermitted = usePermissions(module, action, userList);
+    if (shouldRender === false) return null;
     
     return (
         isPermitted ? 

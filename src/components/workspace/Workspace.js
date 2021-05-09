@@ -15,6 +15,8 @@ import { SnackbarContext } from '../../context/SnackbarContext';
 import { useTranslation } from 'react-i18next';
 import MuiAlert from '@material-ui/lab/Alert';
 import { Settings } from '../controls/settings/Settings';
+import { RepeatableTasks } from '../datapages/tasks/RepeatableTasks';
+import { Calender } from '../datapages/calender/Calender';
 
 export const Workspace = ({}) => {
 	const classes = useStyles();
@@ -39,8 +41,8 @@ export const Workspace = ({}) => {
 						item
 						xs={12}
 						md={12}
-						lg={11}
-						xl={9}
+						lg={12}
+						xl={12}
 						className={classes.mainData}
 					>
 						<Switch>
@@ -56,11 +58,17 @@ export const Workspace = ({}) => {
 							<Route path={'/workspace/tasks'}>
 								<Tasks />
 							</Route>
+							<Route path={'/workspace/repeatableTasks'}>
+								<RepeatableTasks />
+							</Route>
 							<Route path={'/workspace/docs'}>
 								<Documents />
 							</Route>
 							<Route path={'/workspace/map'}>
 								<MapView />
+							</Route>
+							<Route path={'/workspace/calender'}>
+								<Calender />
 							</Route>						
 						</Switch>
 					</Grid>

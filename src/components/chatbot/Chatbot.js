@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { getAssetExternal, getFullAddress } from '../../api/assetsApi';
 import { authenticate, handleLS } from '../../api/userApi';
-import logoBig from '../../assets/logo/leev_logo_white_long.png';
 import { AuthContext } from '../../context/AuthContext';
 import { MessageImage } from './MessageImage';
 import { MessageInput } from './MessageInput';
@@ -44,7 +43,10 @@ export const Chatbot = () => {
                     token: res.token.token,
                     refreshToken: res.token.refreshToken
                 });
-                  
+                setVault({
+                    ...vault,
+                    user: res.user
+                })
             }
             setIsLoading(false);
             return;
@@ -221,7 +223,6 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        background: `url(${logoBig})`,
         backgroundRepeat: 'repeat'
 		
     },

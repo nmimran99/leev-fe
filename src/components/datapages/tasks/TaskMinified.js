@@ -58,20 +58,28 @@ export const TaskMinified = ({ data, asList }) => {
 							</div>
 						</Grid>
 					}
-					<Grid item xs={6} className={classes.statusContainer}>
-						<StatusTag status={task.status} type={'task'} />
-					</Grid>
+					{
+						!task.isRepeatable &&
+						<Grid item xs={6} className={classes.statusContainer}>
+							<StatusTag status={task.status} type={'task'} />
+						</Grid>
+					}
+					
 					<Grid item xs={12}>
 						<div className={classes.title}>{task.title}</div>
 					</Grid>
 					<Grid item xs={12}>
 						<div className={classes.desc}>{task.description}</div>
 					</Grid>
-					<Grid item xs={12} sm={12}>
-						<div className={classes.timeActive}>
-							<TimeActive createDate={task.createdAt} />
-						</div>
-					</Grid>
+					{	
+						!task.isRepeatable &&
+						<Grid item xs={12} sm={12}>
+							<div className={classes.timeActive}>
+								<TimeActive createDate={task.createdAt} />
+							</div>
+						</Grid>
+					}
+					
 					<Grid item xs={12} sm={12}>
 						<div className={classes.identifiers}>
 							<div className={classes.taskLink}>
@@ -99,15 +107,20 @@ export const TaskMinified = ({ data, asList }) => {
 };
 
 const useStyles = makeStyles((theme) => ({
+	gridItem: {
+		padding: '20px',
+		[theme.breakpoints.down('md')]: {
+			padding: 0
+		}
+	},
 	container: {
-		background: 'rgba(0,0,0,0.2)',
-		border: '1px solid rgba(255,255,255,0.2)',
+		background: 'rgba(0,0,0,0.3)',
 		borderRadius: '5px',
 		padding: '10px',
 		margin: '8px 0',
 		[theme.breakpoints.down('sm')]: {
 			borderWidth: '1px 0',
-			borderRadius: '0',
+			borderRadius: '0'
 		},
 	},
 	title: {
