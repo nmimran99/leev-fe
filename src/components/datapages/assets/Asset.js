@@ -174,17 +174,17 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title={t("assetsModule.tasks")}>
-                                    <IconButton className={classes.button}>
+                                    <IconButton className={classes.button} onClick={handleReferralClick('tasks')}>
                                         <AssignmentRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title={t("assetsModule.faults")}>
-                                    <IconButton className={classes.button}>
+                                    <IconButton className={classes.button} onClick={handleReferralClick('faults')}>
                                         <WarningRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title={t("assetsModule.documents")}>
-                                    <IconButton className={classes.button}>
+                                    <IconButton className={classes.button} onClick={handleReferralClick('documents')}>
                                         <DescriptionRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>
                                 </Tooltip>
