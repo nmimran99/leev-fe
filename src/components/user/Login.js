@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { grey } from '@material-ui/core/colors';
 import { 
     Container, 
@@ -25,6 +25,7 @@ export const Login = () => {
     
     const classes = useStyles();
     const history = useHistory();
+    const location = useLocation();
     const loginButton = useRef();
 
     const [ values, setValues ] = useState({
@@ -69,7 +70,13 @@ export const Login = () => {
             console.log(res.data)
             await handleLS('wb_token', 'set', res.data.token);
             await handleLS('wb_user', 'set', res.data.user);
-            history.push('/');
+            if (location.state) {
+                console.log(location.state.from.pathname)
+                history.push(location.state.from.pathname || '');
+            } else {
+                history.push('/');
+            }
+            
         }
         
         setIsLoading(false);

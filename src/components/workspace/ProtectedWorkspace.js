@@ -33,13 +33,14 @@ export const ProtectedWorkspace = ({ children, isAuthenticated,...rest}) => {
 
     return (
         <Route {...rest}
-          render={() => isLoading ? 
+          render={({ location }) => isLoading ? 
             'loading' : 
             auth.isAuth
             ? children
             :   <Redirect
                     to={{
-                    pathname: "/login"
+                    pathname: "/login",
+                    state: { from: location }
                 }}/>
             }      
         />
