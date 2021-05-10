@@ -103,19 +103,21 @@ export const followFault = {
 		assignStatus: null
 	},
 	submitInput: function(data, field) {
+		console.log(data)
 		this.data[field] = data;
 		return Promise.resolve();
 	},
 	submit: async function(vault) {
-		if (!this.data.shouldFollow) return false;
+		if (!this.data.shouldFollow) {
+			this.data.assignStatus = false;
+			return this.data;
+		}
 		try {
-			console.log(vault.user)
-			if (!vault.user) return false;
-			console.log('here2');
+			if (!vault.user) return this.data;
 			let data = await assignUserToFault(vault.user._id, vault._id);
 			if (data) {
 				this.data.assignStatus = true;
-				return true;
+				return this.data;
 			}
 		} catch (e) {
 			console.log(e.message);
@@ -148,14 +150,12 @@ export const checkUserAuthentication = {
 		if (!this.data.email) return false;
 		try {
 			let res = await checkEmailExists(this.data.email);
-			console.log(res)
 			if (!res) {
 				this.data.authenticated = false;
 				return true;
 			}
 			this.data.authenticated = true;
 			let data = await assignUserToFault(res.userId, vault._id);
-			console.log(data)
 			if (data) {
 				return true;
 			}
@@ -232,13 +232,13 @@ export const thankyou = {
 
 export const getNextScenario = (currentScenario, auth) => {
 	return new Promise((resolve, reject) => {
-		console.log(currentScenario.type)
+		console.log('type:', currentScenario.type)
 		if (currentScenario.type === 'openFault') {
 			resolve(followFault);
 		};
 		if (currentScenario.type === 'followFault') {
 			if (currentScenario.data.shouldFollow) {
-				console.log('here')
+				console.log(currentScenario.data.shouldFollow)
 				if (currentScenario.data.assignStatus) {
 					resolve(userAssigned);
 				} else {

@@ -189,7 +189,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title={t("assetsModule.users")}>
-                                    <IconButton className={classes.button}>
+                                    <IconButton  className={classes.button}>
                                         <PeopleOutlineRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>
                                 </Tooltip>
