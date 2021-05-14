@@ -73,7 +73,7 @@ export const Assets = () => {
                 <Grid item xs={12} md={12} >
                     <AssetsControls />
                 </Grid>
-                <Grid item lg={11} xl={9} >
+                <Grid item xs={12} lg={11} xl={9} >
                     <Grid container justify='center'>
                         {
                             isLoading ?

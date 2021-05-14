@@ -502,6 +502,7 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '10px',
         padding: '10px 20px',
         overflowY: 'overlay',
+        height: '80vh',
         [theme.breakpoints.down('sm')]: {
             height: '81vh',
             top: 0,

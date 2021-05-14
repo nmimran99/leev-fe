@@ -1,4 +1,4 @@
-import { Fade, Grid, makeStyles, Slide,  } from '@material-ui/core';
+import { Fade, Grid, Grow, makeStyles, Slide,  } from '@material-ui/core';
 import React, { useState, useEffect, useContext } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ export const Message = ({ data }) => {
     const { t } = useTranslation();
 
 	return (
-        <Slide direction='up' in={Boolean(data)} timeout={500}>
+        <Grow in={Boolean(data)} timeout={500}>
             <Grid container direction={ data.isUser ? 'row' : 'row-reverse'} className={classes.messageContainer} >
                 <Grid item xs={8} className={clsx(classes.message, data.isUser ? classes.userMessage : classes.systemMessage)}>
                     <div className={classes.messageText}>
@@ -19,7 +19,7 @@ export const Message = ({ data }) => {
                     </div>
                 </Grid>
         </Grid>
-        </Slide>
+        </Grow>
 		
 	);
 };

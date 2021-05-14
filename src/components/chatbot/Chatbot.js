@@ -26,7 +26,8 @@ export const Chatbot = () => {
     const [ inputValue, setInputValue ] = useState({ text: '', value: '', type: '' });
     const [ optionalValues, setOptionalValues ] = useState([]);
     const [ vault, setVault ] = useState({});
-    const messageContainer = useRef();
+    const [ showInput, setShowInput ] = useState(null);
+    // const messageContainer = useRef();
 
     useEffect(() => {
         const checkUserAuthentication = async () => {
@@ -54,14 +55,6 @@ export const Chatbot = () => {
         checkUserAuthentication();
     }, []);
 
-
-    useEffect(() => {
-        if (messageContainer) {
-            messageContainer.current.scrollIntoView({ bahavior: 'smooth', block: 'start'}) 
-        }    
-    }, [ messages ])
-
-
     useEffect(() => {
         if (!params.assetId) {
             scenario = scenarios.assetNotFound;
@@ -73,12 +66,13 @@ export const Chatbot = () => {
             }
             setMainAsset(data.asset);
             setOptionalValues([...data.systems.map((s,i) => ({ name: s.name, value: s._id }))]);
-            setScenario(prev => {
-                prev.submitInput(data.asset._id, 'asset');
-                return prev;
-            });
-            setScenarioStep(scenario.questions[0]);
+            return updateScenarioState(data.asset._id, 'asset')
+            
+           
         })
+        .then(() => {
+            setScenarioStep(scenario.questions[0]);
+        });
     }, [params])
 
 
@@ -95,6 +89,8 @@ export const Chatbot = () => {
                     return;
                 } 
                 setScenarioStep(scenario.questions[scenarioStep.order + 1]);
+            } else {
+                setShowInput(scenarioStep.inputType)
             }
         }, 1000);    
     }, [scenarioStep])
@@ -102,17 +98,16 @@ export const Chatbot = () => {
 
     const handleInputChange = async inputVal => {
         if (!inputVal.value && inputVal.type === 'image') {
+            setShowInput(null)
             setMessages([...messages, { text: inputVal.text, isUser: true, type: inputVal.type } ]);
             await handleSubmit();
         }
         if (inputVal.type === 'boolean') {
-            setScenario(prev => {
-                prev.submitInput(inputVal.value, scenarioStep.inputField);
-                return prev;
-            })
-            setMessages([...messages, { text: inputVal.text, isUser: true, type: inputVal.type } ]);
-            await handleSubmit();
+            setShowInput(null)
+            await updateScenarioState(inputVal.value, scenarioStep.inputField);
+            setMessages([...messages, { text: inputVal.text, isUser: true, type: inputVal.type } ])
             setInputValue({ text: '', value: '', type: '' });
+            await handleSubmit();
             return;
         }
         setInputValue(inputVal);
@@ -120,10 +115,8 @@ export const Chatbot = () => {
 
 
     const handleSendInput = async () => {
-        setScenario(prev => {
-            prev.submitInput(inputValue.value, scenarioStep.inputField);
-            return prev;
-        })
+        setShowInput(null)
+        await updateScenarioState(inputValue.value, scenarioStep.inputField);
         setMessages([...messages, { text: inputValue.text, isUser: true, type: inputValue.type } ]);
         await handleSubmit();
        
@@ -160,6 +153,16 @@ export const Chatbot = () => {
         
     }
 
+    const updateScenarioState = (data, field) => {
+        return new Promise((resolve, reject) => {
+            setScenario(prev => {
+                prev.submitInput(data, field);
+                return prev;
+            });
+            resolve();
+        })
+    }
+
     const isLastStep = () => {
         return scenarioStep.order + 1 === scenario.questions.length;
     }
@@ -175,41 +178,33 @@ export const Chatbot = () => {
                     {mainAsset && getFullAddress(mainAsset)}
                 </div>
             </div>
-            <div ref={messageContainer} className={classes.messagesContainer}>
-                {
-                    messages.length ?
-                    <Messages data={messages} /> : 
-                    null
-                }
-                
-            </div>
+            <Messages data={messages} />
             <Grid container className={classes.inputContainer} alignItems='center'>
                 {
-                    scenarioStep ? 
-                    scenarioStep.inputType === 'string' ? 
+                    showInput === 'string' ? 
                     <MessageInput 
                         handleInputChange={handleInputChange}
                         handleSendInput={handleSendInput}
                         value={inputValue.value}
                     /> : 
-                    scenarioStep.inputType === 'select' ? 
+                    showInput === 'select' ? 
                     <MessageSelector
                         value={inputValue.value}
                         options={optionalValues}
                         handleInputChange={handleInputChange}
                         handleSendInput={handleSendInput}
                     /> : 
-                    scenarioStep.inputType === 'image' ? 
+                    showInput === 'image' ? 
                     <MessageImage 
                         value={inputValue.value || []}
                         handleInputChange={handleInputChange}
                         handleSendInput={handleSendInput}
                     /> : 
-                    scenarioStep.inputType === 'boolean' ?
+                    showInput === 'boolean' ?
                     <MessageBoolean 
                         handleInputChange={handleInputChange}
                     /> : null
-                    : null
+                   
                 }
                 
             </Grid>
@@ -234,17 +229,22 @@ const useStyles = makeStyles((theme) => ({
         borderBottom: '1px solid rgba(255,255,255,0.2)',
         padding: '15px'
     },
+    // messagesContainer: {
+    //     height: 'calc(100% - 120px)',
+    //     width: '100%',
+    //     padding: '10px 0',
+    //     overflowY: 'scroll',
+    //     display: 'flex',
+    //     flexDirection: 'column',
+    //     justifyContent: 'flex-end',
+    //     background: 'rgba(0,0,0,0.1)',
+    //     backdropFilter: 'blur(2px)'
+        
+    // },
     messagesContainer: {
         height: 'calc(100% - 120px)',
         width: '100%',
-        padding: '10px 0',
-        overflowY: 'scroll',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
         background: 'rgba(0,0,0,0.1)',
-        backdropFilter: 'blur(2px)'
-        
     },
     inputContainer: {
         background: 'rgba(0,0,0,0.9)',

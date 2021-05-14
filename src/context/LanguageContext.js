@@ -8,9 +8,9 @@ export const LanguageContextProvider = (props) => {
         name: 'hebrew',
         code: 'he',
         dir: 'rtl',
-        dateformat: 'dd/MM/yyyy hh:mm',
-        dateonly: 'dd/MM/yyyy',
-        timeonly: 'hh:mm'
+        dateformat: 'dd/mm/yyyy HH:MM',
+        dateonly: 'dd/mm/yyyy',
+        timeonly: 'HH:MM'
     })
 
     useEffect(() => {

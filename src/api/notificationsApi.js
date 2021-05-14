@@ -23,7 +23,7 @@ export const generateNotificationBody = (data) => {
         text = text.replace('%%name%%', fullName);
     };
     if (text.includes('%%status%%')) {
-        text = text.replace('%%status%%', i18next.t(`${data.actionOn.obejctType}Module.statuses.${data.data.statusName}`));
+        text = text.replace('%%status%%', i18next.t(`${data.actionOn.ObjectType}Module.statuses.${data.data.statusName}`));
     };
     if (text.includes('%%owner%%')) {
         text = text.replace('%%owner%%', getFullName(data.data.owner));
@@ -36,7 +36,7 @@ export const generateNotificationBody = (data) => {
         text = text.replace('%%itemid%%', data.actionOn.externalId);
     };
     if (text.includes('%%type%%')){
-        text = text.replace('%%type%%', i18next.t(`notificationsModule.${data.actionOn.obejctType.slice(0,-1)}`));
+        text = text.replace('%%type%%', i18next.t(`notificationsModule.${data.actionOn.ObjectType.slice(0,-1)}`));
     };
     return text;
 }   
@@ -45,7 +45,7 @@ export const generateNotificationHeader = (data) => {
     let text = i18next.t(`notificationsModule.${data.actionType}.header`);
    
     if (text.includes('%%type%%')){
-        text = text.replace('%%type%%', i18next.t(`notificationsModule.${data.actionOn.obejctType.slice(0,-1)}`));
+        text = text.replace('%%type%%', i18next.t(`notificationsModule.${data.actionOn.ObjectType.slice(0,-1)}`));
     };
     if (text.includes('%%itemid%%')) {
         text = text.replace('%%itemid%%', data.actionOn.externalId);

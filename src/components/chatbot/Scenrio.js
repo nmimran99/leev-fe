@@ -34,8 +34,9 @@ export const openFault = {
 		this.data[field] = data;
 		return Promise.resolve();
 	},
-	submit: async function() {
-		const res = await createExternalFault(this.data)
+	submit: async function(vault) {
+		let createdBy = vault.user ? vault.user._id : null;
+		const res = await createExternalFault({...this.data, createdBy})
 		if (res) {
 			return res;
 		}
@@ -103,7 +104,6 @@ export const followFault = {
 		assignStatus: null
 	},
 	submitInput: function(data, field) {
-		console.log(data)
 		this.data[field] = data;
 		return Promise.resolve();
 	},
@@ -155,6 +155,7 @@ export const checkUserAuthentication = {
 				return true;
 			}
 			this.data.authenticated = true;
+			console.log(res)
 			let data = await assignUserToFault(res.userId, vault._id);
 			if (data) {
 				return true;
