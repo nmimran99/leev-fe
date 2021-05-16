@@ -64,7 +64,6 @@ export const ScheduleItem = ({
 						label={t('scheduler.startDate')}
 						data={schedule.startDate}
 						handleChange={handleChangeStartDate}
-						disablePast
 					/>
 				</Grid>
 				<Grid item xs={4}>

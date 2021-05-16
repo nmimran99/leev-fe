@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
 	IconButton,
 	makeStyles,
@@ -17,6 +17,8 @@ import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
 import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { Can } from '../../reuseables/Can';
+import { useHistory, useLocation } from 'react-router';
+import { addQueryParam } from '../../../api/genericApi';
 
 export const SystemControls = ({
 	editName,
@@ -26,9 +28,16 @@ export const SystemControls = ({
 	toggleAdditionalDetails,
 	system
 }) => {
+	
 	const classes = useStyles();
+	const location = useLocation();
+	const history = useHistory();
 	const { t, i18n } = useTranslation();
 	const downSm = useMediaQuery((theme) => theme.breakpoints.down('md'));
+
+	const handleReferralClick = type => event => {
+		history.push(type + addQueryParam(location.search, [{ name: 'asset', value: system.asset._id }, { name: 'system', value: [system._id]}]));
+    }
 
 	return (
 		<Collapse in={(!downSm && !editName) || expanded}>
@@ -52,7 +61,7 @@ export const SystemControls = ({
 						
 						<Grid item lg={2} className={classes.iconItem}>
 							<Tooltip title={t('systemsModule.showTasks')}>
-								<IconButton className={classes.iconBtn}>
+								<IconButton className={classes.iconBtn} onClick={handleReferralClick('tasks')}>
 									<AssignmentRoundedIcon
 										className={classes.userIcon}
 									/>
@@ -60,7 +69,7 @@ export const SystemControls = ({
 							</Tooltip>
 						</Grid>
 						<Grid item lg={2} className={classes.iconItem}>
-							<Tooltip title={t('systemsModule.showFaults')}>
+							<Tooltip title={t('systemsModule.showFaults')} onClick={handleReferralClick('faults')}>
 								<IconButton className={classes.iconBtn}>
 									<WarningRoundedIcon
 										className={classes.userIcon}
@@ -69,7 +78,7 @@ export const SystemControls = ({
 							</Tooltip>
 						</Grid>
 						<Grid item lg={2} className={classes.iconItem}>
-							<Tooltip title={t('systemsModule.showDocuments')}>
+							<Tooltip title={t('systemsModule.showDocuments')}onClick={handleReferralClick('documents')}>
 								<IconButton className={classes.iconBtn}>
 									<DescriptionRoundedIcon
 										className={classes.userIcon}

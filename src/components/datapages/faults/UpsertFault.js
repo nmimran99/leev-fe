@@ -311,7 +311,7 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
                                                     onChange={handleChange('title')}
                                                     className={classes.textField}
                                                     size={'medium'}
-                                                    helperText={ errors.filter(e => e.field === `title`).length > 0 ? t("errors.isRequired") : `${60 - details.title.length} ${t("faultsModule.upsert.titleLimit")}` }
+                                                    helperText={ errors.filter(e => e.field === `title`).length > 0 ? t("errors.isRequired") : `${60 - (details.title.length || 0)} ${t("faultsModule.upsert.titleLimit")}` }
                                                     inputProps={{
                                                         maxLength: 60
                                                     }}

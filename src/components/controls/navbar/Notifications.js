@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
 		margin: 0,
 		overflow: 'overlay',
 		borderRadius: '0 0 10px 10px',
-		height: '100%',
+		height: 'calc(100% - 61px)',
 		[theme.breakpoints.down('sm')]: {
 			marginBottom: '50px',
 		},

@@ -114,7 +114,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								disableTypography={true}
 							/>
 						</ListItem>
-						<ListItem button={true} className={classes.listItem} onClick={handleClick('docs')}>
+						<ListItem button={true} className={classes.listItem} onClick={handleClick('documents')}>
 							<ListItemIcon className={classes.listItemIcon}>
                             	<Icon classes={{root: classes.iconRoot}}>
                             		<img src="https://img.icons8.com/pastel-glyph/25/4a90e2/regular-document--v2.png"/>

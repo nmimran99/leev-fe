@@ -23,6 +23,7 @@
         "faults": "Faults",
         "documents": "Documents",
         "users": "Users",
+        "residents": "Residents",
         "owner": "Asset Manager",
         "filterByCityOrAddress": "Filter by City or Address",
         "filterByAssetOwner": "Filter by Asset Manager",

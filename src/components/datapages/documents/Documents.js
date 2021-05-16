@@ -96,7 +96,6 @@ export const Documents = () => {
 					container
 					justify="center"
 					className={classes.docsContainer}
-					spacing={2}
 				>
 					{docs.map((d, i) => (
 						<Grid item xs={12} sm={8} md={5} lg={4} xl={3} key={i}>

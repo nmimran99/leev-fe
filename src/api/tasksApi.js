@@ -65,7 +65,6 @@ export const createNewTask = async (details) => {
 };
 
 export const getTasks = async (filters) => {
-	console.log(filters)
 	try {
 		const res = await axios.post(
 			`${process.env.REACT_APP_BACKEND_URL}/tasks/getTasks`,

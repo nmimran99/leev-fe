@@ -51,7 +51,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
     }
 
     const handleReferralClick = type => event => {
-        history.push(`${type}/?asset=${data._id}`)
+        history.push(`${type}?asset=${data._id}`)
     }
 
     // const updateOwner = (userId) => {
@@ -188,7 +188,7 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                         <DescriptionRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title={t("assetsModule.users")}>
+                                <Tooltip title={t("assetsModule.residents")}>
                                     <IconButton  className={classes.button}>
                                         <PeopleOutlineRoundedIcon className={classes.typeIcon}/>
                                     </IconButton>

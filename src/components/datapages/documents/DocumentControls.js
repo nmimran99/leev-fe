@@ -46,13 +46,14 @@ export const DocumentControls = ({
 					paper: classes.menu,
 				}}
 				anchorOrigin={{
-					vertical: 'bottom',
+					vertical: 'top',
 					horizontal: 'left',
 				}}
 				transformOrigin={{
 					vertical: 'top',
 					horizontal: 'left',
 				}}
+				getContentAnchorEl={null}
 			>
 				<div
 					style={{

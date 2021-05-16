@@ -27,7 +27,6 @@ export const openFault = {
 		asset: null,
 		system: null,
 		description: null,
-		title: null,
 		images: null
 	},
 	submitInput: function(data, field) {
@@ -74,13 +73,6 @@ export const openFault = {
 		},
 		{
 			order: 4,
-            text: i18next.t('chatbot.notLoggedIn.requestTitle'),
-			actionRequired: true,
-			inputType: 'string',
-			inputField: 'title'
-		},
-		{
-			order: 5,
             text: i18next.t('chatbot.notLoggedIn.requestPhotos'),
 			actionRequired: true,
 			inputType: 'image',
@@ -88,7 +80,7 @@ export const openFault = {
 			submit: true
 		},
 		{
-			order: 6,
+			order: 5,
             text: i18next.t('chatbot.notLoggedIn.faultOpenedSuccessfully'),
             actionRequired: false,
 			inputType: null,

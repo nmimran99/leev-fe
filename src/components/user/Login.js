@@ -74,7 +74,7 @@ export const Login = () => {
                 console.log(location.state.from.pathname)
                 history.push(location.state.from.pathname || '');
             } else {
-                history.push('/');
+                history.push('/workspace/assets');
             }
             
         }

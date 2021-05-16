@@ -46,7 +46,7 @@ export const Notification = ({ data, updateNotificationReadStatus }) => {
 
     const handleClick = async () => {
         await updateNotificationReadStatus(notification._id, true);
-        history.push(`/workspace/${notification.actionOn.ObjectType}/${notification.actionOn.externalId}`)
+        history.push(`/workspace/${notification.actionOn.objectType}/${notification.actionOn.externalId}`)
     }
 
     const handleNotificationStatus = event => {

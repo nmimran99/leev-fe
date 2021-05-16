@@ -103,6 +103,7 @@ export const downloadDocument = async (url) => {
             }
         });
         if (res.status === 200) {
+			console.log(res.data)
             const file = window.URL.createObjectURL(new Blob([res.data]));
             const link = document.createElement('a');
             link.href = file;

@@ -37,6 +37,7 @@ import { TaskViewControls } from './TaskViewControls';
 import { TimeActive } from '../../reuseables/TimeActive';
 import { Scheduler } from '../../reuseables/scheduler/Scheduler';
 import { SnackbarContext } from '../../../context/SnackbarContext';
+import { format, parseISO } from 'date-fns';
 
 export const TaskView = () => {
 	const history = useHistory();
@@ -265,8 +266,8 @@ export const TaskView = () => {
 					<div className={classes.title}>{task.title}</div>
 					<div className={classes.desc}>
 						<div className={classes.openDate}>
-							{`${t('general.createDate')} ${dateFormat(
-								task.createdAt,
+							{`${t('general.createDate')} ${format(
+								parseISO(task.createdAt),
 								lang.dateformat
 							)}`}
 						</div>
@@ -276,6 +277,7 @@ export const TaskView = () => {
 						</div>
 					</div>
 					{Boolean(task.steps.length) && (
+
 						<div className={classes.stepsContainer}>
 							<div className={classes.stepsTitle}>
 								{t('tasksModule.taskSteps')}

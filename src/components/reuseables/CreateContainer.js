@@ -100,7 +100,7 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
                 handleClose();  
                 return; 
             }
-            history.push(`/workspace/docs`)
+            history.push(`/workspace/documents`)
         })
         .finally(() => {
             handleClose(); 

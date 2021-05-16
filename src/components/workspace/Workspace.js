@@ -61,7 +61,7 @@ export const Workspace = ({}) => {
 							<Route path={'/workspace/repeatableTasks'}>
 								<RepeatableTasks />
 							</Route>
-							<Route path={'/workspace/docs'}>
+							<Route path={'/workspace/documents'}>
 								<Documents />
 							</Route>
 							<Route path={'/workspace/map'}>
@@ -96,12 +96,12 @@ export const Workspace = ({}) => {
 
 const useStyles = makeStyles((theme) => ({
 	mainContainer: {
-		height: '100%',
+		height: '100vh',
 		background: `url(${greyJpg})`,
 		zIndex: 2,
 		backgroundRepeat: 'no-reaper',
 		backgroundSize: 'cover',
-		overflowY: 'auto',
+		overflowY: 'overlay',
 		[theme.breakpoints.down('sm')]: {
 			'&::-webkit-scrollbar': {
 				display: 'none',

@@ -4,6 +4,7 @@ import {
 	makeStyles,
 	useMediaQuery,
 } from '@material-ui/core';
+import { format, parseISO } from 'date-fns';
 import dateFormat from 'dateformat';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -232,8 +233,8 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					<div className={classes.title}>{fault.title}</div>
 					<div className={classes.desc}>
 						<div className={classes.openDate}>
-							{`${t('faultsModule.createDate')} ${dateFormat(
-								fault.createdAt,
+							{`${t('faultsModule.createDate')} ${format(
+								parseISO(fault.createdAt),
 								lang.dateformat
 							)}`}
 						</div>
