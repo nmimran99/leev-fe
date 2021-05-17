@@ -86,6 +86,7 @@ export const MarkerData = ({ markersData, handleClose }) => {
 
 	return (
 		<div className={classes.container}>
+			<div className={classes.topContainer}>
 			<IconButton onClick={handleClose} className={classes.closeBtn}>
 				<ClearRoundedIcon />
 			</IconButton>
@@ -154,6 +155,8 @@ export const MarkerData = ({ markersData, handleClose }) => {
 					{`${ tasks.length } ${t("mapModule.todaysTasks")}`}
 				</div>
 			</div>
+			</div>
+			
 			{
 				detailsActive === 'faults' ? 
 				faults.length ? (
@@ -199,12 +202,14 @@ const useStyles = makeStyles((theme) => ({
 		height: '100%',
 		display: 'flex',
 		flexDirection: 'column',
-		overflowY: 'overlay',
 		background: 'rgba(0,0,0,0.2)',
 		[theme.breakpoints.down('sm')]: {
-			height: 'auto'
+			width: '100vw'
 		}
 	},
+	topContainer: {
+		position: 'relative'
+	}, 
 	title: {
 		fontSize: '16px',
 		color: 'white',
@@ -239,17 +244,22 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: '5px'
 	},
 	miniTask: {
-		border: '0 solid rgba(255,255,255,0.2)',
+		border: '1px solid rgba(255,255,255,0.2)',
 		background: 'rgba(0,0,0,0.0)',
 		margin: '10px',
+		borderRadius: '5px'
 	},
 	faultContainer: {
 		borderTop: '1px solid rgba(255,255,255,0.2)',
-		marginTop: '5x'
+		marginTop: '5px',
+		height: 'calc(100% - 140px)',
+		overflow: 'overlay'
 	},
 	taskContainer: {
 		borderTop: '1px solid rgba(255,255,255,0.2)',
-		marginTop: '5px'
+		marginTop: '5px',
+		height: 'calc(100% - 140px)',
+		overflow: 'overlay'
 	},
 	menu: {
 		color: 'white',
@@ -308,9 +318,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	closeBtn: {
 		color: 'white',
-		alignSelf: 'flex-end',
 		margin: '6px',
 		position: 'absolute',
+		right: 0,
 		zIndex: 3,
 		'&:hover': {
 			background: 'rgba(0,0,0,0.6)',
