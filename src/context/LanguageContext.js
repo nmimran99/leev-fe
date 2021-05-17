@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { getLocalization } from '../api/genericApi';
+import { handleLS } from '../api/userApi';
 import i18n from '../i18n'
 
 export const LanguageContext = createContext();
@@ -12,6 +14,15 @@ export const LanguageContextProvider = (props) => {
         dateonly: 'dd/MM/yyyy',
         timeonly: 'HH:mm'
     })
+
+    useEffect(() => {
+        handleLS('wb_lang', 'get')
+        .then(defaultLang => {
+            if (defaultLang) {
+                setLang(getLocalization(defaultLang.lang))
+            }
+        }); 
+    }, []);
 
     useEffect(() => {
         i18n.changeLanguage(lang.code)

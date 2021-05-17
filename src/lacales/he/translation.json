@@ -1,9 +1,10 @@
 {
     "login": {
-        "title": "התחברות",
-        "email": "כתובת מייל",
+        "title": "התחברות משתמש",
+        "email": "אימייל",
         "password": "סיסמה",
-        "forgotPassword": "שכחת סיסמה"
+        "forgotPassword": "שכחתי סיסמה",
+        "login": "כניסה"
     },
     "sideMenu": {
         "assets": "נכסים",
@@ -239,8 +240,7 @@
         "taskSteps": "שלבים למשימה",
         "step": "שלב",
         "startDtae": "תאריך התחלה",
-        "startDateText": "תאריך תחילת משימה"        
-        
+        "startDateText": "תאריך תחילת משימה"           
     },
     "documentsModule": {
         "upsert": {
@@ -422,7 +422,6 @@
         "inTime": "בשעה",
         "inDay": "ביום",
         "noItems": "אין חזרות מוגדרות"
-
     },
     "mapModule": {
         "presenting": "מציג",
@@ -474,6 +473,8 @@
         "firstName": "שם פרטי",
         "lastName": "שם משפחה",
         "email": "כתובת דוא\"ל",
+        "filterByName": "סנן על פי שם",
+        "noUsersFound": "לא נמצאו משתמשים",
         "upsert": {
             "generalDetails": "פרטים כלליים",
             "createUser": "הוספת משתמש",
@@ -499,7 +500,6 @@
             "requestSystem": "באיזו מערכת ישנה תקלה?",
             "requestDescription1": "אשמח לקבל תיאור מלא של התקלה.",
             "requestDescription2": "תיאור יעיל של התקלה יכלול את מיקום התקלה ופירוט על מה שלא עובד כמו שצריך.",
-            "requestTitle": "אנא הוסף כותרת קצרה לתקלה",
             "requestPhotos": "האם תרצה להוסיף תמונות של התקלה?",
             "faultOpenedSuccessfully": "מעולה! התקלה נפתחה בהצלחה.",
             "requestEmail": "לאיזה כתובת אימייל תרצה שאשלח את הלינק?",
@@ -510,5 +510,8 @@
         "requestEmail": "מה היא כתובת המייל שלך?",
         "assignedSuccessfully": "נוספת בהצלחה לרשימת העוקבים אחר התקלה. בעת שינויים בתקלה יתקבלו עידכונים לכתובת המייל שסיפקת.",
         "userNotFound": "לא נמצא משתמש במערכת עם כתובת המייל שסיפקת. על מנת לאפשר קבלת עידכונים לתקלה יש להירשם תחילה למערכת."
+    },
+    "calender": {
+        "calender": "לוח שנה"
     }
 }

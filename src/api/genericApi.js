@@ -1,7 +1,30 @@
+
 import axios from 'axios';
 import { addMonths, addWeeks, addYears } from 'date-fns';
 import { addDays, format } from 'date-fns/esm';
 import i18next from 'i18next';
+import heLocale from 'date-fns/locale/he';
+import deLocale from 'date-fns/locale/de'
+import usLocale from 'date-fns/locale/en-US'
+
+const localizations = {
+	he: {
+		name: 'Hebrew',
+        code: 'he',
+        dir: 'rtl',
+        dateformat: 'dd/MM/yyyy HH:mm',
+        dateonly: 'dd/MM/yyyy',
+        timeonly: 'HH:mm'
+	},
+	en: {
+		name: 'English',
+        code: 'en',
+        dir: 'ltr',
+        dateformat: 'MM/dd/yyyy p',
+        dateonly: 'MM/dd/yyyy',
+        timeonly: 'p'
+	}
+}
 
 export const queryParamsToObject = (search) => {
 	if (!search) return {};
@@ -191,4 +214,18 @@ export const getSuccessMessage = (type, idenitifer, action) => {
 
 export const getServerError = () => {
 	return { text: i18next.t('errors.serverError'), severity: 'error', status: 500 }
+}
+
+export const getLocalization = (langCode) => {
+	return localizations[langCode];
+}
+
+export const getLocale = (langCode) => {
+	const locales = {
+		he: heLocale,
+		en: deLocale,
+		de: deLocale
+	};
+
+	return locales[langCode];
 }

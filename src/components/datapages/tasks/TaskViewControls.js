@@ -38,7 +38,7 @@ export const TaskViewControls = ({
 	}, [task]);
 
 	const openInNewWindow = () => {
-		window.open(`http://localhost:3000/workspace/tasks/${task.taskId}`);
+		window.open(`${process.env.REACT_APP_FRONTEND_URL}/workspace/tasks/${task.taskId}`);
 	};
 
 	const handleExpanded = (event) => {

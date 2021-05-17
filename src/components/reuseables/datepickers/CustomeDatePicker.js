@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import heLocale from 'date-fns/locale/he';
 import React, {useContext} from 'react';
+import { getLocale } from '../../../api/genericApi';
 import { LanguageContext } from '../../../context/LanguageContext';
 
 export const CustomDatePicker = ({ data, handleChange, label, disablePast }) => {
@@ -11,7 +12,7 @@ export const CustomDatePicker = ({ data, handleChange, label, disablePast }) => 
 
 	return (
 	
-			<MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
+			<MuiPickersUtilsProvider utils={DateFnsUtils} locale={getLocale(lang.code)}>
 				<DatePicker
 					format={lang.dateonly}
 					label={label}

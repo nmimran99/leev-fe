@@ -116,10 +116,7 @@ export const FilterByMultiSelect = ({ filterField, placeholder, filterIcon, opti
                                         }
                                     </div>
                                
-                                :   <label style={{ 
-                                        padding: '5px 0px 5px 20px', 
-                                        cursor: 'pointer' 
-                                    }}>
+                                :   <label className={classes.searchLabel} >
                                         {placeholder}
                                     </label>
                             }
@@ -258,5 +255,11 @@ const useStyles = makeStyles(theme => ({
     },
     tagRemove: {
         fontSize: '16px'
+    },
+    searchLabel: {
+        padding: '5px 20px 5px 10px', 
+        cursor: 'pointer',
+        color: 'rgba(255,255,255,0.5)',
+        fontSize: '15px' 
     }
 }));

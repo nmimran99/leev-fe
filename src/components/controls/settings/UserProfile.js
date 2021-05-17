@@ -1,6 +1,7 @@
 import { Avatar, Button, Grid, IconButton, makeStyles, Tooltip } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import { format, parseISO } from 'date-fns';
 import dateFormat from 'dateformat';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -53,7 +54,7 @@ export const UserProfile = () => {
 				{userData.map((ud, i) => {
 					let val =
 						ud === 'birthDate'
-							? dateFormat(auth.user.birthDate, lang.dateonly)
+							? format(parseISO(auth.user.birthDate), lang.dateonly)
 							: ud === 'status'
 							? auth.user.isActive
 								? t('users.active')

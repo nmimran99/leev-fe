@@ -131,10 +131,10 @@ const useStyles = makeStyles(theme => ({
     },
     sortOrder: {
         borderRadius: '0px 25px 25px 0px',
-        padding: 0,
+        padding: '0 10px',
         color: 'white',
-       width: '100px',
-       border: '1px solid rgba(255,255,255,0.2)',
+        width: 'auto',
+        border: '1px solid rgba(255,255,255,0.2)',
     },
     menu: {
         marginTop: '55px',

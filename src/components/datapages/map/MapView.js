@@ -58,11 +58,8 @@ export const MapView = () => {
 const useStyles = makeStyles(theme => ({
     mapGridItem: {
         width: '100%',
-        height: '90vh',
-        position: 'relative',
-        [theme.breakpoints.down('sm')]: {
-            height: '90vh'
-        }
+        height: 'calc(100vh - 64px)',
+        position: 'relative'
     },
     gridControls: {
         position: 'absolute',

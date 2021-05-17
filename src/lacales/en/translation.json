@@ -3,7 +3,8 @@
         "title": "Sign in",
         "email": "Email",
         "password": "Password",
-        "forgotPassword": "Forgot Password"
+        "forgotPassword": "Forgot Password",
+        "login": "Login"
     },
     "sideMenu": {
         "assets": "Assets",
@@ -169,6 +170,8 @@
         "updateOwnerInstructions": "Choose user to update as fault owner",
         "addRelatedUser": "Add Fault RelatedUser",
         "addRelatedUserInstructions": "Choose a user to add to the related users list",
+        "changeStatus": "Change Status",
+        "changeStatusInstructions":"Choose a status to update as the fault's status",
         "faultSuccesfullyCreated": "Fault has been successfully created"
     },
     "tasksModule": {
@@ -186,7 +189,6 @@
         "hideFilters": "Hide Filters",
         "filterByTaskOwner": "Filter By Fault Owner",
         "filterByStatus": "Filter by Status",
-        "listMode": "List Mode",
         "controls": {
             "editDetails": "Edit Task Details",
             "changeOwner": "Change Assigned User",
@@ -198,7 +200,6 @@
         },
         "noRelatedUsers": "There are no related users to this task yet.",
         "relatedUsers": "Related Users",
-        "addRelatedUser": "Add Related User",
         "createDate": "Created at",
         "upsert": {
             "generalDetails": "General Details",
@@ -231,11 +232,15 @@
         },
         "updateOwner": "Update Task Owner",
         "updateOwnerInstructions": "Choose user to update as task owner",
+        "addRelatedUser": "Add related user",
         "addRelatedUserInstructions": "Choose a user to relate to this task",
+        "changeStatus": "Change Status",
+        "changeStatusInstructions": "Choose a status to update as task's status",
         "taskNotLinkedToAsset": "This task is not linked to any asset or system",
         "taskSteps": "Task Steps",
-        "step": "Step"
-        
+        "step": "Step",
+        "startDtae": "Start date",
+        "startDateText": "Task Start date"
     },
     "documentsModule": {
         "upsert": {
@@ -263,8 +268,6 @@
         },
         "deleteFilePrompt": "Are you sure you want to delete the document ",
         "deleteFileTitle": "Delete Document",
-        "showFilters": "Show Filters",
-        "hideFilters": "Hide Filters",
         "documents": "Documents"
     },
     "createMenu": {
@@ -467,7 +470,11 @@
         "inactive": "Inactive",
         "uploadAvatar": "Upload Avatar",
         "addUser": "Add User",
+        "firstName": "First Name",
+        "lastName": "Last Name",
         "email": "Email Address",
+        "filterByName": "Filter by name",
+        "noUsersFound": "No Users Found",
         "upsert": {
             "generalDetails": "General Details",
             "createUser": "Create user",
@@ -479,15 +486,32 @@
         }
     },
     "chatbot": {
+        "title": "פתיחת תקלה חדשה",
+        "welcome": "Welcome",
+        "welcomeSub": "Please follow the following instructions in order to create a new fault",
+        "welcomeMessage": "Hi! My name is Libi, I will be helping you today!",
+        "assetNotFound": "I can't seem to find the asset related to the link that was clicked. Please contact your system administrator.",
+        "uploadImages": "Upload Photos",
+        "imagesSelected": "Photos seleced",
+        "noImages": "No Photos",
+        "yes": "Yes",
+        "no": "No",
         "notLoggedIn": {
-            "welcome": "Hi! My name is Libi, I will be helping you today!",
-            "notLoggedIn": "To get started, let's get you logged in.",
+            "requestSystem": "Which system is faulty?",
+            "requestDescription1": "Please provide me with a detailed description of the fault",
+            "requestDescription2": "Efficient description will include the fault's location and details about what exactly isn't working correctly",
+            "requestPhotos": "Would you like to add some photos of the fault?",
+            "faultOpenedSuccessfully": "Great! Fault was created successfully",
             "requestEmail": "What is your Email address?",
-            "emailNotFound": "I could not find your Email address in our repository. Would you like to sign with with that email?",
-            "verificationEmailSent": "Great! I sent you a verification Email containing a 6 digit code. Could you please provide me with that code?",
-            "verificationSuccess": "Alrigt, Verification Succeeded!",
-            "verificationFailed": "Oops, there is something wrong with the code you have provided me, would you like to insert the code again?",
-            "requestRestart": "Press the Start Over button if you would want restart the login process."     
-        }
+            "emailSent": "Great! I sent you an Email with the fault details and link",
+            "thankyou": "Thank you and have a great rest of the day!"
+        },
+        "requestFollow": "Would you like to follow the progress of this fault?",
+        "requestEmail": "What is your Email address?",
+        "assignedSuccessfully": "You were successfuly added to the fault's following list. You will be notified on changes occuring on the fault via Email",
+        "userNotFound": "I couldn't find any user with the Email address you have provided. Only registered users can follow faults. Please register into the system in order to recieve notifications about future faults."
+    },
+    "calender": {
+        "calender": "Calender"
     }
 }

@@ -3,10 +3,9 @@ import { Avatar, Backdrop, Button, Chip, Fade, FormControlLabel, FormHelperText,
 import { ClearRounded } from '@material-ui/icons';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import clsx from 'clsx';
-import heLocale from "date-fns/locale/he";
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getFullName } from '../../../api/genericApi';
+import { getFullName, getLocale } from '../../../api/genericApi';
 import { getAssetsSuggestions } from '../../../api/systemsApi';
 import { createUserOptions } from '../../../api/userApi';
 import { AuthContext } from '../../../context/AuthContext';
@@ -675,7 +674,7 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
                                         </Grid>
                                         <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
                                             
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={getLocale(lang.code)}>
                                                 <DatePicker
                                                     
                                                     format="dd/MM/yyyy"
@@ -714,7 +713,7 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
                                             </RadioGroup>
                                         </Grid>
                                         <Grid item xs={12} sm={6} md={6} lg={4} xl={4} className={classes.textContainer}>
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={getLocale(lang.code)}>
                                                 <DatePicker
                                                     format="dd/MM/yyyy"
                                                     label={t(`systemsModule.warrantyDetails.expiryDate`)}

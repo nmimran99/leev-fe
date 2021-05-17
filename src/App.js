@@ -24,8 +24,8 @@ function App() {
 
 	return (
 		<StylesProvider jss={jss}>
-			<div className="App" dir={lang.code === 'he' ? 'rtl' : 'ltr'}>
-				<ThemeProvider theme={theme}>
+			<div className="App" dir={lang.dir}>
+				<ThemeProvider theme={{...theme, direction: lang.dir}}>
 					<Router>
 						<Switch>
 							<InitialRouter exact path="/"></InitialRouter>

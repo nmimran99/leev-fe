@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import {  MuiPickersUtilsProvider, TimePicker } from '@material-ui/pickers';
 import heLocale from 'date-fns/locale/he';
 import React, {useContext} from 'react';
+import { getLocale } from '../../../api/genericApi';
 import { LanguageContext } from '../../../context/LanguageContext';
 
 export const CustomTimePicker = ({ data, handleChange, label }) => {
@@ -11,7 +12,7 @@ export const CustomTimePicker = ({ data, handleChange, label }) => {
 
 	return (
 	
-			<MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
+			<MuiPickersUtilsProvider utils={DateFnsUtils} locale={getLocale(lang.code)}>
 				<TimePicker
 					format={lang.timeonly}
 					label={label}

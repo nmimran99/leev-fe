@@ -94,7 +94,7 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '5px 25px 25px 5px',
         color: 'white',
         '& input': {
-            padding: '12.5px 14px',
+            padding: '12.5px 20px 12.5px 5px',
         },
         '& fieldset': {
             border: '0'

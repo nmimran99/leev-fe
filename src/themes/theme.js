@@ -77,7 +77,6 @@ export const theme = createMuiTheme({
 	typography: {
 		fontFamily: `"Rubik", "Roboto", "Helvetica", "Arial", sans-serif`,
 	},
-	direction: 'rtl',
 	palette: {
 		primary: {
 			main: 'rgba(0,0,0,0.5)',

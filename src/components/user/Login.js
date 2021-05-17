@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { grey } from '@material-ui/core/colors';
 import { 
@@ -19,6 +19,9 @@ import {
 import { Visibility, VisibilityOff, Error } from '@material-ui/icons';
 import colorSplash from '../../assets/images/grey.jpg';
 import { attemptToSignin, handleLS } from '../../api/userApi';
+import { useTranslation } from 'react-i18next';
+import { LanguageContext } from '../../context/LanguageContext';
+import { getLocalization } from '../../api/genericApi';
 
 
 export const Login = () => {
@@ -27,6 +30,8 @@ export const Login = () => {
     const history = useHistory();
     const location = useLocation();
     const loginButton = useRef();
+    const { t } = useTranslation();
+    const { setLang } = useContext(LanguageContext);
 
     const [ values, setValues ] = useState({
         email: '',
@@ -70,6 +75,8 @@ export const Login = () => {
             console.log(res.data)
             await handleLS('wb_token', 'set', res.data.token);
             await handleLS('wb_user', 'set', res.data.user);
+            await handleLS('wb_lang', 'set', { lang: res.data.user.lang });
+            setLang(getLocalization(res.data.user.lang))
             if (location.state) {
                 console.log(location.state.from.pathname)
                 history.push(location.state.from.pathname || '');
@@ -108,7 +115,7 @@ export const Login = () => {
 
     return (
         <Grid container alignItems='center' justify='center' className={classes.mainContainer} >
-            <Grid item alignItems='center' className={classes.loginContainer} xl={3} lg={3} md={6} sm={6} xs={11}>
+            <Grid item className={classes.loginContainer} xl={3} lg={3} md={6} sm={6} xs={11}>
                 <Box className={classes.bannerContainer} bgcolor='primary.main'>
                     <Typography className={classes.banner}>
                         Leev
@@ -116,30 +123,30 @@ export const Login = () => {
                 </Box>
                 <Container component='div' className={classes.headerContainer}>
                     <Typography className={classes.header}>
-                        התחברות משתמש
+                        {t("login.title")}
                     </Typography>
                 </Container>
                 <Container component='div' className={classes.inputsContainer}>
                     <FormControl variant='outlined' className={classes.textInput}>
-                        <InputLabel htmlFor='outlined-input-email'>אימייל</InputLabel>
+                        <InputLabel htmlFor='outlined-input-email'>{t("login.email")}</InputLabel>
                         <OutlinedInput
                             error={ errors.filter(e => e.field === 'email').length > 0 }
                             id="outlined-input-email"
                             type='text'
                             value={values.email}
                             onChange={handleChange('email')}
-                            labelWidth={40}
+                            labelWidth={70}
                         />
                     </FormControl>
                     <FormControl variant='outlined' className={classes.textInput}>
-                        <InputLabel htmlFor='outlined-input-password'>סיסמה</InputLabel>
+                        <InputLabel htmlFor='outlined-input-password'>{t("login.password")}</InputLabel>
                         <OutlinedInput
                             error={ errors.filter(e => e.field === 'password').length > 0 }
                             id='outlined-input-password' 
                             type={values.showPassword ? 'text' : 'password'}
                             value={ values.password }
                             onChange={handleChange('password')}
-                            labelWidth={40}
+                            labelWidth={70}
                             onKeyDown={checkEnter}
                             endAdornment={
                                 <InputAdornment position='end'>
@@ -182,7 +189,7 @@ export const Login = () => {
                     {
                         isLoading ? 
                         <CircularProgress color={'secondary'} size={30}/> :
-                        `כניסה`
+                        t("login.login")
                     }
                     
                     </Button>
@@ -191,7 +198,7 @@ export const Login = () => {
                     <Typography className={classes.forgotPass}>
                         <Link href='/passwordrecovery'
                         >
-                            שכחתי סיסמה
+                            {t("login.forgotPassword")}
                         </Link> 
                     </Typography>
                 </Container>

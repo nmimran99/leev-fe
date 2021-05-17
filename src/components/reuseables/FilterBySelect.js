@@ -78,7 +78,7 @@ export const FilterBySelect = ({ filterField, placeholder, filterIcon, optionsFu
                             onClick={event => setAnchorEl(event.currentTarget)}
                             startIcon={filterIcon}
                         >
-                            { value ? createTag(value) : <label style={{ padding: '0 15px', cursor: 'pointer' }}>{placeholder}</label>}
+                            { value ? createTag(value) : <label className={classes.searchLabel}>{placeholder}</label>}
                         </Button>
                         <Menu
                             anchorEl={anchorEl}
@@ -205,5 +205,11 @@ const useStyles = makeStyles(theme => ({
     },
     tagRemove: {
         fontSize: '16px'
+    },
+    searchLabel: {
+        padding: '5px 20px 5px 10px', 
+        cursor: 'pointer',
+        color: 'rgba(255,255,255,0.5)',
+        fontSize: '15px' 
     }
 }));

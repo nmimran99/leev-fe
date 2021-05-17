@@ -88,7 +88,7 @@ export const Users = () => {
 	) : (
 		<Grid container className={classes.usersContainer}>
 			<Grid item xs={10} className={classes.gridSearch}>
-				<SearchBox placeholder={'משהו'} filterField={'sss'} returnValue={handleSearch} />
+				<SearchBox placeholder={t("users.filterByName")} filterField={'sss'} returnValue={handleSearch} />
 			</Grid>
 			<Can module="users" action="create">
 				<Grid item xs={2} className={classes.controls}>
@@ -103,7 +103,7 @@ export const Users = () => {
 			<Grid item xs={12}>
 				<List className={classes.userList}>
 					{!users.length ? (
-						<div>no users</div>
+						<div className={classes.noUsersFound}>{t("users.noUsersFound")}</div>
 					) : (
 						users.map((u, i) => (
 							<ListItem className={classes.listRow} key={i}>
@@ -248,4 +248,12 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: 'center',
 		padding: '20px',
 	},
+	noUsersFound: {
+		background: 'black',
+		borderRadius: '50px',
+		padding: '10px 30px',
+		color: 'white',
+		width: 'fit-content',
+		margin: '10px'
+	}
 }));

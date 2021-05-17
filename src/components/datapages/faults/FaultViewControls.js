@@ -23,7 +23,7 @@ export const FaultViewControls = ({
 	}, [fault]);
 
 	const openInNewWindow = () => {
-		window.open(`http://localhost:3000/workspace/faults/${fault.faultId}`);
+		window.open(`${process.env.REACT_APP_FRONTEND_URL}/workspace/faults/${fault.faultId}`);
 	};
 
 	return (

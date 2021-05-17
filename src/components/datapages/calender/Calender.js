@@ -28,9 +28,12 @@ export const Calender = ({}) => {
 
 	return (
 		<Grid container className={classes.mainContainer} justify='center'>
-            <div className={classes.pageModule}>
-                    {t("calender.calender")}
-            </div>
+			 <Grid item xs={12}>
+				<div className={classes.pageModule}>
+						{t("calender.calender")}
+				</div>
+			 </Grid>
+           
 			<table className={classes.bracketsContainer}>
 				<thead className={classes.tableHeader}>
 					<CalenderHeaderRow />
