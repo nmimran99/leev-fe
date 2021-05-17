@@ -34,7 +34,6 @@ export const TaskViewControls = ({
 
 	useEffect(() => {
 		setData(task);
-		console.log(task);
 	}, [task]);
 
 	const openInNewWindow = () => {

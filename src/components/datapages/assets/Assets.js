@@ -21,7 +21,6 @@ export const Assets = () => {
 
     useEffect(() => {
         if(!isLoading) return;
-        console.log('calling')
         getAssets(query)
         .then(res => {
             if (res) {
@@ -51,9 +50,7 @@ export const Assets = () => {
                 if (res) {
                     setAlertDialog(null)
                     setIsLoading(true);
-                } else {
-                    console.log(res)
-                }
+                } 
             },
             handleCancel: () => setAlertDialog(null),
             text: `${t("assetsModule.deleteConfirmation")} ${getFullAddress(data)}?`,

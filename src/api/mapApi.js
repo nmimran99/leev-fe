@@ -14,7 +14,6 @@ export const getMapData = async (filters) => {
             }
         );
         if (res) {
-            console.log(res.data)
             let assets = res.data.assets;
             res.data.assets.forEach((a,i) => {
                 assets[i].faultCount = res.data.faults.filter(f => {

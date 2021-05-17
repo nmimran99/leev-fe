@@ -96,7 +96,7 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
         getAssetsSuggestions()
         .then(data => {
             if (data.length){
-                console.log(data)
+            
                 setAssets(data);
             }
         })
@@ -127,7 +127,6 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
     };
 
     const handleChange = field => event => {
-        console.log(event.target.value)
         setDetails({
             ...details,
             [field]: event.target.value
@@ -145,7 +144,7 @@ export const UpsertSystem = ({ handleClose, handleSave, handleUpdate, systemId, 
 
     const handleLinkedRemove = (realtedUser) => event => {
         event.stopPropagation();
-        console.log('clicked')
+
         setDetails({ ...details, 
             relatedUsers: details.relatedUsers.filter(lu => lu !== realtedUser)
         })

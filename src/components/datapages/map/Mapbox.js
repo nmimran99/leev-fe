@@ -91,7 +91,6 @@ export const Mapbox = ({ data, setData }) => {
 					),
 				};
 			});
-			console.log(reqData);
 			setData(reqData);
 			return;
 		}

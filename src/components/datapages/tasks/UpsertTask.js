@@ -66,7 +66,6 @@ export const UpsertTask = ({ handleClose, handleSave, handleUpdate, taskId}) => 
             }
             getTask(taskId, true)        
             .then(data => {
-                console.log(data)
                 return Promise.all([loadSystemOptions(data.asset), Promise.resolve(data)]) 
             })
             .then(res => {

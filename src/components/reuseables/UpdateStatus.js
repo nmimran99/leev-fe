@@ -20,7 +20,6 @@ export const UpdateStatus = ({ handleClose, handleSave, isOpen, currentStatus, t
     useEffect(() => {
         getStatusList('faults')
         .then(data => {
-            console.log(data)
             if (currentStatus) {
                 setSelectedStatus(currentStatus._id)
             }

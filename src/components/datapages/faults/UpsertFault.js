@@ -40,7 +40,7 @@ export const UpsertFault = ({ handleClose, handleSave, handleUpdate, faultId}) =
     });
 
     useEffect(() => {
-        console.log(details)
+
     }, [details])
 
     useEffect(() => {

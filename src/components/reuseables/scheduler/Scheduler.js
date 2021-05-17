@@ -73,7 +73,6 @@ export const Scheduler = ({ scData, handleSave, handleClose }) => {
 	};
 
 	const handleConfirm = async () => {
-		console.log(schedules)
 		await handleSave(schedules);
 		handleClose();
 	}

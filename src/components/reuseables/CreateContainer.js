@@ -61,7 +61,7 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
     const handleSaveFault = details => {
         createNewFault(details)
         .then(res => {
-            console.log(res)
+   
             if (res.status === 403) {
                 setSnackbar(res);
                 handleClose();  
@@ -78,7 +78,7 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
     }
 
     const handleSaveTask = details => {
-        console.log(details)
+
         createNewTask(details)
         .then(res => {
             if (res.status === 403) {

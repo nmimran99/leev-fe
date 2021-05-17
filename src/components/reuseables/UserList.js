@@ -38,7 +38,6 @@ export const UserList = ({
 	}, [users]);
 
 	useEffect(() => {
-		console.log(alertDialog);
 	}, [alertDialog]);
 
 	const toggleHover = (index) => (event) => {

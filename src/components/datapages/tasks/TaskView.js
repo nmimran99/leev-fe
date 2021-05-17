@@ -59,7 +59,6 @@ export const TaskView = () => {
 	useEffect(() => {
 		getTask(taskId)
 		.then((res) => {
-			console.log(res)
 			if (!res) {
 				history.push('/workspace/tasks');
 			} else if (res.status === 403) {

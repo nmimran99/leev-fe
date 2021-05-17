@@ -85,7 +85,7 @@ export const UpsertAsset = ({ handleClose, handleSave, assetId, handleUpdate }) 
             if ( mode === 'create') {
                 handleSave(details);
             } else {
-                console.log(details)
+                
                 handleUpdate(details)
             }
             

@@ -72,13 +72,12 @@ export const Login = () => {
                 message: 'Internal server error. Please contact the system administrator.'
             }]); 
         } else if (res.status === 200) {
-            console.log(res.data)
+
             await handleLS('wb_token', 'set', res.data.token);
             await handleLS('wb_user', 'set', res.data.user);
             await handleLS('wb_lang', 'set', { lang: res.data.user.lang });
             setLang(getLocalization(res.data.user.lang))
             if (location.state) {
-                console.log(location.state.from.pathname)
                 history.push(location.state.from.pathname || '');
             } else {
                 history.push('/workspace/assets');

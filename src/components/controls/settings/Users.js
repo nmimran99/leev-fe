@@ -28,7 +28,7 @@ export const Users = () => {
 		if (!isLoading) return;
 		getUserList()
 			.then((res) => {
-				console.log(res);
+			
 				if (res.status === 403) {
 					setSnackbar(res);
 					setIsLoading(false);

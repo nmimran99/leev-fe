@@ -36,7 +36,6 @@ export const Map = ({ setData }) => {
 	const [markers, setMarkers] = useState([]);
 
 	useEffect(() => {
-		console.log(mapData);
 		if (mapData.assets) {
 			setMarkers(mapData.assets);
 		}

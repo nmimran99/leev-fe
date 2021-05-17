@@ -41,7 +41,6 @@ export const ScheduleItem = ({
 	};
 
 	const handleChange = (fieldName, payload) => (event) => {
-		console.log(fieldName, payload);
 		setSchedule({
 			...schedule,
 			[fieldName]: payload ? payload : event.target.value,

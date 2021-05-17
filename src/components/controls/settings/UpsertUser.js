@@ -71,7 +71,7 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 			})
 			.then((res) => {
 				if (!res) return;
-				console.log(res);
+				
 				setDetails({
                     ...res,
                     role: res.role._id

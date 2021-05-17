@@ -17,7 +17,6 @@ export const getNotifications = async (page) => {
 }
 
 export const generateNotificationBody = (data) => {
-    console.log(data)
     let text = i18next.t(`notificationsModule.${data.actionType}.body`);
     let fullName = getFullName(data.actionBy);
     if (text.includes('%%name%%')) {

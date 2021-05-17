@@ -108,7 +108,6 @@ export const getLabelsByLanguage = async (lang) => {
 		{ lang }
 	);
 	if (res) {
-		console.log(res.data);
 		return res.data;
 	}
 };

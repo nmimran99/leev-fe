@@ -19,7 +19,6 @@ export const FaultViewControls = ({
 
 	useEffect(() => {
         setData(fault);
-        console.log(fault)
 	}, [fault]);
 
 	const openInNewWindow = () => {

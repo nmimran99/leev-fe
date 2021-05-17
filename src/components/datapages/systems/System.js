@@ -67,7 +67,7 @@ export const System = ({ systemData }) => {
 				if (res.status === 403) {
 					setSnackbar(res)
 				} else if (res) {
-					console.log(res);
+			
 					setData(res);
 				}
 			})

@@ -147,7 +147,6 @@ export const checkUserAuthentication = {
 				return true;
 			}
 			this.data.authenticated = true;
-			console.log(res)
 			let data = await assignUserToFault(res.userId, vault._id);
 			if (data) {
 				return true;
@@ -225,13 +224,11 @@ export const thankyou = {
 
 export const getNextScenario = (currentScenario, auth) => {
 	return new Promise((resolve, reject) => {
-		console.log('type:', currentScenario.type)
 		if (currentScenario.type === 'openFault') {
 			resolve(followFault);
 		};
 		if (currentScenario.type === 'followFault') {
 			if (currentScenario.data.shouldFollow) {
-				console.log(currentScenario.data.shouldFollow)
 				if (currentScenario.data.assignStatus) {
 					resolve(userAssigned);
 				} else {

@@ -16,7 +16,6 @@ export const attemptToSignin = async (payload) => {
 export const authenticate = async (token) => {
     try {
         let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/reloginUser`, token);
-        console.log(res)
         if (res.status === 200) {
             await handleLS('wb_token', 'set', res.data.token);
             axios.defaults.headers.common['token'] = localStorage.getItem('wb_token');
@@ -151,7 +150,6 @@ export const uploadAvatar = async (avatar) => {
 
 export const filterUsers = async (users, searchText) => {
    const sArray = searchText.split(' ');
-   console.log(sArray)
     const filteredUsers = users.filter(u => 
         sArray.some(sa => u.firstName.includes(sa) ||
         u.lastName.includes(sa) ||

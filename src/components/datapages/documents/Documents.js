@@ -32,7 +32,6 @@ export const Documents = () => {
 	useEffect(() => {
 		getDocuments(auth.user.tenant, query)
 			.then((data) => {
-				console.log(data);
 				setDocs(data);
 			})
 			.finally(() => {
