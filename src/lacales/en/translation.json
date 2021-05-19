@@ -513,5 +513,36 @@
     },
     "calender": {
         "calender": "Calender"
+    },
+    "roles": {
+        "filterByName": "Filter by role name",
+        "noRolesFound": "No Roles Found",
+        "addRole": "Create a new role",
+        "upsert": {
+            "editPermissions": "Edit Role Permissions",
+            "createRole": "Create Role"
+        },
+        "faults": "Faults",
+        "tasks" : "Tasks",
+        "roles": "Roles",
+        "systems": "Systems",
+        "assets" : "Assets",
+        "documents": "Documents",
+        "users": "Users",
+        "map": "Map",
+        "read": "Read",
+        "create": "Create",
+        "update": "Update",
+        "delete": "Delete",
+        "changeOwner": "Change Owner",
+        "changeRelatedUsers": "Change Related Users",
+        "changeStatus": "Change Status",
+        "comment": "Comment",
+        "changeSchedule": "Change Schedules",
+        "viewUserPage": "View User Profiles",
+        "noPermission": "No Permission",
+        "onlyMe": "Only Related Objects",
+        "mineAndOthers": "Everyone",
+        "roleName": "Role Name"
     }
 }

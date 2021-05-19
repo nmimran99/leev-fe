@@ -44,7 +44,7 @@ export const TasksList = ({ repeatable }) => {
 				<Fade in={!isLoading}>
 					<Grid container className={classes.listContainer}>
 						{tasks.map((task, i) => (					
-							<TaskMinified data={task} key={i} />
+							<TaskMinified data={task} key={i}/>
 						))}
 					</Grid>
 				</Fade>

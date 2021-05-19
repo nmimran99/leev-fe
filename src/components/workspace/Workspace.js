@@ -96,12 +96,11 @@ export const Workspace = ({}) => {
 
 const useStyles = makeStyles((theme) => ({
 	mainContainer: {
-		height: '100vh',
+		height: '100%',
 		background: `url(${greyJpg})`,
 		zIndex: 2,
 		backgroundRepeat: 'no-reaper',
 		backgroundSize: 'cover',
-		overflowY: 'overlay',
 		[theme.breakpoints.down('sm')]: {
 			'&::-webkit-scrollbar': {
 				display: 'none',
@@ -110,11 +109,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 
 	mainData: {
-		minHeight: 'calc(100vh - 64px)',
+		height: 'calc(100% - 64px)',
 		background: 'rgba(0,0,0,0.4)',
 		backdropFilter: 'blur(22px)',
 		boxShadow: 'rgba(0,0,0,0.4) 0px 0px 3px 2px',
-
+		overflowY: 'overlay',
 		[theme.breakpoints.down('sm')]: {
 			border: 'none',
 			borderRadius: 0,

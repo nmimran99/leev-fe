@@ -204,7 +204,7 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: 'column',
 		background: 'rgba(0,0,0,0.2)',
 		[theme.breakpoints.down('sm')]: {
-			width: '100vw'
+			width: '100vw'		
 		}
 	},
 	topContainer: {

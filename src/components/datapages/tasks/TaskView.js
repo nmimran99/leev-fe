@@ -410,7 +410,7 @@ const useStyles = makeStyles((theme) => ({
 		overflowY: 'overlay',
 		height: '100%',
 		[theme.breakpoints.down('sm')]: {
-			height: 'auto',
+			height: 'calc(100% - 64px)',
 		},
 	},
 	rightContainer: {
@@ -473,6 +473,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: '10px 30px',
 		[theme.breakpoints.down('sm')]: {
 			alignItems: 'center',
+			padding: '10px 15px',
 		},
 	},
 	owner: {

@@ -44,3 +44,103 @@ export const getRolesSuggestions = (data) => {
 		resolve([...data.map(r => ({ name: r.roleName, value: r._id}))]);	
 	})
 }
+
+export const filterRoles = async (roles, searchText) => {
+	const sArray = searchText.split(' ');
+	 const filteredRoles = roles.filter(r => 
+		 sArray.some(sa => r.roleName.includes(sa) ||
+		 r.roleName.includes(sa)  
+	 ));
+	 return Promise.resolve(filteredRoles);
+}
+
+export const getRole = async (roleId) => {
+	try {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/roles/getRole`, { roleId } ,{
+            headers: {
+                module: 'roles',
+                requesttype: 'read'
+            }
+        });
+        if (res.status === 200) {
+            return res.data;
+        }
+    } catch(e) {
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+    }
+}
+
+export const getInitialPermissionsObject = () => {
+	return [
+		{
+			module: "faults",
+			read: 0,
+			create: 0,
+			update: 0,
+			delete: 0,
+			changeOwner: 0,
+			changeRelatedUsers: 0,
+			changeStatus: 0,
+			comment: 0
+		},
+		{
+			module: "tasks",
+			read: 0,
+			create: 0,
+			update: 0,
+			delete: 0,
+			changeOwner: 0,
+			changeRelatedUsers: 0,
+			changeStatus: 0,
+			changeSchedule: 0,
+			comment: 0
+		},
+		{
+			module: "assets",
+			read: 0,
+			create: 0,
+			update: 0,
+			delete: 0,
+			changeOwner: 0
+		},
+		{
+			module: "systems",
+			read: 0,
+			create: 0,
+			update: 0,
+			delete: 0,
+			changeOwner: 0,
+			changeRelatedUsers: 0
+		},
+		{
+			module: "documents",
+			read: 0,
+			create: 0,
+			update: 0,
+			delete: 0
+		},
+		{
+			module: "users",
+			read: 0,
+			create: 0,
+			update: 0,
+			delete: 0,
+			viewUserPage: 0
+		},
+		{
+			module: "roles",
+			read: 0,
+			create: 0,
+			update: 0,
+			delete: 0,
+			viewUserPage: 0
+		},
+		{
+			module: "map",
+			read: 0
+		}
+	]
+}

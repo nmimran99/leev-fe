@@ -30,7 +30,7 @@ export const MapView = () => {
     };
     
     return (
-         <Grid container justify='center'>
+         <Grid container justify='center' className={classes.mapContainer}>
             <Grid container className={classes.mapGridItem}>
                 {
                     Boolean(listArray.length) &&
@@ -56,9 +56,14 @@ export const MapView = () => {
 
 
 const useStyles = makeStyles(theme => ({
+    mapContainer: {
+        width: '100%',
+        height: '100%',
+        position: 'relative'
+    },
     mapGridItem: {
         width: '100%',
-        height: 'calc(100vh - 64px)',
+        height: '100%',
         position: 'relative'
     },
     gridControls: {
@@ -73,7 +78,7 @@ const useStyles = makeStyles(theme => ({
         zIndex: 3,
         background: 'rgba(0,0,0,0.3)',
         backdropFilter: 'blur(40px)',
-        height: '100%',
+        height: '100%'
     },
     filterBtn: {
         color: 'white',

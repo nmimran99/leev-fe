@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import { LanguageContext } from '../../../context/LanguageContext';
+import { RolesAndPermissions } from './RolesAndPermissions';
 import { SettingsMenu } from './SettingsMenu';
 import { UserProfile } from './UserProfile';
 import { Users } from './Users';
@@ -60,6 +61,10 @@ export const Settings = ({ open, handleClose}) => {
                                         {
                                             active === 'users' &&
                                             <Users />
+                                        }
+                                        {
+                                            active === 'permissions' &&
+                                            <RolesAndPermissions />
                                         }
 
                                     </Grid>

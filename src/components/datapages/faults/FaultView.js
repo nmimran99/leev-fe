@@ -250,7 +250,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 				</Grid>
 				<Grid
 					item
-					xs={8}
+					xs={12}
 					sm={12}
 					md={4}
 					lg={3}
@@ -358,6 +358,7 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: '50px',
 		boxShadow: 'rgba(0,0,0,0.25) 0 0 5px 2px',
 		textAlign: 'center',
+		whiteSpace: 'nowrap'
 	},
 	title: {
 		color: 'white',
@@ -382,6 +383,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: '10px 30px',
 		[theme.breakpoints.down('sm')]: {
 			alignItems: 'center',
+			padding: '10px 15px',
 		},
 	},
 	owner: {
@@ -396,6 +398,9 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		padding: '20px 30px 0px 30px',
+		[theme.breakpoints.down('sm')]: {
+			padding: '20px 15px 0px',
+		},
 	},
 	controlsGriditem: {
 		display: 'flex',

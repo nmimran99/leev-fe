@@ -60,7 +60,7 @@ export const Assets = () => {
 
 
     return (
-        <div>
+        <React.Fragment>    
             <Grid container justify='center'>
                 <Grid item xs={12}>
                     <div className={classes.pageModule}>
@@ -97,7 +97,7 @@ export const Assets = () => {
                 />
             }
             
-        </div>
+        </React.Fragment>
             
     )
 }

@@ -513,5 +513,36 @@
     },
     "calender": {
         "calender": "לוח שנה"
+    },
+    "roles": {
+        "filterByName": "סנן על פי שם תפקיד",
+        "noRolesFound": "לא נמצאו תפקידים",
+        "addRole": "צור תפקיד חדש",
+        "upsert": {
+            "editPermissions": "ערוך הרשאות תפקיד",
+            "createRole": "יצירת תפקיד"
+        },
+        "faults": "תקלות",
+        "tasks" : "משימות",
+        "roles": "תפקידים",
+        "systems": "מערכות",
+        "assets" : "נכסים",
+        "documents": "מסמכים",
+        "users": "משתמשים",
+        "map": "מפה",
+        "read": "קריאה",
+        "create": "יצירה",
+        "update": "עידכון",
+        "delete": "מחיקה",
+        "changeOwner": "שינוי ממונה",
+        "changeRelatedUsers": "שינוי משתמשים מקושרים",
+        "changeStatus": "שינוי סטטוס",
+        "comment": "תגובה",
+        "changeSchedule": "שינוי מועדים",
+        "viewUserPage": "צפייה בפרופיל משתמש",
+        "noPermission": "ללא הרשאה",
+        "onlyMe": "רק לפריטים מקושרים",
+        "mineAndOthers": "לכולם",
+        "roleName": "שם תפקיד"
     }
 }
