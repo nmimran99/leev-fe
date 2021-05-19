@@ -178,9 +178,10 @@ const useStyles = makeStyles((theme) => ({
 		position: 'absolute',
 		top: '64px',
 		left: '0px',
-		height: '100vh',
+		height: 'calc(100% - 64px)',
+		overflowY: 'overlay',
 		[theme.breakpoints.down('sm')]: {
-			height: '100%',
+			height: 'calc(100% - 64px)',
 			overflow: 'scroll',
 			width: '100vw',
 			left: 0,

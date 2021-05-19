@@ -21,10 +21,7 @@ export const TaskMinified = ({ data, asList }) => {
 	}, [data]);
 
 	return (
-		<Link
-			to={`/workspace/tasks/${task.taskId}`}
-			style={{ textDecoration: "none" }}
-		>
+		
 			<Grid
 				item
 				xs={12}
@@ -32,6 +29,10 @@ export const TaskMinified = ({ data, asList }) => {
 				className={classes.gridItem}
 				style={{ padding: asList || matches ? 0 : "20px" }}
 			>
+				<Link
+			to={`/workspace/tasks/${task.taskId}`}
+			style={{ textDecoration: "none" }}
+		>
 				<Grid
 					container
 					justify="space-between"
@@ -97,8 +98,9 @@ export const TaskMinified = ({ data, asList }) => {
 						</div>
 					</Grid>
 				</Grid>
+				</Link>
 			</Grid>
-		</Link>
+		
 	);
 };
 

@@ -7,7 +7,26 @@ import { StatusTag } from "../../reuseables/StatusTag";
 import { UserItem } from "../../user/UserItem";
 import { FaultLink } from "./FaultLink";
 
-export const FaultMinified = ({ data }) => {
+const LinkWrapper = ({ withLink, faultId, children}) => {
+	if (withLink) {
+		return (
+			<Link
+			to={`/workspace/faults/${faultId}`}
+			style={{ textDecoration: "none" }}
+		>
+			{children}
+		</Link>
+		)
+	}
+	return (
+		<React.Fragment>
+			{children}
+		</React.Fragment>
+	)
+}
+
+
+export const FaultMinified = ({ data, withLink }) => {
 	const classes = useStyles();
 	const [fault, setFault] = useState(data);
 
@@ -15,12 +34,11 @@ export const FaultMinified = ({ data }) => {
 		setFault(data);
 	}, [data]);
 
+	
+
 	return (
-		<Link
-			to={`/workspace/faults/${fault.faultId}`}
-			style={{ textDecoration: "none" }}
-		>
-			<Grid container className={classes.container} alignItems="flex-start">
+			<LinkWrapper withLink={withLink} faultId={fault.faultId} >
+				<Grid container className={classes.container} alignItems="flex-start">
 				<Grid
 					container
 					justify="space-between"
@@ -51,7 +69,9 @@ export const FaultMinified = ({ data }) => {
 					</Grid>
 				</Grid>
 			</Grid>
-		</Link>
+			</LinkWrapper>
+			
+	
 	);
 };
 

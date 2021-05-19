@@ -164,7 +164,7 @@ export const MarkerData = ({ markersData, handleClose }) => {
 						{faults.map((mdf, i) => {
 							return (
 								<div className={classes.miniFault}>
-									<FaultMinified data={mdf} />
+									<FaultMinified data={mdf} withLink={true} />
 								</div>
 							);
 						})}

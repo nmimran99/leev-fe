@@ -13,12 +13,7 @@ export const FaultBlock = ({ data }) => {
         <div 
             className={clsx(classes.faultContainer)}
         >
-            <Link
-                to={`/workspace/faults/${data.faultId}`}
-                style={{ textDecoration: 'none' }}
-            >
-                <FaultMinified data={data}  />
-            </Link>
+            <FaultMinified data={data} withLink={true} />
         </div>                               
     )
 }
