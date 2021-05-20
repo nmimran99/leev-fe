@@ -146,7 +146,8 @@ const useStyles = makeStyles(theme => ({
         marginTop: '55px',
         background: 'rgba(0,0,0,0.5)',
         backdropFilter: 'blur(10px)',
-        color: 'white'
+        color: 'white',
+        height: '200px'
     },
     menuitem: {
         minWidth: '200px'
