@@ -32,7 +32,7 @@ export const Permission = ({ isBoolean, module, text, value, handleValueChange})
 
     const marksPoints = marks.map(m => {
         if (isBoolean && m.value === 1) {
-            return;
+            return false;
         }
         return m;
     })
@@ -64,7 +64,7 @@ export const Permission = ({ isBoolean, module, text, value, handleValueChange})
                         value={val}
                         getAriaValueText={textValue}
                         aria-labelledby="discrete-slider-small-steps"
-                        step={1}
+                        step={isBoolean ? 2 : 1}
                         marks={marksPoints}
                         min={0}
                         max={2}

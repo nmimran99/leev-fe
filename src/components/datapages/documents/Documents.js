@@ -8,7 +8,7 @@ import {
 	downloadDocument,
 	updateDocumentDetails,
 } from '../../../api/documentsApi';
-import { getSuccessMessage } from '../../../api/genericApi';
+import { getServerError, getSuccessMessage } from '../../../api/genericApi';
 import { AuthContext } from '../../../context/AuthContext';
 import { SnackbarContext } from '../../../context/SnackbarContext';
 import { AlertDialog } from '../../reuseables/AlertDialog';
@@ -31,8 +31,15 @@ export const Documents = () => {
 
 	useEffect(() => {
 		getDocuments(auth.user.tenant, query)
-			.then((data) => {
-				setDocs(data);
+			.then((res) => {
+				if (!res || res.status === 403) {
+					return [];
+				}
+				if (res.status === 500) {
+					setSnackbar(getServerError());
+					return;
+				}
+				setDocs(res);
 			})
 			.finally(() => {
 				setIsLoading(false);

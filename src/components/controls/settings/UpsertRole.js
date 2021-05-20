@@ -61,12 +61,37 @@ export const UpsertRole = ({ handleClose, handleSave, handleUpdate, roleId }) =>
         console.log(permissions)
     }, [permissions])
 
+	const validateFields = () => {
+		return new Promise((resolve, reject) => {
+			let errList = [];
+			if (!roleName) {
+				errList.push({ field: 'roleName', text: t('errors.isRequired') });
+			}
+		
+			if (errList.length) {
+				setErrors(errList);
+				resolve(false);
+			}
+			resolve(true);
+		});
+	};
+
 	const handleConfirm = () => {
-        if (mode === 'update') {
-            handleUpdate({ roleId, permissions});
-            return;
-        }
-        handleSave(permissions);		
+		validateFields()
+		.then(res => {
+			if (!res) throw '';
+			if (mode === 'update') {
+				handleUpdate(roleId, roleName, permissions);
+				return;
+			}
+			handleSave(roleName, permissions);		
+		})
+		.then(handleClose)
+		.catch(() => {
+			return;
+		})
+		
+        
 	};
 
 	const handleSliderChange = (module, field, value) => {
@@ -132,12 +157,21 @@ export const UpsertRole = ({ handleClose, handleSave, handleUpdate, roleId }) =>
 												<TextField
 													variant={'outlined'}
 													label={t(`roles.roleName`)}
-											
+													error={errors.filter((e) => e.field === `roleName`).length > 0}
 													value={roleName}
 													onChange={e => setRoleName(e.target.value)}
 													className={classes.textField}
-									
-													
+													helperText={
+														errors.filter((e) => e.field === `roleName`).length > 0 &&
+														t('errors.isRequired')
+													}
+													FormHelperTextProps={{
+														style: {
+															color:
+																errors.filter((e) => e.field === `roleName`).length > 0 &&
+																'rgb(244, 67, 54)',
+														},
+													}}
 													inputProps={{
 														maxLength: 60,
 													}}
@@ -158,8 +192,9 @@ export const UpsertRole = ({ handleClose, handleSave, handleUpdate, roleId }) =>
                                                         <Grid item xs={12} className={classes.textContainer}>
                                                             {Object.keys(r).map(rp => {
                                                                 if (rp === 'module') return;
+																const isBoolean = ['create', 'delete'].includes(rp);
                                                                 return (
-                                                                    <Permission isBoolean={false} module={r['module']} text={rp} value={r[rp]} handleValueChange={handleSliderChange} />
+                                                                    <Permission isBoolean={isBoolean} module={r['module']} text={rp} value={r[rp]} handleValueChange={handleSliderChange} />
                                                                 )
                                                             })}
                                                         </Grid>
@@ -198,12 +233,12 @@ const useStyles = makeStyles((theme) => ({
 		height: 'fit-content',
 	},
     permissionList: {
-        height: 'calc(80vh - 128px)',
+        height: 'calc(80vh - 138px)',
         overflowY: 'overlay',
         padding: '10px ',
         [theme.breakpoints.down('sm')] :{
             padding: '10px 0px',
-            height: 'calc(81vh - 128px)',
+            height: 'calc(81vh - 138px)',
         }
     },
 	paper: {
@@ -250,7 +285,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	section: {
 		margin: '10px 5px',
-        padding: '40px 10px 50px',
+        padding: '10px 10px 50px',
         borderBottom: '1px solid rgba(255,255,255,0.6)'
 	},
 	sectionTitle: {

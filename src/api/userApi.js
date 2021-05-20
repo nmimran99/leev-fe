@@ -101,7 +101,7 @@ export const getUserDataById = async (userId) => {
 export const createUserOptions = () => {
     return getUserList()
     .then(data => {
-        if (!data) {
+        if (!data || [403,500].includes(data.status)) {
             return [];
         }
         let userList = [];

@@ -38,6 +38,51 @@ export const getRoles = async () => {
     }
 }
 
+export const createRole = async (roleName, permissions) => {
+    try {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/roles/createRole`, {
+			roleName,
+			permissions
+		} , {
+            headers: {
+                module: 'roles',
+                requesttype: 'create'
+            }
+        });
+        if (res.status === 200) {
+            return res.data;
+        }
+    } catch(e) {
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+    }
+}
+
+export const updateRole = async (roleId, roleName, permissions) => {
+    try {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/roles/updateRole`, {
+			roleId,
+			roleName,
+			permissions
+		} , {
+            headers: {
+                module: 'roles',
+                requesttype: 'update'
+            }
+        });
+        if (res.status === 200) {
+            return res.data;
+        }
+    } catch(e) {
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+    }
+}
+
 export const getRolesSuggestions = (data) => {
 	if (!data) return;
 	return new Promise((resolve, reject) => {

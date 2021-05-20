@@ -42,41 +42,45 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 						</IconButton>
 					</div>
 					<List className={classes.list}>
-						<ListItem
-							button={true}
-							className={classes.listItem}
-							onClick={toggleAdd('asset')}
-						>
-							<ListItemIcon className={classes.listItemIcon}>
-								{/* <AddLocationOutlinedIcon
-									className={classes.icon}
-								/> */}
-								<Icon classes={{root: classes.iconRoot}}>
-								<img src="https://img.icons8.com/ios-filled/25/4a90e2/warehouse.png"/>
-								</Icon>
-							</ListItemIcon>
-							<ListItemText
-								primary={t('createMenu.addAsset')}
-								className={classes.listItemText}
-								disableTypography={true}
-							/>
-						</ListItem>
-						<ListItem
-							button={true}
-							className={classes.listItem}
-							onClick={toggleAdd('system')}
-						>
-							<ListItemIcon className={classes.listItemIcon}>
-								<Icon classes={{root: classes.iconRoot}}>
-                            		<img src="https://img.icons8.com/ios-filled/25/4a90e2/system-task.png"/>
-								</Icon>
-							</ListItemIcon>
-							<ListItemText
-								primary={t('createMenu.addSystem')}
-								className={classes.listItemText}
-								disableTypography={true}
-							/>
-						</ListItem>
+						<Can module='assets' action='create'>
+							<ListItem
+								button={true}
+								className={classes.listItem}
+								onClick={toggleAdd('asset')}
+							>
+								<ListItemIcon className={classes.listItemIcon}>
+									{/* <AddLocationOutlinedIcon
+										className={classes.icon}
+									/> */}
+									<Icon classes={{root: classes.iconRoot}}>
+									<img src="https://img.icons8.com/ios-filled/25/4a90e2/warehouse.png"/>
+									</Icon>
+								</ListItemIcon>
+								<ListItemText
+									primary={t('createMenu.addAsset')}
+									className={classes.listItemText}
+									disableTypography={true}
+								/>
+							</ListItem>
+						</Can>
+						<Can module='systems' action='create'>
+							<ListItem
+								button={true}
+								className={classes.listItem}
+								onClick={toggleAdd('system')}
+							>
+								<ListItemIcon className={classes.listItemIcon}>
+									<Icon classes={{root: classes.iconRoot}}>
+										<img src="https://img.icons8.com/ios-filled/25/4a90e2/system-task.png"/>
+									</Icon>
+								</ListItemIcon>
+								<ListItemText
+									primary={t('createMenu.addSystem')}
+									className={classes.listItemText}
+									disableTypography={true}
+								/>
+							</ListItem>
+						</Can>
 						<Can module="tasks" action="create">
 							<ListItem
 								button={true}
@@ -114,23 +118,24 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 								/>
 							</ListItem>
 						</Can>
-
-						<ListItem
-							button={true}
-							className={classes.listItem}
-							onClick={toggleAdd('document')}
-						>
-							<ListItemIcon className={classes.listItemIcon}>
-							<Icon classes={{root: classes.iconRoot}}>
-                            		<img src="https://img.icons8.com/pastel-glyph/25/4a90e2/regular-document--v2.png"/>
-								</Icon>
-							</ListItemIcon>
-							<ListItemText
-								primary={t('createMenu.addDocument')}
-								className={classes.listItemText}
-								disableTypography={true}
-							/>
-						</ListItem>
+						<Can module='documents' action='create'>
+							<ListItem
+								button={true}
+								className={classes.listItem}
+								onClick={toggleAdd('document')}
+							>
+								<ListItemIcon className={classes.listItemIcon}>
+								<Icon classes={{root: classes.iconRoot}}>
+										<img src="https://img.icons8.com/pastel-glyph/25/4a90e2/regular-document--v2.png"/>
+									</Icon>
+								</ListItemIcon>
+								<ListItemText
+									primary={t('createMenu.addDocument')}
+									className={classes.listItemText}
+									disableTypography={true}
+								/>
+							</ListItem>
+						</Can>					
 					</List>
 				</div>
 			</Slide>

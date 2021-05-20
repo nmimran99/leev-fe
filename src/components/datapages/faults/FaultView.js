@@ -290,14 +290,18 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					/>
 				</Grid>
 			</Grid>
-			<UpdateOwner
-				handleClose={() => setChangeOwner(false)}
-				handleSave={updateOwner}
-				isOpen={changeOwner}
-				currentOwner={fault.owner}
-				title={t('faultsModule.updateOwner')}
-				instructions={t('faultsModule.updateOwnerInstructions')}
-			/>
+			{
+				changeOwner &&
+				<UpdateOwner
+					handleClose={() => setChangeOwner(false)}
+					handleSave={updateOwner}
+					isOpen={changeOwner}
+					currentOwner={fault.owner}
+					title={t('faultsModule.updateOwner')}
+					instructions={t('faultsModule.updateOwnerInstructions')}
+				/>
+			}
+			
 			{changeStatus && (
 				<UpdateStatus
 					handleClose={() => setChangeStatus(false)}

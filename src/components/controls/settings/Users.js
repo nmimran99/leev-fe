@@ -1,7 +1,7 @@
 import { Avatar, Grid, IconButton, LinearProgress, List, ListItem, makeStyles, Tooltip } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createUser, filterUsers, getUserList, updateUserData } from '../../../api/userApi';
+import { createUser, filterUsers, getUserList } from '../../../api/userApi';
 import { AuthContext } from '../../../context/AuthContext';
 import { SnackbarContext } from '../../../context/SnackbarContext';
 import { LanguageContext } from '../../../context/LanguageContext';
@@ -52,32 +52,6 @@ export const Users = () => {
 		setUsers(filtered);
 	};
 
-	const handleUserSave = (details) => {
-		createUser(details)
-			.then((res) => {
-				if (res.status === 403) {
-					setSnackbar(res);
-					return;
-				} else if (res) {
-					setSnackbar(getSuccessMessage('user', getFullName(res), 'created'));
-				}
-			})
-			.finally(() => setIsLoading(true));
-    };
-    
-    const handleUpdateUser = (details) => {
-        updateUserData(details)
-        .then(res => {
-            if (res.status === 403) {
-                setSnackbar(res);
-                return;
-            } else if (res) {
-                setSnackbar(getSuccessMessage('user', getFullName(res), 'updated'));
-            }
-        })
-        .finally(() => setIsLoading(true));
-    }
-
     const closeAddEdit = () => {
         setAddUser(false);
         setEditUser(false);
@@ -126,12 +100,15 @@ export const Users = () => {
 										</Grid>
 									</Grid>
 								</Grid>
-                                <IconButton 
-                                    className={classes.editBtn}
-                                    onClick={() => setEditUser(u._id)}    
-                                >
-									<EditIcon className={classes.editIcon} />
-								</IconButton>
+								<Can module='users' action='update'>
+									<IconButton 
+										className={classes.editBtn}
+										onClick={() => setEditUser(u._id)}    
+									>
+										<EditIcon className={classes.editIcon} />
+									</IconButton>
+								</Can>
+                                
 							</ListItem>
 						))
 					)}
@@ -140,9 +117,8 @@ export const Users = () => {
 			{(addUser || editUser) &&
             <UpsertUser 
                 handleClose={() => closeAddEdit(false)} 
-                handleSave={handleUserSave}
-                handleUpdate={handleUpdateUser}
-                userId={editUser} 
+                userId={editUser}
+				reloadUsers={setIsLoading} 
             />}
 		</Grid>
 	);

@@ -1,4 +1,4 @@
-import DateFnsUtils from '@date-io/date-fns';
+import DateFnsUtils from "@date-io/date-fns";
 import {
 	Avatar,
 	Backdrop,
@@ -18,48 +18,60 @@ import {
 	Switch,
 	TextField,
 	useMediaQuery,
-} from '@material-ui/core';
-import { ClearRounded, OpenInNewOutlined } from '@material-ui/icons';
-import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import clsx from 'clsx';
-import React, { useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { getFault } from '../../../api/faultsApi';
-import { getFullName } from '../../../api/genericApi';
-import { createSystemMenuOptions, getAssetsSuggestions, getSystemsByAsset } from '../../../api/systemsApi';
-import { createUserOptions, getUserDataById } from '../../../api/userApi';
-import { AuthContext } from '../../../context/AuthContext';
-import { LanguageContext } from '../../../context/LanguageContext';
-import { UserItem } from '../../user/UserItem';
-import heLocale from 'date-fns/locale/he';
-import { getRoles, getRolesSuggestions } from '../../../api/permissionsApi';
+} from "@material-ui/core";
+import { ClearRounded, OpenInNewOutlined } from "@material-ui/icons";
+import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import clsx from "clsx";
+import React, { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { getFault } from "../../../api/faultsApi";
+import { getFullName, getSuccessMessage } from "../../../api/genericApi";
+import {
+	createSystemMenuOptions,
+	getAssetsSuggestions,
+	getSystemsByAsset,
+} from "../../../api/systemsApi";
+import { createUser, createUserOptions, getUserDataById, updateUserData } from "../../../api/userApi";
+import { AuthContext } from "../../../context/AuthContext";
+import { LanguageContext } from "../../../context/LanguageContext";
+import { UserItem } from "../../user/UserItem";
+import heLocale from "date-fns/locale/he";
+import { getRoles, getRolesSuggestions } from "../../../api/permissionsApi";
+import { Can } from "../../reuseables/Can";
+import { SnackbarContext } from "../../../context/SnackbarContext";
 
-export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) => {
+export const UpsertUser = ({
+	handleClose,
+	userId,
+	reloadUsers
+}) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { auth } = useContext(AuthContext);
 	const { t } = useTranslation();
-	const [mode, setMode] = useState(userId ? 'update' : 'create');
+	const { setSnackbar } = useContext(SnackbarContext);
+	const [mode, setMode] = useState(userId ? "update" : "create");
 	const [errors, setErrors] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [roles, setRoles] = useState([]);
 	const [details, setDetails] = useState({
 		tenant: auth.user.tenant,
-		email: '',
-		firstName: '',
-		lastName: '',
+		email: "",
+		firstName: "",
+		lastName: "",
 		birthDate: null,
 		role: null,
-		phoneNumber: '',
-		employedBy: '',
+		phoneNumber: "",
+		employedBy: "",
 		isActive: true,
 	});
 
 	useEffect(() => {
 		getRoles()
-			.then((data) => {
-				return getRolesSuggestions(data);
+			.then(res => {
+				if (res.status !== 200) return [];
+				return getRolesSuggestions(res);
 			})
 			.then((data) => {
 				setRoles(data || []);
@@ -71,10 +83,10 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 			})
 			.then((res) => {
 				if (!res) return;
-				
+
 				setDetails({
-                    ...res,
-                    role: res.role._id
+					...res,
+					role: res.role._id,
 				});
 			})
 			.finally(() => {
@@ -86,19 +98,19 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 		return new Promise((resolve, reject) => {
 			let errList = [];
 			if (!details.email) {
-				errList.push({ field: 'email', text: t('errors.isRequired') });
+				errList.push({ field: "email", text: t("errors.isRequired") });
 			}
 			if (!details.firstName) {
-				errList.push({ field: 'firstName', text: t('errors.isRequired') });
+				errList.push({ field: "firstName", text: t("errors.isRequired") });
 			}
 			if (!details.lastName) {
-				errList.push({ field: 'lastName', text: t('errors.isRequired') });
+				errList.push({ field: "lastName", text: t("errors.isRequired") });
 			}
 			if (!details.phoneNumber) {
-				errList.push({ field: 'phoneNumber', text: t('errors.isRequired') });
+				errList.push({ field: "phoneNumber", text: t("errors.isRequired") });
 			}
 			if (!details.role) {
-				errList.push({ field: 'role', text: t('errors.isRequired') });
+				errList.push({ field: "role", text: t("errors.isRequired") });
 			}
 
 			if (errList.length) {
@@ -109,21 +121,44 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 		});
 	};
 
+	const handleUserSave = async (details) => {
+		const res = await createUser(details);
+		if (res.status === 403) {
+			setSnackbar(res);
+			return;
+		} else if (res) {
+			setSnackbar(getSuccessMessage('user', getFullName(res), 'created'));
+		}
+    };
+    
+    const handleUpdateUser = async (details) => {
+        const res = await updateUserData(details);
+		if (res.status === 403) {
+			setSnackbar(res);
+			return;
+		} else if (res) {
+			setSnackbar(getSuccessMessage('user', getFullName(res), 'updated'));
+		}
+    }
+
 	const handleConfirm = () => {
 		validateFields()
 			.then((res) => {
 				if (!res) return;
-				if (mode === 'update') {
-					handleUpdate({ userId, ...details });
-					return;
+				if (mode === "update") {
+					return handleUpdateUser({ userId, ...details });
+					
 				}
-				handleSave(details);
+				return handleUserSave(details);
 			})
-			.finally(handleClose);
+			.finally(() => {
+				reloadUsers(true);
+				handleClose();
+			});
 	};
 
 	const handleChange = (field) => async (event) => {
-		let val = field === 'isActive' ? event.target.checked : event.target.value;
+		let val = field === "isActive" ? event.target.checked : event.target.value;
 		setDetails({
 			...details,
 			[field]: val,
@@ -154,25 +189,47 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 			className={classes.modal}
 		>
 			<Fade in={true}>
-				<Grid container justify="center" alignItems="center" style={{ outline: '0' }}>
-					<Grid item xs={12} sm={10} md={8} lg={8} xl={6} className={classes.gridCont}>
-						<Paper elevation={6} className={classes.paper} style={{ direction: lang.dir }}>
+				<Grid
+					container
+					justify="center"
+					alignItems="center"
+					style={{ outline: "0" }}
+				>
+					<Grid
+						item
+						xs={12}
+						sm={10}
+						md={8}
+						lg={8}
+						xl={6}
+						className={classes.gridCont}
+					>
+						<Paper
+							elevation={6}
+							className={classes.paper}
+							style={{ direction: lang.dir }}
+						>
 							<Grid container>
 								<Grid item xs={12} className={classes.headerRow}>
 									<div className={classes.title}>
-										{mode === 'update'
-											? t('users.upsert.editUserDetails')
-											: t('users.upsert.createUser')}
+										{mode === "update"
+											? t("users.upsert.editUserDetails")
+											: t("users.upsert.createUser")}
 									</div>
 									<div className={classes.close}>
-										<IconButton className={classes.iconBtn} onClick={handleClose}>
+										<IconButton
+											className={classes.iconBtn}
+											onClick={handleClose}
+										>
 											<ClearRounded className={classes.icon} />
 										</IconButton>
 									</div>
 								</Grid>
 								<Grid item xs={12} className={classes.section}>
 									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>{t('users.upsert.generalDetails')}</div>
+										<div className={classes.sectionTitle}>
+											{t("users.upsert.generalDetails")}
+										</div>
 									</Grid>
 									<Grid item xs={12} className={classes.fields}>
 										<Grid container justify="flex-start">
@@ -186,16 +243,18 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 												className={classes.textContainer}
 											>
 												<TextField
-													variant={'outlined'}
+													variant={"outlined"}
 													label={t(`users.email`)}
-													error={errors.filter((e) => e.field === `email`).length > 0}
+													error={
+														errors.filter((e) => e.field === `email`).length > 0
+													}
 													value={details.email}
-													onChange={handleChange('email')}
+													onChange={handleChange("email")}
 													className={classes.textField}
-													size={'medium'}
+													size={"medium"}
 													helperText={
-														errors.filter((e) => e.field === `email`).length > 0 &&
-														t('errors.isRequired')
+														errors.filter((e) => e.field === `email`).length >
+															0 && t("errors.isRequired")
 													}
 													inputProps={{
 														maxLength: 60,
@@ -203,8 +262,8 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 													FormHelperTextProps={{
 														style: {
 															color:
-																errors.filter((e) => e.field === `email`).length > 0 &&
-																'rgb(244, 67, 54)',
+																errors.filter((e) => e.field === `email`)
+																	.length > 0 && "rgb(244, 67, 54)",
 														},
 													}}
 												/>
@@ -219,16 +278,19 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 												className={classes.textContainer}
 											>
 												<TextField
-													variant={'outlined'}
+													variant={"outlined"}
 													label={t(`users.firstName`)}
-													error={errors.filter((e) => e.field === `firstName`).length > 0}
+													error={
+														errors.filter((e) => e.field === `firstName`)
+															.length > 0
+													}
 													value={details.firstName}
-													onChange={handleChange('firstName')}
+													onChange={handleChange("firstName")}
 													className={classes.textField}
-													size={'medium'}
+													size={"medium"}
 													helperText={
-														errors.filter((e) => e.field === `firstName`).length > 0 &&
-														t('errors.isRequired')
+														errors.filter((e) => e.field === `firstName`)
+															.length > 0 && t("errors.isRequired")
 													}
 													inputProps={{
 														maxLength: 60,
@@ -236,8 +298,8 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 													FormHelperTextProps={{
 														style: {
 															color:
-																errors.filter((e) => e.field === `firstName`).length >
-																	0 && 'rgb(244, 67, 54)',
+																errors.filter((e) => e.field === `firstName`)
+																	.length > 0 && "rgb(244, 67, 54)",
 														},
 													}}
 												/>
@@ -252,16 +314,19 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 												className={classes.textContainer}
 											>
 												<TextField
-													variant={'outlined'}
+													variant={"outlined"}
 													label={t(`users.lastName`)}
-													error={errors.filter((e) => e.field === `lastName`).length > 0}
+													error={
+														errors.filter((e) => e.field === `lastName`)
+															.length > 0
+													}
 													value={details.lastName}
-													onChange={handleChange('lastName')}
+													onChange={handleChange("lastName")}
 													className={classes.textField}
-													size={'medium'}
+													size={"medium"}
 													helperText={
-														errors.filter((e) => e.field === `lastName`).length > 0 &&
-														t('errors.isRequired')
+														errors.filter((e) => e.field === `lastName`)
+															.length > 0 && t("errors.isRequired")
 													}
 													inputProps={{
 														maxLength: 60,
@@ -269,8 +334,8 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 													FormHelperTextProps={{
 														style: {
 															color:
-																errors.filter((e) => e.field === `lastName`).length >
-																	0 && 'rgb(244, 67, 54)',
+																errors.filter((e) => e.field === `lastName`)
+																	.length > 0 && "rgb(244, 67, 54)",
 														},
 													}}
 												/>
@@ -285,16 +350,19 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 												className={classes.textContainer}
 											>
 												<TextField
-													variant={'outlined'}
+													variant={"outlined"}
 													label={t(`users.phoneNumber`)}
-													error={errors.filter((e) => e.field === `phoneNumber`).length > 0}
+													error={
+														errors.filter((e) => e.field === `phoneNumber`)
+															.length > 0
+													}
 													value={details.phoneNumber}
-													onChange={handleChange('phoneNumber')}
+													onChange={handleChange("phoneNumber")}
 													className={classes.textField}
-													size={'medium'}
+													size={"medium"}
 													helperText={
-														errors.filter((e) => e.field === `phoneNumber`).length > 0 &&
-														t('errors.isRequired')
+														errors.filter((e) => e.field === `phoneNumber`)
+															.length > 0 && t("errors.isRequired")
 													}
 													type="tel"
 													inputProps={{
@@ -303,8 +371,8 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 													FormHelperTextProps={{
 														style: {
 															color:
-																errors.filter((e) => e.field === `phoneNumber`).length >
-																	0 && 'rgb(244, 67, 54)',
+																errors.filter((e) => e.field === `phoneNumber`)
+																	.length > 0 && "rgb(244, 67, 54)",
 														},
 													}}
 												/>
@@ -318,13 +386,16 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 												xl={4}
 												className={classes.textContainer}
 											>
-												<MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
+												<MuiPickersUtilsProvider
+													utils={DateFnsUtils}
+													locale={heLocale}
+												>
 													<DatePicker
 														format="dd/MM/yyyy"
 														label={t(`users.birthDate`)}
 														value={details.birthDate}
 														onChange={handleChangeDate}
-														inputVariant={'outlined'}
+														inputVariant={"outlined"}
 														className={classes.textField}
 														autoOk={true}
 														disableFuture={true}
@@ -341,16 +412,19 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 												className={classes.textContainer}
 											>
 												<TextField
-													variant={'outlined'}
+													variant={"outlined"}
 													label={t(`users.employedBy`)}
-													error={errors.filter((e) => e.field === `employedBy`).length > 0}
+													error={
+														errors.filter((e) => e.field === `employedBy`)
+															.length > 0
+													}
 													value={details.employedBy}
-													onChange={handleChange('employedBy')}
+													onChange={handleChange("employedBy")}
 													className={classes.textField}
-													size={'medium'}
+													size={"medium"}
 													helperText={
-														errors.filter((e) => e.field === `employedBy`).length > 0 &&
-														t('errors.isRequired')
+														errors.filter((e) => e.field === `employedBy`)
+															.length > 0 && t("errors.isRequired")
 													}
 													inputProps={{
 														maxLength: 60,
@@ -358,8 +432,8 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 													FormHelperTextProps={{
 														style: {
 															color:
-																errors.filter((e) => e.field === `employedBy`).length >
-																	0 && 'rgb(244, 67, 54)',
+																errors.filter((e) => e.field === `employedBy`)
+																	.length > 0 && "rgb(244, 67, 54)",
 														},
 													}}
 												/>
@@ -367,90 +441,112 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 										</Grid>
 									</Grid>
 								</Grid>
-								<Grid item xs={4} className={classes.section}>
-									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>{t('users.upsert.role')}</div>
-									</Grid>
-									<Grid item xs={12} className={classes.fields}>
-										<Grid container justify="flex-start">
-											<Grid item xs={12} className={classes.textContainer}>
-												<Select
-													variant={'outlined'}
-													error={errors.filter((e) => e.field === `role`).length > 0}
-													value={details.role}
-													onChange={handleChange(`role`)}
-													className={classes.selectInput}
-													MenuProps={{
-														anchorOrigin: {
-															vertical: 'bottom',
-															horizontal: 'center',
-														},
-														transformOrigin: {
-															vertical: 'top',
-															horizontal: 'center',
-														},
-														getContentAnchorEl: null,
-														classes: {
-															paper: classes.menupaper,
-														},
-													}}
-												>
-													{roles.map((role, i) => (
-														<MenuItem
-															key={i}
-															value={role.value}
-															style={{ direction: lang.dir }}
-															className={classes.menuitem}
+								<Can module="roles" action="update">
+									<Grid item xs={4} className={classes.section}>
+										<Grid item xs={12}>
+											<div className={classes.sectionTitle}>
+												{t("users.upsert.role")}
+											</div>
+										</Grid>
+										<Grid item xs={12} className={classes.fields}>
+											<Grid container justify="flex-start">
+												<Grid item xs={12} className={classes.textContainer}>
+													<Select
+														variant={"outlined"}
+														error={
+															errors.filter((e) => e.field === `role`).length >
+															0
+														}
+														value={details.role}
+														onChange={handleChange(`role`)}
+														className={classes.selectInput}
+														MenuProps={{
+															anchorOrigin: {
+																vertical: "bottom",
+																horizontal: "center",
+															},
+															transformOrigin: {
+																vertical: "top",
+																horizontal: "center",
+															},
+															getContentAnchorEl: null,
+															classes: {
+																paper: classes.menupaper,
+															},
+														}}
+													>
+														{roles.map((role, i) => (
+															<MenuItem
+																key={i}
+																value={role.value}
+																style={{ direction: lang.dir }}
+																className={classes.menuitem}
+															>
+																{role.name}
+															</MenuItem>
+														))}
+													</Select>
+													{errors.filter((e) => e.field === "asset").length >
+														0 && (
+														<FormHelperText
+															style={{ color: "#f44336", marginRight: "15px" }}
 														>
-															{role.name}
-														</MenuItem>
-													))}
-												</Select>
-												{errors.filter((e) => e.field === 'asset').length > 0 && (
-													<FormHelperText style={{ color: '#f44336', marginRight: '15px' }}>
-														{t('errors.isRequired')}
-													</FormHelperText>
-												)}
+															{t("errors.isRequired")}
+														</FormHelperText>
+													)}
+												</Grid>
 											</Grid>
 										</Grid>
 									</Grid>
-								</Grid>
-								<Grid item xs={4} className={classes.section}>
-									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>{t('users.upsert.activity')}</div>
-									</Grid>
-									<Grid item xs={12} className={classes.fields}>
-										<Grid container justify="flex-start">
-											<Grid item xs={12} className={classes.textContainer}>
-												<FormControlLabel
-													className={classes.switchLabel}
-													control={
-														<Switch
-															checked={details.isActive}
-															onChange={handleChange('isActive')}
-															classes={{
-																switchBase: classes.switchBase,
-																checked: classes.checked,
-																track: classes.track,
-															}}
-														/>
-													}
-													label={
-														details.isActive
-															? t('users.upsert.userActive')
-															: t('users.upsert.userInactive')
-													}
-												/>
+								</Can>
+
+								<Can module="roles" action="update">
+									<Grid item xs={4} className={classes.section}>
+										<Grid item xs={12}>
+											<div className={classes.sectionTitle}>
+												{t("users.upsert.activity")}
+											</div>
+										</Grid>
+										<Grid item xs={12} className={classes.fields}>
+											<Grid container justify="flex-start">
+												<Grid item xs={12} className={classes.textContainer}>
+													<FormControlLabel
+														className={classes.switchLabel}
+														control={
+															<Switch
+																checked={details.isActive}
+																onChange={handleChange("isActive")}
+																classes={{
+																	switchBase: classes.switchBase,
+																	checked: classes.checked,
+																	track: classes.track,
+																}}
+															/>
+														}
+														label={
+															details.isActive
+																? t("users.upsert.userActive")
+																: t("users.upsert.userInactive")
+														}
+													/>
+												</Grid>
 											</Grid>
 										</Grid>
 									</Grid>
-								</Grid>
+								</Can>
+
 								<Grid item xs={12} className={classes.controls}>
-									<Button className={clsx(classes.control, classes.save)} onClick={handleConfirm}>
-										{t('controls.confirm')}
+									<Button
+										className={clsx(classes.control, classes.save)}
+										onClick={handleConfirm}
+									>
+										{t("controls.confirm")}
 									</Button>
-									<Button className={clsx(classes.control, classes.cancel)} onClick={handleClose}>
-										{t('controls.cancel')}
+									<Button
+										className={clsx(classes.control, classes.cancel)}
+										onClick={handleClose}
+									>
+										{t("controls.cancel")}
 									</Button>
 								</Grid>
 							</Grid>
@@ -464,247 +560,247 @@ export const UpsertUser = ({ handleClose, handleSave, handleUpdate, userId }) =>
 
 const useStyles = makeStyles((theme) => ({
 	modal: {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		backdropFilter: 'blur(10px)',
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		backdropFilter: "blur(10px)",
 	},
 
 	gridCont: {
-		height: 'fit-content',
+		height: "fit-content",
 	},
 	paper: {
-		background: 'rgba(0,0,0,0.4)',
-		border: '1px solid rgba(255,255,255,0.2)',
-		borderRadius: '10px',
-		padding: '10px 20px',
-		overflowY: 'overlay',
-		[theme.breakpoints.down('sm')]: {
-			height: '81vh',
+		background: "rgba(0,0,0,0.4)",
+		border: "1px solid rgba(255,255,255,0.2)",
+		borderRadius: "10px",
+		padding: "10px 20px",
+		overflowY: "overlay",
+		[theme.breakpoints.down("sm")]: {
+			height: "81vh",
 			top: 0,
-			borderRadius: '0',
-			border: '0',
-			padding: '10px 5px',
+			borderRadius: "0",
+			border: "0",
+			padding: "10px 5px",
 		},
-		'&:focus': {
-			outline: 'none',
+		"&:focus": {
+			outline: "none",
 		},
 	},
 	headerRow: {
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		width: '100%',
-		borderBottom: '1px solid rgba(255,255,255,0.2)',
+		display: "flex",
+		justifyContent: "space-between",
+		alignItems: "center",
+		width: "100%",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
 	},
 	title: {
-		color: 'white',
-		padding: '20px 10px 10px',
-		fontSize: '20px',
-		whiteSpace: 'nowrap',
+		color: "white",
+		padding: "20px 10px 10px",
+		fontSize: "20px",
+		whiteSpace: "nowrap",
 	},
 	iconBtn: {
-		margin: '10px',
-		'&:hover': {
-			background: 'rgba(0,0,0,0.3)',
+		margin: "10px",
+		"&:hover": {
+			background: "rgba(0,0,0,0.3)",
 		},
 	},
 	icon: {
-		color: 'white',
-		fontSize: '20px',
+		color: "white",
+		fontSize: "20px",
 	},
 	section: {
-		margin: '10px 5px',
+		margin: "10px 5px",
 	},
 	sectionTitle: {
-		color: 'white',
-		fontSize: '16px',
-		padding: '10px 20px',
-		width: 'fit-content',
-		borderRadius: '10px 10px 0 0',
-		background: 'rgba(0,0,0,0.4)',
-		whiteSpace: 'nowrap',
+		color: "white",
+		fontSize: "16px",
+		padding: "10px 20px",
+		width: "fit-content",
+		borderRadius: "10px 10px 0 0",
+		background: "rgba(0,0,0,0.4)",
+		whiteSpace: "nowrap",
 	},
 	fields: {
-		padding: '10px 20px',
-		borderRadius: '0px 10px 10px 10px',
-		background: 'rgba(0,0,0,0.4)',
-		[theme.breakpoints.down('sm')]: {
-			padding: '10px',
+		padding: "10px 20px",
+		borderRadius: "0px 10px 10px 10px",
+		background: "rgba(0,0,0,0.4)",
+		[theme.breakpoints.down("sm")]: {
+			padding: "10px",
 		},
 	},
 	textContainer: {
-		padding: '5px',
+		padding: "5px",
 	},
 	textField: {
-		width: '100%',
-		'& fieldset': {
-			borderRadius: '5px',
+		width: "100%",
+		"& fieldset": {
+			borderRadius: "5px",
 		},
 	},
 	selectInput: {
-		width: '100%',
-		'& fieldset': {
-			borderRadius: '5px',
+		width: "100%",
+		"& fieldset": {
+			borderRadius: "5px",
 		},
 	},
 	menupaper: {
-		background: 'rgba(0,0,0,0.8)',
-		backdropFilter: 'blur(10px)',
-		height: '200px',
-		overflowY: 'auto',
-		border: '1px solid rgba(255,255,255,0.2)',
-		marginRight: '7px',
-		marginLeft: '-5px',
+		background: "rgba(0,0,0,0.8)",
+		backdropFilter: "blur(10px)",
+		height: "200px",
+		overflowY: "auto",
+		border: "1px solid rgba(255,255,255,0.2)",
+		marginRight: "7px",
+		marginLeft: "-5px",
 	},
 	menuitem: {
-		color: 'white',
-		width: '100%',
-		'&:hover': {
-			background: 'rgba(255,255,255,0.1)',
+		color: "white",
+		width: "100%",
+		"&:hover": {
+			background: "rgba(255,255,255,0.1)",
 		},
 	},
 	controls: {
-		borderTop: '1px solid rgba(255,255,255,0.2)',
-		padding: '10px 0',
-		display: 'flex',
-		justifyContent: 'space-between',
+		borderTop: "1px solid rgba(255,255,255,0.2)",
+		padding: "10px 0",
+		display: "flex",
+		justifyContent: "space-between",
 	},
 	control: {
-		width: '30%',
-		border: '1px solid rgba(255,255,255,0.5)',
-		fontSize: '16px',
-		margin: '5px',
-		padding: '5px 30px',
-		borderRadius: '30px',
-		color: 'white',
+		width: "30%",
+		border: "1px solid rgba(255,255,255,0.5)",
+		fontSize: "16px",
+		margin: "5px",
+		padding: "5px 30px",
+		borderRadius: "30px",
+		color: "white",
 	},
 	save: {
-		background: 'rgba(0,0,0,0.2)',
-		'&:hover': {
-			background: 'black',
+		background: "rgba(0,0,0,0.2)",
+		"&:hover": {
+			background: "black",
 		},
-		'&:disabled': {
-			color: 'rgba(255,255,255,0.3)',
+		"&:disabled": {
+			color: "rgba(255,255,255,0.3)",
 		},
 	},
 	cancel: {
-		'&:hover': {
-			boxShadow: 'inset rgba(255,255,255,0.3) 0 0 2px 1px',
+		"&:hover": {
+			boxShadow: "inset rgba(255,255,255,0.3) 0 0 2px 1px",
 		},
 	},
 	chips: {
-		display: 'flex',
-		flexWrap: 'wrap',
+		display: "flex",
+		flexWrap: "wrap",
 	},
 	chip: {
-		height: '50px',
-		fontSize: '14px',
-		borderRadius: '50px',
-		display: 'flex',
-		justifyContent: 'flex-start',
-		color: 'white',
-		border: '1px solid rgba(255,255,255,0.2)',
-		background: 'rgba(0,0,0,0.6)',
-		'&:hover': {
-			background: 'rgba(0,0,0,0.6)',
-			boxShadow: 'inset lightgrey 0px 0px 1px 1px',
+		height: "50px",
+		fontSize: "14px",
+		borderRadius: "50px",
+		display: "flex",
+		justifyContent: "flex-start",
+		color: "white",
+		border: "1px solid rgba(255,255,255,0.2)",
+		background: "rgba(0,0,0,0.6)",
+		"&:hover": {
+			background: "rgba(0,0,0,0.6)",
+			boxShadow: "inset lightgrey 0px 0px 1px 1px",
 		},
 	},
 	userCont: {
-		height: 'fit-content',
+		height: "fit-content",
 		padding: 0,
 		margin: 0,
-		margin: '5px 0',
+		margin: "5px 0",
 	},
 	chipsCont: {
-		height: 'fit-content',
+		height: "fit-content",
 		padding: 0,
-		margin: '3px',
-		borderRadius: '50px',
-		background: 'rgba(255,255,255,0.1)',
-		boxShadow: 'inset rgba(0,0,0,0.5) 0px 0px 2px 1px',
-		display: 'flex',
-		jutifyContent: 'space-between',
-		alignItems: 'center',
+		margin: "3px",
+		borderRadius: "50px",
+		background: "rgba(255,255,255,0.1)",
+		boxShadow: "inset rgba(0,0,0,0.5) 0px 0px 2px 1px",
+		display: "flex",
+		jutifyContent: "space-between",
+		alignItems: "center",
 	},
 	removeIcon: {
-		color: 'rgba(255,255,255,0.2)',
-		padding: '5px',
-		marginRight: '5px',
-		borderRadius: '50px',
-		'&:hover': {
-			background: 'rgba(0,0,0,0.8)',
-			color: 'white',
+		color: "rgba(255,255,255,0.2)",
+		padding: "5px",
+		marginRight: "5px",
+		borderRadius: "50px",
+		"&:hover": {
+			background: "rgba(0,0,0,0.8)",
+			color: "white",
 		},
 	},
 	radioGroup: {
-		color: 'white',
-		display: 'flex',
-		flexDirection: 'row',
-		alignitems: 'center',
+		color: "white",
+		display: "flex",
+		flexDirection: "row",
+		alignitems: "center",
 	},
 	radioBtn: {
-		color: 'white',
-		padding: '15px',
+		color: "white",
+		padding: "15px",
 	},
 	filesUploaded: {
-		color: 'white',
-		padding: '0 15px',
+		color: "white",
+		padding: "0 15px",
 	},
 	uploadBtn: {
-		margin: '9px 0',
-		background: 'rgba(0,0,0,0.1)',
-		color: 'white',
-		border: '1px solid rgba(255,255,255,0.2)',
-		borderRadius: '50px',
-		whiteSpace: 'nowrap',
-		'&:hover': {
-			boxShadow: 'inset white 0 0 2px 1px',
-			background: 'rgba(0,0,0,0.3)',
+		margin: "9px 0",
+		background: "rgba(0,0,0,0.1)",
+		color: "white",
+		border: "1px solid rgba(255,255,255,0.2)",
+		borderRadius: "50px",
+		whiteSpace: "nowrap",
+		"&:hover": {
+			boxShadow: "inset white 0 0 2px 1px",
+			background: "rgba(0,0,0,0.3)",
 		},
 	},
 	imageRow: {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		padding: '10px 5px',
-		borderBottom: '1px solid rgba(255,255,255,0.2)',
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "space-between",
+		padding: "10px 5px",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
 	},
 	previewImage: {
-		height: '50px',
-		width: '100px',
+		height: "50px",
+		width: "100px",
 	},
 	removeImageBtn: {
-		color: 'rgba(255,255,255,0.5)',
-		border: '1px solid rgba(255,255,255,0.5)',
-		borderRadius: '50px',
-		padding: '6px',
-		'&:hover': {
-			color: 'white',
-			borderColor: 'white',
+		color: "rgba(255,255,255,0.5)",
+		border: "1px solid rgba(255,255,255,0.5)",
+		borderRadius: "50px",
+		padding: "6px",
+		"&:hover": {
+			color: "white",
+			borderColor: "white",
 		},
 	},
 	uploadedImagesTitle: {
-		color: 'white',
-		padding: '10px 5px',
-		borderBottom: '1px solid rgba(255,255,255,0.2)',
+		color: "white",
+		padding: "10px 5px",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
 	},
 	switchLabel: {
-		color: 'white',
-		padding: '10px',
+		color: "white",
+		padding: "10px",
 	},
 	switchBase: {
-		color: 'rgba(255,255,255,0.4)',
-		'&$checked': {
-			color: 'rgba(255,255,255,1)',
+		color: "rgba(255,255,255,0.4)",
+		"&$checked": {
+			color: "rgba(255,255,255,1)",
 		},
-		'&$checked + $track': {
-			backgroundColor: 'rgba(255,255,255,0.8)',
+		"&$checked + $track": {
+			backgroundColor: "rgba(255,255,255,0.8)",
 		},
 	},
 	checked: {},
 	track: {
-		backgroundColor: 'rgba(255,255,255,0.4)',
+		backgroundColor: "rgba(255,255,255,0.4)",
 	},
 }));

@@ -2,8 +2,10 @@ import { Fade, Grid, LinearProgress, makeStyles } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import { getServerError } from '../../../api/genericApi';
 import { getTasks } from '../../../api/tasksApi';
 import { AuthContext } from '../../../context/AuthContext';
+import { SnackbarContext } from '../../../context/SnackbarContext';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { TaskMinified } from './TaskMinified';
 import { TasksControls } from './TasksControls';
@@ -14,13 +16,21 @@ export const TasksList = ({ repeatable }) => {
 	const query = useQuery(location.search)
 	const { auth } = useContext(AuthContext);
 	const { t } = useTranslation();
+	const { setSnackbar } = useContext(SnackbarContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const [tasks, setTasks] = useState([]);
 
 	useEffect(() => {
 		getTasks({ ...query, isRepeatable: repeatable })
-			.then((data) => {
-				setTasks(data);
+			.then((res) => {
+				if (!res || res.status === 403) {
+					return [];
+				}
+				if (res.status === 500) {
+					setSnackbar(getServerError());
+					return;
+				}
+				setTasks(res);
 			})
 			.finally(() => {
 				setIsLoading(false);

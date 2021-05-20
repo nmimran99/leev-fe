@@ -47,9 +47,10 @@ export const AssetsControls = ({ components }) => {
 
     const createUserOptions = () => {
         return getUserList()
-        .then(data => {
+        .then(res => {
+            if ([403, 500].includes(res.status)) return [];
             let userList = [];
-            data.forEach(user => {
+            res.forEach(user => {
                 userList.push({label: `${user.firstName} ${user.lastName}`, value: user._id })
             });
             return userList;

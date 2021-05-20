@@ -1,19 +1,14 @@
-import { Avatar, Grid, IconButton, LinearProgress, List, ListItem, makeStyles, Tooltip } from '@material-ui/core';
-import React, { useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { createUser, filterUsers, getUserList, updateUserData } from '../../../api/userApi';
-import { AuthContext } from '../../../context/AuthContext';
-import { SnackbarContext } from '../../../context/SnackbarContext';
-import { LanguageContext } from '../../../context/LanguageContext';
-import { getFullName, getSuccessMessage } from '../../../api/genericApi';
-import { SearchBox } from '../../reuseables/SearchBox';
+import { Grid, IconButton, LinearProgress, List, ListItem, makeStyles, Tooltip } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-import { UpsertUser } from './UpsertUser';
+import React, { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { getFullName, getSuccessMessage } from '../../../api/genericApi';
+import { createRole, filterRoles, getRoles, updateRole } from '../../../api/permissionsApi';
+import { LanguageContext } from '../../../context/LanguageContext';
+import { SnackbarContext } from '../../../context/SnackbarContext';
 import { Can } from '../../reuseables/Can';
-import { filterRoles, getRoles } from '../../../api/permissionsApi';
-import { format, parseISO } from 'date-fns';
-import { UserItem } from '../../user/UserItem';
+import { SearchBox } from '../../reuseables/SearchBox';
 import { UpsertRole } from './UpsertRole';
 
 export const RolesAndPermissions = () => {
@@ -55,30 +50,30 @@ export const RolesAndPermissions = () => {
 		setRoles(filtered);
 	};
 
-	const handleUserSave = (details) => {
-		// createUser(details)
-		// 	.then((res) => {
-		// 		if (res.status === 403) {
-		// 			setSnackbar(res);
-		// 			return;
-		// 		} else if (res) {
-		// 			setSnackbar(getSuccessMessage('user', getFullName(res), 'created'));
-		// 		}
-		// 	})
-		// 	.finally(() => setIsLoading(true));
+	const handleSaveRole = (roleName, permissions) => {
+		createRole(roleName, permissions)
+		.then((res) => {
+			if (res.status === 403) {
+				setSnackbar(res);
+				return;
+			} else if (res) {
+				setSnackbar(getSuccessMessage('role', res.roleName, 'created'));
+			}
+		})
+		.finally(() => setIsLoading(true));
     };
     
-    const handleUpdateUser = (details) => {
-        // updateUserData(details)
-        // .then(res => {
-        //     if (res.status === 403) {
-        //         setSnackbar(res);
-        //         return;
-        //     } else if (res) {
-        //         setSnackbar(getSuccessMessage('user', getFullName(res), 'updated'));
-        //     }
-        // })
-        // .finally(() => setIsLoading(true));
+    const handleUpdateRole = (roleId, roleName, permissions) => {
+        updateRole(roleId, roleName, permissions)
+        .then(res => {
+            if (res.status === 403) {
+                setSnackbar(res);
+                return;
+            } else if (res) {
+                setSnackbar(getSuccessMessage('role', res.roleName, 'updated'));
+            }
+        })
+        .finally(() => setIsLoading(true));
     }
 
     const closeAddEdit = () => {
@@ -114,7 +109,7 @@ export const RolesAndPermissions = () => {
                                     <Grid item xs={2} className={classes.gridItem}>	
                                         <IconButton 
                                             className={classes.editBtn}
-                                            onClick={() => null}    
+                                            onClick={() => setEditRole(r._id)}    
                                         >
                                             <EditIcon className={classes.editIcon} />
                                         </IconButton>
@@ -131,8 +126,8 @@ export const RolesAndPermissions = () => {
 			{(addRole || editRole) &&
             <UpsertRole
                 handleClose={() => closeAddEdit(false)} 
-                handleSave={handleUserSave}
-                handleUpdate={handleUpdateUser}
+                handleSave={handleSaveRole}
+                handleUpdate={handleUpdateRole}
                 roleId={editRole} 
             />}
 		</Grid>

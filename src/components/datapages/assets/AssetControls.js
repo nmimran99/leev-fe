@@ -3,6 +3,7 @@ import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Can } from '../../reuseables/Can';
 
 export const AssetControls = ({ removeAsset, toggleEditMode }) => {
 	const classes = useStyles();
@@ -19,22 +20,26 @@ export const AssetControls = ({ removeAsset, toggleEditMode }) => {
 						<EditRoundedIcon className={classes.icon} />
 					</IconButton>
 				</Tooltip> */}
-				<Tooltip title={t('assetsModule.editAddress')}>
-					<IconButton
-						className={classes.iconbutton}
-						onClick={toggleEditMode('address')}
-					>
-						<EditRoundedIcon className={classes.icon} />
-					</IconButton>
-				</Tooltip>
-				<Tooltip title={t('assetsModule.deleteAsset')}>
-					<IconButton
-						className={classes.iconbutton}
-						onClick={removeAsset}
-					>
-						<DeleteOutlineRoundedIcon className={classes.icon} />
-					</IconButton>
-				</Tooltip>
+				<Can module='assets' action='update'>
+					<Tooltip title={t('assetsModule.editAddress')}>
+						<IconButton
+							className={classes.iconbutton}
+							onClick={toggleEditMode('address')}
+						>
+							<EditRoundedIcon className={classes.icon} />
+						</IconButton>
+					</Tooltip>
+				</Can>
+				<Can module='assets' action='delete'>
+					<Tooltip title={t('assetsModule.deleteAsset')}>
+						<IconButton
+							className={classes.iconbutton}
+							onClick={removeAsset}
+						>
+							<DeleteOutlineRoundedIcon className={classes.icon} />
+						</IconButton>
+					</Tooltip>
+				</Can>	
 			</div>
 		</Fade>
 	);
