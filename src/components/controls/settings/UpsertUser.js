@@ -70,7 +70,9 @@ export const UpsertUser = ({
 	useEffect(() => {
 		getRoles()
 			.then(res => {
-				if (res.status !== 200) return [];
+				if (!res || res.status === 403 || res.status === 500) {
+					return [];
+				}
 				return getRolesSuggestions(res);
 			})
 			.then((data) => {
