@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles, Grid } from "@material-ui/core";
 import { getDaysInMonth, getMonth, getYear, format } from "date-fns";
-import { getBrackets } from "../../../api/calenderApi";
+import { getBrackets, getDateString } from "../../../api/calenderApi";
 import { getTasks } from "../../../api/tasksApi";
 import { CalenderHeaderRow } from "./CalenderHeaderRow";
 import { CalenderRow } from "./CalenderRow";
 import { useTranslation } from "react-i18next";
+import { EventsViewer } from "./EventsViewer";
 
 export const Calender = ({}) => {
 	const classes = useStyles();
-    const { t } = useTranslation();
+	const { t } = useTranslation();
 	const [current, setCurrent] = useState({
 		year: getYear(new Date()),
 		month: getMonth(new Date()),
 	});
 	const [brackets, setBrackets] = useState([]);
+	const [bracketData, setBracketData] = useState(null);
 
 	useEffect(() => {
 		getTasks({ isRepeatable: true })
@@ -26,49 +28,89 @@ export const Calender = ({}) => {
 			});
 	}, [current]);
 
+	const handleBracketClick = (bracket) => {
+		getDateString(bracket.date)
+		setBracketData({ ...bracket });
+	};
+
 	return (
-		<Grid container className={classes.mainContainer} justify='center'>
-			 <Grid item xs={12}>
-				<div className={classes.pageModule}>
-						{t("calender.calender")}
-				</div>
-			 </Grid>
-           
-			<table className={classes.bracketsContainer}>
-				<thead className={classes.tableHeader}>
-					<CalenderHeaderRow />
-				</thead>
-				<tbody className={classes.tableBody}>
-					{brackets.chunk(7).map((c, i) => 
-						<CalenderRow brackets={c} key={i} />
-					)}
-				</tbody>
-			</table>
-		</Grid>
+		<React.Fragment>
+			<Grid container className={classes.mainContainer}>
+				<Grid item xs={12}>
+					<div className={classes.pageModule}>{t("calender.calender")}</div>
+				</Grid>
+				<Grid item xs={12} className={classes.tableGrid}>
+					<table className={classes.bracketsContainer}>
+						<thead className={classes.tableHeader}>
+							<CalenderHeaderRow />
+						</thead>
+						<tbody className={classes.tableBody}>
+							{brackets.chunk(7).map((c, i) => (
+								<CalenderRow
+									brackets={c}
+									key={i}
+									handleBracketClick={handleBracketClick}
+								/>
+							))}
+						</tbody>
+					</table>
+				</Grid>
+
+				{bracketData && (
+					<Grid
+						item
+						xs={12}
+						sm={6}
+						md={4}
+						lg={3}
+						className={classes.markDataGrid}
+					>
+						<EventsViewer
+							bracketData={bracketData}
+							handleClose={() => setBracketData(null)}
+						/>
+					</Grid>
+				)}
+			</Grid>
+		</React.Fragment>
 	);
 };
 
 const useStyles = makeStyles((theme) => ({
 	mainContainer: {
-        height: 'calc(100vh - 64px)'
-    },
-    pageModule: {
-        color: 'white',
-        padding: '10px 40px',
-        fontSize: '18px',
-        background: 'rgba(0,0,0,0.6)',
-        margin: '0px auto 5px',
-        width: '30%',
-        textAlign: 'center',
-        borderRadius: '0 0 25px 25px',
-        lineHeight: '1'
-    },
-    bracketsContainer: {
-        width: '90%',
-        height: '90%',
-        color: 'white'
-    },
-    tableBody: {
-        background: 'rgba(0,0,0,0.4)',
-    }
+		height: "calc(100vh - 64px)",
+		width: "100%",
+		position: "relative",
+	},
+	pageModule: {
+		color: "white",
+		padding: "10px 40px",
+		fontSize: "18px",
+		background: "rgba(0,0,0,0.6)",
+		margin: "0px auto 5px",
+		width: "30%",
+		textAlign: "center",
+		borderRadius: "0 0 25px 25px",
+		lineHeight: "1",
+	},
+	tableGrid: {
+		display: 'flex',
+		justifyContent: 'center'
+	},
+	bracketsContainer: {
+		width: "90vw",
+		height: "80vh",
+		color: "white",
+		tableLayout: "fixed",
+	},
+	tableBody: {
+		background: "rgba(0,0,0,0.4)",
+	},
+	markDataGrid: {
+		position: "absolute",
+		zIndex: 3,
+		background: "rgba(0,0,0,0.3)",
+		backdropFilter: "blur(40px)",
+		height: "100%",
+	},
 }));

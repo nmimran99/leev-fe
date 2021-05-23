@@ -344,7 +344,8 @@
         "september": "ספטמבר",
         "october": "אוקטובר",
         "november": "נובמבר",
-        "december": "דצמבר"
+        "december": "דצמבר",
+        "to": "ל"
     },
     "filters": {
         "filterBySystemName": "סנן על פי שם מערכת",
@@ -512,7 +513,9 @@
         "userNotFound": "לא נמצא משתמש במערכת עם כתובת המייל שסיפקת. על מנת לאפשר קבלת עידכונים לתקלה יש להירשם תחילה למערכת."
     },
     "calender": {
-        "calender": "לוח שנה"
+        "calender": "לוח שנה",
+        "todaysTasks": "משימות",
+        "events": "אירועים"
     },
     "roles": {
         "filterByName": "סנן על פי שם תפקיד",

@@ -344,7 +344,8 @@
         "september": "September",
         "october": "October",
         "november": "November",
-        "december": "December"
+        "december": "December",
+        "to": "to "
     },
     "filters": {
         "filterBySystemName": "Filter by system name",
@@ -512,7 +513,9 @@
         "userNotFound": "I couldn't find any user with the Email address you have provided. Only registered users can follow faults. Please register into the system in order to recieve notifications about future faults."
     },
     "calender": {
-        "calender": "Calender"
+        "calender": "Calender",
+        "todaysTasks": "Tasks",
+        "events": "Events"
     },
     "roles": {
         "filterByName": "Filter by role name",

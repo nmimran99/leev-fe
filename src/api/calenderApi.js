@@ -1,4 +1,5 @@
-import { addDays, endOfMonth, getDate, getDay, getDayOfYear, getDaysInMonth, getMonth, getYear, parseISO, startOfDay } from "date-fns";
+import { addDays, endOfMonth, format, getDate, getDay, getDayOfYear, getDaysInMonth, getMonth, getYear, parseISO, startOfDay, toDate } from "date-fns";
+import i18next from "i18next";
 import { getTasks } from './tasksApi';
 
 export const getBrackets = async (current, repeatableTasks) => {
@@ -29,7 +30,7 @@ export const calculateDates = async (current) => {
 }
 
 export const calculateBrackets = async (dates, repeatableTasks) => {
-    let brackets = dates.map((d, i) => {
+    let brackets = dates.map((d) => {
         const dParts = getDateParts(d);
         let bracket = { date: d, parts: dParts, data: [] };
         repeatableTasks.forEach(rt => {
@@ -71,4 +72,12 @@ export const getDateParts = (date) => {
         year: getYear(date),
         yearDay: getDayOfYear(date)
     }
+}
+
+export const getDateString = (date) => {
+    date = toDate(new Date(date));
+    const dayOfWeek = format(date, 'EEEE').toLowerCase();
+    const monthName = format(date, 'LLLL').toLowerCase();
+    
+    return `${i18next.t('dates.day')} ${i18next.t(`dates.${dayOfWeek}`)}, ${format(date, 'd')} ${i18next.t(`dates.to`)}${i18next.t(`dates.${monthName}`)}, ${format(date, 'yyyy')}`
 }
