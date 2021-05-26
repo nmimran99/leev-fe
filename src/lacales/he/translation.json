@@ -240,7 +240,8 @@
         "taskSteps": "שלבים למשימה",
         "step": "שלב",
         "startDtae": "תאריך התחלה",
-        "startDateText": "תאריך תחילת משימה"           
+        "startDateText": "תאריך תחילת משימה",
+        "taskIterations": "מועדי חזרות למשימה"           
     },
     "documentsModule": {
         "upsert": {
@@ -546,6 +547,7 @@
         "noPermission": "ללא הרשאה",
         "onlyMe": "רק לפריטים מקושרים",
         "mineAndOthers": "לכולם",
-        "roleName": "שם תפקיד"
+        "roleName": "שם תפקיד",
+        "completeSteps": "השלמת צעדי משימה"
     }
 }

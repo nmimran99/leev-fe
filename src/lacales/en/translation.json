@@ -240,7 +240,8 @@
         "taskSteps": "Task Steps",
         "step": "Step",
         "startDtae": "Start date",
-        "startDateText": "Task Start date"
+        "startDateText": "Task Start date",
+        "taskIterations": "Task Iterations"         
     },
     "documentsModule": {
         "upsert": {
@@ -546,6 +547,7 @@
         "noPermission": "No Permission",
         "onlyMe": "Only Related Objects",
         "mineAndOthers": "Everyone",
-        "roleName": "Role Name"
+        "roleName": "Role Name",
+        "completeSteps": "Complete task steps"
     }
 }

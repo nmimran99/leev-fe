@@ -1,11 +1,12 @@
 
 import axios from 'axios';
-import { addMonths, addWeeks, addYears } from 'date-fns';
+import { addMonths, addWeeks, addYears, eachDayOfInterval, isAfter, isBefore, parseISO, toDate } from 'date-fns';
 import { addDays, format } from 'date-fns/esm';
 import i18next from 'i18next';
 import heLocale from 'date-fns/locale/he';
 import deLocale from 'date-fns/locale/de'
 import usLocale from 'date-fns/locale/en-US'
+import { getDateParts } from './calenderApi';
 
 const localizations = {
 	he: {
@@ -183,23 +184,25 @@ export const updateStateField = (currState, fieldName, fieldValue) => {
 	});
 };
 
-export const getNextIterationDate = (
-	startDate,
-	interval,
-    intervalNumber,
-	dateFormat
-) => {
-	let next = null;
-	if (interval === 'year') {
-		next = addYears(new Date(startDate), intervalNumber);
-	} else if (interval === 'month') {
-		next = addMonths(new Date(startDate), intervalNumber);
-	} else if (interval === 'week') {
-		next = addWeeks(new Date(startDate), intervalNumber);
-	} else if (interval === 'day') {
-		next = addDays(new Date(startDate), intervalNumber);
+export const getNextIterationDate = (startDate, interval) => {
+	let currDate = new Date(startDate);
+	let today = new Date();
+	let addFunctions = {
+		year: addYears,
+		month: addMonths,
+		week: addWeeks,
+		day: addDays
+	};
+
+	let dateFunc = addFunctions[interval];
+
+	while(true) {
+		if (isBefore(currDate, today)) {
+			currDate = dateFunc(currDate, 1);
+		} else {
+			return currDate;
+		}
 	}
-	return format(next, dateFormat);
 };
 
 

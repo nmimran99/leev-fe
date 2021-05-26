@@ -10,7 +10,7 @@ export const TaskSteps = ({ data,  isUsingSteps, handleChange, isSequential, tog
     const classes = useStyles();
     const { t, i18n } = useTranslation();
     const [ isSeq, setIsSeq ] = useState(isSequential);
-    const [ steps, setSteps ] = useState(data || [{ order: 1, description: ''}]);
+    const [ steps, setSteps ] = useState(data || [{ order: 1, description: '', isCompleted: false }]);
 
     useEffect(() => {
         setSteps(data)

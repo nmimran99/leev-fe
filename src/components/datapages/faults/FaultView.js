@@ -25,6 +25,7 @@ import { UserItem } from '../../user/UserItem';
 import { FaultLink } from './FaultLink';
 import { FaultViewControls } from './FaultViewControls';
 import { UpsertFault } from './UpsertFault';
+import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 
 export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	const history = useHistory();
@@ -208,8 +209,9 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 						xs={12}
 						className={classes.controlsGriditem}
 						style={{
-							justifyContent: downSm ? 'center' : 'flex-start',
+							justifyContent: downSm ? 'center' : 'flex-start', cursor: 'pointer'
 						}}
+						onClick={() => setChangeStatus(true)}
 					>
 						<StatusTag
 							status={fault.status}
@@ -229,6 +231,12 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 				>
 					<div className={classes.asset}>
 						{getFullAddress(fault.asset)}
+					</div>
+					<div className={classes.system}>
+						<BlurOnRoundedIcon
+							className={classes.systemIcon}
+						/>
+						{fault.system.name}
 					</div>
 					<div className={classes.title}>{fault.title}</div>
 					<div className={classes.desc}>
@@ -363,6 +371,23 @@ const useStyles = makeStyles((theme) => ({
 		boxShadow: 'rgba(0,0,0,0.25) 0 0 5px 2px',
 		textAlign: 'center',
 		whiteSpace: 'nowrap'
+	},
+	system: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: 'fit-content',
+		color: 'white',
+		borderRadius: '50px',
+		padding: '10px 20px',
+		background: 'rgba(0,0,0,0.3)',
+		boxShadow: 'rgba(0,0,0,0.25) 0 0 5px 2px',
+		whiteSpace: 'nowrap',
+		margin: '10px 0'
+	},
+	systemIcon: {
+		margin: '0 10px 0 0',
+		fontSize: '18px',
 	},
 	title: {
 		color: 'white',

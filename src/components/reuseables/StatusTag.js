@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         width: 'fit-content',
-        padding: '0 10px',
+        padding: '2px 10px',
         borderRadius: '25px',
         whiteSpace: 'nowrap'
 

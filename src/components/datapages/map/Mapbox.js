@@ -150,7 +150,7 @@ export const Mapbox = ({ data, setData }) => {
 									extId === cluster.id ? classes.active : null
 								)}
 							>
-								<img src="https://img.icons8.com/nolan/35/skyscrapers.png" />
+								<img src="https://img.icons8.com/nolan/30/skyscrapers.png" />
 							</div>
 						</Marker>
 					);
@@ -178,8 +178,8 @@ export const Mapbox = ({ data, setData }) => {
 								src={
 									cluster.properties.asset.type ===
 									'apartment'
-										? 'https://img.icons8.com/nolan/35/cottage.png'
-										: 'https://img.icons8.com/nolan/35/company.png'
+										? 'https://img.icons8.com/nolan/30/cottage.png'
+										: 'https://img.icons8.com/nolan/30/company.png'
 								}
 							/>
 						</div>
@@ -201,6 +201,7 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '13px',
 		position: 'relative',
 		top: '15px',
+		right: '10px'
 	},
 	markerIcon: {
 		background: 'rgba(0,0,0,0.6)',

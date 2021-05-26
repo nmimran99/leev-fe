@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getUnauthorizedMessage, specialStringPurge } from './genericApi';
+import { getServerError, getUnauthorizedMessage, specialStringPurge } from './genericApi';
 import i18next from 'i18next';
 
 axios.defaults.headers.common['token'] = localStorage.getItem('wb_token');
@@ -107,6 +107,29 @@ export const updateTaskOwner = async (taskId, owner) => {
 			return getUnauthorizedMessage();
 		};
 		return { error: true, reason: 'general', status: 500 };
+	}
+};
+
+export const completeTaskStep = async (taskId, order, isCompleted ) => {
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/tasks/completeTaskStep`,
+			{ taskId, order, isCompleted },
+			{
+				headers: {
+					requesttype: 'completeSteps',
+					module: 'tasks',
+				},
+			}
+		);
+		if (res.status === 200) {
+			return res.data;
+		}
+	} catch (e) {
+		if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return getServerError();
 	}
 };
 
