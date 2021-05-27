@@ -152,8 +152,8 @@ export const TaskView = () => {
 		setChangeStatus(null);
 	};
 
-	const handleSaveComment = async (taskId, userId, text) => {
-		const res = await saveTaskComment(taskId, userId, text);
+	const handleSaveComment = async (taskId, userId, text, image) => {
+		const res = await saveTaskComment(taskId, userId, text, image);
 		if (res.status === 403) {
 			setSnackbar(res);
 			return Promise.resolve(null);

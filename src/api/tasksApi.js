@@ -156,13 +156,20 @@ export const updateTaskStatus = async (taskId, status) => {
 	}
 };
 
-export const saveTaskComment = async (taskId, userId, text) => {
+export const saveTaskComment = async (taskId, userId, text, image) => {
 	try {
+		let formData = new FormData();
+		formData.append('taskId', taskId)
+		formData.append('userId', userId)
+		formData.append('text', text)
+		formData.append('image', image || null)
+
 		const res = await axios.post(
 			`${process.env.REACT_APP_BACKEND_URL}/tasks/addTaskComment`,
-			{ taskId, userId, text },
+			formData,
 			{
 				headers: {
+					'Content-Type': `multipart/form-data`,
 					requesttype: 'comment',
 					module: 'tasks',
 				},
