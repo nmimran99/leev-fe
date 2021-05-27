@@ -626,12 +626,7 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: "50px",
 	},
 	comments: {
-		background: "rgba(0,0,0,0.4)",
-		margin: "20px 30px",
-		borderRadius: "10px",
-		[theme.breakpoints.down("sm")]: {
-			margin: "20px 0px",
-		},
+		background: "rgba(0,0,0,0.4)"
 	},
 	status: {
 		margin: "10px 0",

@@ -262,13 +262,20 @@ export const addRelatedUser = async (faultId, userId) => {
 	}
 };
 
-export const saveFaultComment = async (faultId, userId, text) => {
+export const saveFaultComment = async (faultId, userId, text, image) => {
 	try {
+		let formData = new FormData();
+		formData.append('faultId', faultId)
+		formData.append('userId', userId)
+		formData.append('text', text)
+		formData.append('image', image || null)
+	
 		const res = await axios.post(
 			`${process.env.REACT_APP_BACKEND_URL}/faults/addFaultComment`,
-			{ faultId, userId, text },
+			formData,
 			{
 				headers: {
+					'Content-Type': `multipart/form-data`,
 					requesttype: 'comment',
 					module: 'faults',
 				},

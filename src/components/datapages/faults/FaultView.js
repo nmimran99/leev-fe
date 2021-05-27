@@ -156,8 +156,8 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 		setChangeStatus(null);
 	};
 
-	const handleSaveComment = async (faultId, userId, text) => {
-		const res = await faultApi.saveFaultComment(faultId, userId, text);
+	const handleSaveComment = async (faultId, userId, text, image) => {
+		const res = await faultApi.saveFaultComment(faultId, userId, text, image);
 		if (res.status === 403) {
 			setSnackbar(res);
 			return Promise.resolve(null);
@@ -488,11 +488,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	comments: {
 		background: 'rgba(0,0,0,0.4)',
-		margin: '20px 30px',
-		borderRadius: '10px',
-		[theme.breakpoints.down('sm')]: {
-			margin: '20px 0px',
-		},
+		
 	},
 	status: {
 		margin: '10px 0',
