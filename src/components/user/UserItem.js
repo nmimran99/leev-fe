@@ -10,6 +10,7 @@ export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, siz
     const classes = useStyles();
 
     useEffect(() => {
+        if (!user) return;
         if (!user._id) {
             getUserDataById(user)
             .then(data => {
