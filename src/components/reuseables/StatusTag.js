@@ -13,7 +13,7 @@ export const StatusTag = ({status, type, size}) => {
 
     const classes = useStyles();
     const { t, i18n } = useTranslation();
-    
+
     return (
         <div 
             className={clsx(classes.statusTag,classes[status.statusId])}
@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         width: 'fit-content',
-        padding: '2px 10px',
+        padding: '2px 5px',
         borderRadius: '25px',
         whiteSpace: 'nowrap'
 

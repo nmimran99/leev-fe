@@ -11,17 +11,9 @@ export const AssetControls = ({ removeAsset, toggleEditMode }) => {
 
 	return (
 		<Fade in={true} timeout={500}>
-			<div className={classes.container}>
-				{/* <Tooltip title={t('assetsModule.changeOwner')}>
-					<IconButton
-						className={classes.iconbutton}
-						onClick={toggleEditMode('address')}
-					>
-						<EditRoundedIcon className={classes.icon} />
-					</IconButton>
-				</Tooltip> */}
+			<div className={classes.container}>	
 				<Can module='assets' action='update'>
-					<Tooltip title={t('assetsModule.editAddress')}>
+					<Tooltip title={t('assetsModule.editAsset')}>
 						<IconButton
 							className={classes.iconbutton}
 							onClick={toggleEditMode('address')}
@@ -30,7 +22,7 @@ export const AssetControls = ({ removeAsset, toggleEditMode }) => {
 						</IconButton>
 					</Tooltip>
 				</Can>
-				<Can module='assets' action='delete'>
+				{/* <Can module='assets' action='delete'>
 					<Tooltip title={t('assetsModule.deleteAsset')}>
 						<IconButton
 							className={classes.iconbutton}
@@ -39,7 +31,7 @@ export const AssetControls = ({ removeAsset, toggleEditMode }) => {
 							<DeleteOutlineRoundedIcon className={classes.icon} />
 						</IconButton>
 					</Tooltip>
-				</Can>	
+				</Can>	 */}
 			</div>
 		</Fade>
 	);
@@ -47,10 +39,7 @@ export const AssetControls = ({ removeAsset, toggleEditMode }) => {
 
 const useStyles = makeStyles((theme) => ({
 	container: {
-		display: 'flex',
-		position: 'absolute',
-		right: 0,
-		top: '55%',
+		display: 'flex'
 	},
 	iconbutton: {
 		margin: '7px 5px',
@@ -60,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
 		padding: '8px',
 	},
 	icon: {
-		fontSize: '20px',
+		fontSize: '24px',
+		[theme.breakpoints.down('sm')]: {
+			fontSize: '20px'
+		}
 	},
 }));

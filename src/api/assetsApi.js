@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getUnauthorizedMessage, specialStringPurge } from './genericApi';
+import { getServerError, getUnauthorizedMessage, specialStringPurge } from './genericApi';
 import i18next from 'i18next';
 
 axios.defaults.headers.common['token'] = localStorage.getItem('wb_token');
@@ -22,7 +22,29 @@ export const getAsset = async (assetId, plain) => {
 		if (e.message.includes('403')) {
 			return getUnauthorizedMessage();
 		};
-		return { error: true, reason: 'general', status: 500 };
+		return getServerError();
+	}
+};
+
+export const getAssetExtended = async (assetId) => {
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/assets/getAssetExtended`,
+			{ assetId}, {
+                headers: {
+                    requesttype: 'read',
+                    module: 'assets'
+                }
+            }
+		);
+		if (res.status === 200) {
+			return res.data;
+		}
+	} catch (e) {
+		if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return getServerError();
 	}
 };
 

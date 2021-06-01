@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Snackbar } from '@material-ui/core';
+import { Grid, makeStyles, Portal, Snackbar } from '@material-ui/core';
 import React, { useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import greyJpg from '../../assets/images/grey.jpg';
@@ -17,6 +17,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { Settings } from '../controls/settings/Settings';
 import { RepeatableTasks } from '../datapages/tasks/RepeatableTasks';
 import { Calender } from '../datapages/calender/Calender';
+import Alert from '@material-ui/lab/Alert';
 
 export const Workspace = ({}) => {
 	const classes = useStyles();
@@ -74,20 +75,25 @@ export const Workspace = ({}) => {
 					</Grid>
 				</Grid>
 				{Boolean(snackbar) && (
+					<Portal>
 					<Snackbar
 						open={Boolean(snackbar)}
 						autoHideDuration={6000}
 						onClose={() => setSnackbar(null)}
 					>
-						<MuiAlert
+						<Alert
 							onClose={() => setSnackbar(null)}
 							severity={snackbar.severity}
 							elevation={9} 
 							variant={"filled"}
+							classes={{
+								message: classes.message
+							}}
 						>
 							{snackbar.text}
-						</MuiAlert>
+						</Alert>
 					</Snackbar>
+					</Portal>
 				)}
 			</FaultsContextProvider>
 		</React.Fragment>
@@ -133,4 +139,8 @@ const useStyles = makeStyles((theme) => ({
 			borderRadius: '50px',
 		},
 	},
+	message: {
+		padding: '8px 20px',
+		dir: 'rtl'
+	}
 }));

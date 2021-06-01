@@ -14,6 +14,8 @@
         "repeatableTasks": "Repeating Tasks",
         "faults": "Faults",
         "documents": "Documents",
+        "residents": "Residents",
+        "locations": "Locations",
         "settings": "Settings",
         "logout": "Sign out"
     },
@@ -139,6 +141,9 @@
         "filterByStatus": "Filter by Status",
         "listMode": "List Mode",
         "blocksMode": "Blocks Mode",
+        "faultId": "Fault ID",
+        "title": "Fault title",
+        "status": "Status",
         "controls": {
             "editDetails": "Edit Fault Details",
             "changeOwner": "Change Assigned User",
@@ -189,6 +194,9 @@
         "hideFilters": "Hide Filters",
         "filterByTaskOwner": "Filter By Fault Owner",
         "filterByStatus": "Filter by Status",
+        "taskId": "Task ID",
+        "title": "Task title",
+        "status": "Status",
         "controls": {
             "editDetails": "Edit Task Details",
             "changeOwner": "Change Assigned User",
@@ -378,7 +386,8 @@
         "isRequired": "This field is required",
         "unauthorized": "You are not authorized to perform this action. Please consult your system administrator.",
         "noFileSelected": "No file was selected",
-        "serverError": "Server error. Please contant your system administrator.s"
+        "serverError": "Server error. Please contant your system administrator.",
+        "cannotDeactivateAssetOwner": "Cannot deactive user that is an owner of an asset."
     },
     "messages": {
         "snackMessage": {

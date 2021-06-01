@@ -135,7 +135,7 @@ export const UpsertUser = ({
     
     const handleUpdateUser = async (details) => {
         const res = await updateUserData(details);
-		if (res.status === 403) {
+		if (res.status === 403 || res.status === 405) {
 			setSnackbar(res);
 			return;
 		} else if (res) {

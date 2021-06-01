@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getFullName, getServerError, getUnauthorizedMessage } from './genericApi';
+import { getFullName, getServerError, getUnauthorizedMessage, getDeactivateDeniedMessage } from './genericApi';
 
 export const attemptToSignin = async (payload) => {
     try {
@@ -187,13 +187,17 @@ export const updateUserData = async (details) => {
                 requesttype: 'update'
             }
         });
+        console.log(res)
         if (res.status === 200) {
             return res.data;
         }
     } catch(e) {
+        console.log(e.message)
         if (e.message.includes('403')) {
 			return getUnauthorizedMessage();
-		};
+        } else if (e.message.includes('405')) {
+            return getDeactivateDeniedMessage();
+        }
 		return getServerError();
     }
 } 

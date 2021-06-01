@@ -17,6 +17,8 @@ import { useHistory } from 'react-router'
 import { UpdateOwner } from '../../reuseables/UpdateOwner'
 import { UpsertAsset } from './UpsertAsset'
 import { SnackbarContext } from '../../../context/SnackbarContext'
+import { Link } from 'react-router-dom'
+import { HistoryRounded } from '@material-ui/icons'
 
 
 export const Asset = ({assetData, order, removeAsset }) => {
@@ -51,23 +53,9 @@ export const Asset = ({assetData, order, removeAsset }) => {
     }
 
     const handleReferralClick = type => event => {
+        event.stopPropagation();
         history.push(`${type}?asset=${data._id}`)
     }
-
-    // const updateOwner = (userId) => {
-	// 	(task._id, userId)
-	// 	.then((res) => {
-	// 		if (res.status === 403) {
-	// 			setSnackbar(res);
-	// 		} else if (res) {
-	// 			setTask({
-	// 				...task,
-	// 				owner: res.owner,
-	// 			});
-	// 		}
-	// 		setChangeOwner(false);
-	// 	});
-	// };
 
 
     return (
@@ -77,9 +65,8 @@ export const Asset = ({assetData, order, removeAsset }) => {
                     <Paper 
                         className={classes.assetContainer} 
                         elevation={9}
-                        onMouseEnter={() => setControlsVisible(true)}
-                        onMouseLeave={() => setControlsVisible(false)}
-                    >
+                        onClick={() => history.push(`/workspace/assets/${data._id}`)}
+                    >   
                         <div className={classes.topMain} >
                             <div className={classes.address}>
                                 <Typography className={classes.addMain}>
@@ -95,12 +82,6 @@ export const Asset = ({assetData, order, removeAsset }) => {
                             <div className={classes.owner}>
                                 <UserItem user={data.owner} showPhone showName avatarSize={'40px'} size={12}/>
                             </div>
-                            {
-                                (controlsVisible || !matches) &&
-                                <AssetControls 
-                                    removeAsset={() => removeAsset(data._id, data)} 
-                                    toggleEditMode={toggleEditMode}/>
-                            }
                         </div>
                         <div 
                             className={classes.bottomMain}
@@ -204,16 +185,6 @@ export const Asset = ({assetData, order, removeAsset }) => {
                                 handleClose={() => setEditMode(false)}
                             />   
                         }
-                        {/* {editMode === "owner" && (
-                            <UpdateOwner
-                                handleClose={() => setEditMode(false)}
-                                handleSave={updateOwner}
-                                isOpen={editMode === "owner"}
-                                currentOwner={asset.owner}
-                                title={t('assetsModule.updateOwner')}
-                                instructions={t('assetsModule.updateOwnerInstructions')}
-                            />
-                        )} */}
                     </Paper>
                 </ClickAwayListener>
             </Grid>
@@ -234,6 +205,7 @@ const useStyles = makeStyles(theme => ({
         height: 'auto',
         color: 'white',
         background: 'rgba(255,255,255,0.1)',
+        cursor: 'pointer',
         [theme.breakpoints.down('xs')] : {
             margin: '10px 0',
             borderRadius: '0',

@@ -210,6 +210,10 @@ export const getUnauthorizedMessage = () => {
 	return { text: i18next.t('errors.unauthorized'), severity: 'error', status: 403 }
 };
 
+export const getDeactivateDeniedMessage = () => {
+	return { text: i18next.t('errors.cannotDeactivateAssetOwner'), severity: 'error', status: 405 }
+};
+
 export const getSuccessMessage = (type, idenitifer, action) => {
 	return { text: `${i18next.t("messages.snackMessage.itemOfType")} ${i18next.t(`general.${type}`)} ${i18next.t("messages.snackMessage.withIdentifier")} ${idenitifer} ${i18next.t(`messages.snackMessage.${action}`)} ${i18next.t(`messages.snackMessage.withSuccess`)}`, severity: 'success', status: 200 }
 }

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getUserDataById } from '../../api/userApi';
 
 
-export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, size }) => {
+export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, size, column }) => {
     
     const [ userData, setUserData ] = useState(user)
     const [ isLoading, setIsLoading ] = useState(true);
@@ -30,9 +30,14 @@ export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, siz
             : 
             <div 
                 className={classes.btnContainer}
+                style={{ flexDirection: column ? 'column' : 'row'}}
             >          
                 <React.Fragment>
-                    <Avatar className={classes.avatar} alt={'abc'} src={userData.avatar} style={{ height: avatarSize || '60px', width: avatarSize || '60px' }}/>
+                    {
+                        Boolean(avatarSize) &&
+                        <Avatar className={classes.avatar} alt={'abc'} src={userData.avatar} style={{ height: avatarSize || '60px', width: avatarSize || '60px' }}/>
+                    }
+                    
                     <div className={classes.dataContainer}>
                         {
                             showName &&
@@ -49,7 +54,7 @@ export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, siz
                         {
                             showPhone &&
                             <Typography className={classes.phoneNumber} style={{ fontSize: `${size * 1}px` || '14px' }}>
-                                {userData.phoneNumber || '054-652-9994'}
+                                {userData.phoneNumber}
                             </Typography>
                         }
                     </div>
@@ -65,7 +70,7 @@ const useStyles = makeStyles(theme => ({
         borderRadius: 'inherit',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         '&:hover': {
             boxShadow: 'none',
             background: 'transparent' 
@@ -85,7 +90,8 @@ const useStyles = makeStyles(theme => ({
         lineHeight: 1,
         textOverflow: 'ellipsis',
         overflow: 'hidden',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        padding: '2px 0'
     },
     title: {
         color: 'white',

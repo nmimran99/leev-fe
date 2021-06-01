@@ -14,6 +14,8 @@
         "repeatableTasks": "משימות מחזוריות",
         "faults": "תקלות",
         "documents": "מסמכים",
+        "residents": "דיירים",
+        "locations": "מיקומים",
         "settings": "הגדרות",
         "logout": "התנתק"
     },
@@ -139,6 +141,9 @@
         "filterByStatus": "סנן על פי סטטוס",
         "listMode": "מצב רשימה",
         "blocksMode": "מצב בלוקים",
+        "faultId": "מזהה תקלה",
+        "title": "כותרת תקלה",
+        "status": "סטטוס",
         "controls": {    
             "editDetails": "ערוך פרטי תקלה",
             "changeOwner": "החלף ממונה על תקלה",
@@ -189,6 +194,9 @@
         "hideFilters": "הסתר מסננים",
         "filterByTaskOwner": "סנן על פי ממונה על משימה",
         "filterByStatus": "סנן על פי סטטוס",
+        "taskId": "מזהה משימה",
+        "title": "כותרת משימה",
+        "status": "סטטוס",
         "controls": {
             "editDetails": "ערוך פרטי משימה",
             "changeOwner": "החלף ממונה על משימה",
@@ -378,7 +386,8 @@
         "isRequired": "שדה זה הינו חובה",
         "unauthorized": "אינך מורשה לבצע פעולה זו. אנא פנה למנהל המערכת.",
         "noFileSelected": "לא נבחר מסמך",
-        "serverError": "אירעה תקלת מערכת. אנא פנה למנהל המערכת."
+        "serverError": "אירעה תקלת מערכת. אנא פנה למנהל המערכת.",
+        "cannotDeactivateAssetOwner": "לא ניתן להעביר משתמש שממונה על נכס למצב לא פעיל"
     },
     "messages": {
         "snackMessage": {
