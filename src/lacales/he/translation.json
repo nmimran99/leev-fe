@@ -164,6 +164,7 @@
             "relatedUsers": "משתמשים מקושרים",
             "asset": "נכס",
             "system": "מערכת",
+            "location": "מיקום",
             "faultOwner": "ממונה",
             "faultImages": "תמונות מקושרות",
             "uploadImages": "העלה תמונות",
@@ -219,6 +220,7 @@
             "relatedUsers": "משתמשים מקושרים",
             "asset": "נכס",
             "system": "מערכת",
+            "location": "מיקום",
             "taskOwner": "ממונה",
             "taskImages": "תמונות מקושרות",
             "uploadImages": "העלה תמונות",
@@ -283,6 +285,7 @@
         "header": "תפריט יצירה",
         "addAsset": "צור נכס",
         "addSystem": "צור מערכת",
+        "addLocation": "צור מיקום",
         "createUser": "צור משתמש",
         "createTask": "צור משימה",
         "createFault": "צור תקלה",
@@ -387,7 +390,8 @@
         "unauthorized": "אינך מורשה לבצע פעולה זו. אנא פנה למנהל המערכת.",
         "noFileSelected": "לא נבחר מסמך",
         "serverError": "אירעה תקלת מערכת. אנא פנה למנהל המערכת.",
-        "cannotDeactivateAssetOwner": "לא ניתן להעביר משתמש שממונה על נכס למצב לא פעיל"
+        "cannotDeactivateAssetOwner": "לא ניתן להעביר משתמש שממונה על נכס למצב לא פעיל",
+        "nameAlreadyExists": "שם זה קיים במערכת לנכס זה"
     },
     "messages": {
         "snackMessage": {
@@ -493,7 +497,13 @@
             "activity": "פעילות",
             "userActive": "משתמש פעיל",
             "userInactive": "משתמש לא פעיל",
-            "editUserDetails": "עידכון פרטי משתמש"
+            "editUserDetails": "עידכון פרטי משתמש",
+            "residency": "דיירות ובעלות",
+            "isResident": "משתמש זה הינו דייר",
+            "notResident": "משתמש זה אינו דייר",
+            "ownership": "פרטי בעלים",
+            "isOwner": "משתמש זה הינו בעלים של נכס",
+            "notOwner": "משתמש זה אינו בעלים של נכס"
         }
     },
     "chatbot": {
@@ -558,5 +568,13 @@
         "mineAndOthers": "לכולם",
         "roleName": "שם תפקיד",
         "completeSteps": "השלמת צעדי משימה"
+    },
+    "locationsModule": {
+        "updateLocationDetails": "עידכון פרטי מיקום",
+        "createLocation": "יצירת מיקום",
+        "owningAsset": "נכס",
+        "locationName": "שם מיקום",
+        "relatedUsers": "משתמשים מקושרים",
+        "openFaults": "תקלות פתוחות"
     }
 }

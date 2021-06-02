@@ -9,17 +9,20 @@ import VerticalSplitRoundedIcon from "@material-ui/icons/VerticalSplitRounded";
 import clsx from "clsx";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useParams } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 import {
 	getAssetExtended,
 	getShortAddress,
 	updateAsset,
 } from "../../../api/assetsApi";
-import { getServerError } from "../../../api/genericApi";
+import { getServerError, updateQueryParams } from "../../../api/genericApi";
+import { updateLocation } from "../../../api/locationsApi";
 import { SnackbarContext } from "../../../context/SnackbarContext";
+import { useQuery } from "../../reuseables/customHooks/useQuery";
 import { UserItem } from "../../user/UserItem";
 import { AssetControls } from "./AssetControls";
 import { FaultsGrid } from "./tableViews/FaultsGrid";
+import { LocationsGrid } from "./tableViews/LocationsGrid";
 import { SystemsGrid } from "./tableViews/SystemsGrid";
 import { TasksGrid } from "./tableViews/TasksGrid";
 import { UpsertAsset } from "./UpsertAsset";
@@ -30,6 +33,8 @@ export const AssetView = ({}) => {
 	const classes = useStyles();
 	const params = useParams();
 	const history = useHistory();
+	const location = useLocation();
+	const query = useQuery(location.search);
 	const { t } = useTranslation();
 	const { setSnackbar } = useContext(SnackbarContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -48,7 +53,10 @@ export const AssetView = ({}) => {
 				}
 				setAsset(res);
 			})
-			.finally(() => setIsLoading(false));
+			.finally(() => {
+				setIsLoading(false);
+				history.replace(`${location.pathname}?tab=systems`);
+			});
 	}, []);
 
 	const handleUpdate = async (details) => {
@@ -67,6 +75,38 @@ export const AssetView = ({}) => {
 		} else {
 			setEditMode(type);
 		}
+	};
+
+	const handleTabChange = (tabName) => (event) => {
+		history.push({
+			path: location.pathname,
+			search: updateQueryParams(
+				location.search,
+				[{ name: "tab", value: tabName }],
+				[]
+			),
+		});
+	};
+
+	const handleUpdateLocation = async (details) => {
+		updateLocation(details).then((res) => {
+			if ([403, 500].includes(res.status)) {
+				setSnackbar(res);
+				return;
+			}
+			let lcs = asset.locations;
+			lcs = lcs.map((lc, i) => {
+				if (lc._id === res._id) {
+					return res;
+				}
+				return lc;
+			});
+			setAsset({
+				...asset,
+				locations: lcs,
+			});
+			history.replace(`${location.pathname}?tab=locations`);
+		});
 	};
 
 	return isLoading ? (
@@ -149,9 +189,9 @@ export const AssetView = ({}) => {
 							<div
 								className={clsx(
 									classes.moduleBtn,
-									module === md ? classes.active : null
+									query.tab === md ? classes.active : null
 								)}
-								onClick={() => setModule(md)}
+								onClick={handleTabChange(md)}
 								key={i}
 							>
 								{t(`sideMenu.${md}`)}
@@ -168,12 +208,18 @@ export const AssetView = ({}) => {
 						xl={8}
 						className={classes.tableContainer}
 					>
-						{module === "systems" ? (
+						{query.tab === "systems" ? (
 							<SystemsGrid systems={asset.systems} faults={asset.faults} />
-						) : module === "faults" ? (
+						) : query.tab === "faults" ? (
 							<FaultsGrid faults={asset.faults} />
-						) : module === "tasks" ? (
+						) : query.tab === "tasks" ? (
 							<TasksGrid tasks={asset.tasks} />
+						) : query.tab === "locations" ? (
+							<LocationsGrid
+								locations={asset.locations}
+								faults={asset.faults}
+								handleUpdateLocation={handleUpdateLocation}
+							/>
 						) : null}
 					</Grid>
 				</Grid>

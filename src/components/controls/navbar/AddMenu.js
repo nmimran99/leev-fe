@@ -81,6 +81,24 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 								/>
 							</ListItem>
 						</Can>
+						<Can module='locations' action='create'>
+							<ListItem
+								button={true}
+								className={classes.listItem}
+								onClick={toggleAdd('location')}
+							>
+								<ListItemIcon className={classes.listItemIcon}>
+									<Icon classes={{root: classes.iconRoot}}>
+										<img src="https://img.icons8.com/ios-filled/25/4a90e2/google-maps-new.png"/>
+									</Icon>
+								</ListItemIcon>
+								<ListItemText
+									primary={t('createMenu.addLocation')}
+									className={classes.listItemText}
+									disableTypography={true}
+								/>
+							</ListItem>
+						</Can>
 						<Can module="tasks" action="create">
 							<ListItem
 								button={true}

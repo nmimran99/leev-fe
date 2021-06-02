@@ -26,6 +26,7 @@ import { FaultLink } from './FaultLink';
 import { FaultViewControls } from './FaultViewControls';
 import { UpsertFault } from './UpsertFault';
 import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
+import RoomIcon from '@material-ui/icons/Room';
 
 export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	const history = useHistory();
@@ -238,6 +239,13 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 						/>
 						{fault.system.name}
 					</div>
+					<div className={classes.location}>
+						<RoomIcon
+							className={classes.systemIcon}
+						/>
+						{fault.location.name}
+					</div>
+					
 					<div className={classes.title}>{fault.title}</div>
 					<div className={classes.desc}>
 						<div className={classes.openDate}>
@@ -381,9 +389,20 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: '50px',
 		padding: '10px 20px',
 		background: 'rgba(0,0,0,0.3)',
-		boxShadow: 'rgba(0,0,0,0.25) 0 0 5px 2px',
 		whiteSpace: 'nowrap',
 		margin: '10px 0'
+	},
+	location: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: 'fit-content',
+		color: 'white',
+		borderRadius: '50px',
+		padding: '10px 20px',
+		background: 'rgba(255,255,255,0.2)',
+		whiteSpace: 'nowrap',
+		margin: '0px 0'
 	},
 	systemIcon: {
 		margin: '0 10px 0 0',
@@ -395,6 +414,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: '15px 0',
 		alignSelf: 'flex-end',
 		width: '100%',
+		marginTop: '20px'
 	},
 	desc: {
 		background: 'rgba(0,0,0,0.4)',

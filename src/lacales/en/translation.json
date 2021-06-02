@@ -164,6 +164,7 @@
             "relatedUsers": "Follwing",
             "asset": "Asset",
             "system": "System",
+            "location": "Location",
             "faultOwner": "Owner",
             "faultImages": "Fault Related Images",
             "uploadImages": "Upload Images",
@@ -219,6 +220,7 @@
             "relatedUsers": "Related Users",
             "asset": "Asset",
             "system": "System",
+            "location": "Location",
             "taskOwner": "Owner",
             "taskImages": "Task Related Images",
             "uploadImages": "Upload Images",
@@ -283,6 +285,7 @@
         "header": "Creation Menu",
         "addAsset": "Create Asset",
         "addSystem": "Create System",
+        "addLocation": "Create Location",
         "createUser": "Create User",
         "createTask": "Create Task",
         "createFault": "Create Fault",
@@ -387,7 +390,8 @@
         "unauthorized": "You are not authorized to perform this action. Please consult your system administrator.",
         "noFileSelected": "No file was selected",
         "serverError": "Server error. Please contant your system administrator.",
-        "cannotDeactivateAssetOwner": "Cannot deactive user that is an owner of an asset."
+        "cannotDeactivateAssetOwner": "Cannot deactive user that is an owner of an asset.",
+        "nameAlreadyExists": "This name already exists"
     },
     "messages": {
         "snackMessage": {
@@ -493,7 +497,13 @@
             "activity": "Activation",
             "userActive": "User is active",
             "userInactive": "User is inactive",
-            "editUserDetails": "Update user details"
+            "editUserDetails": "Update user details",
+            "residency": "Residency and Ownership",
+            "isResident": "User is a resident",
+            "notResident": "User is not a resident",
+            "ownership": "Property owner",
+            "isOwner": "User is the owner",
+            "notOwner": "User is not the owner"
         }
     },
     "chatbot": {
@@ -558,5 +568,13 @@
         "mineAndOthers": "Everyone",
         "roleName": "Role Name",
         "completeSteps": "Complete task steps"
+    },
+    "locationsModule": {
+        "updateLocationDetails": "Update Location Details",
+        "createLocation": "Create Location",
+        "owningAsset": "Asset",
+        "locationName": "Location Name",
+        "relatedUsers": "Related Users",
+        "openFaults": "Open Faults"
     }
 }

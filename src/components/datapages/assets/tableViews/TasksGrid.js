@@ -20,69 +20,67 @@ export const TasksGrid = ({ tasks }) => {
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
 	return (
-		<Slide in={tasks} direction={"left"}>
-			<Grid container justify="center">
-				<Grid container className={classes.headersContainer} justify="center">
-					<Grid item xs={4}>
-						<div className={classes.headerContainer}>
-							{t("tasksModule.taskId")}
-						</div>
-					</Grid>
-					<Grid item xs={4}>
-						<div className={classes.headerContainer}>
-							{t("tasksModule.title")}
-						</div>
-					</Grid>
-					<Grid item xs={4}>
-						<div className={classes.headerContainer}>
-							{t("tasksModule.status")}
-						</div>
-					</Grid>
+		<Grid container justify="center">
+			<Grid container className={classes.headersContainer} justify="center">
+				<Grid item xs={4}>
+					<div className={classes.headerContainer}>
+						{t("tasksModule.taskId")}
+					</div>
 				</Grid>
+				<Grid item xs={4}>
+					<div className={classes.headerContainer}>
+						{t("tasksModule.title")}
+					</div>
+				</Grid>
+				<Grid item xs={4}>
+					<div className={classes.headerContainer}>
+						{t("tasksModule.status")}
+					</div>
+				</Grid>
+			</Grid>
 
-				{tasks.length
-					? tasks.map((task, i) => (
-							<Grid
-								container
-								className={classes.rowContainer}
-								justify="center"
-								key={i}
-							>
-								<Grid item xs={4} className={classes.cellGrid}>
-									<div className={classes.cellData}>
-										<ItemLink
-											itemId={task.taskId}
-											module={"tasks"}
-											size={matches ? 13 : 16}
-										/>
-									</div>
-								</Grid>
-								<Grid item xs={4} className={classes.cellGrid}>
-									<div className={clsx(classes.cellData)}>
-										{task.description}
-										{/* <UserItem 
+			{tasks.length
+				? tasks.map((task, i) => (
+						<Grid
+							container
+							className={classes.rowContainer}
+							justify="center"
+							key={i}
+						>
+							<Grid item xs={4} className={classes.cellGrid}>
+								<div className={classes.cellData}>
+									<ItemLink
+										itemId={task.taskId}
+										module={"tasks"}
+										size={matches ? 13 : 16}
+									/>
+								</div>
+							</Grid>
+							<Grid item xs={4} className={classes.cellGrid}>
+								<div className={clsx(classes.cellData)}>
+									{task.description}
+									{/* <UserItem 
                                     user={sys.owner}
                                     showName
                                     avatarSize={matches ? 0 : 40}
                                     size={matches ? 11 : 13}
                                     column={matches}
                                 /> */}
-									</div>
-								</Grid>
-								<Grid item xs={4} className={classes.cellGrid}>
-									<div className={clsx(classes.cellData)}>
-										<StatusTag
-											status={task.status}
-											type="task"
-											size={matches ? 11 : 13}
-										/>
-									</div>
-								</Grid>
+								</div>
 							</Grid>
-					  ))
-					: "no rows"}
-			</Grid>
-		</Slide>
+							<Grid item xs={4} className={classes.cellGrid}>
+								<div className={clsx(classes.cellData)}>
+									<StatusTag
+										status={task.status}
+										type="task"
+										size={matches ? 11 : 13}
+									/>
+								</div>
+							</Grid>
+						</Grid>
+				  ))
+				: "no rows"}
+		</Grid>
 	);
 };
 

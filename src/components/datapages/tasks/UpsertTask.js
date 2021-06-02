@@ -39,6 +39,7 @@ import { UserItem } from "../../user/UserItem";
 import { TaskSteps } from "./TaskSteps";
 import AddIcon from "@material-ui/icons/Add";
 import { ScheduleItem } from "../../reuseables/scheduler/ScheduleItem";
+import { createLocationMenuOptions, getLocationsByAsset } from "../../../api/locationsApi";
 
 export const UpsertTask = ({
 	handleClose,
@@ -56,6 +57,7 @@ export const UpsertTask = ({
 	const [errors, setErrors] = useState([]);
 	const [assets, setAssets] = useState([]);
 	const [systems, setSystems] = useState([]);
+	const [locations, setLocations] = useState([]);
 	const [userList, setUserList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [details, setDetails] = useState({
@@ -63,7 +65,8 @@ export const UpsertTask = ({
 		title: "",
 		description: "",
 		asset: "",
-		system: "",
+		system: "", 
+		location: "",
 		owner: "",
 		relatedUsers: [],
 		createdBy: auth.user._id,
@@ -103,11 +106,12 @@ export const UpsertTask = ({
 					.then((data) => {
 						return Promise.all([
 							loadSystemOptions(data.asset),
+							loadLocationOptions(data.asset),
 							Promise.resolve(data),
 						]);
 					})
 					.then((res) => {
-						let data = res[1];
+						let data = res[2];
 						if (!data) return;
 						setDetails({ ...data, images: [], uploadedImages: data.images });
 					})
@@ -169,6 +173,18 @@ export const UpsertTask = ({
 			});
 	};
 
+	const loadLocationOptions = async (assetId) => {
+        return getLocationsByAsset(assetId)
+        .then(locations => {
+            console.log(locations)
+            return createLocationMenuOptions(locations)
+        })
+        .then(data => {
+            setLocations(data);
+            return true;
+        })
+    }
+
 	const handleConfirm = () => {
 		validateFields().then((res) => {
 			if (!res) return;
@@ -193,6 +209,7 @@ export const UpsertTask = ({
 		if (field === "asset") {
 			if (event.target.value) {
 				await loadSystemOptions(event.target.value);
+				await loadLocationOptions(event.target.value);
 			} else {
 				setDetails({
 					...details,
@@ -343,10 +360,10 @@ export const UpsertTask = ({
 								<Grid
 									item
 									xs={12}
-									sm={6}
-									md={6}
-									lg={6}
-									xl={6}
+									sm={10}
+									md={10}
+									lg={10}
+									xl={10}
 									className={classes.section}
 								>
 									<Grid item xs={12}>
@@ -406,10 +423,10 @@ export const UpsertTask = ({
 								<Grid
 									item
 									xs={12}
-									sm={6}
-									md={4}
-									lg={4}
-									xl={4}
+									sm={5}
+									md={5}
+									lg={5}
+									xl={5}
 									className={classes.section}
 								>
 									<Grid item xs={12}>
@@ -456,6 +473,70 @@ export const UpsertTask = ({
 													))}
 												</Select>
 												{errors.filter((e) => e.field === "asset").length >
+													0 && (
+													<FormHelperText
+														style={{ color: "#f44336", marginRight: "15px" }}
+													>
+														{t("errors.isRequired")}
+													</FormHelperText>
+												)}
+											</Grid>
+										</Grid>
+									</Grid>
+								</Grid>
+								<Grid
+									item
+									xs={12}
+									sm={5}
+									md={5}
+									lg={5}
+									xl={5}
+									className={classes.section}
+								>
+									<Grid item xs={12}>
+										<div className={classes.sectionTitle}>
+											{t("tasksModule.upsert.location")}
+										</div>
+									</Grid>
+									<Grid item xs={12} className={classes.fields}>
+										<Grid container justify="flex-start">
+											<Grid item xs={12} className={classes.textContainer}>
+												<Select
+													variant={"outlined"}
+													error={
+														errors.filter((e) => e.field === `location`).length >
+														0
+													}
+													value={details.location}
+													onChange={handleChange(`location`)}
+													className={classes.selectInput}
+													MenuProps={{
+														anchorOrigin: {
+															vertical: "bottom",
+															horizontal: "center",
+														},
+														transformOrigin: {
+															vertical: "top",
+															horizontal: "center",
+														},
+														getContentAnchorEl: null,
+														classes: {
+															paper: classes.menupaper,
+														},
+													}}
+												>
+													{locations.map((location, i) => (
+														<MenuItem
+															key={i}
+															value={location.value}
+															style={{ direction: lang.dir }}
+															className={classes.menuitem}
+														>
+															{location.text}
+														</MenuItem>
+													))}
+												</Select>
+												{errors.filter((e) => e.field === "location").length >
 													0 && (
 													<FormHelperText
 														style={{ color: "#f44336", marginRight: "15px" }}

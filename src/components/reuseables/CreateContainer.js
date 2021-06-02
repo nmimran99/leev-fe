@@ -6,12 +6,14 @@ import { useHistory, useLocation } from 'react-router';
 import { createNewAsset } from '../../api/assetsApi';
 import { uploadDocument } from '../../api/documentsApi';
 import { createNewFault } from '../../api/faultsApi';
+import { createLocation } from '../../api/locationsApi';
 import { createNewSystem } from '../../api/systemsApi';
 import { createNewTask } from '../../api/tasksApi';
 import { SnackbarContext } from '../../context/SnackbarContext';
 import { UpsertAsset } from '../datapages/assets/UpsertAsset';
 import { UpsertDocument } from '../datapages/documents/UpsertDocument';
 import { UpsertFault } from '../datapages/faults/UpsertFault';
+import { UpsertLocation } from '../datapages/locations/UpsertLocation';
 import { UpsertSystem } from '../datapages/systems/UpsertSystem';
 import { UpsertTask } from '../datapages/tasks/UpsertTask';
 
@@ -106,7 +108,22 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
             handleClose(); 
         })
     }
-
+    
+    const handleSaveLocation = details => {
+        createLocation(details)
+        .then(res => {
+            if (res.status === 403) {
+                setSnackbar(res);
+                handleClose();  
+                return; 
+            }
+            console.log(res)
+             history.push(`/workspace/assets/${details.asset}?tab=locations`)
+        })
+        .finally(() => {
+            handleClose()
+        })
+    }
     return (
         <React.Fragment>
             {
@@ -119,8 +136,12 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
                 <UpsertSystem 
                     handleClose={handleClose}
                     handleSave={handleSaveSystem}
-                />
-                : 
+                /> :
+                itemType ==='location' ? 
+                <UpsertLocation 
+                    handleClose={handleClose}
+                    handleSave={handleSaveLocation}
+                /> : 
                 itemType === 'fault' ?
                 <UpsertFault 
                     handleClose={handleClose}

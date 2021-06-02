@@ -44,6 +44,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import clsx from "clsx";
 import { Can } from "../../reuseables/Can";
 import { getNextIterationDate } from "../../../api/genericApi";
+import RoomIcon from '@material-ui/icons/Room';
 
 export const TaskView = () => {
 	const history = useHistory();
@@ -215,12 +216,20 @@ export const TaskView = () => {
 					)}
 					{task.system && (
 						<Grid item xs={12} className={classes.systemItem}>
-							<div className={classes.system}>
-								<BlurOnRoundedIcon className={classes.systemIcon} />
-								{task.system.name}
+							<div className={classes.systemlocationContainer}>
+								<div className={clsx(classes.sysloc, classes.sys)}>
+									<BlurOnRoundedIcon className={classes.systemIcon} />
+									{task.system.name}
+								</div>
+								<div className={clsx(classes.sysloc, classes.loc)}>
+									<RoomIcon className={classes.systemIcon} />
+									{task.location.name}
+								</div>
 							</div>
+							
 						</Grid>
 					)}
+					
 					{!task.asset && (
 						<Grid item xs={12}>
 							<div className={classes.taskNotLinkedToAsset}>
@@ -509,21 +518,53 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: "5px",
 		boxShadow: "rgba(0,0,0,0.25) 0 0 5px 2px",
 		textAlign: "center",
+		[theme.breakpoints.down('sm')]: {
+			borderRadius: "5px 5px 0 0",
+			boxShadow: "none",
+		}
 	},
 	systemItem: {
 		display: "flex",
 		justifyContent: "center",
+		
 	},
-	system: {
+	systemlocationContainer: {
 		display: "flex",
 		alignItems: "center",
-		justifyContent: "center",
+		justifyContent: "space-between",
 		width: "fit-content",
 		color: "white",
 		borderRadius: "0 0 50px 50px",
-		padding: "5px 80px 5px 60px",
-		background: "rgba(0,0,0,0.3)",
 		whiteSpace: "nowrap",
+		[theme.breakpoints.down('sm')]: {
+			flexDirection: 'column',
+			width: '100%'
+		}
+	},
+	sysloc: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		padding: "8px 40px 8px 30px",
+		width: '200px',
+		[theme.breakpoints.down('sm')]: {
+			width: '100%',
+			padding: '8px 0'
+		}
+	},
+	sys: {
+		background: "rgba(0,0,0,0.3)",
+		borderRadius: '0 0 0 50px',
+		[theme.breakpoints.down('sm')]: {
+			borderRadius: '0',
+		}
+	},
+	loc: {
+		background: 'rgba(255,255,255,0.2)',
+		borderRadius: '0 0 50px 0',
+		[theme.breakpoints.down('sm')]: {
+			borderRadius: '0 0 5px 5px',
+		}
 	},
 	systemIcon: {
 		margin: "0 10px",

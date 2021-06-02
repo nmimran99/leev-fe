@@ -1,9 +1,7 @@
 import DateFnsUtils from "@date-io/date-fns";
 import {
-	Avatar,
 	Backdrop,
 	Button,
-	Chip,
 	Fade,
 	FormControlLabel,
 	FormHelperText,
@@ -17,35 +15,26 @@ import {
 	Select,
 	Switch,
 	TextField,
-	useMediaQuery,
 } from "@material-ui/core";
-import { ClearRounded, OpenInNewOutlined } from "@material-ui/icons";
-import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
+import { ClearRounded } from "@material-ui/icons";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import clsx from "clsx";
+import heLocale from "date-fns/locale/he";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getFault } from "../../../api/faultsApi";
 import { getFullName, getSuccessMessage } from "../../../api/genericApi";
+import { getRoles, getRolesSuggestions } from "../../../api/permissionsApi";
 import {
-	createSystemMenuOptions,
-	getAssetsSuggestions,
-	getSystemsByAsset,
-} from "../../../api/systemsApi";
-import { createUser, createUserOptions, getUserDataById, updateUserData } from "../../../api/userApi";
+	createUser,
+	getUserDataById,
+	updateUserData,
+} from "../../../api/userApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
-import { UserItem } from "../../user/UserItem";
-import heLocale from "date-fns/locale/he";
-import { getRoles, getRolesSuggestions } from "../../../api/permissionsApi";
-import { Can } from "../../reuseables/Can";
 import { SnackbarContext } from "../../../context/SnackbarContext";
+import { Can } from "../../reuseables/Can";
 
-export const UpsertUser = ({
-	handleClose,
-	userId,
-	reloadUsers
-}) => {
+export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { auth } = useContext(AuthContext);
@@ -64,12 +53,16 @@ export const UpsertUser = ({
 		role: null,
 		phoneNumber: "",
 		employedBy: "",
+		data: {
+			isResident: false,
+			isOwner: false,
+		},
 		isActive: true,
 	});
 
 	useEffect(() => {
 		getRoles()
-			.then(res => {
+			.then((res) => {
 				if (!res || res.status === 403 || res.status === 500) {
 					return [];
 				}
@@ -129,19 +122,19 @@ export const UpsertUser = ({
 			setSnackbar(res);
 			return;
 		} else if (res) {
-			setSnackbar(getSuccessMessage('user', getFullName(res), 'created'));
+			setSnackbar(getSuccessMessage("user", getFullName(res), "created"));
 		}
-    };
-    
-    const handleUpdateUser = async (details) => {
-        const res = await updateUserData(details);
+	};
+
+	const handleUpdateUser = async (details) => {
+		const res = await updateUserData(details);
 		if (res.status === 403 || res.status === 405) {
 			setSnackbar(res);
 			return;
 		} else if (res) {
-			setSnackbar(getSuccessMessage('user', getFullName(res), 'updated'));
+			setSnackbar(getSuccessMessage("user", getFullName(res), "updated"));
 		}
-    }
+	};
 
 	const handleConfirm = () => {
 		validateFields()
@@ -149,7 +142,6 @@ export const UpsertUser = ({
 				if (!res) return;
 				if (mode === "update") {
 					return handleUpdateUser({ userId, ...details });
-					
 				}
 				return handleUserSave(details);
 			})
@@ -160,11 +152,23 @@ export const UpsertUser = ({
 	};
 
 	const handleChange = (field) => async (event) => {
-		let val = field === "isActive" ? event.target.checked : event.target.value;
-		setDetails({
-			...details,
-			[field]: val,
-		});
+		let val = ["isActive", "isResident", "isOwner"].includes(field)
+			? event.target.checked
+			: event.target.value;
+		if (["isResident", "isOwner"].includes(field)) {
+			setDetails({
+				...details,
+				data: {
+					...details.data,
+					[field]: val,
+				},
+			});
+		} else {
+			setDetails({
+				...details,
+				[field]: val,
+			});
+		}
 		if (errors.length) {
 			setErrors(errors.filter((err) => err.field !== field));
 		}
@@ -444,7 +448,7 @@ export const UpsertUser = ({
 									</Grid>
 								</Grid>
 								<Can module="roles" action="update">
-									<Grid item xs={4} className={classes.section}>
+									<Grid item xs={12} sm={6} lg={4} className={classes.section}>
 										<Grid item xs={12}>
 											<div className={classes.sectionTitle}>
 												{t("users.upsert.role")}
@@ -503,7 +507,7 @@ export const UpsertUser = ({
 								</Can>
 
 								<Can module="roles" action="update">
-									<Grid item xs={4} className={classes.section}>
+									<Grid item xs={12} sm={6} lg={4} className={classes.section}>
 										<Grid item xs={12}>
 											<div className={classes.sectionTitle}>
 												{t("users.upsert.activity")}
@@ -536,7 +540,59 @@ export const UpsertUser = ({
 										</Grid>
 									</Grid>
 								</Can>
-
+								<Grid item xs={12} className={classes.section}>
+									<Grid item xs={12}>
+										<div className={classes.sectionTitle}>
+											{t("users.upsert.residency")}
+										</div>
+									</Grid>
+									<Grid item xs={12} className={classes.fields}>
+										<Grid container justify="flex-start">
+											<Grid item xs={12} className={classes.textContainer}>
+												<FormControlLabel
+													className={classes.switchLabel}
+													control={
+														<Switch
+															checked={details.data.isResident}
+															onChange={handleChange("isResident")}
+															classes={{
+																switchBase: classes.switchBase,
+																checked: classes.checked,
+																track: classes.track,
+															}}
+														/>
+													}
+													label={
+														details.data.isResident
+															? t("users.upsert.isResident")
+															: t("users.upsert.notResident")
+													}
+												/>
+											</Grid>
+											<Grid item xs={12} className={classes.textContainer}>
+												<FormControlLabel
+													className={classes.switchLabel}
+													control={
+														<Switch
+															checked={details.data.isOwner}
+															onChange={handleChange("isOwner")}
+															classes={{
+																switchBase: classes.switchBase,
+																checked: classes.checked,
+																track: classes.track,
+															}}
+														/>
+													}
+													label={
+														details.data.isOwner
+															? t("users.upsert.isOwner")
+															: t("users.upsert.notOwner")
+													}
+												/>
+											</Grid>
+										</Grid>
+									</Grid>
+								</Grid>
 								<Grid item xs={12} className={classes.controls}>
 									<Button
 										className={clsx(classes.control, classes.save)}
