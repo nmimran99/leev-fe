@@ -512,7 +512,7 @@
         }
     },
     "chatbot": {
-        "title": "פתיחת תקלה חדשה",
+        "title": "Create new Fault",
         "welcome": "Welcome",
         "welcomeSub": "Please follow the following instructions in order to create a new fault",
         "welcomeMessage": "Hi! My name is Libi, I will be helping you today!",

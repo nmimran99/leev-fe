@@ -6,20 +6,16 @@ import i18n from '../i18n'
 export const LanguageContext = createContext();
 
 export const LanguageContextProvider = (props) => {
-    const [ lang, setLang ] = useState({
-        name: 'hebrew',
-        code: 'he',
-        dir: 'rtl',
-        dateformat: 'dd/MM/yyyy HH:mm',
-        dateonly: 'dd/MM/yyyy',
-        timeonly: 'HH:mm'
-    })
+
+    const [ lang, setLang ] = useState({})
 
     useEffect(() => {
         handleLS('wb_lang', 'get')
         .then(defaultLang => {
             if (defaultLang) {
                 setLang(getLocalization(defaultLang.lang))
+            } else {
+                setLang(getLocalization('en'))
             }
         }); 
     }, []);
@@ -27,6 +23,8 @@ export const LanguageContextProvider = (props) => {
     useEffect(() => {
         i18n.changeLanguage(lang.code)
     }, [lang])
+
+    
 
     return (
         <LanguageContext.Provider value={{ lang, setLang }}>

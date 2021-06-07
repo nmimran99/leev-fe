@@ -11,12 +11,15 @@ import { Messages } from './Messages';
 import { MessageSelector } from './MessageSelector';
 import { MessageBoolean } from './MessageBoolean';
 import * as scenarios from './Scenrio';
+import { LanguageContext } from '../../context/LanguageContext';
+import { getLocalization } from '../../api/genericApi';
+import i18next from 'i18next';
 
 export const Chatbot = () => {
 
     const classes = useStyles();
     const { auth, setAuth } = useContext(AuthContext);
-    const { t } = useTranslation();
+    
     const params = useParams();
     const [ scenario, setScenario ] = useState(scenarios.openFault);
     const [ isLoading, setIsLoading ] = useState(true);
@@ -98,6 +101,7 @@ export const Chatbot = () => {
         }, 1000);    
     }, [scenarioStep])
 
+    const { t } = useTranslation();
 
     const handleInputChange = async inputVal => {
         if (!inputVal.value && inputVal.type === 'image') {

@@ -1,8 +1,10 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next }from 'react-i18next';
+import { handleLS } from './api/userApi';
 import en from './lacales/en/translation.json';
 import he from './lacales/he/translation.json';
+
 
 const resources = {
     en: {
@@ -18,7 +20,7 @@ i18n
     .use(initReactI18next)
     .init({
         resources,
-        fallbackLng: 'he',
+        fallbackLng: JSON.parse(localStorage.getItem('wb_lang')).lang || 'en',
         detection: {
             order: ['queryString', 'cookie'],
             cache: ['cookie']
