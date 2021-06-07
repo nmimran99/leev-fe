@@ -1,15 +1,45 @@
-import { Grid, makeStyles, useMediaQuery } from "@material-ui/core";
+import { Grid, LinearProgress, makeStyles, useMediaQuery } from "@material-ui/core";
 import clsx from "clsx";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useHistory, useLocation } from "react-router";
+import { getAssetData } from "../../../../api/assetsApi";
+import { getServerError, removeQueryParam } from "../../../../api/genericApi";
+import { SnackbarContext } from "../../../../context/SnackbarContext";
 import { UserItem } from "../../../user/UserItem";
 
-export const SystemsGrid = ({ systems, faults }) => {
+export const SystemsGrid = ({ assetId }) => {
 	const classes = useStyles();
+	const history = useHistory();
+	const location = useLocation();
 	const { t } = useTranslation();
+	const { setSnackbar } = useContext(SnackbarContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+	const [ isLoading, setIsLoading ] = useState(true);
+	const [ systems, setSystems ] = useState([]);
+	const [ faults, setFaults ] = useState([]);
 
+	useEffect(() => {
+		getAssetData(assetId, 'systems')
+		.then(res => {
+			if (!res || [403, 500].includes(res.status)) {
+				history.push({
+					path: location.pathname,
+					search: removeQueryParam(location.search, 'tab'),
+				});
+				setSnackbar(res || getServerError());
+			};
+			setSystems(res.systems);
+			setFaults(res.faults)
+		})
+		.finally(() => {
+			setIsLoading(false)
+		})
+	}, [])
 	return (
+		isLoading ? 
+		<LinearProgress /> :
+
 		<Grid container justify="center">
 			<Grid container className={classes.headersContainer} justify="center">
 				<Grid item xs={4}>

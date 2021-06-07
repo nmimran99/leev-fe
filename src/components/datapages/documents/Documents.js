@@ -59,6 +59,9 @@ export const Documents = () => {
 				if (res) {
 					setDocs(docs.filter((d) => d._id !== res._id));
 					setAlertDialog(null);
+					setDocs((prevDocs) => {
+						return prevDocs.filter(d => d._id !== res.itemData.itemIdentifier)
+					})
 				}
 			},
 			handleCancel: () => setAlertDialog(null),

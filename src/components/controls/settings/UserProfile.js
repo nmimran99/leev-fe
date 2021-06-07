@@ -123,6 +123,10 @@ const useStyles = makeStyles((theme) => ({
 	container: {
 		width: "100%",
 		borderLeft: "1px solid rgba(255,255,255,0.2)",
+		[theme.breakpoints.down('sm')]: {
+			height: 'calc(100% - 50px)',
+			overflowY: 'overlay'
+		}
 	},
 	controls: {
 		display: "flex",

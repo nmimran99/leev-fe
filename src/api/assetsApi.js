@@ -48,6 +48,28 @@ export const getAssetExtended = async (assetId) => {
 	}
 };
 
+export const getAssetData = async (assetId, module) => {
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/assets/getAssetData`,
+			{ assetId, module }, {
+                headers: {
+                    requesttype: 'read',
+                    module: 'assets'
+                }
+            }
+		);
+		if (res.status === 200) {
+			return res.data;
+		}
+	} catch (e) {
+		if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return getServerError();
+	}
+};
+
 export const getAssets = async (filters) => {
 	try {
 		const res = await axios.post(

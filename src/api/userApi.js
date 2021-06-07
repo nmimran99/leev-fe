@@ -79,6 +79,25 @@ export const getUserList = async () => {
     }
 }
 
+export const getResidentList = async () => {
+    try {
+        let res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/getResidentList`, {
+            headers: {
+                module: 'users',
+                requesttype: 'read'
+            }
+        });
+        if (res.status === 200) {
+            return res.data;
+        }
+    } catch(e) {
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return getServerError();
+    }
+}
+
 export const getUserDataById = async (userId) => {
     try {
         let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/getUserDataById`, { userId }, {
@@ -98,18 +117,16 @@ export const getUserDataById = async (userId) => {
     }
 } 
 
-export const createUserOptions = () => {
-    return getUserList()
-    .then(data => {
-        if (!data || [403,500].includes(data.status)) {
-            return [];
-        }
-        let userList = [];
-        data.forEach(user => {
-            userList.push({label: `${user.firstName} ${user.lastName}`, value: user._id, ...user  })
-        });
-        return userList;
+export const createUserOptions = async () => {
+    const data = await getUserList();
+    if (!data || [403, 500].includes(data.status)) {
+        return [];
+    }
+    let userList = [];
+    data.forEach(user => {
+        userList.push({ label: `${user.firstName} ${user.lastName}`, value: user._id, ...user });
     });
+    return userList;
 };
 
 export const clearUserLS = async () => {

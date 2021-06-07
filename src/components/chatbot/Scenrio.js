@@ -26,6 +26,7 @@ export const openFault = {
 	data: {
 		asset: null,
 		system: null,
+		location: null,
 		description: null,
 		images: null
 	},
@@ -58,6 +59,13 @@ export const openFault = {
 		},
 		{
 			order: 2,
+            text: i18next.t('chatbot.notLoggedIn.requestLocation'),
+			actionRequired: true,
+			inputType: 'select',
+			inputField: 'location'
+		},
+		{
+			order: 3,
             text: i18next.t('chatbot.notLoggedIn.requestDescription1'),
             actionRequired: false,
 			inputType: null,
@@ -65,14 +73,14 @@ export const openFault = {
            
 		},
 		{
-			order: 3,
+			order: 4,
             text: i18next.t('chatbot.notLoggedIn.requestDescription2'),
 			actionRequired: true,
 			inputType: 'string',
 			inputField: 'description'
 		},
 		{
-			order: 4,
+			order: 5,
             text: i18next.t('chatbot.notLoggedIn.requestPhotos'),
 			actionRequired: true,
 			inputType: 'image',
@@ -80,7 +88,7 @@ export const openFault = {
 			submit: true
 		},
 		{
-			order: 5,
+			order: 6,
             text: i18next.t('chatbot.notLoggedIn.faultOpenedSuccessfully'),
             actionRequired: false,
 			inputType: null,

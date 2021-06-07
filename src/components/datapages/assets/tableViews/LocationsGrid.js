@@ -3,11 +3,12 @@ import {
 	Button,
 	Collapse,
 	Grid,
+	LinearProgress,
 	makeStyles,
 	useMediaQuery,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getFullName } from "../../../../api/genericApi";
 import { UserItem } from "../../../user/UserItem";
@@ -15,15 +16,42 @@ import EditIcon from '@material-ui/icons/Edit';
 import { UpsertLocation } from "../../locations/UpsertLocation";
 import { updateLocation } from '../../../../api/locationsApi';
 import { SnackbarContext } from "../../../../context/SnackbarContext";
+import { useHistory, useLocation } from "react-router";
+import { getAssetData } from "../../../../api/assetsApi";
+import { getServerError, removeQueryParam } from "../../../../api/genericApi";
 
-export const LocationsGrid = ({ locations, faults, handleUpdateLocation }) => {
+
+export const LocationsGrid = ({ assetId, handleUpdateLocation }) => {
 	const classes = useStyles();
+	const history = useHistory();
+	const location = useLocation();
 	const { t } = useTranslation();
 	const { setSnackbar } = useContext(SnackbarContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+	const [ isLoading, setIsLoading ] = useState(true);
+	const [ locations, setLocations ] = useState([]);
+	const [ faults, setFaults ] = useState([]);
 	const [expanded, setExpanded] = useState(null);
-
 	const [ editLocation, setEditlocation ] = useState(null);
+
+	useEffect(() => {
+		getAssetData(assetId, 'locations')
+		.then(res => {
+			if (!res || [403, 500].includes(res.status)) {
+				history.push({
+					path: location.pathname,
+					search: removeQueryParam(location.search, 'tab'),
+				});
+				setSnackbar(res || getServerError());
+			};
+			setLocations(res.locations);
+			setFaults(res.faults);
+		})
+		.finally(() => {
+			setIsLoading(false)
+		})
+	}, [])
+	
 
 	const handleExpanded = (locationId) => {
 		if (expanded === locationId) {
@@ -34,6 +62,8 @@ export const LocationsGrid = ({ locations, faults, handleUpdateLocation }) => {
 	};
 
 	return (
+		isLoading ? 
+		<LinearProgress /> :
 		<React.Fragment>
 		<Grid container justify="center">
 			<Grid container className={classes.headersContainer} justify="center">

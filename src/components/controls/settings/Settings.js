@@ -7,6 +7,7 @@ import { RolesAndPermissions } from './RolesAndPermissions';
 import { SettingsMenu } from './SettingsMenu';
 import { UserProfile } from './UserProfile';
 import { Users } from './Users';
+import { Residents } from './Residents'
 
 export const Settings = ({ open, handleClose}) => {
 	const classes = useStyles();
@@ -63,6 +64,10 @@ export const Settings = ({ open, handleClose}) => {
                                             <Users />
                                         }
                                         {
+                                            active === 'residents' &&
+                                            <Residents />
+                                        }
+                                        {
                                             active === 'permissions' &&
                                             <RolesAndPermissions />
                                         }
@@ -83,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
-        backdropFilter: 'blur(10px)',
+        backdropFilter: 'blur(10px)'
 	},
 	gridCont: {
 		height: 'fit-content',
@@ -92,7 +97,6 @@ const useStyles = makeStyles((theme) => ({
 		background: 'rgba(0,0,0,0.4)',
 		border: '1px solid rgba(255,255,255,0.2)',
 		borderRadius: '10px',
-        overflowY: 'overlay',
         height: '80vh',
 		[theme.breakpoints.down('sm')]: {
 			height: '81vh',

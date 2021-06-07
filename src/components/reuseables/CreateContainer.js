@@ -102,6 +102,9 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
                 handleClose();  
                 return; 
             }
+            if (location.pathname === '/workspace/documents') {
+                history.go(0);
+            }
             history.push(`/workspace/documents`)
         })
         .finally(() => {

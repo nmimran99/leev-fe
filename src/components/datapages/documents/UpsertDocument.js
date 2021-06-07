@@ -515,6 +515,7 @@ export const UpsertDocument = ({ handleClose, handleSave, documentId }) => {
 																		width: '40px',
 																	}}
 																	src={user.avatar}
+																	alt={getFullName(user)}
 																/>
 															}
 															label={getFullName(user)}

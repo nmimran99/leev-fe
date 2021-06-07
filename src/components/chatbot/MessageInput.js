@@ -44,18 +44,21 @@ const useStyles = makeStyles((theme) => ({
         padding: '0 5px'
 	},
 	form: {
-		color: 'white',
+		color: 'black',
         width: '100%',
-        margin: '0 5px 0 0px'
+        margin: '0 5px 0 0px',
+		border: '1px solid rgba(0,0,0,0.1)',
+		borderRadius: '42px',
+		background: 'white'
 	},
 	textInput: {
         padding: '4px 10px',
         borderRadius: '42px',
-        background: 'rgba(255,255,255,0.1)',
+        
 		'& input': {
-			color: 'white',
+			color: 'black',
 			width: '80%',
-            padding: '7px 10px',
+            padding: '4px 10px',
             fontSize: '14px'
 		},
 		'& label': {

@@ -14,13 +14,41 @@ import { UserItem } from "../../../user/UserItem";
 import clsx from "clsx";
 import { StatusTag } from "../../../reuseables/StatusTag";
 import { ItemLink } from "../../../reuseables/ItemLink";
+import { useHistory, useLocation } from "react-router";
+import { getAssetData } from "../../../../api/assetsApi";
+import { getServerError, removeQueryParam } from "../../../../api/genericApi";
+import { SnackbarContext } from "../../../../context/SnackbarContext";
 
-export const FaultsGrid = ({ faults }) => {
+export const FaultsGrid = ({ assetId }) => {
 	const classes = useStyles();
+	const history = useHistory();
+	const location = useLocation();
 	const { t } = useTranslation();
+	const { setSnackbar } = useContext(SnackbarContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+	const [ isLoading, setIsLoading ] = useState(true);
+	const [ faults, setFaults ] = useState([]);
+
+	useEffect(() => {
+		getAssetData(assetId, 'faults')
+		.then(res => {
+			if (!res || [403, 500].includes(res.status)) {
+				history.push({
+					path: location.pathname,
+					search: removeQueryParam(location.search, 'tab'),
+				});
+				setSnackbar(res || getServerError());
+			};
+			setFaults(res.faults)
+		})
+		.finally(() => {
+			setIsLoading(false)
+		})
+	}, [])
 
 	return (
+		isLoading ? 
+		<LinearProgress /> :
 		<Grid container justify="center">
 			<Grid container className={classes.headersContainer} justify="center">
 				<Grid item xs={4}>
@@ -60,13 +88,6 @@ export const FaultsGrid = ({ faults }) => {
 							<Grid item xs={4} className={classes.cellGrid}>
 								<div className={clsx(classes.cellData)}>
 									{fault.description}
-									{/* <UserItem 
-                                    user={sys.owner}
-                                    showName
-                                    avatarSize={matches ? 0 : 40}
-                                    size={matches ? 11 : 13}
-                                    column={matches}
-                                /> */}
 								</div>
 							</Grid>
 							<Grid item xs={4} className={classes.cellGrid}>

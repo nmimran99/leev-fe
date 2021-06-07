@@ -368,6 +368,7 @@ export const UpsertLocation = ({
 																					width: "40px",
 																				}}
 																				src={user.avatar}
+																				alt={getFullName(user)}
 																			/>
 																		}
 																		label={getFullName(user)}

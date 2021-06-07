@@ -1,5 +1,5 @@
 import axios from "axios";
-import { isCompositeComponent } from "react-dom/test-utils";
+import i18next from "i18next";
 import { getServerError, getUnauthorizedMessage } from "./genericApi";
 
 export const createLocation = async (details) => {
@@ -97,7 +97,7 @@ export const getLocationsByAsset = async (assetId) => {
 
 export const createLocationMenuOptions = (locations) => {
 	return new Promise((resolve, reject) => {
-		let options = [];
+		let options = [{ text: i18next.t('general.none'), value: '' }];
 		locations.forEach((l) => {
 			options.push({ text: l.name, value: l._id });
 		});

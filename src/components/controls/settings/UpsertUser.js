@@ -16,14 +16,19 @@ import {
 	Switch,
 	TextField,
 } from "@material-ui/core";
-import { ClearRounded } from "@material-ui/icons";
+import { ClearRounded, RecentActorsSharp } from "@material-ui/icons";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import clsx from "clsx";
 import heLocale from "date-fns/locale/he";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getFullName, getSuccessMessage } from "../../../api/genericApi";
+import {
+	createLocationMenuOptions,
+	getLocationsByAsset,
+} from "../../../api/locationsApi";
 import { getRoles, getRolesSuggestions } from "../../../api/permissionsApi";
+import { getAssetsSuggestions } from "../../../api/systemsApi";
 import {
 	createUser,
 	getUserDataById,
@@ -44,6 +49,9 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	const [errors, setErrors] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [roles, setRoles] = useState([]);
+	const [residentOwner, setResidentOwner] = useState(false);
+	const [assets, setAssets] = useState([]);
+	const [locations, setLocations] = useState([]);
 	const [details, setDetails] = useState({
 		tenant: auth.user.tenant,
 		email: "",
@@ -56,6 +64,8 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 		data: {
 			isResident: false,
 			isOwner: false,
+			asset: "",
+			location: "",
 		},
 		isActive: true,
 	});
@@ -88,6 +98,59 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 				setIsLoading(false);
 			});
 	}, []);
+
+	useEffect(() => {
+		if (details.data.isResident || details.data.isOwner) {
+			setResidentOwner(true);
+		} else if (!details.data.isResident && !details.data.isOwner) {
+			setResidentOwner(false);
+		}
+		if (details.data.asset) {
+			populateLocations(details.data.asset);
+		}
+	}, [details.data]);
+
+	useEffect(() => {
+		if (residentOwner) {
+			populateAssets();
+			return;
+		}
+		clearResidentData();
+	}, [residentOwner]);
+
+	const populateAssets = async () => {
+		let res = await getAssetsSuggestions();
+		if ([403, 500].includes(res.status)) {
+			setSnackbar(res);
+			handleClose();
+			return;
+		}
+		setAssets(res);
+	};
+
+	const populateLocations = async (asset) => {
+		const res = await getLocationsByAsset(asset);
+		if ([403, 500].includes(res.status)) {
+			setSnackbar(res);
+			handleClose();
+			return;
+		}
+		const ops = await createLocationMenuOptions(res);
+		setLocations(ops);
+	};
+
+	const clearResidentData = () => {
+		setLocations([]);
+		setAssets([]);
+		setDetails({
+			...details,
+			data: {
+				...details.data,
+				location: "",
+				asset: "",
+			},
+		});
+	};
 
 	const validateFields = () => {
 		return new Promise((resolve, reject) => {
@@ -155,9 +218,10 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 		let val = ["isActive", "isResident", "isOwner"].includes(field)
 			? event.target.checked
 			: event.target.value;
-		if (["isResident", "isOwner"].includes(field)) {
+		if (["isResident", "isOwner", "asset", "location"].includes(field)) {
 			setDetails({
 				...details,
+				employedBy: "",
 				data: {
 					...details.data,
 					[field]: val,
@@ -408,42 +472,44 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 													/>
 												</MuiPickersUtilsProvider>
 											</Grid>
-											<Grid
-												item
-												xs={12}
-												sm={6}
-												md={6}
-												lg={4}
-												xl={4}
-												className={classes.textContainer}
-											>
-												<TextField
-													variant={"outlined"}
-													label={t(`users.employedBy`)}
-													error={
-														errors.filter((e) => e.field === `employedBy`)
-															.length > 0
-													}
-													value={details.employedBy}
-													onChange={handleChange("employedBy")}
-													className={classes.textField}
-													size={"medium"}
-													helperText={
-														errors.filter((e) => e.field === `employedBy`)
-															.length > 0 && t("errors.isRequired")
-													}
-													inputProps={{
-														maxLength: 60,
-													}}
-													FormHelperTextProps={{
-														style: {
-															color:
-																errors.filter((e) => e.field === `employedBy`)
-																	.length > 0 && "rgb(244, 67, 54)",
-														},
-													}}
-												/>
-											</Grid>
+											{!(details.data.isResident || details.data.isOwner) && (
+												<Grid
+													item
+													xs={12}
+													sm={6}
+													md={6}
+													lg={4}
+													xl={4}
+													className={classes.textContainer}
+												>
+													<TextField
+														variant={"outlined"}
+														label={t(`users.employedBy`)}
+														error={
+															errors.filter((e) => e.field === `employedBy`)
+																.length > 0
+														}
+														value={details.employedBy}
+														onChange={handleChange("employedBy")}
+														className={classes.textField}
+														size={"medium"}
+														helperText={
+															errors.filter((e) => e.field === `employedBy`)
+																.length > 0 && t("errors.isRequired")
+														}
+														inputProps={{
+															maxLength: 60,
+														}}
+														FormHelperTextProps={{
+															style: {
+																color:
+																	errors.filter((e) => e.field === `employedBy`)
+																		.length > 0 && "rgb(244, 67, 54)",
+															},
+														}}
+													/>
+												</Grid>
+											)}
 										</Grid>
 									</Grid>
 								</Grid>
@@ -569,6 +635,7 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 													}
 												/>
 											</Grid>
+
 											<Grid item xs={12} className={classes.textContainer}>
 												<FormControlLabel
 													className={classes.switchLabel}
@@ -590,6 +657,125 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 													}
 												/>
 											</Grid>
+											{Boolean(assets.length) && (
+												<React.Fragment>
+													<Grid
+														item
+														xs={12}
+														sm={5}
+														md={5}
+														lg={5}
+														xl={5}
+														className={classes.section}
+													>
+														<Grid item xs={12}>
+															<div className={classes.sectionTitle}>
+																{t("locationsModule.owningAsset")}
+															</div>
+														</Grid>
+														<Grid item xs={12} className={classes.fields}>
+															<Grid container justify="flex-start">
+																<Grid
+																	item
+																	xs={12}
+																	className={classes.textContainer}
+																>
+																	<Select
+																		variant={"outlined"}
+																		value={details.data.asset}
+																		onChange={handleChange(`asset`)}
+																		className={classes.selectInput}
+																		MenuProps={{
+																			anchorOrigin: {
+																				vertical: "bottom",
+																				horizontal: "center",
+																			},
+																			transformOrigin: {
+																				vertical: "top",
+																				horizontal: "center",
+																			},
+																			getContentAnchorEl: null,
+																			disablePortal: true,
+																			classes: {
+																				paper: classes.menupaper,
+																			},
+																		}}
+																	>
+																		{assets.map((asset, i) => (
+																			<MenuItem
+																				key={i}
+																				value={asset.value}
+																				style={{ direction: lang.dir }}
+																				className={classes.menuitem}
+																			>
+																				{asset.text}
+																			</MenuItem>
+																		))}
+																	</Select>
+																</Grid>
+															</Grid>
+														</Grid>
+													</Grid>
+
+													<Grid
+														item
+														xs={12}
+														sm={5}
+														md={5}
+														lg={5}
+														xl={5}
+														className={classes.section}
+													>
+														<Grid item xs={12}>
+															<div className={classes.sectionTitle}>
+																{t("locationsModule.locationName")}
+															</div>
+														</Grid>
+														<Grid item xs={12} className={classes.fields}>
+															<Grid container justify="flex-start">
+																<Grid
+																	item
+																	xs={12}
+																	className={classes.textContainer}
+																>
+																	<Select
+																		variant={"outlined"}
+																		value={details.data.location}
+																		onChange={handleChange(`location`)}
+																		className={classes.selectInput}
+																		MenuProps={{
+																			anchorOrigin: {
+																				vertical: "bottom",
+																				horizontal: "center",
+																			},
+																			transformOrigin: {
+																				vertical: "top",
+																				horizontal: "center",
+																			},
+																			getContentAnchorEl: null,
+																			disablePortal: true,
+																			classes: {
+																				paper: classes.menupaper,
+																			},
+																		}}
+																	>
+																		{locations.map((location, i) => (
+																			<MenuItem
+																				key={i}
+																				value={location.value}
+																				style={{ direction: lang.dir }}
+																				className={classes.menuitem}
+																			>
+																				{location.text}
+																			</MenuItem>
+																		))}
+																	</Select>
+																</Grid>
+															</Grid>
+														</Grid>
+													</Grid>
+												</React.Fragment>
+											)}
 										</Grid>
 									</Grid>
 								</Grid>
@@ -633,8 +819,9 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: "10px",
 		padding: "10px 20px",
 		overflowY: "overlay",
+		maxHeight: "80vh",
 		[theme.breakpoints.down("sm")]: {
-			height: "81vh",
+			maxHeight: "81vh",
 			top: 0,
 			borderRadius: "0",
 			border: "0",

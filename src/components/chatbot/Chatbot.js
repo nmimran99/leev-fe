@@ -24,6 +24,8 @@ export const Chatbot = () => {
     const [ messages, setMessages ] = useState([]);
     const [ mainAsset, setMainAsset ] = useState(null);
     const [ inputValue, setInputValue ] = useState({ text: '', value: '', type: '' });
+    const [ systems, setSystems ] = useState([]);
+    const [ locations, setLocations ] = useState([]);
     const [ optionalValues, setOptionalValues ] = useState([]);
     const [ vault, setVault ] = useState({});
     const [ showInput, setShowInput ] = useState(null);
@@ -65,7 +67,8 @@ export const Chatbot = () => {
                 scenario = scenarios.assetNotFound;
             }
             setMainAsset(data.asset);
-            setOptionalValues([...data.systems.map((s,i) => ({ name: s.name, value: s._id }))]);
+            setSystems([...data.systems.map((s,i) => ({ name: s.name, value: s._id }))]);
+            setLocations([...data.locations.map((l,i) => ({ name: l.name, value: l._id }))]);
             return updateScenarioState(data.asset._id, 'asset')
             
            
@@ -167,6 +170,10 @@ export const Chatbot = () => {
         return scenarioStep.order + 1 === scenario.questions.length;
     }
 
+    const getOptions = () => {
+        return scenarioStep.inputField === 'system' ? systems : locations;
+    }
+
 
 	return (
 		<div className={classes.gridContainer} >
@@ -190,7 +197,7 @@ export const Chatbot = () => {
                     showInput === 'select' ? 
                     <MessageSelector
                         value={inputValue.value}
-                        options={optionalValues}
+                        options={getOptions()}
                         handleInputChange={handleInputChange}
                         handleSendInput={handleSendInput}
                     /> : 
@@ -247,12 +254,13 @@ const useStyles = makeStyles((theme) => ({
         background: 'rgba(0,0,0,0.1)',
     },
     inputContainer: {
-        background: 'rgba(0,0,0,0.9)',
+        background: 'rgba(0,0,0,0.1)',
         backdropFilter: 'blur(5px)',
         width: '100%',
         height: '50px',
         padding: '4px 0',
-        borderTop: '1px solid rgba(255,255,255,0.2)'
+        borderTop: '1px solid rgba(0,0,0,0.1)',
+        color: 'black'
     },
     topProfile: {
         width: '100%',

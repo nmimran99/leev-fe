@@ -378,6 +378,7 @@
         "permissions": "Roles and Permissions",
         "appearance": "Appearance",
         "users": "Users",
+        "residents": "Residents",
         "editUserDetails": "Edit Details"
     },
     "controls": {
@@ -427,7 +428,9 @@
         "role": "role",
         "relatedUser": "related User",
         "relatedUsers": "related users" ,
-        "user": "User"
+        "user": "User",
+        "true": "Yes",
+        "false": "No"
     },
     "scheduler": {
         "startDate": "Start Date",
@@ -490,6 +493,8 @@
         "email": "Email Address",
         "filterByName": "Filter by name",
         "noUsersFound": "No Users Found",
+        "noResidentsFound": "No Residents Found",
+        "resident": "Resident",
         "upsert": {
             "generalDetails": "General Details",
             "createUser": "Create user",
@@ -519,6 +524,7 @@
         "no": "No",
         "notLoggedIn": {
             "requestSystem": "Which system is faulty?",
+            "requestLocation": "What is the fault's location?",
             "requestDescription1": "Please provide me with a detailed description of the fault",
             "requestDescription2": "Efficient description will include the fault's location and details about what exactly isn't working correctly",
             "requestPhotos": "Would you like to add some photos of the fault?",

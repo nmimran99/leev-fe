@@ -378,6 +378,7 @@
         "permissions": "הרשאות ותפקידים",
         "appearance": "תצוגה",
         "users": "משתמשים",
+        "residents": "דיירים",
         "editUserDetails": "ערוך פרטים"
     },
     "controls": {
@@ -427,7 +428,9 @@
         "role": "תפקיד",
         "relatedUser": "משתמש מקושר",
         "relatedUsers": "משתמשים מקושרים",
-        "user": "משתמש"
+        "user": "משתמש",
+        "true": "כן",
+        "false": "לא"
     },
     "scheduler": {
         "startDate": "תאריך התחלה",
@@ -490,6 +493,8 @@
         "email": "כתובת דוא\"ל",
         "filterByName": "סנן על פי שם",
         "noUsersFound": "לא נמצאו משתמשים",
+        "noResidentsFound": "לא נמצאו דיירים",
+        "resident": "דייר",
         "upsert": {
             "generalDetails": "פרטים כלליים",
             "createUser": "הוספת משתמש",
@@ -519,6 +524,7 @@
         "no": "לא",
         "notLoggedIn": {
             "requestSystem": "באיזו מערכת ישנה תקלה?",
+            "requestLocation": "מהו מיקום התקלה?",
             "requestDescription1": "אשמח לקבל תיאור מלא של התקלה.",
             "requestDescription2": "תיאור יעיל של התקלה יכלול את מיקום התקלה ופירוט על מה שלא עובד כמו שצריך.",
             "requestPhotos": "האם תרצה להוסיף תמונות של התקלה?",

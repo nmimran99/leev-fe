@@ -1,7 +1,7 @@
 import { Avatar, Grid, IconButton, LinearProgress, List, ListItem, makeStyles, Tooltip } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createUser, filterUsers, getUserList } from '../../../api/userApi';
+import { createUser, filterUsers, getResidentList, getUserList } from '../../../api/userApi';
 import { AuthContext } from '../../../context/AuthContext';
 import { SnackbarContext } from '../../../context/SnackbarContext';
 import { LanguageContext } from '../../../context/LanguageContext';
@@ -12,7 +12,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { UpsertUser } from './UpsertUser';
 import { Can } from '../../reuseables/Can';
 
-export const Users = () => {
+export const Residents = () => {
 	const classes = useStyles();
 	const { t } = useTranslation();
 	const { auth, setAuth } = useContext(AuthContext);
@@ -26,7 +26,7 @@ export const Users = () => {
 
 	useEffect(() => {
 		if (!isLoading) return;
-		getUserList()
+		getResidentList()
 			.then((res) => {
 			
 				if (res.status === 403) {
@@ -77,7 +77,7 @@ export const Users = () => {
 			<Grid item xs={12} className={classes.userGrid}>
 				<List className={classes.userList}>
 					{!users.length ? (
-						<div className={classes.noUsersFound}>{t("users.noUsersFound")}</div>
+						<div className={classes.noUsersFound}>{t("users.noResidentsFound")}</div>
 					) : (
 						users.map((u, i) => (
 							<ListItem className={classes.listRow} key={i}>

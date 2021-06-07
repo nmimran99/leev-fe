@@ -23,6 +23,7 @@ import { UserItem } from "../../user/UserItem";
 import { AssetControls } from "./AssetControls";
 import { FaultsGrid } from "./tableViews/FaultsGrid";
 import { LocationsGrid } from "./tableViews/LocationsGrid";
+import { ResidentsGrid } from "./tableViews/ResidentsGrid";
 import { SystemsGrid } from "./tableViews/SystemsGrid";
 import { TasksGrid } from "./tableViews/TasksGrid";
 import { UpsertAsset } from "./UpsertAsset";
@@ -64,7 +65,10 @@ export const AssetView = ({}) => {
 		if (res.status === 403) {
 			setSnackbar(res);
 		} else if (res) {
-			setAsset(res.data);
+			setAsset({
+				...asset,
+				...res.data,
+			});
 		}
 		setEditMode(false);
 	};
@@ -94,17 +98,6 @@ export const AssetView = ({}) => {
 				setSnackbar(res);
 				return;
 			}
-			let lcs = asset.locations;
-			lcs = lcs.map((lc, i) => {
-				if (lc._id === res._id) {
-					return res;
-				}
-				return lc;
-			});
-			setAsset({
-				...asset,
-				locations: lcs,
-			});
 			history.replace(`${location.pathname}?tab=locations`);
 		});
 	};
@@ -209,17 +202,18 @@ export const AssetView = ({}) => {
 						className={classes.tableContainer}
 					>
 						{query.tab === "systems" ? (
-							<SystemsGrid systems={asset.systems} faults={asset.faults} />
+							<SystemsGrid assetId={asset._id} />
 						) : query.tab === "faults" ? (
-							<FaultsGrid faults={asset.faults} />
+							<FaultsGrid assetId={asset._id} />
 						) : query.tab === "tasks" ? (
-							<TasksGrid tasks={asset.tasks} />
+							<TasksGrid assetId={asset._id} />
 						) : query.tab === "locations" ? (
 							<LocationsGrid
-								locations={asset.locations}
-								faults={asset.faults}
+								assetId={asset._id}
 								handleUpdateLocation={handleUpdateLocation}
 							/>
+						) : query.tab === "residents" ? (
+							<ResidentsGrid assetId={asset._id} />
 						) : null}
 					</Grid>
 				</Grid>

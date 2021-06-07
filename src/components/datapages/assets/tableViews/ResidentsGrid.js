@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
 	Button,
+	Fade,
 	Grid,
 	LinearProgress,
 	makeStyles,
@@ -8,17 +9,16 @@ import {
 	useMediaQuery,
 } from "@material-ui/core";
 import { useTranslation } from "react-i18next";
-import { getFullName } from "../../../../api/genericApi";
+import { getFullName, getServerError, removeQueryParam } from "../../../../api/genericApi";
 import { UserItem } from "../../../user/UserItem";
 import clsx from "clsx";
 import { StatusTag } from "../../../reuseables/StatusTag";
 import { ItemLink } from "../../../reuseables/ItemLink";
-import { useHistory, useLocation } from "react-router";
 import { getAssetData } from "../../../../api/assetsApi";
-import { getServerError, removeQueryParam } from "../../../../api/genericApi";
+import { useHistory, useLocation } from "react-router";
 import { SnackbarContext } from "../../../../context/SnackbarContext";
 
-export const TasksGrid = ({ assetId }) => {
+export const ResidentsGrid = ({ assetId }) => {
 	const classes = useStyles();
 	const history = useHistory();
 	const location = useLocation();
@@ -26,10 +26,10 @@ export const TasksGrid = ({ assetId }) => {
 	const { setSnackbar } = useContext(SnackbarContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const [ isLoading, setIsLoading ] = useState(true);
-	const [ tasks, setTasks ] = useState([]);
+	const [ residents, setResidents ] = useState([]);
 
-	useEffect(() => {
-		getAssetData(assetId, 'tasks')
+    useEffect(() => {
+		getAssetData(assetId, 'residents')
 		.then(res => {
 			if (!res || [403, 500].includes(res.status)) {
 				history.push({
@@ -38,7 +38,7 @@ export const TasksGrid = ({ assetId }) => {
 				});
 				setSnackbar(res || getServerError());
 			};
-			setTasks(res.tasks)
+			setResidents(res.residents);
 		})
 		.finally(() => {
 			setIsLoading(false)
@@ -46,29 +46,29 @@ export const TasksGrid = ({ assetId }) => {
 	}, [])
 
 	return (
-		isLoading ? 
-		<LinearProgress /> :
+        isLoading ? 
+        <LinearProgress /> :
 		<Grid container justify="center">
 			<Grid container className={classes.headersContainer} justify="center">
 				<Grid item xs={4}>
 					<div className={classes.headerContainer}>
-						{t("tasksModule.taskId")}
+						{t("users.resident")}
 					</div>
 				</Grid>
 				<Grid item xs={4}>
 					<div className={classes.headerContainer}>
-						{t("tasksModule.title")}
+						{t("locationsModule.locationName")}
 					</div>
 				</Grid>
 				<Grid item xs={4}>
 					<div className={classes.headerContainer}>
-						{t("tasksModule.status")}
+						{t("users.phoneNumber")}
 					</div>
 				</Grid>
 			</Grid>
 
-			{tasks.length
-				? tasks.map((task, i) => (
+			{residents.length
+				? residents.map((resident, i) => (
 						<Grid
 							container
 							className={classes.rowContainer}
@@ -77,32 +77,24 @@ export const TasksGrid = ({ assetId }) => {
 						>
 							<Grid item xs={4} className={classes.cellGrid}>
 								<div className={classes.cellData}>
-									<ItemLink
-										itemId={task.taskId}
-										module={"tasks"}
-										size={matches ? 13 : 16}
-									/>
+									<UserItem 
+                                        user={resident}
+                                        showName
+                                        showPhone
+                                        avatarSize={matches ? 0 : 40}
+                                        size={matches ? 11 : 13}
+                                        column={matches}
+                                    />
 								</div>
 							</Grid>
 							<Grid item xs={4} className={classes.cellGrid}>
 								<div className={clsx(classes.cellData)}>
-									{task.description}
-									{/* <UserItem 
-                                    user={sys.owner}
-                                    showName
-                                    avatarSize={matches ? 0 : 40}
-                                    size={matches ? 11 : 13}
-                                    column={matches}
-                                /> */}
+									{resident.data.location.name}	
 								</div>
 							</Grid>
 							<Grid item xs={4} className={classes.cellGrid}>
 								<div className={clsx(classes.cellData)}>
-									<StatusTag
-										status={task.status}
-										type="task"
-										size={matches ? 11 : 13}
-									/>
+									{t(`general.${resident.data.isOwner}`)}
 								</div>
 							</Grid>
 						</Grid>
@@ -154,7 +146,7 @@ const useStyles = makeStyles((theme) => ({
 			minWidth: "fit-content",
 		},
 	},
-	opentasks: {
+	openFaults: {
 		background: "#e53935",
 		padding: "5px 10px",
 		display: "grid",

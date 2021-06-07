@@ -15,6 +15,10 @@ const menuOptions = [
         icon: "https://img.icons8.com/ios-filled/25/4a90e2/conference-background-selected.png"
     },
     {
+        tab: 'residents',
+        icon: "https://img.icons8.com/ios-filled/25/4a90e2/person-at-home.png"
+    },
+    {
         tab: 'permissions',
         icon: "https://img.icons8.com/ios-filled/25/4a90e2/shield.png"
     },
@@ -70,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
             display: 'flex',
             borderRight: 'unset',
             borderBottom: '1px solid rgba(255,255,255,0.2)',
+            height: '50px'
         }
 	},
 	listItem: {

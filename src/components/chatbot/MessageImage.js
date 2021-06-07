@@ -65,12 +65,12 @@ const useStyles = makeStyles((theme) => ({
     uploadBtn: {
         padding: '6px 10px',
         borderRadius: '42px',
-        background: 'rgba(255,255,255,0.1)',
+        background: '#42A5F5',
         color: 'white',
         width: '100%',
         margin: '0 5px 0 0px',
         '&:hover': {
-            boxShadow: 'inset white 0 0 2px 1px',
+            boxShadow: 'none',
             background: 'rgba(0,0,0,0.3)'
         }
     },
@@ -78,10 +78,10 @@ const useStyles = makeStyles((theme) => ({
         padding: '6px 10px',
         borderRadius: '42px',
         background: 'rgba(255,255,255,0.1)',
-        color: 'white',
+        color: 'black',
         margin: '0 5px 0 0px',
         '&:hover': {
-            boxShadow: 'inset white 0 0 2px 1px',
+            boxShadow: 'none',
             background: 'rgba(0,0,0,0.3)'
         }
     },

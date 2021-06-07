@@ -70,22 +70,23 @@ const useStyles = makeStyles((theme) => ({
         padding: '0 5px'
 	},
 	form: {
-		color: 'white',
+		color: 'black',
         width: '100%',
         margin: '0 5px 0 0px'
 	},
     selectInput: {
         padding: '4px 10px',
         borderRadius: '42px',
-        background: 'rgba(255,255,255,0.1)',
+        border: '1px solid rgba(0,0,0,0.2)',
+        background: 'white',
 		'&>div': {
-			color: 'white',
+			color: 'black',
 			width: '90%',
-            padding: '7px 10px',
+            padding: '4px 10px',
             fontSize: '14px'
 		},
 		'& label': {
-			color: 'white',
+			color: 'black',
 			paddingLeft: '5px',
 		},
 		'& fieldset': {
