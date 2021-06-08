@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     messagesContainer: {
         padding: '10px 0',
         height: 'calc(100% - 120px)',
-        overflowY: 'overlay',
+        overflow: 'overlay',
         display: 'flex',
         flexDirection: 'column'
     },
