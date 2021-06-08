@@ -1,3 +1,4 @@
+import { FiberManualRecordRounded } from '@material-ui/icons';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next }from 'react-i18next';
@@ -5,6 +6,11 @@ import { handleLS } from './api/userApi';
 import en from './lacales/en/translation.json';
 import he from './lacales/he/translation.json';
 
+let fbc = 'en';
+let lsg = localStorage.getItem('wb_lang');
+if (lsg) {
+    fbc = JSON.parse(localStorage.getItem('wb_lang')).lang;
+}
 
 const resources = {
     en: {
@@ -20,7 +26,7 @@ i18n
     .use(initReactI18next)
     .init({
         resources,
-        fallbackLng: JSON.parse(localStorage.getItem('wb_lang')).lang || 'en',
+        fallbackLng: fbc,
         detection: {
             order: ['queryString', 'cookie'],
             cache: ['cookie']
