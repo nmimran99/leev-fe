@@ -6,7 +6,7 @@ import React, {useContext} from 'react';
 import { getLocale } from '../../../api/genericApi';
 import { LanguageContext } from '../../../context/LanguageContext';
 
-export const CustomDatePicker = ({ data, handleChange, label, disablePast }) => {
+export const CustomDatePicker = ({ data, handleChange, label, disablePast, isError, helperText }) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 
@@ -25,6 +25,8 @@ export const CustomDatePicker = ({ data, handleChange, label, disablePast }) => 
 					disableToolbar={true}
 					variant={'inline'}
 					disablePast={disablePast}
+					error={isError}
+					helperText={helperText}
 				/>
 			</MuiPickersUtilsProvider>
 	);
@@ -34,13 +36,8 @@ const useStyles = makeStyles((theme) => ({
 	textField: {
 		width: '100%',
 		'& fieldset': {
-			borderRadius: '5px',
+			borderRadius: '5px'
 		},
 	},
-	textField: {
-		width: '100%',
-		'& fieldset': {
-			borderRadius: '5px',
-		},
-	},
+
 }));

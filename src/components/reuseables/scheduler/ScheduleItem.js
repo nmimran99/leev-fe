@@ -1,5 +1,6 @@
 import {
 	FormControl,
+	FormHelperText,
 	Grid,
 	IconButton,
 	InputLabel,
@@ -23,6 +24,8 @@ export const ScheduleItem = ({
 	updateSchedules,
 	index,
 	removeSchedule,
+	dateError,
+	intervalError
 }) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
@@ -63,6 +66,8 @@ export const ScheduleItem = ({
 						label={t('scheduler.startDate')}
 						data={schedule.startDate}
 						handleChange={handleChangeStartDate}
+						isError={dateError}
+						helperText={dateError ? t('errors.isRequired') : null}
 					/>
 				</Grid>
 				<Grid item xs={4}>
@@ -88,6 +93,7 @@ export const ScheduleItem = ({
 									paper: classes.menupaper,
 								},
 							}}
+							error={Boolean(intervalError)}
 						>
 							{intervals.map((interval, i) => {
 								if (
@@ -111,6 +117,18 @@ export const ScheduleItem = ({
 								);
 							})}
 						</Select>
+						{
+							Boolean(intervalError) &&
+							<FormHelperText
+							style={{
+								color: '#f44336',
+								marginRight: '15px',
+							}}
+						>
+							{t('errors.isRequired')}
+						</FormHelperText>
+						}
+						
 					</FormControl>
 				</Grid>
 				<Grid item xs={2} className={classes.remove}>

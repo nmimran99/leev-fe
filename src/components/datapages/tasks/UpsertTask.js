@@ -79,6 +79,7 @@ export const UpsertTask = ({
 		uploadedImages: [],
 	});
 
+	console.log(errors)
 	useEffect(() => {
 		if (!details.isUsingSteps) {
 			setDetails({ ...details, steps: [], isSequential: false });
@@ -153,6 +154,17 @@ export const UpsertTask = ({
 			if (!details.title) {
 				errList.push({ field: "title", text: t("errors.isRequired") });
 			}
+			
+			if (details.isRepeatable) {
+				details.schedule.forEach((sc, i) => {
+					if (!sc.interval) {
+						errList.push({ field: `schedule-interval-${i}`, text: t("errors.isRequired") })
+					}
+					if (!sc.startDate) {
+						errList.push({ field: `schedule-startDate-${i}`, text: t("errors.isRequired") })
+					}
+				})
+			};
 
 			if (errList.length) {
 				setErrors(errList);
@@ -277,6 +289,12 @@ export const UpsertTask = ({
 	const updateSchedules = async (data, index) => {
 		let scs = [...details.schedule];
 		scs[index] = data;
+		setErrors(errors.filter(e => {
+			if (e.field.includes('schedule') && e.field.split('-')[2] == index) {
+				return false;
+			};
+			return true;
+		}))
 		setDetails({
 			...details,
 			schedule: scs,
@@ -285,6 +303,12 @@ export const UpsertTask = ({
 
 	const removeSchedule = (index) => (event) => {
 		let scs = details.schedule.filter((s, i) => s._id !== index && index !== i);
+		setErrors(errors.filter(e => {
+			if (e.field.includes('schedule') && e.field.split('-')[2] == index) {
+				return false;
+			};
+			return true;
+		}))
 		setDetails({
 			...details,
 			schedule: scs,
@@ -690,6 +714,8 @@ export const UpsertTask = ({
 															updateSchedules={updateSchedules}
 															removeSchedule={removeSchedule}
 															index={i}
+															intervalError={errors.filter(e => e.field.includes('interval') && e.field.split('-')[2] == i).length}
+															dateError={errors.filter(e => e.field.includes('startDate') && e.field.split('-')[2] == i).length}
 														/>
 													</Grid>
 												))}
