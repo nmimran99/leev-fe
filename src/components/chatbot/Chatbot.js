@@ -291,6 +291,7 @@ const useStyles = makeStyles((theme) => ({
 	topBar: {
 		display: "flex",
         background: "rgba(0,0,0,0.9)",
+        height: '75px',
 	},
 	addressContainer: {
 		width: "100%",
@@ -310,7 +311,8 @@ const useStyles = makeStyles((theme) => ({
     changeLanguage: {
         background: 'transparent',
         color: 'white',
-        borderRadius: '0'
+        borderRadius: '0',
+        height: '70px'
     },
     langItem: {
         color: 'white',

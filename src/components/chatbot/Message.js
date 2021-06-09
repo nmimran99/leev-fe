@@ -36,7 +36,7 @@ export const Message = ({ data }) => {
 const useStyles = makeStyles((theme) => ({
     message: {
         display: 'flex',
-        margin: '3px 5px',
+        margin: '3px 5px'
     },
     messageText: {
         color: 'white',

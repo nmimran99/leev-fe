@@ -53,9 +53,7 @@ const useStyles = makeStyles((theme) => ({
     messagesContainer: {
         padding: '10px 0',
         height: 'calc(100% - 120px)',
-        overflow: 'auto',
-        display: 'flex',
-        flexDirection: 'column'
+        overflow: 'auto'
     },
     topProfile: {
         width: '100%',
