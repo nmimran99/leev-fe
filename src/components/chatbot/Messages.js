@@ -81,7 +81,8 @@ const useStyles = makeStyles((theme) => ({
         background: 'rgba(0,0,0,0.8)',
         borderRadius: '50px',
         padding: '10px 25px',
-        margin: '5px 0 30px'
+        margin: '5px 30px 30px',
+        textAlign: 'center'
     },
     '@global': {
 		'*::-webkit-scrollbar': {

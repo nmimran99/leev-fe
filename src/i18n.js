@@ -12,6 +12,8 @@ if (lsg) {
     fbc = JSON.parse(localStorage.getItem('wb_lang')).lang;
 }
 
+
+
 const resources = {
     en: {
         translation: en

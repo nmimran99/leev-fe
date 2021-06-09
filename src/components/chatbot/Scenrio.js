@@ -15,7 +15,7 @@ export const assetNotFound = {
 	questions: [
 		{
 			order: 0,
-            text: i18next.t('chatbot.assetNotFound'),
+            text: 'chatbot.assetNotFound',
 			actionRequired: false,
 			inputType: null,
             submitFunc: null
@@ -47,28 +47,28 @@ export const openFault = {
 	questions: [
 		{
 			order: 0,
-            text: i18next.t('chatbot.welcomeMessage'),
+            text: 'chatbot.welcomeMessage',
 			actionRequired: false,
 			inputType: null,
             submitFunc: null
 		},
 		{
 			order: 1,
-            text: i18next.t('chatbot.notLoggedIn.requestSystem'),
+            text: 'chatbot.notLoggedIn.requestSystem',
 			actionRequired: true,
 			inputType: 'select',
 			inputField: 'system'
 		},
 		{
 			order: 2,
-            text: i18next.t('chatbot.notLoggedIn.requestLocation'),
+            text: 'chatbot.notLoggedIn.requestLocation',
 			actionRequired: true,
 			inputType: 'select',
 			inputField: 'location'
 		},
 		{
 			order: 3,
-            text: i18next.t('chatbot.notLoggedIn.requestDescription1'),
+            text: 'chatbot.notLoggedIn.requestDescription1',
             actionRequired: false,
 			inputType: null,
 			inputField: null
@@ -76,14 +76,14 @@ export const openFault = {
 		},
 		{
 			order: 4,
-            text: i18next.t('chatbot.notLoggedIn.requestDescription2'),
+            text: 'chatbot.notLoggedIn.requestDescription2',
 			actionRequired: true,
 			inputType: 'string',
 			inputField: 'description'
 		},
 		{
 			order: 5,
-            text: i18next.t('chatbot.notLoggedIn.requestPhotos'),
+            text: 'chatbot.notLoggedIn.requestPhotos',
 			actionRequired: true,
 			inputType: 'image',
 			inputField: 'images',
@@ -91,7 +91,7 @@ export const openFault = {
 		},
 		{
 			order: 6,
-            text: i18next.t('chatbot.notLoggedIn.faultOpenedSuccessfully'),
+            text: 'chatbot.notLoggedIn.faultOpenedSuccessfully',
             actionRequired: false,
 			inputType: null,
 			inputField: null
@@ -129,7 +129,7 @@ export const followFault = {
 	questions: [
 		{
 			order: 0,
-            text: i18next.t('chatbot.requestFollow'),
+            text: 'chatbot.requestFollow',
 			actionRequired: true,
 			inputType: 'boolean',
 			inputField: 'shouldFollow',
@@ -169,7 +169,7 @@ export const checkUserAuthentication = {
 	questions: [
 		{
 			order: 0,
-            text: i18next.t('chatbot.requestEmail'),
+            text: 'chatbot.requestEmail',
 			actionRequired: true,
 			inputType: 'string',
 			inputField: 'email',
@@ -182,7 +182,7 @@ export const assignedSuccessfully = {
 	questions: [
 		{
 			order: 0,
-			text: i18next.t('chatbot.assignedSuccessfully'),
+			text: 'chatbot.assignedSuccessfully',
 			actionRequired: false,
 			inputType: null,
 			inputField: null,
@@ -195,7 +195,7 @@ export const assignFailed = {
 	questions: [
 		{
 			order: 0,
-			text: i18next.t('chatbot.userNotFound'),
+			text: 'chatbot.userNotFound',
 			actionRequired: false,
 			inputType: null,
 			inputField: null,
@@ -210,7 +210,7 @@ export const userAssigned = {
 	questions: [
 		{
 			order: 0,
-            text: i18next.t('chatbot.notLoggedIn.emailSent'),
+            text: 'chatbot.notLoggedIn.emailSent',
             actionRequired: false,
 			inputType: null,
 			inputField: null,
@@ -223,7 +223,7 @@ export const thankyou = {
 	questions: [
 		{
 			order: 0,
-            text: i18next.t('chatbot.notLoggedIn.thankyou'),
+            text: 'chatbot.notLoggedIn.thankyou',
             actionRequired: false,
 			inputType: null,
 			inputField: null,
