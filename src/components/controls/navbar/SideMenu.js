@@ -20,6 +20,7 @@ import { LanguageContext } from "../../../context/LanguageContext";
 import { NotificationsContext } from "../../../context/NotificationsContext";
 import { Can } from "../../reuseables/Can";
 import { UserItem } from "../../user/UserItem";
+import clsx from 'clsx'
 
 export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 	const classes = useStyles();
@@ -53,6 +54,25 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 						<UserItem showTitle showName user={auth.user} />
 					</div>
 					<List className={classes.list}>
+					
+							<ListItem
+								button={true}
+								className={clsx(classes.listItem, classes.dashbordButton)}
+								onClick={handleClick("dashboard")}
+							>
+								<ListItemIcon className={classes.listItemIcon}>
+									<Icon classes={{ root: classes.iconRoot }}>
+										<img src="https://img.icons8.com/pastel-glyph/25/4a90e2/statistics--v4.png"/>
+									</Icon>
+									{/* <BusinessRoundedIcon fontSize={'medium'} className={classes.icon} /> */}
+								</ListItemIcon>
+								<ListItemText
+									primary={t("sideMenu.dashboard")}
+									className={classes.listItemText}
+									disableTypography={true}
+								/>
+							</ListItem>
+					
 						<Can module="assets" action="read">
 							<ListItem
 								button={true}
@@ -275,5 +295,5 @@ const useStyles = makeStyles((theme) => ({
 	},
 	icon: {
 		color: "white",
-	},
+	}
 }));

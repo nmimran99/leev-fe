@@ -17,7 +17,8 @@
         "residents": "Residents",
         "locations": "Locations",
         "settings": "Settings",
-        "logout": "Sign out"
+        "logout": "Sign out",
+        "dashboard": "Overview Dashboard"
     },
     "assetsModule": {
         "assets": "Assets",
@@ -573,7 +574,9 @@
         "onlyMe": "Only Related Objects",
         "mineAndOthers": "Everyone",
         "roleName": "Role Name",
-        "completeSteps": "Complete task steps"
+        "completeSteps": "Complete task steps",
+        "dashboard": "Overview Dashboard",
+        "locations": "Locations"
     },
     "locationsModule": {
         "updateLocationDetails": "Update Location Details",
@@ -582,5 +585,31 @@
         "locationName": "Location Name",
         "relatedUsers": "Related Users",
         "openFaults": "Open Faults"
+    },
+    "dashboard": {
+        "lastOperations": "Last Operations",
+        "statusChange": "Changed %%itemid%%'s status to",
+        "detailsUpdate": "Updated the details for %%itemid%%",
+        "addComment": "Added a comment to %%itemid%%:",
+        "ownerChange": "Changed the owner for %%itemid%% to",
+        "relatedUserAdded": "Related a user to %%itemid%%:",
+        "itemCreated": "New item created with idenitfier %%itemid%%",
+        "actionTypes": {
+            "statusChange": "Status Change",
+            "ownerChange": "Owner Change",
+            "relatedUserAdded": "Related User Added",
+            "addComment": "Comment Added",
+            "detailsUpdate": "Details Update",
+            "itemCreated": "Item Created"
+        },
+        "openfaults": "Open Faults",
+        "opentasks": "Open Tasks",
+        "avgTimeToClose": "Fault Average Time-To-Close",
+        "gaugeText": "Average time between fault's open date to it's latest closure date",
+        "pendingFaults": "Faults in",
+        "timePending": "Time Pending to Action",
+        "upcomingTasks": "Upcoming tasks - 30 days",
+        "noData": "Not enough data",
+        "noDataSecondary": "There isn't enough data to generate this chart. This chart will be available once enough data is available."
     }
 }

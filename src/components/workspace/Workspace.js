@@ -18,6 +18,7 @@ import { Settings } from '../controls/settings/Settings';
 import { RepeatableTasks } from '../datapages/tasks/RepeatableTasks';
 import { Calender } from '../datapages/calender/Calender';
 import Alert from '@material-ui/lab/Alert';
+import { Dashboard } from '../datapages/dashboard/Dashboard';
 
 export const Workspace = ({}) => {
 	const classes = useStyles();
@@ -70,6 +71,9 @@ export const Workspace = ({}) => {
 							</Route>
 							<Route path={'/workspace/calender'}>
 								<Calender />
+							</Route>
+							<Route path={'/workspace/dashboard'}>
+								<Dashboard />
 							</Route>						
 						</Switch>
 					</Grid>

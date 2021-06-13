@@ -17,7 +17,8 @@
         "residents": "דיירים",
         "locations": "מיקומים",
         "settings": "הגדרות",
-        "logout": "התנתק"
+        "logout": "התנתק",
+        "dashboard": "תצוגת מצב"
     },
     "assetsModule": {
         "assets": "נכסים",
@@ -573,7 +574,9 @@
         "onlyMe": "רק לפריטים מקושרים",
         "mineAndOthers": "לכולם",
         "roleName": "שם תפקיד",
-        "completeSteps": "השלמת צעדי משימה"
+        "completeSteps": "השלמת צעדי משימה",
+        "dashboard": "תצוגת מצב",
+        "locations": "מיקומים"
     },
     "locationsModule": {
         "updateLocationDetails": "עידכון פרטי מיקום",
@@ -582,5 +585,31 @@
         "locationName": "שם מיקום",
         "relatedUsers": "משתמשים מקושרים",
         "openFaults": "תקלות פתוחות"
+    },
+    "dashboard": {
+        "lastOperations": "פעולות אחרונות שבוצעו",
+        "statusChange": "שינה את סטטוס הפריט %%itemid%% ל-",
+        "detailsUpdate": "עידכן את הפרטים ל - %%itemid%%",
+        "addComment": "הוסיף תגובה לפריט %%itemid%%:",
+        "ownerChange": "שינה את ממונה %%itemid%% ל -",
+        "relatedUserAdded": "הוסיף משתמש מקושר לפריט %%itemid%%:",
+        "itemCreated": "פריט חדש נוצר עם מזהה %%itemid%%",
+        "actionTypes": {
+            "statusChange": "שינוי סטטוס",
+            "ownerChange": "שינוי ממונה",
+            "relatedUserAdded": "נוסף משתמש מקושר",
+            "addComment": "נוספה תגובה",
+            "detailsUpdate": "עידכון פרטים",
+            "itemCreated": "פריט נוצר"
+        },
+        "openfaults": "תקלות פתוחות",
+        "opentasks": "משימות פתוחות",
+        "avgTimeToClose": "זמן סגירה ממוצע לתקלה",
+        "gaugeText": "זמן ממוצע בין תאריך פתיחת תקלה לתאריך סגירת התקלה האחרון",
+        "pendingFaults": "תקלות בסטטוס",
+        "timePending": "זמן בהמתנה לפעולה",
+        "upcomingTasks": "משימות מחזוריות קרובות - 30 ימים",
+        "noData": "אין מספיק מידע",
+        "noDataSecondary": "לא קיים מספיק מידע במערכת על מנת לייצר את תצוגה זו. תצוגה זו תוצג ברגע שמספיק מידע יהיה זמין במערכת."
     }
 }

@@ -124,14 +124,15 @@ export const SearchBoxSelect = ({ placeholder, filterField, suggestionsFunc, rel
                         classes={{
                             paper : classes.menu
                         }}
+                        getContentAnchorEl={null}
                         keepMounted
                         anchorOrigin={{
                             vertical: 'bottom',
-                            horizontal: 'right',
+                            horizontal: 'center',
                         }}
                         transformOrigin={{
                             vertical: 'top',
-                            horizontal: 'right',
+                            horizontal: 'center',
                         }}
                     >
                     {
@@ -205,7 +206,7 @@ const useStyles = makeStyles(theme => ({
         
     },
     menu: {
-        marginTop: '55px',
+        marginRight: '25px',
         background: 'rgba(0,0,0,0.5)',
         backdropFilter: 'blur(10px)',
         color: 'white'
