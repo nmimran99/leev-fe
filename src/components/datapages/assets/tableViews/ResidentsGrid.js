@@ -57,12 +57,12 @@ export const ResidentsGrid = ({ assetId }) => {
 				</Grid>
 				<Grid item xs={4}>
 					<div className={classes.headerContainer}>
-						{t("locationsModule.locationName")}
+						{t("users.upsert.unitNumber")}
 					</div>
 				</Grid>
 				<Grid item xs={4}>
 					<div className={classes.headerContainer}>
-						{t("users.phoneNumber")}
+						{t("users.isOwnerResident")}
 					</div>
 				</Grid>
 			</Grid>
@@ -89,12 +89,12 @@ export const ResidentsGrid = ({ assetId }) => {
 							</Grid>
 							<Grid item xs={4} className={classes.cellGrid}>
 								<div className={clsx(classes.cellData)}>
-									{resident.data.location.name}	
+									{resident.data.unitNumber}	
 								</div>
 							</Grid>
 							<Grid item xs={4} className={classes.cellGrid}>
 								<div className={clsx(classes.cellData)}>
-									{t(`general.${resident.data.isOwner}`)}
+									{resident.data.isOwner ? t(`users.owner`) : resident.data.isResident ? t(`users.owner`) : t('general.no')}
 								</div>
 							</Grid>
 						</Grid>

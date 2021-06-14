@@ -218,7 +218,7 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 		let val = ["isActive", "isResident", "isOwner"].includes(field)
 			? event.target.checked
 			: event.target.value;
-		if (["isResident", "isOwner", "asset", "location"].includes(field)) {
+		if (["isResident", "isOwner", "asset", "location", "unitNumber"].includes(field)) {
 			setDetails({
 				...details,
 				employedBy: "",
@@ -774,6 +774,43 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 															</Grid>
 														</Grid>
 													</Grid>
+													<Grid item xs={12} sm={6} lg={4} className={classes.section}>
+										<Grid item xs={12}>
+											<div className={classes.sectionTitle}>
+												{t("users.upsert.unitNumber")}
+											</div>
+										</Grid>
+										<Grid item xs={12} className={classes.fields}>
+											<Grid container justify="flex-start">
+												<Grid item xs={12} className={classes.textContainer}>
+													<TextField
+														variant={"outlined"}
+														error={
+															errors.filter((e) => e.field === `unitNumber`).length > 0
+														}
+														value={details.data.unitNumber}
+														onChange={handleChange("unitNumber")}
+														className={classes.textField}
+														size={"medium"}
+														helperText={
+															errors.filter((e) => e.field === `unitNumber`).length >
+																0 && t("errors.isRequired")
+														}
+														inputProps={{
+															maxLength: 60,
+														}}
+														FormHelperTextProps={{
+															style: {
+																color:
+																	errors.filter((e) => e.field === `unitNumber`)
+																		.length > 0 && "rgb(244, 67, 54)",
+															},
+														}}
+													/>
+												</Grid>
+											</Grid>
+										</Grid>
+									</Grid>
 												</React.Fragment>
 											)}
 										</Grid>
@@ -808,6 +845,10 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: "center",
 		justifyContent: "center",
 		backdropFilter: "blur(10px)",
+		'input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button': { 
+		'-webkit-appearance': 'none', 
+			margin: '0' 
+		}
 	},
 
 	gridCont: {

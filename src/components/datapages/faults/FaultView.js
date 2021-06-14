@@ -3,30 +3,30 @@ import {
 	LinearProgress,
 	makeStyles,
 	useMediaQuery,
-} from '@material-ui/core';
-import { format, parseISO } from 'date-fns';
-import dateFormat from 'dateformat';
-import React, { useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation, useParams } from 'react-router';
-import { getFullAddress } from '../../../api/assetsApi';
-import * as faultApi from '../../../api/faultsApi';
-import { LanguageContext } from '../../../context/LanguageContext';
-import { SnackbarContext } from '../../../context/SnackbarContext';
-import { AddRelatedUser } from '../../reuseables/AddRelatedUser';
-import { Can } from '../../reuseables/Can';
-import { Carousel } from '../../reuseables/Carousel';
-import { CommentSection } from '../../reuseables/CommentSection';
-import { StatusTag } from '../../reuseables/StatusTag';
-import { UpdateOwner } from '../../reuseables/UpdateOwner';
-import { UpdateStatus } from '../../reuseables/UpdateStatus';
-import { UserList } from '../../reuseables/UserList';
-import { UserItem } from '../../user/UserItem';
-import { FaultLink } from './FaultLink';
-import { FaultViewControls } from './FaultViewControls';
-import { UpsertFault } from './UpsertFault';
-import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
-import RoomIcon from '@material-ui/icons/Room';
+} from "@material-ui/core";
+import { format, parseISO } from "date-fns";
+import dateFormat from "dateformat";
+import React, { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useHistory, useLocation, useParams } from "react-router";
+import { getFullAddress } from "../../../api/assetsApi";
+import * as faultApi from "../../../api/faultsApi";
+import { LanguageContext } from "../../../context/LanguageContext";
+import { SnackbarContext } from "../../../context/SnackbarContext";
+import { AddRelatedUser } from "../../reuseables/AddRelatedUser";
+import { Can } from "../../reuseables/Can";
+import { Carousel } from "../../reuseables/Carousel";
+import { CommentSection } from "../../reuseables/CommentSection";
+import { StatusTag } from "../../reuseables/StatusTag";
+import { UpdateOwner } from "../../reuseables/UpdateOwner";
+import { UpdateStatus } from "../../reuseables/UpdateStatus";
+import { UserList } from "../../reuseables/UserList";
+import { UserItem } from "../../user/UserItem";
+import { FaultLink } from "./FaultLink";
+import { FaultViewControls } from "./FaultViewControls";
+import { UpsertFault } from "./UpsertFault";
+import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
+import RoomIcon from "@material-ui/icons/Room";
 
 export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	const history = useHistory();
@@ -35,7 +35,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { setSnackbar } = useContext(SnackbarContext);
-	const downSm = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+	const downSm = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const [fault, setFault] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { faultId } = useParams();
@@ -58,10 +58,10 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 		}
 		faultApi.getFault(faultId || fid, false).then((res) => {
 			if (!res) {
-				history.push('/workspace/faults');
+				history.push("/workspace/faults");
 			} else if (res.status === 403) {
 				setSnackbar(res);
-				history.push('/workspace/faults');
+				history.push("/workspace/faults");
 			}
 			setFault(res);
 		});
@@ -74,9 +74,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 				if (res.status === 403) {
 					setSnackbar(res);
 				} else if (res) {
-					if (
-						location.pathname === `/workspace/faults/${res.faultId}`
-					) {
+					if (location.pathname === `/workspace/faults/${res.faultId}`) {
 						setFault(res);
 					} else {
 						history.push(`/workspace/faults/${res.faultId}`);
@@ -102,7 +100,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					relatedUsers: res.relatedUsers,
 				});
 				if (updateFaultState) {
-					updateFaultState(res._id, 'owner', res.owner);
+					updateFaultState(res._id, "owner", res.owner);
 				}
 			}
 			setChangeOwner(false);
@@ -119,7 +117,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 				relatedUsers: res.relatedUsers,
 			});
 			if (updateFaultState) {
-				updateFaultState(res._id, 'relatedUsers', res.relatedUsers);
+				updateFaultState(res._id, "relatedUsers", res.relatedUsers);
 			}
 		}
 	};
@@ -135,7 +133,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 				relatedUsers: res.relatedUsers,
 			});
 			if (updateFaultState) {
-				updateFaultState(res._id, 'relatedUsers', res.relatedUsers);
+				updateFaultState(res._id, "relatedUsers", res.relatedUsers);
 			}
 		}
 		setAddRelatedUserModal(null);
@@ -151,7 +149,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 				status: res.status,
 			});
 			if (updateFaultState) {
-				updateFaultState(res._id, 'status', res.status);
+				updateFaultState(res._id, "status", res.status);
 			}
 		}
 		setChangeStatus(null);
@@ -164,7 +162,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 			return Promise.resolve(null);
 		} else if (res) {
 			if (updateFaultState) {
-				updateFaultState(res._id, 'comments', res.comments);
+				updateFaultState(res._id, "comments", res.comments);
 			}
 		}
 		return Promise.resolve(res);
@@ -177,7 +175,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 			return Promise.resolve(null);
 		} else if (res) {
 			if (updateFaultState) {
-				updateFaultState(res._id, 'comments', res.comments);
+				updateFaultState(res._id, "comments", res.comments);
 			}
 		}
 		return Promise.resolve(res);
@@ -210,15 +208,12 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 						xs={12}
 						className={classes.controlsGriditem}
 						style={{
-							justifyContent: downSm ? 'center' : 'flex-start', cursor: 'pointer'
+							justifyContent: downSm ? "center" : "flex-start",
+							cursor: "pointer",
 						}}
 						onClick={() => setChangeStatus(true)}
 					>
-						<StatusTag
-							status={fault.status}
-							type="fault"
-							size={'16px'}
-						/>
+						<StatusTag status={fault.status} type="fault" size={"16px"} />
 					</Grid>
 				</Grid>
 				<Grid
@@ -230,30 +225,35 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					xl={9}
 					className={classes.rightContainer}
 				>
-					<div className={classes.asset}>
-						{getFullAddress(fault.asset)}
-					</div>
+					<div className={classes.asset}>{getFullAddress(fault.asset)}</div>
 					<div className={classes.system}>
-						<BlurOnRoundedIcon
-							className={classes.systemIcon}
-						/>
+						<BlurOnRoundedIcon className={classes.systemIcon} />
 						{fault.system.name}
 					</div>
 					<div className={classes.location}>
-						<RoomIcon
-							className={classes.systemIcon}
-						/>
+						<RoomIcon className={classes.systemIcon} />
 						{fault.location.name}
 					</div>
-					
+
 					<div className={classes.title}>{fault.title}</div>
 					<div className={classes.desc}>
-						<div className={classes.openDate}>
-							{`${t('faultsModule.createDate')} ${format(
-								parseISO(fault.createdAt),
-								lang.dateformat
-							)}`}
+						<div className={classes.itemDates}>
+							<div className={classes.openDate}>
+								{`${t("general.createDate")} ${format(
+									parseISO(fault.createdAt),
+									lang.dateformat
+								)}`}
+							</div>
+							{Boolean(fault.closedDate) && (
+								<div className={classes.closedDate}>
+									{`${t("general.closedDate")} ${format(
+										parseISO(fault.closedDate),
+										lang.dateformat
+									)}`}
+								</div>
+							)}
 						</div>
+
 						{fault.description}
 					</div>
 					{Boolean(fault.images.length) && (
@@ -285,15 +285,13 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					</div>
 					<UserList
 						users={fault.relatedUsers}
-						removeTooltip={t(
-							'faultsModule.controls.removeRelatedUser'
-						)}
-						addTooltip={t('faultsModule.controls.addRelatedUser')}
-						placeholder={t('faultsModule.noRelatedUsers')}
-						title={t('faultsModule.relatedUsers')}
+						removeTooltip={t("faultsModule.controls.removeRelatedUser")}
+						addTooltip={t("faultsModule.controls.addRelatedUser")}
+						placeholder={t("faultsModule.noRelatedUsers")}
+						title={t("faultsModule.relatedUsers")}
 						handleRemove={removeRelatedUser}
 						handleAdd={() => setAddRelatedUserModal(true)}
-						module={'faults'}
+						module={"faults"}
 						owner={fault.owner}
 					/>
 				</Grid>
@@ -302,31 +300,30 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 						parent={fault}
 						saveComment={handleSaveComment}
 						updateComment={handleUpdateComment}
-						module={'faults'}
+						module={"faults"}
 					/>
 				</Grid>
 			</Grid>
-			{
-				changeOwner &&
+			{changeOwner && (
 				<UpdateOwner
 					handleClose={() => setChangeOwner(false)}
 					handleSave={updateOwner}
 					isOpen={changeOwner}
 					currentOwner={fault.owner}
-					title={t('faultsModule.updateOwner')}
-					instructions={t('faultsModule.updateOwnerInstructions')}
+					title={t("faultsModule.updateOwner")}
+					instructions={t("faultsModule.updateOwnerInstructions")}
 				/>
-			}
-			
+			)}
+
 			{changeStatus && (
 				<UpdateStatus
 					handleClose={() => setChangeStatus(false)}
 					handleSave={handleChangeStatus}
 					isOpen={changeStatus}
 					currentStatus={fault.status}
-					title={t('faultsModule.changeStatus')}
-					instructions={t('faultsModule.changeStatusInstructions')}
-					module={'faults'}
+					title={t("faultsModule.changeStatus")}
+					instructions={t("faultsModule.changeStatusInstructions")}
+					module={"faults"}
 				/>
 			)}
 			{addRelatedUserModal && (
@@ -335,8 +332,8 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					handleSave={addRelatedUser}
 					isOpen={addRelatedUserModal}
 					followerList={[...fault.relatedUsers, fault.owner]}
-					title={t('faultsModule.addRelatedUser')}
-					instructions={t('faultsModule.addRelatedUserInstructions')}
+					title={t("faultsModule.addRelatedUser")}
+					instructions={t("faultsModule.addRelatedUserInstructions")}
 				/>
 			)}
 
@@ -353,164 +350,182 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 
 const useStyles = makeStyles((theme) => ({
 	container: {
-		overflowY: 'overlay',
-		height: '100%',
-		[theme.breakpoints.down('sm')]: {
-			height: 'auto',
+		overflowY: "overlay",
+		height: "100%",
+		[theme.breakpoints.down("sm")]: {
+			height: "auto",
 		},
 	},
 	rightContainer: {
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'flex-start',
-		padding: '0 30px',
-		[theme.breakpoints.down('sm')]: {
-			alignItems: 'center',
-			padding: '0 15px',
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "flex-start",
+		padding: "0 30px",
+		[theme.breakpoints.down("sm")]: {
+			alignItems: "center",
+			padding: "0 15px",
 		},
 	},
 	asset: {
-		color: 'white',
-		fontSize: '16px',
-		background: 'black',
-		width: 'fit-content',
-		padding: '10px 20px',
-		borderRadius: '50px',
-		boxShadow: 'rgba(0,0,0,0.25) 0 0 5px 2px',
-		textAlign: 'center',
-		whiteSpace: 'nowrap'
+		color: "white",
+		fontSize: "16px",
+		background: "black",
+		width: "fit-content",
+		padding: "10px 20px",
+		borderRadius: "50px",
+		boxShadow: "rgba(0,0,0,0.25) 0 0 5px 2px",
+		textAlign: "center",
+		whiteSpace: "nowrap",
 	},
 	system: {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		width: 'fit-content',
-		color: 'white',
-		borderRadius: '50px',
-		padding: '10px 20px',
-		background: 'rgba(0,0,0,0.3)',
-		whiteSpace: 'nowrap',
-		margin: '10px 0'
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		width: "fit-content",
+		color: "white",
+		borderRadius: "50px",
+		padding: "10px 20px",
+		background: "rgba(0,0,0,0.3)",
+		whiteSpace: "nowrap",
+		margin: "10px 0",
 	},
 	location: {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		width: 'fit-content',
-		color: 'white',
-		borderRadius: '50px',
-		padding: '10px 20px',
-		background: 'rgba(255,255,255,0.2)',
-		whiteSpace: 'nowrap',
-		margin: '0px 0'
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		width: "fit-content",
+		color: "white",
+		borderRadius: "50px",
+		padding: "10px 20px",
+		background: "rgba(255,255,255,0.2)",
+		whiteSpace: "nowrap",
+		margin: "0px 0",
 	},
 	systemIcon: {
-		margin: '0 10px 0 0',
-		fontSize: '18px',
+		margin: "0 10px 0 0",
+		fontSize: "18px",
 	},
 	title: {
-		color: 'white',
-		fontSize: '22px',
-		padding: '15px 0',
-		alignSelf: 'flex-end',
-		width: '100%',
-		marginTop: '20px'
+		color: "white",
+		fontSize: "22px",
+		padding: "15px 0",
+		alignSelf: "flex-end",
+		width: "100%",
+		marginTop: "20px",
 	},
 	desc: {
-		background: 'rgba(0,0,0,0.4)',
-		borderRadius: '10px',
-		padding: '20px',
-		color: 'white',
-		width: '90%',
-		wordBreak: 'break-word',
+		background: "rgba(0,0,0,0.4)",
+		borderRadius: "10px",
+		padding: "20px",
+		color: "white",
+		width: "90%",
+		wordBreak: "break-word",
 	},
 	leftContainer: {
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'flex-start',
-		alignItems: 'flex-end',
-		padding: '10px 30px',
-		[theme.breakpoints.down('sm')]: {
-			alignItems: 'center',
-			padding: '10px 15px',
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "flex-start",
+		alignItems: "flex-end",
+		padding: "10px 30px",
+		[theme.breakpoints.down("sm")]: {
+			alignItems: "center",
+			padding: "10px 15px",
 		},
 	},
 	owner: {
-		background: 'rgba(0,0,0,0.4)',
-		padding: '5px 30px',
-		borderRadius: '10px',
-		width: 'fit-content',
-		height: '70px',
+		background: "rgba(0,0,0,0.4)",
+		padding: "5px 30px",
+		borderRadius: "10px",
+		width: "fit-content",
+		height: "70px",
 	},
 	controls: {
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		padding: '20px 30px 0px 30px',
-		[theme.breakpoints.down('sm')]: {
-			padding: '20px 15px 0px',
+		display: "flex",
+		justifyContent: "space-between",
+		alignItems: "center",
+		padding: "20px 30px 0px 30px",
+		[theme.breakpoints.down("sm")]: {
+			padding: "20px 15px 0px",
 		},
 	},
 	controlsGriditem: {
-		display: 'flex',
-		justifyContent: 'space-between',
-		margin: '10px 0',
+		display: "flex",
+		justifyContent: "space-between",
+		margin: "10px 0",
 	},
 	faultId: {
-		padding: '10px 0',
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
+		padding: "10px 0",
+		display: "flex",
+		justifyContent: "space-between",
+		alignItems: "center",
 	},
 	linked: {
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'flex-start',
-		background: 'rgba(0,0,0,0.4)',
-		margin: '10px 0',
-		borderRadius: '10px',
-		padding: '10px 0',
-		height: '300px',
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "flex-start",
+		background: "rgba(0,0,0,0.4)",
+		margin: "10px 0",
+		borderRadius: "10px",
+		padding: "10px 0",
+		height: "300px",
 	},
 	linkedHeader: {
-		color: 'white',
-		fontSize: '16px',
-		padding: '5px',
-		margin: '0px auto',
-		width: '80%',
-		borderBottom: '1px solid rgba(255,255,255,0.2)',
+		color: "white",
+		fontSize: "16px",
+		padding: "5px",
+		margin: "0px auto",
+		width: "80%",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
 	},
 	relatedUsersList: {
-		padding: '5px',
-		overflowY: 'auto',
+		padding: "5px",
+		overflowY: "auto",
 	},
 	listItem: {
-		width: '250px',
-		borderRadius: '5px',
-		'&:hover': {
-			background: 'rgba(0,0,0,0.4)',
+		width: "250px",
+		borderRadius: "5px",
+		"&:hover": {
+			background: "rgba(0,0,0,0.4)",
 		},
 	},
 	removeUser: {
-		color: 'white',
-		'&:hover': {
-			background: 'rgba(0,0,0,0.3)',
+		color: "white",
+		"&:hover": {
+			background: "rgba(0,0,0,0.3)",
 		},
 	},
+	itemDates: {
+		margin: '0 0 20px'
+	},
 	openDate: {
-		color: 'white',
-		fontSize: '14px',
-		margin: '0 0 15px 0px',
-		padding: '7px 15px',
-		background: 'rgba(0,0,0,0.4)',
-		width: 'fit-content',
-		borderRadius: '50px',
+		color: "white",
+		fontSize: "14px",
+		padding: "7px 15px",
+		background: "rgba(0,0,0,0.4)",
+		width: "fit-content",
+		borderRadius: "50px",
+		[theme.breakpoints.down("sm")]: {
+			fontSize: "11px",
+			padding: "4px 15px",
+		},
+	},
+	closedDate: {
+		color: "white",
+		fontSize: "14px",
+		margin: "10px 0",
+		padding: "7px 15px",
+		background: "green",
+		width: "fit-content",
+		borderRadius: "50px",
+		[theme.breakpoints.down("sm")]: {
+			fontSize: "11px",
+			padding: "4px 15px",
+		},
 	},
 	comments: {
-		background: 'rgba(0,0,0,0.4)',
-		
+		background: "rgba(0,0,0,0.4)",
 	},
 	status: {
-		margin: '10px 0',
+		margin: "10px 0",
 	},
 }));

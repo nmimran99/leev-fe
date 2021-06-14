@@ -44,7 +44,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import clsx from "clsx";
 import { Can } from "../../reuseables/Can";
 import { getNextIterationDate } from "../../../api/genericApi";
-import RoomIcon from '@material-ui/icons/Room';
+import RoomIcon from "@material-ui/icons/Room";
 
 export const TaskView = () => {
 	const history = useHistory();
@@ -226,10 +226,9 @@ export const TaskView = () => {
 									{task.location.name}
 								</div>
 							</div>
-							
 						</Grid>
 					)}
-					
+
 					{!task.asset && (
 						<Grid item xs={12}>
 							<div className={classes.taskNotLinkedToAsset}>
@@ -284,11 +283,21 @@ export const TaskView = () => {
 				>
 					<div className={classes.title}>{task.title}</div>
 					<div className={classes.desc}>
-						<div className={classes.openDate}>
-							{`${t("general.createDate")} ${format(
-								parseISO(task.createdAt),
-								lang.dateformat
-							)}`}
+						<div className={classes.itemDates}>
+							<div className={classes.openDate}>
+								{`${t("general.createDate")} ${format(
+									parseISO(task.createdAt),
+									lang.dateformat
+								)}`}
+							</div>
+							{Boolean(task.closedDate) && (
+								<div className={classes.closedDate}>
+									{`${t("general.closedDate")} ${format(
+										parseISO(task.closedDate),
+										lang.dateformat
+									)}`}
+								</div>
+							)}
 						</div>
 						{task.description}
 						<div className={classes.timeActive}>
@@ -518,15 +527,14 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: "5px",
 		boxShadow: "rgba(0,0,0,0.25) 0 0 5px 2px",
 		textAlign: "center",
-		[theme.breakpoints.down('sm')]: {
+		[theme.breakpoints.down("sm")]: {
 			borderRadius: "5px 5px 0 0",
 			boxShadow: "none",
-		}
+		},
 	},
 	systemItem: {
 		display: "flex",
 		justifyContent: "center",
-		
 	},
 	systemlocationContainer: {
 		display: "flex",
@@ -536,35 +544,35 @@ const useStyles = makeStyles((theme) => ({
 		color: "white",
 		borderRadius: "0 0 50px 50px",
 		whiteSpace: "nowrap",
-		[theme.breakpoints.down('sm')]: {
-			flexDirection: 'column',
-			width: '100%'
-		}
+		[theme.breakpoints.down("sm")]: {
+			flexDirection: "column",
+			width: "100%",
+		},
 	},
 	sysloc: {
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "center",
 		padding: "8px 40px 8px 30px",
-		width: '200px',
-		[theme.breakpoints.down('sm')]: {
-			width: '100%',
-			padding: '8px 0'
-		}
+		width: "200px",
+		[theme.breakpoints.down("sm")]: {
+			width: "100%",
+			padding: "8px 0",
+		},
 	},
 	sys: {
 		background: "rgba(0,0,0,0.3)",
-		borderRadius: '0 0 0 50px',
-		[theme.breakpoints.down('sm')]: {
-			borderRadius: '0',
-		}
+		borderRadius: "0 0 0 50px",
+		[theme.breakpoints.down("sm")]: {
+			borderRadius: "0",
+		},
 	},
 	loc: {
-		background: 'rgba(255,255,255,0.2)',
-		borderRadius: '0 0 50px 0',
-		[theme.breakpoints.down('sm')]: {
-			borderRadius: '0 0 5px 5px',
-		}
+		background: "rgba(255,255,255,0.2)",
+		borderRadius: "0 0 50px 0",
+		[theme.breakpoints.down("sm")]: {
+			borderRadius: "0 0 5px 5px",
+		},
 	},
 	systemIcon: {
 		margin: "0 10px",
@@ -657,17 +665,36 @@ const useStyles = makeStyles((theme) => ({
 			background: "rgba(0,0,0,0.3)",
 		},
 	},
+	itemDates: {
+		margin: "0 0 20px",
+	},
 	openDate: {
 		color: "white",
 		fontSize: "14px",
-		margin: "0 0 15px 0px",
 		padding: "7px 15px",
 		background: "rgba(0,0,0,0.4)",
 		width: "fit-content",
 		borderRadius: "50px",
+		[theme.breakpoints.down("sm")]: {
+			fontSize: "11px",
+			padding: "4px 15px",
+		},
+	},
+	closedDate: {
+		color: "white",
+		fontSize: "14px",
+		margin: "10px 0",
+		padding: "7px 15px",
+		background: "green",
+		width: "fit-content",
+		borderRadius: "50px",
+		[theme.breakpoints.down("sm")]: {
+			fontSize: "11px",
+			padding: "4px 15px",
+		},
 	},
 	comments: {
-		background: "rgba(0,0,0,0.4)"
+		background: "rgba(0,0,0,0.4)",
 	},
 	status: {
 		margin: "10px 0",

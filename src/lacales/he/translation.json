@@ -414,7 +414,8 @@
         "removeUserFromFollowing": "הסרת משתמש מרשימת המשתמשים המקושרים",
         "openFor": "נפתח לפני",
         "openInNew": "פתח בחלון חדש",
-        "createDate": "נוצר בתאריך",
+        "createDate": "נוצר ב - ",
+        "closedDate": "נסגר ב - ",
         "none": "ללא",
         "fault": "תקלה",
         "asset": "נכס",
@@ -495,7 +496,7 @@
         "filterByName": "סנן על פי שם",
         "noUsersFound": "לא נמצאו משתמשים",
         "noResidentsFound": "לא נמצאו דיירים",
-        "resident": "דייר",
+        "resident": "שוכר/דייר",
         "upsert": {
             "generalDetails": "פרטים כלליים",
             "createUser": "הוספת משתמש",
@@ -505,12 +506,15 @@
             "userInactive": "משתמש לא פעיל",
             "editUserDetails": "עידכון פרטי משתמש",
             "residency": "דיירות ובעלות",
-            "isResident": "משתמש זה הינו דייר",
-            "notResident": "משתמש זה אינו דייר",
+            "isResident": "שוכר/דייר",
+            "notResident": "לא שוכר/דייר",
             "ownership": "פרטי בעלים",
-            "isOwner": "משתמש זה הינו בעלים של נכס",
-            "notOwner": "משתמש זה אינו בעלים של נכס"
-        }
+            "isOwner": "בעלים",
+            "notOwner": "לא בעלים",
+            "unitNumber": "מספר דירה"
+        },
+        "owner": "בעלים",
+        "isOwnerResident": "בעלים/שוכר?"
     },
     "chatbot": {
         "title": "פתיחת תקלה חדשה",

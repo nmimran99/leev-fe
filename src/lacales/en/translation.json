@@ -415,6 +415,7 @@
         "openFor": "Open for",
         "openInNew": "Open in a new tab",
         "createDate": "Created at",
+        "closedDate": "Closed at",
         "none": "None",
         "fault": "fault",
         "asset": "asset",
@@ -505,12 +506,15 @@
             "userInactive": "User is inactive",
             "editUserDetails": "Update user details",
             "residency": "Residency and Ownership",
-            "isResident": "User is a resident",
-            "notResident": "User is not a resident",
+            "isResident": "Resident",
+            "notResident": "Not Resident",
             "ownership": "Property owner",
-            "isOwner": "User is the owner",
-            "notOwner": "User is not the owner"
-        }
+            "isOwner": "Property Owner",
+            "notOwner": "Not Property Owner",
+            "unitNumber": "Unit Number"
+        },
+        "owner": "Owner",
+        "isOwnerResident": "Is Owner/Resident?"
     },
     "chatbot": {
         "title": "Create new Fault",
