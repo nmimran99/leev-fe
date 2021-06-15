@@ -49,7 +49,10 @@ export const LastOperations = ({ operations }) => {
 								<div className={classes.top}>
 									{matches ? (
 										<div className={classes.textContainer}>
-											{`${getFullName(op.actionBy)} ${t(
+											<span className={classes.mobileActionby}>
+												{` ${getFullName(op.actionBy)}`}
+											</span>
+											{` ${t(
 												`dashboard.${op.actionType}`
 											).replace("%%itemid%%", op.itemData.itemId)}`}
 											<OperationItem op={op} />
@@ -126,7 +129,10 @@ const OperationItem = ({ op }) => {
 		(op.payload.owner || op.payload.relatedUser)
 	) {
 		return matches ? (
-			` ${getFullName(op.payload.owner || op.payload.relatedUser)}`
+			<span style={{ fontWidth: '800'}}>
+				{` ${getFullName(op.payload.owner || op.payload.relatedUser)}`}
+			</span>
+			
 		) : (
 			<div className={classes.userContainer}>
 				<UserItem
@@ -140,12 +146,14 @@ const OperationItem = ({ op }) => {
 		);
 	} else if (op.actionType === "detailsUpdate" && op.payload) {
 		return null;
-	} else if (op.actionType === "addComment" && op.payload.comment.length) {
+	} else if (op.actionType === "addComment" && op.payload.comment) {
 		return matches ? (
-			op.payload.comment[0].text
+			<div className={classes.commentContainer}>
+				{op.payload.comment.text}
+			</div>
 		) : (
 			<div className={classes.commentContainer}>
-				{op.payload.comment[0].text}
+				{op.payload.comment.text}
 			</div>
 		);
 	}
@@ -230,6 +238,7 @@ const useStyles = makeStyles((theme) => ({
 		background: "rgba(0,0,0,0.3)",
 		borderRadius: "50px",
 		padding: "5px 20px 5px 5px",
+		height: 'fit-content',
 		[theme.breakpoints.down("sm")]: {
 			padding: "5px 20px 5px 5px",
 		},
@@ -256,8 +265,10 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "13px",
 		color: "white",
 		background: "rgba(0,0,0,0.7)",
-		padding: "5px 10px",
+		padding: "7px 20px",
 		borderRadius: "5px",
+		width: 'fit-content',
+		margin: '5px'
 	},
 	rowTime: {
 		textAlign: "right",
@@ -309,4 +320,8 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "14px",
 		color: "rgba(255,255,255,0.5)",
 	},
+	mobileActionby: {
+		fontWeight: '600',
+
+	}
 }));
