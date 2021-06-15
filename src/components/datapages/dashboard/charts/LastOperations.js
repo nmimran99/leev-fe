@@ -60,8 +60,8 @@ export const LastOperations = ({ operations }) => {
 												<UserItem
 													user={op.actionBy}
 													showName
-													avatarSize={matches ? 30 : 40}
-													size={matches ? 9 : 12}
+													avatarSize={30}
+													size={10}
 													showTitle={matches ? false : true}
 												/>
 											</div>
@@ -133,7 +133,7 @@ const OperationItem = ({ op }) => {
 					user={op.payload.owner || op.payload.relatedUser}
 					showName
 					showPhone
-					size={matches ? 9 : 12}
+					size={9}
 					avatarSize={matches ? 30 : 40}
 				/>
 			</div>
@@ -229,7 +229,7 @@ const useStyles = makeStyles((theme) => ({
 	userContainer: {
 		background: "rgba(0,0,0,0.3)",
 		borderRadius: "50px",
-		padding: "10px 20px 10px 5px",
+		padding: "5px 20px 5px 5px",
 		[theme.breakpoints.down("sm")]: {
 			padding: "5px 20px 5px 5px",
 		},
