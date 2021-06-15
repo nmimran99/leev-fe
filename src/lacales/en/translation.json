@@ -276,7 +276,8 @@
             "documentMenu": "Document Menu",
             "editDetails": "Edit Document Details",
             "downloadFile": "Download",
-            "deleteFile": "Delete File"
+            "deleteFile": "Delete File",
+            "previewFile": "Preview File"
         },
         "deleteFilePrompt": "Are you sure you want to delete the document ",
         "deleteFileTitle": "Delete Document",
@@ -402,7 +403,8 @@
             "updated": "has been updated",
             "removed": "has been removed",
             "withIdentifier": "with identifier",
-            "withSuccess": "successfully"
+            "withSuccess": "successfully",
+            "deleted": "deleted"
         }
     }, 
     "general": {

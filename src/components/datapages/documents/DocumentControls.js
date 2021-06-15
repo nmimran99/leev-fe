@@ -13,11 +13,13 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LanguageContext } from '../../../context/LanguageContext';
+import FindInPageIcon from '@material-ui/icons/FindInPage';
 
 export const DocumentControls = ({
 	editDocument,
 	downloadFile,
 	deleteFile,
+	previewFile
 }) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
@@ -101,6 +103,16 @@ export const DocumentControls = ({
 						<DeleteOutlineRoundedIcon className={classes.icon} />
 					</ListItemIcon>
 					{t('documentsModule.controls.deleteFile')}
+				</MenuItem>
+				<MenuItem
+					style={{ direction: lang.code === 'he' ? 'rtl' : 'ltr' }}
+					className={classes.iconBtn}
+					onClick={previewFile}
+				>
+					<ListItemIcon>
+						<FindInPageIcon className={classes.icon} />
+					</ListItemIcon>
+					{t('documentsModule.controls.previewFile')}
 				</MenuItem>
 			</Menu>
 		</div>
