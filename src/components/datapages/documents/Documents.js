@@ -1,12 +1,13 @@
 import { Grid, LinearProgress, makeStyles } from '@material-ui/core';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import {
-	getDocuments,
 	deleteDocument,
-	downloadDocument,
-	updateDocumentDetails,
+	downloadDocument, getDocuments,
+
+
+	updateDocumentDetails
 } from '../../../api/documentsApi';
 import { getServerError, getSuccessMessage } from '../../../api/genericApi';
 import { AuthContext } from '../../../context/AuthContext';
@@ -28,6 +29,7 @@ export const Documents = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [alertDialog, setAlertDialog] = useState(null);
 	const [ edit, setEdit ] = useState(null)
+
 
 	useEffect(() => {
 		getDocuments(auth.user.tenant, query)
@@ -59,9 +61,7 @@ export const Documents = () => {
 				if (res) {
 					setDocs(docs.filter((d) => d._id !== res._id));
 					setAlertDialog(null);
-					setDocs((prevDocs) => {
-						return prevDocs.filter(d => d._id !== res.itemData.itemIdentifier)
-					})
+					setSnackbar(getSuccessMessage('document', res.docId, 'deleted'))
 				}
 			},
 			handleCancel: () => setAlertDialog(null),
@@ -89,6 +89,10 @@ export const Documents = () => {
 		})
 		.finally(() => setEdit(null))
 	}
+	
+	const previewFile = file => {
+		window.open(file.url)
+	}
 
 	return (
 		<Grid container justify="center">
@@ -113,6 +117,7 @@ export const Documents = () => {
 								deleteFile={deleteFile}
 								downloadFile={downloadFile}
 								setEdit={setEdit}
+								previewFile={previewFile}
 							/>
 						</Grid>
 					))}
@@ -132,6 +137,7 @@ export const Documents = () => {
 					documentId={edit}
 				/>
 			}
+		
 		</Grid>
 	);
 };

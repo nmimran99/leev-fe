@@ -168,3 +168,12 @@ export const updateDocumentDetails = async (details) => {
 		return { error: true, reason: 'general', status: 500 };
 	}
 } 
+
+export const getDocumentFromURL = async (url) => {
+	try {
+		const res = axios.get(url);
+		console.log(res)
+	} catch(e) {
+		console.log(e)
+	}
+}

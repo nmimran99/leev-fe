@@ -276,7 +276,8 @@
             "documentMenu": "תפריט מסמך",
             "editDetails": "ערוך פרטי מסמך",
             "downloadFile": "הורדה",
-            "deleteFile": "מחיקת מסמך"
+            "deleteFile": "מחיקת מסמך",
+            "previewFile": "תצוגה מקדימה"
         },
         "deleteFilePrompt": "האם אתה בטוח שברצונך למחוק את המסמך ",
         "deleteFileTitle": "מחיקת מסמך",
@@ -402,7 +403,8 @@
             "updated": "עודכן",
             "removed": "נמחק",
             "withIdentifier": "עם מזהה",
-            "withSuccess": "בהצלחה"
+            "withSuccess": "בהצלחה",
+            "deleted": "נמחק"
         }
     },
     "general": {
