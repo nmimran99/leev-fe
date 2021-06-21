@@ -220,7 +220,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					item
 					xs={12}
 					sm={12}
-					md={8}
+					md={12}
 					lg={8}
 					xl={9}
 					className={classes.rightContainer}
@@ -268,32 +268,38 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					item
 					xs={12}
 					sm={12}
-					md={4}
-					lg={3}
+					md={12}
+					lg={4}
 					xl={3}
 					className={classes.leftContainer}
 				>
-					<div className={classes.owner}>
-						<UserItem
-							user={fault.owner}
-							showTitle
-							showPhone
-							showName
-							size={12}
-							avatarSize={50}
-						/>
-					</div>
-					<UserList
-						users={fault.relatedUsers}
-						removeTooltip={t("faultsModule.controls.removeRelatedUser")}
-						addTooltip={t("faultsModule.controls.addRelatedUser")}
-						placeholder={t("faultsModule.noRelatedUsers")}
-						title={t("faultsModule.relatedUsers")}
-						handleRemove={removeRelatedUser}
-						handleAdd={() => setAddRelatedUserModal(true)}
-						module={"faults"}
-						owner={fault.owner}
-					/>
+					<Grid container justify='center'>
+						<Grid item xs={12}>
+							<div className={classes.owner}>
+								<UserItem
+									user={fault.owner}
+									showTitle
+									showPhone
+									showName
+									size={12}
+									avatarSize={50}
+								/>
+							</div>
+						</Grid>
+						<Grid item xl={10} md={6} sm={6} xs={12}>
+							<UserList
+								users={fault.relatedUsers}
+								removeTooltip={t("faultsModule.controls.removeRelatedUser")}
+								addTooltip={t("faultsModule.controls.addRelatedUser")}
+								placeholder={t("faultsModule.noRelatedUsers")}
+								title={t("faultsModule.relatedUsers")}
+								handleRemove={removeRelatedUser}
+								handleAdd={() => setAddRelatedUserModal(true)}
+								module={"faults"}
+								owner={fault.owner}
+							/>
+						</Grid>
+					</Grid>
 				</Grid>
 				<Grid item xs={12} className={classes.comments}>
 					<CommentSection
@@ -438,6 +444,7 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: "10px",
 		width: "fit-content",
 		height: "70px",
+		margin: "0 auto",
 	},
 	controls: {
 		display: "flex",
@@ -495,7 +502,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	itemDates: {
-		margin: '0 0 20px'
+		margin: "0 0 20px",
 	},
 	openDate: {
 		color: "white",

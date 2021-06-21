@@ -36,7 +36,7 @@ export const AverageTimeToClose = ({ data }) => {
 				</Grid>
 				<Grid item xs={12} className={classes.gridData}>
                     {
-                        (data.max && data.avg && data.min) ?
+                        (data.avg) ?
                         <React.Fragment>
                             <div className={classes.gaugeContainer}>
 						<GaugeChart

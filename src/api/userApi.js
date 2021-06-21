@@ -218,3 +218,43 @@ export const updateUserData = async (details) => {
 		return getServerError();
     }
 } 
+
+export const sendRecoveryEmail = async (email) => {
+    try {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/resetPasswordLink`, { email });
+        if (res.status === 200) {
+            return res.data;
+        } else if (res.status === 404) {
+            return res;
+        }
+    } catch(e) {
+        console.log(e.message);
+		return getServerError();
+    }
+}
+
+export const verifyResetPasswordHandle = async (handle) => {
+    try {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/verifyResetPasswordHandle`, { handle });
+        console.log(res)
+        if (res.status === 200) {
+            return res.data;
+        }  
+    } catch(e) {
+        console.log(e.message);
+		return getServerError();
+    }
+}
+
+export const changePassword = async (userId, password) => {
+    try {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/setNewPassword`, { userId, password });
+
+        if (res.status === 200) {
+            return res.data;
+        }  
+    } catch(e) {
+        console.log(e.message);
+		return getServerError();
+    }
+}

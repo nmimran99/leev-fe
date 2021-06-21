@@ -4,7 +4,22 @@
         "email": "אימייל",
         "password": "סיסמה",
         "forgotPassword": "שכחתי סיסמה",
-        "login": "כניסה"
+        "login": "כניסה",
+        "recoverPassword": "שחזור סיסמא",
+        "recoverPasswordText": "אנא הכנס את כתובת המייל איתה נרשמת למערכת.",
+        "recoveryInstructions": "הודעה תישלח לכתובת המייל ובה לינק לשחזור הסיסמא למשתמש שלך.",
+        "linkValidity": "הלינק יהיה זמין ל 5 דקות. במידה והלינק אינו זמן אנא חזור על תהליך שחזור הסיסמא מחדש.",
+        "sendEmail": "שלח",
+        "emailSentSuccessfully": "הודעה עם הוראות לשחזור סיסמא נשלחה לכתובת",
+        "backToLogin": "חזרה לעמוד התחברות",
+        "resetFailed": "הזדהות על ידי לינק זה נכשלה. אנא נסה לחזור שוב על תהליך שחזור הסיסמא.",
+        "newPassword": "סיסמא חדשה",
+        "verifyPassword": "אימות סיסמא",
+        "resetPasswordText": "אנא הכנס את הסיסמא החדשה בשדות הבאים.",
+        "passwordRenewal": "חידוש סיסמא",
+        "savePassword": "שמירת סיסמא",
+        "passwordChangedSuccessfully": "סיסמא שונתה בהצלחה!",
+        "redirectingToLogin": "מעבר לעמוד התחברות בעוד"
     },
     "sideMenu": {
         "assets": "נכסים",
@@ -394,7 +409,9 @@
         "noFileSelected": "לא נבחר מסמך",
         "serverError": "אירעה תקלת מערכת. אנא פנה למנהל המערכת.",
         "cannotDeactivateAssetOwner": "לא ניתן להעביר משתמש שממונה על נכס למצב לא פעיל",
-        "nameAlreadyExists": "שם זה קיים במערכת לנכס זה"
+        "nameAlreadyExists": "שם זה קיים במערכת לנכס זה",
+        "emailNotFound": "משתמש עם כתובת מייל זו לא נמצא במערכת.",
+        "passwordsDontMatch": "הסיסמאות שנקלטו אינן תואמות. אנא ודא כי הסיסמאות תואמות."
     },
     "messages": {
         "snackMessage": {

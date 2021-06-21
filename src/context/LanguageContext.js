@@ -21,7 +21,8 @@ export const LanguageContextProvider = (props) => {
     }, []);
 
     useEffect(() => {
-        i18n.changeLanguage(lang.code)
+        i18n.changeLanguage(lang.code);
+        handleLS('wb_lang', 'set', { "lang": lang.code })
     }, [lang])
 
     

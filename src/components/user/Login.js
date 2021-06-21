@@ -14,7 +14,8 @@ import {
     Button,
     Link,
     CircularProgress,  
-    makeStyles 
+    makeStyles, 
+    Fade
 } from '@material-ui/core';
 import { Visibility, VisibilityOff, Error } from '@material-ui/icons';
 import colorSplash from '../../assets/images/grey.jpg';
@@ -22,6 +23,7 @@ import { attemptToSignin, handleLS } from '../../api/userApi';
 import { useTranslation } from 'react-i18next';
 import { LanguageContext } from '../../context/LanguageContext';
 import { getLocalization } from '../../api/genericApi';
+import { ChangeLanguage } from '../reuseables/ChangeLanguage';
 
 
 export const Login = () => {
@@ -113,12 +115,12 @@ export const Login = () => {
     }
 
     return (
+        
         <Grid container alignItems='center' justify='center' className={classes.mainContainer} >
-            <Grid item className={classes.loginContainer} xl={3} lg={3} md={6} sm={6} xs={11}>
+            <Grid item className={classes.loginContainer} xl={3} lg={4} md={6} sm={10} xs={11}>
+                <ChangeLanguage className={classes.changeLanguage}/>
                 <Box className={classes.bannerContainer} bgcolor='primary.main'>
-                    <Typography className={classes.banner}>
-                        Leev
-                    </Typography>
+                    <img src='https://leevstore.blob.core.windows.net/images/leev_logo_transparent.png' className={classes.logo} />
                 </Box>
                 <Container component='div' className={classes.headerContainer}>
                     <Typography className={classes.header}>
@@ -202,7 +204,9 @@ export const Login = () => {
                     </Typography>
                 </Container>
             </Grid>
+        
         </Grid>
+        
     )
 };
 
@@ -221,10 +225,10 @@ const useStyles = makeStyles({
         background: 'rgba(255, 255, 255, 0.2)',
         boxShadow: '0 8px 32px 0 rgb(0 0 0 / 37%)',
         backdropFilter: 'blur(8px)',
-        '-webkit-backdrop-filter': 'blur( 10px )'
+        '-webkit-backdrop-filter': 'blur( 10px )',
+        height: 'fit-content'
     },
     bannerContainer: {
-        height: '50px',
         width: '100%',
         borderRadius: '10px 10px 0 0',
         padding: '0',
@@ -301,6 +305,18 @@ const useStyles = makeStyles({
     error: {
         marginLeft: '8px',
         fontSize: '12px'
+    },
+    logo: {
+        width: '100px',
+        height: '100px'
+    },
+    logoContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        height: 'fit-content'
+    },
+    changeLanguage: {
+        position: 'absolute'
     }
 
 })

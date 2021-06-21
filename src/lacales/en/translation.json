@@ -4,7 +4,22 @@
         "email": "Email",
         "password": "Password",
         "forgotPassword": "Forgot Password",
-        "login": "Login"
+        "login": "Login",
+        "recoverPassword": "Recover Password",
+        "recoverPasswordText": "Please enter the Email address you have previously logged in with.",
+        "recoveryInstructions": "An Email with a link to recover your password will be sent to you shortly.",
+        "linkValidity": "The link will be valid for 5 minutes. If the link is no longer valid, please repeat the password recovery process to get a new recovery link.",
+        "sendEmail": "Send Email",
+        "emailSentSuccessfully": "An email with instructions to recover your password has been sent to",
+        "backToLogin": "Back to Login",
+        "resetFailed": "We failed to authenticate the request. Please repeat the password reset process and try again.",
+        "newPassword": "New Password",
+        "verifyPassword": "Verify Password",
+        "resetPasswordText": "Please create a new password in the fields below.",
+        "passwordRenewal": "Renew Password",
+        "savePassword": "Save Password",
+        "passwordChangedSuccessfully": "Password Changed Successfully.",
+        "redirectingToLogin": "Redirecting to login in"
     },
     "sideMenu": {
         "assets": "Assets",
@@ -394,7 +409,9 @@
         "noFileSelected": "No file was selected",
         "serverError": "Server error. Please contant your system administrator.",
         "cannotDeactivateAssetOwner": "Cannot deactive user that is an owner of an asset.",
-        "nameAlreadyExists": "This name already exists"
+        "nameAlreadyExists": "This name already exists",
+        "emailNotFound": "User with this email was not found.",
+        "passwordsDontMatch": "The passwords do not match. Plese make sure to enter matching passwords."
     },
     "messages": {
         "snackMessage": {
