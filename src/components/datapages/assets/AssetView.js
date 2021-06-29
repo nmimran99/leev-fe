@@ -19,6 +19,7 @@ import { getServerError, updateQueryParams } from "../../../api/genericApi";
 import { updateLocation } from "../../../api/locationsApi";
 import { SnackbarContext } from "../../../context/SnackbarContext";
 import { useQuery } from "../../reuseables/customHooks/useQuery";
+import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 import { UserItem } from "../../user/UserItem";
 import { AssetControls } from "./AssetControls";
 import { FaultsGrid } from "./tableViews/FaultsGrid";
@@ -109,11 +110,13 @@ export const AssetView = ({}) => {
 			<Grid container justify="center">
 				<Grid item xs={12} className={classes.gridItem}></Grid>
 				<Grid item xs={12} className={classes.gridItem}>
+				
 					<div className={classes.controlsContainer}>
 						<AssetControls
 							removeAsset={() => null}
 							toggleEditMode={toggleEditMode}
 						/>
+						<ReturnToPrevios />
 					</div>
 					<div className={classes.addressContainer}>
 						<div className={classes.addressMain}>{getShortAddress(asset)}</div>
@@ -234,13 +237,11 @@ const useStyles = makeStyles((theme) => ({
 		position: "relative",
 	},
 	controlsContainer: {
-		padding: "10px 20px",
+		padding: "20px",
 		display: "flex",
-		justifyContent: "flex-end",
-		position: "absolute",
-		right: 0,
+		justifyContent: "space-between",
 		[theme.breakpoints.down("sm")]: {
-			padding: "5px 10px",
+			padding: "10px",
 		},
 	},
 	addressContainer: {

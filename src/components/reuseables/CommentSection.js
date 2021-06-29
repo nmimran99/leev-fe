@@ -50,9 +50,9 @@ export const CommentSection = ({
 	}, [parent]);
 
 	useEffect(() => {
-		if (ctx.current) {
-			ctx.current.scrollIntoView();
+		if (commentImage && ctx.current) {
 			ctx.current.focus();
+			ctx.current.scrollIntoView();
 		}
 	}, [commentImage]);
 
@@ -173,7 +173,6 @@ export const CommentSection = ({
                             </div> */}
 						{c.user._id == auth.user._id && (
 							<div className={classes.footerField}>
-								{/* {` · `} */}
 								<Button
 									className={classes.footerBtn}
 									onClick={() => setEditComment(c)}

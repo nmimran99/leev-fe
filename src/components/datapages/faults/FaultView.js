@@ -27,6 +27,7 @@ import { FaultViewControls } from "./FaultViewControls";
 import { UpsertFault } from "./UpsertFault";
 import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
 import RoomIcon from "@material-ui/icons/Room";
+import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 
 export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	const history = useHistory();
@@ -192,10 +193,13 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 				alignItems="flex-start"
 			>
 				<Grid container className={classes.controls}>
-					<Grid item xs={12} className={classes.controlsGriditem}>
+					<Grid item xs={12} className={classes.topHeaderGriditem}>
 						<div className={classes.faultId}>
 							<FaultLink faultId={fault.faultId} size={18} />
 						</div>
+						<ReturnToPrevios />
+					</Grid>
+					<Grid item xs={12} className={classes.controlsGriditem}>
 						<FaultViewControls
 							fault={fault}
 							editFault={() => setEditFault(fault._id)}
@@ -451,14 +455,28 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "space-between",
 		alignItems: "center",
 		padding: "20px 30px 0px 30px",
+		
 		[theme.breakpoints.down("sm")]: {
 			padding: "20px 15px 0px",
 		},
 	},
 	controlsGriditem: {
 		display: "flex",
+		justifyContent: "flex-end",
+		margin: '10px 0'
+		
+	},
+	topHeaderGriditem: {
+		display: "flex",
 		justifyContent: "space-between",
 		margin: "10px 0",
+		width: '100%',
+		[theme.breakpoints.down('sm')]: {
+            border: '1px solid rgba(255,255,255,0.2)',
+			background: 'black',
+			borderRadius: '50px',
+			padding: '5px 5px 5px 25px'
+        }
 	},
 	faultId: {
 		padding: "10px 0",

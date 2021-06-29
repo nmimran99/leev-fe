@@ -1,5 +1,4 @@
-import { Fade, IconButton, makeStyles, Tooltip } from '@material-ui/core';
-import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
+import { IconButton, makeStyles, Tooltip } from '@material-ui/core';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +9,6 @@ export const AssetControls = ({ removeAsset, toggleEditMode }) => {
 	const { t, i18n } = useTranslation();
 
 	return (
-		<Fade in={true} timeout={500}>
 			<div className={classes.container}>	
 				<Can module='assets' action='update'>
 					<Tooltip title={t('assetsModule.editAsset')}>
@@ -22,18 +20,7 @@ export const AssetControls = ({ removeAsset, toggleEditMode }) => {
 						</IconButton>
 					</Tooltip>
 				</Can>
-				{/* <Can module='assets' action='delete'>
-					<Tooltip title={t('assetsModule.deleteAsset')}>
-						<IconButton
-							className={classes.iconbutton}
-							onClick={removeAsset}
-						>
-							<DeleteOutlineRoundedIcon className={classes.icon} />
-						</IconButton>
-					</Tooltip>
-				</Can>	 */}
 			</div>
-		</Fade>
 	);
 };
 
@@ -42,16 +29,16 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex'
 	},
 	iconbutton: {
-		margin: '7px 5px',
-		boxShadow: 'rgba(0,0,0,0.2) 0px 0px 3px 3px ',
-		background: theme.palette.primary.main,
-		color: 'white',
-		padding: '8px',
+		background: 'rgba(0,0,0,0.7)',
+        color: 'white',
+        width: '40px',
+        height: '40px',
+        [theme.breakpoints.down('sm')]: {
+            border: '1px solid rgba(255,255,255,0.2)'
+        }
 	},
 	icon: {
-		fontSize: '24px',
-		[theme.breakpoints.down('sm')]: {
-			fontSize: '20px'
-		}
+		fontSize: '18px',
+		color: 'white',
 	},
 }));

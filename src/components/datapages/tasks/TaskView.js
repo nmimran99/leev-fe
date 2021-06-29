@@ -45,6 +45,7 @@ import clsx from "clsx";
 import { Can } from "../../reuseables/Can";
 import { getNextIterationDate } from "../../../api/genericApi";
 import RoomIcon from "@material-ui/icons/Room";
+import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 
 export const TaskView = () => {
 	const history = useHistory();
@@ -208,7 +209,14 @@ export const TaskView = () => {
 				justify="space-between"
 				alignItems="flex-start"
 			>
+				
 				<Grid container className={classes.controls}>
+					<div className={classes.topHeaderGriditem}>
+						<div className={classes.taskId}>
+							<ItemLink itemId={task.taskId} module={"tasks"} size={18} />
+						</div>
+						<ReturnToPrevios />
+					</div>
 					{task.asset && (
 						<Grid item xs={12}>
 							<div className={classes.asset}>{getFullAddress(task.asset)}</div>
@@ -237,10 +245,8 @@ export const TaskView = () => {
 							</div>
 						</Grid>
 					)}
+					
 					<Grid item xs={12} className={classes.controlsGriditem}>
-						<div className={classes.taskId}>
-							<ItemLink itemId={task.taskId} module={"tasks"} size={18} />
-						</div>
 						<TaskViewControls
 							task={task}
 							editTask={() => setEditTask(task._id)}
@@ -254,8 +260,12 @@ export const TaskView = () => {
 							item
 							xs={12}
 							className={classes.controlsGriditem}
+							
 							onClick={() => setChangeStatus(true)}
-							style={{ cursor: "pointer" }}
+							style={{
+								justifyContent: "flex-start",
+								cursor: "pointer",
+							}}
 						>
 							<StatusTag status={task.status} type="task" size={"16px"} />
 						</Grid>
@@ -619,10 +629,22 @@ const useStyles = makeStyles((theme) => ({
 			padding: "20px 15px 0px",
 		},
 	},
-	controlsGriditem: {
+	topHeaderGriditem: {
 		display: "flex",
 		justifyContent: "space-between",
-		margin: "20px 0 0px",
+		margin: "10px 0",
+		width: '100%',
+		[theme.breakpoints.down('sm')]: {
+            border: '1px solid rgba(255,255,255,0.2)',
+			background: 'black',
+			borderRadius: '50px',
+			padding: '5px 5px 5px 25px'
+        }
+	},
+	controlsGriditem: {
+		display: "flex",
+		justifyContent: "flex-end",
+		margin: "10px 0 0",
 	},
 	taskId: {
 		padding: "5px 0",
