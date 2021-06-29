@@ -31,7 +31,7 @@ export const TasksControls = () => {
 	const location = useLocation();
 	const query = useQuery(location.search);
 	const classes = useStyles();
-	const downSm = useMediaQuery((theme) => theme.breakpoints.down('md'));
+	const downSm = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 	const { t, i18n } = useTranslation();
 	const [reloadedValue, setReloadedValue] = useState(null);
 	const [collapsed, setCollapsed] = useState(false);

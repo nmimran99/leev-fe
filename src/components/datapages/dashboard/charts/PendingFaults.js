@@ -146,6 +146,7 @@ const useStyles = makeStyles((theme) => ({
 		background: "rgba(0,0,0,0.2)",
 		borderRadius: "0 0 10px 10px",
 		height: "calc(100% - 60px)",
+		overflow: 'auto',
 		[theme.breakpoints.down("sm")]: {
 			borderRadius: "0"
 		},

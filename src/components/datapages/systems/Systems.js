@@ -110,7 +110,7 @@ const useStyles = makeStyles(theme => ({
 		textAlign: "center",
 		borderRadius: "0 0 25px 25px",
 		lineHeight: "1", 
-		[theme.breakpoints.down('md')]: {
+		[theme.breakpoints.down('sm')]: {
 			background: "black",
 			width: "100vw",
 			padding: "20px 0",

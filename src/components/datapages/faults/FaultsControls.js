@@ -210,7 +210,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'flex-start',
-		flexWrap: 'wrap',
+		flexWrap: 'wrap'
 	},
 	icon: {
 		fontSize: '20px',

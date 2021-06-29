@@ -37,7 +37,7 @@ export const SystemsControls = () => {
     const { t, i18n } = useTranslation();
     const location = useLocation();
     const query = useQuery(location.search);
-    const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
+    const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
     const [ reloadedValue, setReloadedValue ] = useState(null);
     const [ collapsed, setCollapsed ] = useState(false);
     
