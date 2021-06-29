@@ -105,6 +105,14 @@ const OperationItem = ({ op }) => {
 	const { t } = useTranslation();
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
+	const getUserFullName = () => {
+		let us = op.payload.owner || op.payload.relatedUser[0];
+		if (us) {
+			return getFullName(us)
+		}
+
+	}
+
 	if (op.actionType === "statusChange" && op.payload.status) {
 		return matches ? (
 			t(
@@ -138,9 +146,9 @@ const OperationItem = ({ op }) => {
 				<UserItem
 					user={op.payload.owner || op.payload.relatedUser}
 					showName
+					avatarSize={30}
+					size={10}
 					showPhone
-					size={9}
-					avatarSize={matches ? 30 : 40}
 				/>
 			</div>
 		);
