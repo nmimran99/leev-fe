@@ -12,16 +12,21 @@ import {
 	Slide,
 	IconButton,
 } from '@material-ui/core';
-import AddLocationOutlinedIcon from '@material-ui/icons/AddLocationOutlined';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import QueueIcon from '@material-ui/icons/Queue';
-import PostAddIcon from '@material-ui/icons/PostAdd';
-import NoteAddOutlinedIcon from '@material-ui/icons/NoteAddOutlined';
-import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 import { useTranslation } from 'react-i18next';
 import { Can } from '../../reuseables/Can';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
 import { LanguageContext } from '../../../context/LanguageContext';
+
+import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
+import HomeWorkIcon from '@material-ui/icons/HomeWork';
+import SettingsSystemDaydreamIcon from '@material-ui/icons/SettingsSystemDaydream';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
+import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
+import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
+import AddLocationRoundedIcon from '@material-ui/icons/AddLocationRounded';
 
 export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 	const classes = useStyles();
@@ -49,9 +54,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 							onClick={toggleAdd('client')}
 						>
 							<ListItemIcon className={classes.listItemIcon}>
-								<Icon classes={{root: classes.iconRoot}}>
-								<img src="https://img.icons8.com/ios-filled/25/4a90e2/commercial-development-management.png"/>
-								</Icon>
+								<SupervisedUserCircleIcon classes={{ root: classes.iconRoot }} />
 							</ListItemIcon>
 							<ListItemText
 								primary={t('createMenu.addClient')}
@@ -67,12 +70,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 								onClick={toggleAdd('asset')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									{/* <AddLocationOutlinedIcon
-										className={classes.icon}
-									/> */}
-									<Icon classes={{root: classes.iconRoot}}>
-									<img src="https://img.icons8.com/ios-filled/25/4a90e2/warehouse.png"/>
-									</Icon>
+									<HomeWorkIcon classes={{ root: classes.iconRoot }} />
 								</ListItemIcon>
 								<ListItemText
 									primary={t('createMenu.addAsset')}
@@ -88,9 +86,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 								onClick={toggleAdd('system')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{root: classes.iconRoot}}>
-										<img src="https://img.icons8.com/ios-filled/25/4a90e2/system-task.png"/>
-									</Icon>
+									<SettingsSystemDaydreamIcon classes={{ root: classes.iconRoot }} />
 								</ListItemIcon>
 								<ListItemText
 									primary={t('createMenu.addSystem')}
@@ -106,9 +102,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 								onClick={toggleAdd('location')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{root: classes.iconRoot}}>
-										<img src="https://img.icons8.com/ios-filled/25/4a90e2/google-maps-new.png"/>
-									</Icon>
+									<AddLocationRoundedIcon classes={{ root: classes.iconRoot }} />
 								</ListItemIcon>
 								<ListItemText
 									primary={t('createMenu.addLocation')}
@@ -124,9 +118,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 								onClick={toggleAdd('task')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{root: classes.iconRoot}}>
-										<img src="https://img.icons8.com/ios-filled/25/4a90e2/task-completed.png"/>
-									</Icon>
+									<AssignmentTurnedInIcon  classes={{ root: classes.iconRoot }} />
 								</ListItemIcon>
 								<ListItemText
 									primary={t('createMenu.createTask')}
@@ -143,9 +135,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 								onClick={toggleAdd('fault')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{root: classes.iconRoot}}>
-										<img src="https://img.icons8.com/pastel-glyph/23/4a90e2/error--v2.png"/>
-									</Icon>
+									<WarningRoundedIcon    classes={{ root: classes.iconRoot }} />
 								</ListItemIcon>
 								<ListItemText
 									primary={t('createMenu.createFault')}
@@ -161,9 +151,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 								onClick={toggleAdd('document')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-								<Icon classes={{root: classes.iconRoot}}>
-										<img src="https://img.icons8.com/pastel-glyph/25/4a90e2/regular-document--v2.png"/>
-									</Icon>
+									<DescriptionRoundedIcon     classes={{ root: classes.iconRoot }} />
 								</ListItemIcon>
 								<ListItemText
 									primary={t('createMenu.addDocument')}
@@ -229,11 +217,12 @@ const useStyles = makeStyles((theme) => ({
 		padding: '10px 0',
 	},
 	iconRoot: {
-		textAlign: 'center',
-		width: '50px',
-		height: '35px',
-		display: 'grid',
-		placeItems: 'center'
+		textAlign: "center",
+		width: "25px",
+		height: "25px",
+		display: "grid",
+		placeItems: "center",
+		color: '#42A5F5',
 	},
 	header: {
 		height: '40px',
