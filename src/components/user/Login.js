@@ -82,6 +82,9 @@ export const Login = () => {
             if (location.state) {
                 history.push(location.state.from.pathname || '');
             } else {
+                if (res.data.user.isAdmin) {
+                    history.push('/workspace/assets');
+                }
                 history.push('/workspace/dashboard');
             }
             
