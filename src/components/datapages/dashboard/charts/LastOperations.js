@@ -27,6 +27,15 @@ export const LastOperations = ({ operations }) => {
 		setOps(operations);
 	}, [operations]);
 
+	const getOperationMade = (op) => {
+		console.log('here')
+		if (op.actionType === 'addComment') {
+			if (!op.payload.comment.text && op.payload.comment.image) {
+				return `${t(`dashboard.addCommentWithImage`).replace("%%itemid%%", op.itemData.itemId)}`
+			}
+		}
+		return `${t(`dashboard.${op.actionType}`).replace("%%itemid%%", op.itemData.itemId)}`
+	}
 	return (
 		<Grid container justify="center" className={classes.mainContainer}>
 			<Grid item xs={12} className={classes.gridHeader}>
@@ -52,9 +61,7 @@ export const LastOperations = ({ operations }) => {
 											<span className={classes.mobileActionby}>
 												{` ${getFullName(op.actionBy)}`}
 											</span>
-											{` ${t(
-												`dashboard.${op.actionType}`
-											).replace("%%itemid%%", op.itemData.itemId)}`}
+											{getOperationMade(op)}
 											<OperationItem op={op} />
 										</div>
 									) : (
@@ -69,10 +76,7 @@ export const LastOperations = ({ operations }) => {
 												/>
 											</div>
 											<div className={classes.operationMade}>
-												{t(`dashboard.${op.actionType}`).replace(
-													"%%itemid%%",
-													op.itemData.itemId
-												)}
+												{getOperationMade(op)}
 											</div>
 											<div className={classes.operationItem}>
 												<OperationItem op={op} />
@@ -105,14 +109,6 @@ const OperationItem = ({ op }) => {
 	const { t } = useTranslation();
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
-	const getUserFullName = () => {
-		let us = op.payload.owner || op.payload.relatedUser[0];
-		if (us) {
-			return getFullName(us)
-		}
-
-	}
-
 	if (op.actionType === "statusChange" && op.payload.status) {
 		return matches ? (
 			t(
@@ -133,12 +129,12 @@ const OperationItem = ({ op }) => {
 			</div>
 		);
 	} else if (
-		["ownerChange", "relatedUserAdded"].includes(op.actionType) &&
-		(op.payload.owner || op.payload.relatedUser)
+		["ownerChange"].includes(op.actionType) &&
+		(op.payload.owner)
 	) {
 		return matches ? (
 			<span style={{ fontWidth: '800'}}>
-				{` ${getFullName(op.payload.owner || op.payload.relatedUser)}`}
+				{` ${getFullName(op.payload.owner)}`}
 			</span>
 			
 		) : (
@@ -154,7 +150,7 @@ const OperationItem = ({ op }) => {
 		);
 	} else if (op.actionType === "detailsUpdate" && op.payload) {
 		return null;
-	} else if (op.actionType === "addComment" && op.payload.comment) {
+	} else if (op.actionType === "addComment" && op.payload.comment.text) {
 		return matches ? (
 			<div className={classes.commentContainer}>
 				{op.payload.comment.text}

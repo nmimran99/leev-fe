@@ -649,6 +649,7 @@
         "statusChange": "שינה את סטטוס הפריט %%itemid%% ל-",
         "detailsUpdate": "עידכן את הפרטים ל - %%itemid%%",
         "addComment": "הוסיף תגובה לפריט %%itemid%%:",
+        "addCommentWithImage": "הוסיף תגובה עם תמונה לפריט %%itemid%%",
         "ownerChange": "שינה את ממונה %%itemid%% ל -",
         "relatedUserAdded": "הוסיף משתמש מקושר לפריט %%itemid%%:",
         "itemCreated": "פריט חדש נוצר עם מזהה %%itemid%%",

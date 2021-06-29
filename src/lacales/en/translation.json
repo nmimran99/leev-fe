@@ -649,6 +649,7 @@
         "statusChange": "Changed %%itemid%%'s status to",
         "detailsUpdate": "Updated the details for %%itemid%%",
         "addComment": "Added a comment to %%itemid%%:",
+        "addCommentWithImage": "Added a comment with image to %%itemid%%",
         "ownerChange": "Changed the owner for %%itemid%% to",
         "relatedUserAdded": "Related a user to %%itemid%%:",
         "itemCreated": "New item created with idenitfier %%itemid%%",
