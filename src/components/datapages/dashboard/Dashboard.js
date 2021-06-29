@@ -56,7 +56,6 @@ export const Dashboard = () => {
 		getDashboardData({ asset: query.asset })
 			.then((res) => {
 				setData(res);
-				console.log(res);
 			})
 			.finally(() => setIsLoading(false));
 	}, [isLoading]);

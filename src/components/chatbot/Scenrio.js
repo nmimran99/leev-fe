@@ -2,8 +2,6 @@ import i18next from 'i18next';
 import { assignUserToFault, checkEmailExists } from '../../api/chatbotApi';
 import { createExternalFault } from '../../api/faultsApi';
 
-console.log(i18next)
-
 export const welcome = {
 	querstions: [
 		

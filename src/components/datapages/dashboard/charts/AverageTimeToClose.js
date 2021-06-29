@@ -23,8 +23,6 @@ export const AverageTimeToClose = ({ data }) => {
     }
 
     const getPercentaeMarker = (data) => {
-        console.log(data)
-        console.log(data.avg / (data.max + data.min))
         return data.avg / (data.max + data.min);
     }
 

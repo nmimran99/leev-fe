@@ -28,7 +28,6 @@ export const LastOperations = ({ operations }) => {
 	}, [operations]);
 
 	const getOperationMade = (op) => {
-		console.log('here')
 		if (op.actionType === 'addComment') {
 			if (!op.payload.comment.text && op.payload.comment.image) {
 				return `${t(`dashboard.addCommentWithImage`).replace("%%itemid%%", op.itemData.itemId)}`
