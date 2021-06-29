@@ -113,7 +113,9 @@ const useStyles = makeStyles((theme) => ({
 		height: 'calc(100% - 64px)',
 		[theme.breakpoints.down('sm')]: {
 			width: '100%',
-			height: 'calc(100% - 64px)',
+			height: '100%',
+			top: 0,
+			background: 'rgba(0,0,0,0.6)'
 		},
 	},
 	list: {

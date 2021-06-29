@@ -105,7 +105,6 @@ export const SearchBoxSelect = ({ placeholder, filterField, suggestionsFunc, rel
                     :
                     <FormControl variant='outlined' className={classes.form}>
                         <OutlinedInput
-                            autoFocus={true}
                             inputRef={input}
                             value={ searchText || '' }
                             onChange={handleChange}

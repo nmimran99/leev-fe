@@ -1,27 +1,28 @@
 import React, { useState, useContext, useEffect } from "react";
-import clsx from "clsx";
 import {
 	makeStyles,
-	AppBar,
 	IconButton,
 	Grid,
 	Badge,
-	Icon,
+	useMediaQuery,
 } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
-import NotificationsNoneOutlinedIcon from "@material-ui/icons/NotificationsNoneOutlined";
-import ArrowForwardRoundedIcon from "@material-ui/icons/ArrowForwardRounded";
-import AddIcon from "@material-ui/icons/Add";
 import { NotificationsContext } from "../../../context/NotificationsContext";
 import { differenceInHours } from "date-fns";
-import MapOutlinedIcon from "@material-ui/icons/MapOutlined";
 import { useLocation } from "react-router";
-import notificationIcon from "../../../assets/icons/notification.svg";
-import plusIcon from "../../../assets/icons/plus28.svg";
-import mapIcon from "../../../assets/icons/map28.svg";
-import menuIcon from "../../../assets/icons/menu.svg";
 import { Can } from "../../reuseables/Can";
+
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+import AppsOutlinedIcon from '@material-ui/icons/AppsOutlined';
+import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined';
+import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
+import MapOutlinedIcon from '@material-ui/icons/MapOutlined';
+import { useTranslation } from "react-i18next";
+
+// import { MenuIcon } from '../../../assets/icons/MenuIcon';
+// import { NotificationsIcon } from '../../../assets/icons/NotificationsIcon';
+// import { CalenderIcon } from '../../../assets/icons/CalenderIcon';
+// import { MapIcon } from '../../../assets/icons/MapIcon';
+// import { AddIcon } from '../../../assets/icons/AddIcon';
 
 export const Navbar = ({
 	toggleMenu,
@@ -32,7 +33,9 @@ export const Navbar = ({
 }) => {
 	const classes = useStyles();
 	const location = useLocation();
+	const matches = useMediaQuery(theme => theme.breakpoints.down('sm'));
 	const { notifications } = useContext(NotificationsContext);
+	const { t } = useTranslation();
 	const [notifCount, setNotifCount] = useState(0);
 	const [mapActive, setMapActive] = useState(location.pathname.includes("map"));
 	const [calenderActive, setCalenderActive] = useState(
@@ -52,7 +55,7 @@ export const Navbar = ({
 	}, [notifications]);
 
 	return (
-		<AppBar className={classes.navbar}>
+		<div className={classes.navbar}>
 			<Grid
 				container
 				alignItems="center"
@@ -60,33 +63,71 @@ export const Navbar = ({
 				style={{ height: "64px" }}
 			>
 				{
+					!matches && 
 					<Grid item className={classes.menuGridItem}>
 						<IconButton
 							aria-label="menu"
 							className={classes.iconButton}
 							color="inherit"
 							onClick={toggleMenu}
+							
 						>
-							<Icon classes={{ root: classes.iconRoot }}>
-								<img src="https://img.icons8.com/ios-filled/24/4a90e2/thumbnail-view.png" />
-							</Icon>
+							<AppsOutlinedIcon className={classes.iconRoot} style={{ width: '35px', height: '35px'}}/>
 						</IconButton>
+						
 						<div className={classes.logobox}>Leev</div>
+						
+						
 					</Grid>
 				}
-				<Grid item></Grid>
-				<Grid item>
+				<Grid item xs={12} md={3} lg={2} xl={2}>
 					<div className={classes.navbarIcons}>
+						{
+							matches &&
+							<IconButton
+								aria-label="menu"
+								className={classes.iconButton}
+								color="inherit"
+								onClick={toggleMenu}
+								classes={{ label: classes.iconLabel }}
+							>
+								<AppsOutlinedIcon className={classes.iconRoot} />
+								<div className={classes.bottomLabel}>
+								{t("general.menu")}
+							</div>
+							</IconButton>
+						}
+					
 						<IconButton
 							aria-label="Calender"
 							className={classes.iconButton}
 							color={"inherit"}
 							onClick={toggleCalenderView}
 							disabled={calenderActive}
+							classes={{ label: classes.iconLabel }}
 						>
-							<Icon classes={{ root: classes.iconRoot }}>
+							<EventAvailableOutlinedIcon className={classes.iconRoot} />
+							<div className={classes.bottomLabel}>
+								{t("general.calendar")}
+							</div>
+							{/* <Icon classes={{ root: classes.iconRoot }}>
 								<img src="https://img.icons8.com/ios-filled/24/4a90e2/tear-off-calendar.png" />
-							</Icon>
+							</Icon> */}
+						</IconButton>
+						<IconButton
+							aria-label="Add"
+							className={classes.iconButton}
+							color={"inherit"}
+							onClick={toggleAddMenu}
+							classes={{ label: classes.iconLabel }}
+						>
+							<AddCircleOutlineOutlinedIcon className={classes.iconRoot} />
+							{/* <Icon classes={{ root: classes.iconRoot }}>
+								<img src="https://img.icons8.com/ios-filled/28/4a90e2/plus-2-math.png" />
+							</Icon> */}
+							<div className={classes.bottomLabel}>
+								{t("general.create")}
+							</div>
 						</IconButton>
 						<Can module="map" action="read">
 							<IconButton
@@ -95,28 +136,25 @@ export const Navbar = ({
 								color={"inherit"}
 								onClick={toggleMapView}
 								disabled={mapActive}
+								classes={{ label: classes.iconLabel }}
 							>
-								<Icon classes={{ root: classes.iconRoot }}>
+								<MapOutlinedIcon className={classes.iconRoot} />
+								<div className={classes.bottomLabel}>
+									{t("general.map")}
+								</div>
+								{/* <Icon classes={{ root: classes.iconRoot }}>
 									<img src="https://img.icons8.com/ios-filled/24/4a90e2/map.png" />
-								</Icon>
+								</Icon> */}
 							</IconButton>
 						</Can>
 
-						<IconButton
-							aria-label="Add"
-							className={classes.iconButton}
-							color={"inherit"}
-							onClick={toggleAddMenu}
-						>
-							<Icon classes={{ root: classes.iconRoot }}>
-								<img src="https://img.icons8.com/ios-filled/28/4a90e2/plus-2-math.png" />
-							</Icon>
-						</IconButton>
+						
 						<IconButton
 							aria-label="Notifications"
 							className={classes.iconButton}
 							color="inherit"
 							onClick={toggleNotifications}
+							classes={{ label: classes.iconLabel }}
 						>
 							<Badge
 								badgeContent={notifCount}
@@ -125,15 +163,20 @@ export const Navbar = ({
 									badge: classes.badge,
 								}}
 							>
-								<Icon classes={{ root: classes.iconRoot }}>
+								<NotificationsNoneIcon className={classes.iconRoot} />
+								
+								{/* <Icon classes={{ root: classes.iconRoot }}>
 									<img src="https://img.icons8.com/ios-filled/24/4a90e2/appointment-reminders--v1.png" />
-								</Icon>
+								</Icon> */}
 							</Badge>
+							<div className={classes.bottomLabel}>
+									{t("general.notifications")}
+								</div>
 						</IconButton>
 					</div>
 				</Grid>
 			</Grid>
-		</AppBar>
+		</div>
 	);
 };
 
@@ -150,6 +193,10 @@ const useStyles = makeStyles((theme) => ({
 		background: "rgba(0,0,0,0.8)",
 		backdropFilter: "blur(8px)",
 		boxShadow: "rgba(0,0,0,0.4) 0px 0px 5px 2px",
+		[theme.breakpoints.down('sm')]: {
+			borderRadius: '30px 30px 0 0',
+			background: "black",
+		}
 	},
 	menuGridItem: {
 		display: "flex",
@@ -160,6 +207,13 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		justifyContent: "space-between",
 		width: "auto",
+		padding: '0 10px',
+		[theme.breakpoints.down('md')]: {
+			padding: '0 20px',
+		},
+		[theme.breakpoints.down('xs')]: {
+			padding: '0 10px',
+		}
 	},
 	drawer: {
 		height: "calc(100vh - 128px)",
@@ -196,7 +250,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	iconButton: {
-		padding: "6px",
+		padding: "6px"
 	},
 	icon: {
 		fontSize: "28px",
@@ -219,9 +273,22 @@ const useStyles = makeStyles((theme) => ({
 	},
 	iconRoot: {
 		textAlign: "center",
-		width: "40px",
-		height: "50px",
+		width: "30px",
+		height: "30px",
 		display: "grid",
 		placeItems: "center",
+		color: '#42A5F5',
+		[theme.breakpoints.down('sm')]: {
+			width: "25px",
+			height: "25px",
+		}
 	},
+	iconLabel: {
+		flexDirection: 'column'
+	},
+	bottomLabel: {
+		color: 'white',
+		fontSize: '11px',
+		padding: '5px 0 0'
+	}
 }));

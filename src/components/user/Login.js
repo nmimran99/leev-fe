@@ -82,7 +82,7 @@ export const Login = () => {
             if (location.state) {
                 history.push(location.state.from.pathname || '');
             } else {
-                history.push('/workspace/assets');
+                history.push('/workspace/dashboard');
             }
             
         }

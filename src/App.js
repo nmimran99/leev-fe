@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Login } from './components/user/Login';
 import { PasswordRecovery } from './components/user/PasswordRecovery';
@@ -16,13 +16,25 @@ import { LanguageContext } from './context/LanguageContext';
 import { SnackbarContextProvider } from './context/SnackbarContext';
 import { Chatbot } from './components/chatbot/Chatbot';
 import { ResetPassword } from './components/user/ResetPassword';
+import { EnvContext } from './context/EnvContext';
+import { AlertTitle } from '@material-ui/lab';
 
 
 function App() {
 	const { lang } = useContext(LanguageContext);
+	const { env, setEnv } = useContext(EnvContext);
 	const jss = create({
 		plugins: [...jssPreset().plugins, lang.code === 'he' ? rtl() : null],
 	});
+
+	useEffect(() => {
+		window.addEventListener('resize', () => {
+			setEnv({
+				screenHeight: window.innerHeight,
+				screenWidth: window.innerWidth
+			})
+		})
+	}, [])
 
 	return (
 		<StylesProvider jss={jss}>

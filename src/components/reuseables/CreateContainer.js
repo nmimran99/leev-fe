@@ -11,6 +11,7 @@ import { createNewSystem } from '../../api/systemsApi';
 import { createNewTask } from '../../api/tasksApi';
 import { SnackbarContext } from '../../context/SnackbarContext';
 import { UpsertAsset } from '../datapages/assets/UpsertAsset';
+import { UpsertClient } from '../datapages/clients/UpsertClient';
 import { UpsertDocument } from '../datapages/documents/UpsertDocument';
 import { UpsertFault } from '../datapages/faults/UpsertFault';
 import { UpsertLocation } from '../datapages/locations/UpsertLocation';
@@ -27,6 +28,7 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
     const { t } = useTranslation();
     const { snackbar, setSnackbar }  = useContext(SnackbarContext);
 
+    
  
     const handleSaveAsset = details => {
         createNewAsset(details)
@@ -130,6 +132,10 @@ export const CreateContainer = ({ isOpen, handleClose, itemType }) => {
     return (
         <React.Fragment>
             {
+                itemType === 'client' ?
+                <UpsertClient 
+                    handleClose={handleClose}
+                /> : 
                 itemType === 'asset' ?
                 <UpsertAsset 
                     handleClose={handleClose}

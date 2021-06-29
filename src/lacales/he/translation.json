@@ -33,7 +33,31 @@
         "locations": "מיקומים",
         "settings": "הגדרות",
         "logout": "התנתק",
-        "dashboard": "תצוגת מצב"
+        "dashboard": "תצוגת מצב",
+        "clients": "לקוחות"
+    },
+    "clientsModule": {
+        "_id": "מזהה לקוח",
+        "name": "שם חברה",
+        "contactName": "איש קשר",
+        "contactNumber": "טלפון",
+        "lang": "שפה",
+        "rowsPerPage": "שורות בכל דף:",
+        "displaying": "מציג",
+        "ofTotal": "מסך",
+        "rows": "שורות",
+        "delete": "מחק לקוח",
+        "clientMenu": "תפריט לקוח",
+        "deleteConfirmation": "האם הינך בטוח שברצונך למחוק את הלקוח",
+        "deleteClient": "מחיקת לקוח",
+        "upsert": {
+            "editClientDetails": "עריכת פרטי לקוח",
+            "createClient": "יצירת לקוח",
+            "generalDetails": "פרטים כלליים",
+            "isActive": "סטטוס לקוח",
+            "active": "פעיל",
+            "inactive": "לא פעיל"
+        }
     },
     "assetsModule": {
         "assets": "נכסים",
@@ -72,7 +96,8 @@
         "updateAssetOwner": "עידכון מנהל נכס",
         "updateAssetOwnerInstructions": "בחר משתמש שיתפקד כמנהל הנכס",
         "addRelatedUser": "הוסף משתמש עוקב",
-        "addRelatedUserIntructions": "בחר משתמש על מנת להוסיף לרשימת המקושרים התקלה"
+        "addRelatedUserIntructions": "בחר משתמש על מנת להוסיף לרשימת המקושרים התקלה",
+        "filterByClient": "סנן על פי לקוח"
     },
     "systemsModule": {
         "filterBySystemName": "סנן לפי שם מערכת",
@@ -306,7 +331,8 @@
         "createUser": "צור משתמש",
         "createTask": "צור משימה",
         "createFault": "צור תקלה",
-        "addDocument": "צור מסמך"
+        "addDocument": "צור מסמך",
+        "addClient": "צור לקוח"
     },
     "alert": {
         "confirm": "אישור",
@@ -411,7 +437,9 @@
         "cannotDeactivateAssetOwner": "לא ניתן להעביר משתמש שממונה על נכס למצב לא פעיל",
         "nameAlreadyExists": "שם זה קיים במערכת לנכס זה",
         "emailNotFound": "משתמש עם כתובת מייל זו לא נמצא במערכת.",
-        "passwordsDontMatch": "הסיסמאות שנקלטו אינן תואמות. אנא ודא כי הסיסמאות תואמות."
+        "passwordsDontMatch": "הסיסמאות שנקלטו אינן תואמות. אנא ודא כי הסיסמאות תואמות.",
+        "noRows": "לא נמצא מידע",
+        "applyFilter": "אנא נסה לשנות את המסננים"
     },
     "messages": {
         "snackMessage": {
@@ -421,7 +449,8 @@
             "removed": "נמחק",
             "withIdentifier": "עם מזהה",
             "withSuccess": "בהצלחה",
-            "deleted": "נמחק"
+            "delete": "נמחק",
+            "created": "נוצר"
         }
     },
     "general": {
@@ -451,7 +480,13 @@
         "relatedUsers": "משתמשים מקושרים",
         "user": "משתמש",
         "true": "כן",
-        "false": "לא"
+        "false": "לא",
+        "client": "לקוח",
+        "create": "יצירה",
+        "calendar": "לוח שנה",
+        "map": "מפה",
+        "notifications": "התראות",
+        "menu": "תפריט"
     },
     "scheduler": {
         "startDate": "תאריך התחלה",
@@ -634,5 +669,10 @@
         "upcomingTasks": "משימות מחזוריות קרובות - 30 ימים",
         "noData": "אין מספיק מידע",
         "noDataSecondary": "לא קיים מספיק מידע במערכת על מנת לייצר את תצוגה זו. תצוגה זו תוצג ברגע שמספיק מידע יהיה זמין במערכת."
+        
+    },
+    "languages": {
+        "he": "עברית",
+        "en": "אנגלית"
     }
 }

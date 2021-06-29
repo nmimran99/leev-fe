@@ -8,7 +8,7 @@ import deLocale from 'date-fns/locale/de'
 import usLocale from 'date-fns/locale/en-US'
 import { getDateParts } from './calenderApi';
 
-const localizations = {
+export const localizations = {
 	he: {
 		name: 'Hebrew',
         code: 'he',

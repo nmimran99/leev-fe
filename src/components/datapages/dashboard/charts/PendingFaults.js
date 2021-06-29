@@ -35,7 +35,7 @@ export const PendingFaults = ({ pendingFaults }) => {
 			<Grid container justify="center" className={classes.container}>
 				<Grid item xs={12} className={classes.gridHeader}>
 					<div className={classes.header}>
-						{t("dashboard.pendingFaults")}{" "}
+						{t("dashboard.pendingFaults")}
 						<div className={classes.statusHeaderContainer}>
 							<StatusTag
 								status={{ statusId: "pending" }}
@@ -134,8 +134,6 @@ const useStyles = makeStyles((theme) => ({
 		height: "60px",
 		[theme.breakpoints.down("sm")]: {
 			borderRadius: 0,
-			position: "sticky",
-			top: "0px",
 		},
 	},
 	header: {
@@ -149,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: "0 0 10px 10px",
 		height: "calc(100% - 60px)",
 		[theme.breakpoints.down("sm")]: {
-			borderRadius: "0",
+			borderRadius: "0"
 		},
 	},
 	statusHeaderContainer: {

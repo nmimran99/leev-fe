@@ -33,7 +33,31 @@
         "locations": "Locations",
         "settings": "Settings",
         "logout": "Sign out",
-        "dashboard": "Overview Dashboard"
+        "dashboard": "Overview Dashboard",
+        "clients": "Clients"
+    },
+    "clientsModule": {
+        "_id": "Object Id",
+        "name": "Company Name",
+        "contactName": "Contact Name",
+        "contactNumber": "Contact Number",
+        "lang": "Language",
+        "rowsPerPage": "Rows per page:",
+        "displaying": "Displaying",
+        "ofTotal": "of Total",
+        "rows": "Rows",
+        "delete": "Delete Client",
+        "clientMenu": "Client Menu",
+        "deleteConfirmation": "Are you sure you want to delete",
+        "deleteClient": "Delete Client",
+        "upsert": {
+            "editClientDetails": "Edit Client Details",
+            "createClient": "Create Client",
+            "generalDetails": "General Details",
+            "isActive": "Is Active",
+            "active": "Active",
+            "inactive": "Inactive"
+        }
     },
     "assetsModule": {
         "assets": "Assets",
@@ -72,7 +96,8 @@
         "updateAssetOwner": "Upade Asset Manager",
         "updateAssetOwnerInstructions": "Choose a user to act as asset manager",
         "addRelatedUser": "Add related user",
-        "addRelatedUserIntructions": "Choose a user to add to the fault related users list"
+        "addRelatedUserIntructions": "Choose a user to add to the fault related users list",
+        "filterByClient": "Filter by Client"
     },
     "systemsModule": {
         "filterBySystemName": "Filter by system name",
@@ -306,7 +331,8 @@
         "createUser": "Create User",
         "createTask": "Create Task",
         "createFault": "Create Fault",
-        "addDocument": "Create Document"
+        "addDocument": "Create Document",
+        "addClient": "Create Client"
     },
     "alert": {
         "confirm": "Confirm",
@@ -411,7 +437,9 @@
         "cannotDeactivateAssetOwner": "Cannot deactive user that is an owner of an asset.",
         "nameAlreadyExists": "This name already exists",
         "emailNotFound": "User with this email was not found.",
-        "passwordsDontMatch": "The passwords do not match. Plese make sure to enter matching passwords."
+        "passwordsDontMatch": "The passwords do not match. Plese make sure to enter matching passwords.",
+        "noRows": "No data was found",
+        "applyFilter": "Please try to change the filters"
     },
     "messages": {
         "snackMessage": {
@@ -421,7 +449,8 @@
             "removed": "has been removed",
             "withIdentifier": "with identifier",
             "withSuccess": "successfully",
-            "deleted": "deleted"
+            "deleted": "deleted",
+            "created": "created"
         }
     }, 
     "general": {
@@ -451,7 +480,13 @@
         "relatedUsers": "related users" ,
         "user": "User",
         "true": "Yes",
-        "false": "No"
+        "false": "No",
+        "client": "client",
+        "create": "Create",
+        "calendar": "Calendar",
+        "map": "Map",
+        "notifications": "Notifications",
+        "menu": "Menu"
     },
     "scheduler": {
         "startDate": "Start Date",
@@ -634,5 +669,9 @@
         "upcomingTasks": "Upcoming tasks - 30 days",
         "noData": "Not enough data",
         "noDataSecondary": "There isn't enough data to generate this chart. This chart will be available once enough data is available."
+    },
+    "languages": {
+        "he": "Hebrew",
+        "en": "English"
     }
 }

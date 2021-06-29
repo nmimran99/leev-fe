@@ -49,7 +49,7 @@ export const Systems = () => {
     return(
         <div>
             <Grid container justify='center'>
-                <Grid item xs={12}>
+                <Grid item xs={12} className={classes.moduleContainer}>
                     <div className={classes.pageModule}>
                         {t("assetsModule.systems")}
                     </div>
@@ -94,15 +94,28 @@ const useStyles = makeStyles(theme => ({
         textAlign: 'center',
         fontSize: '16px'
     },
-    pageModule: {
-        color: 'white',
-        padding: '10px 40px',
-        fontSize: '18px',
-        background: 'rgba(0,0,0,0.6)',
-        margin: '0px auto 5px',
-        width: '30%',
-        textAlign: 'center',
-        borderRadius: '0 0 25px 25px',
-        lineHeight: '1'
-    }
+    moduleContainer: {
+		position: 'sticky',
+		top: 0,
+		zIndex: 2
+	},
+	pageModule: {
+		color: "white",
+		padding: "10px 40px",
+		fontSize: "16px",
+		background: "rgba(0,0,0,0.8)",
+        boxShadow: '0 0px 2px 1px rgba(255,255,255,0.3)',
+		margin: "0px auto 5px",
+		width: "30%",
+		textAlign: "center",
+		borderRadius: "0 0 25px 25px",
+		lineHeight: "1", 
+		[theme.breakpoints.down('md')]: {
+			background: "black",
+			width: "100vw",
+			padding: "20px 0",
+			borderRadius: 0,
+			margin: 0
+		}
+	},
 }))

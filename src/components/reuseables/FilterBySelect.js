@@ -20,6 +20,7 @@ export const FilterBySelect = ({ filterField, placeholder, filterIcon, optionsFu
     useEffect(() => {
         optionsFunc()
         .then(data => {
+            console.log(data)
             setMenuOptions(data)
         }) 
     }, [])

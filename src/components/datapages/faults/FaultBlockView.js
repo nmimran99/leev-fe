@@ -25,6 +25,20 @@ export const FaultBlockView = ({ faults }) => {
         return faultsData.filter(f => f.status.statusId === status)
     }
 
+    const getFaultBlock = (s) => {
+        const fbs = getFaultsByStatus(s.statusId);
+        if (!fbs.length) return;
+
+        return (
+            <List className={classes.blockFaults} >
+                { 
+                fbs.map((f,i) => 
+                    <FaultBlock data={f} key={i} />
+                )}
+            </List>
+        )
+    }
+
     return ( 
         <Grid container className={classes.container}>
             {
@@ -35,14 +49,7 @@ export const FaultBlockView = ({ faults }) => {
                                 <div className={classes.blockTitle}>
                                     <StatusTag type='fault' status={s}/>
                                 </div>
-                                
-                                <List className={classes.blockFaults} >
-                                    { 
-                                    getFaultsByStatus(s.statusId).map((f,i) => 
-                                        <FaultBlock data={f} key={i} />
-                                    )}
-                                </List>
-                                
+                                {getFaultBlock(s)}
                             </div>
                         </Grid>
                     )     
@@ -58,14 +65,18 @@ const useStyles = makeStyles(theme => ({
         height: 'auto'
    },
    gridItem: {
-       minHeight: '700px'
+       minHeight: '700px',
+       [theme.breakpoints.down('sm')]: {
+        minHeight: '0',
+       }
    },
    blockTitle: {
        padding: '10px',
-       background: 'rgba(0,0,0,0.4)',
+       background: 'black',
        display: 'flex',
        justifyContent: 'center',
-       borderRadius: '10px'
+       borderRadius: '10px',
+       margin: '5px 0'
    },
    block: {
        padding: '0 5px',
@@ -76,7 +87,10 @@ const useStyles = makeStyles(theme => ({
        borderRadius: '10px',
        margin: '10px 0',
        minHeight: '600px',
-       padding: '5px'
+       padding: '5px',
+       [theme.breakpoints.down('sm')]: {
+        minHeight: '0',
+       }
    },
    faultContainer: {
     padding: '10px',

@@ -191,8 +191,8 @@ export const applyFilters = (filters, assets) => {
 		}
 		if (filters.searchText) {
 			assets = assets.filter((asset) => {
-				return createAssetAddress(asset.address).includes(
-					specialStringPurge(filters.searchText)
+				return createAssetAddress(asset.address).toLowerCase().includes(
+					specialStringPurge(filters.searchText.toLowerCase())
 				);
 			});
 		}

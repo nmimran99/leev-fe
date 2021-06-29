@@ -5,8 +5,6 @@ import { useLocation } from 'react-router';
 import {
 	deleteDocument,
 	downloadDocument, getDocuments,
-
-
 	updateDocumentDetails
 } from '../../../api/documentsApi';
 import { getServerError, getSuccessMessage } from '../../../api/genericApi';
@@ -17,6 +15,7 @@ import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { Document } from './Document';
 import { DocumentsControls } from './DocumentsControls';
 import { UpsertDocument } from './UpsertDocument';
+import { NoDataFound } from '../../reuseables/NoDataFound';
 
 export const Documents = () => {
 	const classes = useStyles();
@@ -96,9 +95,9 @@ export const Documents = () => {
 
 	return (
 		<Grid container justify="center">
-			<div className={classes.pageModule}>
-				{t('documentsModule.documents')}
-			</div>
+			<Grid xs={12} className={classes.moduleContainer}>
+				<div className={classes.pageModule}>{t('documentsModule.documents')}</div>
+			</Grid>
 			<Grid item xs={12}>
 				<DocumentsControls />
 			</Grid>
@@ -110,7 +109,9 @@ export const Documents = () => {
 					justify="center"
 					className={classes.docsContainer}
 				>
-					{docs.map((d, i) => (
+					{
+					docs.length ? 
+					docs.map((d, i) => (
 						<Grid item xs={12} sm={8} md={5} lg={4} xl={3} key={i}>
 							<Document
 								data={d}
@@ -120,7 +121,9 @@ export const Documents = () => {
 								previewFile={previewFile}
 							/>
 						</Grid>
-					))}
+					)) : 
+					<NoDataFound />
+					}
 				</Grid>
 			)}
 			{Boolean(alertDialog) && (
@@ -143,16 +146,29 @@ export const Documents = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
+	moduleContainer: {
+		position: 'sticky',
+		top: 0,
+		zIndex: 2
+	},
 	pageModule: {
-		color: 'white',
-		padding: '10px 40px',
-		fontSize: '18px',
-		background: 'rgba(0,0,0,0.6)',
-		margin: '0px auto 5px',
-		width: '30%',
-		textAlign: 'center',
-		borderRadius: '0 0 25px 25px',
-		lineHeight: '1',
+		color: "white",
+		padding: "10px 40px",
+		fontSize: "16px",
+		background: "rgba(0,0,0,0.8)",
+        boxShadow: '0 0px 2px 1px rgba(255,255,255,0.3)',
+		margin: "0px auto 5px",
+		width: "30%",
+		textAlign: "center",
+		borderRadius: "0 0 25px 25px",
+		lineHeight: "1", 
+		[theme.breakpoints.down('md')]: {
+			background: "black",
+			width: "100vw",
+			padding: "20px 0",
+			borderRadius: 0,
+			margin: 0
+		}
 	},
 	docsContainer: {
 		padding: '10px',

@@ -208,12 +208,12 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down("sm")]: {
 			borderRadius: 0,
 			position: "sticky",
-			top: 0,
+			top: '58px'
 		},
 	},
 	header: {
 		fontSize: "18px",
-		padding: "20px 20px 0",
+		padding: "20px 20px 0"
 	},
 	gridData: {
 		background: "rgba(0,0,0,0.2)",

@@ -2,6 +2,7 @@ import { Grid, makeStyles } from '@material-ui/core';
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { getNotifications } from '../../api/notificationsApi';
+import { EnvContext } from '../../context/EnvContext';
 import { NotificationsContext } from '../../context/NotificationsContext';
 import { CreateContainer } from '../reuseables/CreateContainer';
 import { AddMenu } from './navbar/AddMenu';
@@ -15,6 +16,7 @@ export const Controls = () => {
 	const history = useHistory();
 	const location = useLocation();
 	const { notifications, setNotifications } = useContext(NotificationsContext);
+	const { env } = useContext(EnvContext);
 	const [ menuOpen, setMenuOpen ] = useState(false);
 	const [ addMenuOpen, setAddMenuOpen ] = useState(false);
 	const [ create, setCreate ] = useState(null);
@@ -85,8 +87,8 @@ export const Controls = () => {
 
 	return (
 		<React.Fragment>
-			<Grid container className={classes.controlsContainer} justify="center">
-				<Grid item xs={12}>
+			<div container className={classes.controlsContainer} justify="center">
+			
 					<Navbar
 						toggleMenu={toggleMenu}
 						menuOpen={menuOpen}
@@ -96,8 +98,8 @@ export const Controls = () => {
 						toggleCalenderView={toggleCalenderView}
 						
 					/>
-				</Grid>
-			</Grid>
+			
+			</div>
 			{menuOpen && <SideMenu toggleMenu={toggleMenu} toggleSettings={toggleSettings} menuOpen={menuOpen}/>}
 			{addMenuOpen && <AddMenu toggleAddMenu={toggleAddMenu} toggleAdd={openCreate} addMenuOpen={addMenuOpen} />}
 			{notificationsList && (
@@ -117,5 +119,15 @@ const useStyles = makeStyles((theme) => ({
 	controlsContainer: {
 		zIndex: 2,
 		height: '64px',
+		backdropFilter: 'blur(22px)',
+		width: '100%',
+		[theme.breakpoints.down('sm')]: {
+			borderRadius: '30px 30px 0 0',
+			position: 'fixed',
+			bottom: '0',
+			background: 'black',
+			height: '84px',
+			boxShadow: '0px 0 2px 0px rgba(255,255,255,0.5)'
+		}
 	},
 }));

@@ -10,7 +10,7 @@ import { useQuery } from '../../reuseables/customHooks/useQuery';
 import { FaultBlockView } from './FaultBlockView';
 import { FaultListView } from './FaultListView';
 import { FaultsControls } from './FaultsControls';
-
+import { NoDataFound } from '../../reuseables/NoDataFound';
 export const FaultViews = () => {
 
     const history = useHistory();
@@ -50,9 +50,10 @@ export const FaultViews = () => {
 
     return (
         <Grid container justify={ 'center'} >
-            <div className={classes.pageModule}>
-                    {t("assetsModule.faults")}
-            </div>
+            <Grid xs={12} className={classes.moduleContainer}>
+                <div className={classes.pageModule}>{t("assetsModule.faults")}</div>
+            </Grid>
+            
             <Grid item xs={12}>
                 <FaultsControls 
                     viewType={viewType}
@@ -68,13 +69,15 @@ export const FaultViews = () => {
                     style={{ height: 'auto' }}
                 >
                     {
-                        viewType === 'list' ?
-                        <FaultListView 
-                            faults={faults}
-                        /> :
-                        <FaultBlockView 
-                            faults={faults}
-                        />     
+                        faults.length ? 
+                            viewType === 'list' ?
+                            <FaultListView 
+                                faults={faults}
+                            /> :
+                            <FaultBlockView 
+                                faults={faults}
+                            />
+                        : <NoDataFound />     
                     }
                     
                 </Grid>
@@ -86,17 +89,30 @@ export const FaultViews = () => {
 }
 
 const useStyles = makeStyles(theme => ({
-    pageModule: {
-        color: 'white',
-        padding: '10px 40px',
-        fontSize: '18px',
-        background: 'rgba(0,0,0,0.6)',
-        margin: '0px auto 5px',
-        width: '30%',
-        textAlign: 'center',
-        borderRadius: '0 0 25px 25px',
-        lineHeight: '1'
-    },
+    moduleContainer: {
+		position: 'sticky',
+		top: 0,
+		zIndex: 2
+	},
+	pageModule: {
+		color: "white",
+		padding: "10px 40px",
+		fontSize: "16px",
+		background: "rgba(0,0,0,0.8)",
+        boxShadow: '0 0px 2px 1px rgba(255,255,255,0.3)',
+		margin: "0px auto 5px",
+		width: "30%",
+		textAlign: "center",
+		borderRadius: "0 0 25px 25px",
+		lineHeight: "1", 
+		[theme.breakpoints.down('md')]: {
+			background: "black",
+			width: "100vw",
+			padding: "20px 0",
+			borderRadius: 0,
+			margin: 0
+		}
+	},
     faultPresent: {
         margin: '20px 10px',
         [theme.breakpoints.down('sm')]: {

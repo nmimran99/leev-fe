@@ -42,6 +42,24 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 						</IconButton>
 					</div>
 					<List className={classes.list}>
+						
+						<ListItem
+							button={true}
+							className={classes.listItem}
+							onClick={toggleAdd('client')}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<Icon classes={{root: classes.iconRoot}}>
+								<img src="https://img.icons8.com/ios-filled/25/4a90e2/commercial-development-management.png"/>
+								</Icon>
+							</ListItemIcon>
+							<ListItemText
+								primary={t('createMenu.addClient')}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+						
 						<Can module='assets' action='create'>
 							<ListItem
 								button={true}
@@ -174,12 +192,13 @@ const useStyles = makeStyles((theme) => ({
 		height: '100vh',
 		[theme.breakpoints.down('sm')]: {
 			height: '100%',
-			top: '64px',
+			top: '0',
+			padding: 0,
+			paddingBottom: '74px',
 			right: 0,
 			width: '100vw',
 			borderRadius: 0,
 			border: 'none',
-			padding: 0,
 			background: 'rgba(0,0,0,0.5)',
 			backdropFilter: 'blur(15px)',
 		},

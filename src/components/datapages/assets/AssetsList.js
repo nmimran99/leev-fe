@@ -64,13 +64,13 @@ export const AssetsList = () => {
 	return (
 		<React.Fragment>
 			<Grid container justify="center">
-				<Grid item xs={12}>
+				<Grid item xs={12} className={classes.moduleContainer}>
 					<div className={classes.pageModule}>{t("assetsModule.assets")}</div>
 				</Grid>
 				<Grid item xs={12} md={12}>
 					<AssetsControls />
 				</Grid>
-				<Grid item xs={12} lg={11} xl={9}>
+				<Grid item xs={12} lg={11} xl={10}>
 					<Grid container justify="center">
 						{isLoading ? (
 							<LinearProgress />
@@ -79,8 +79,6 @@ export const AssetsList = () => {
 								<Asset
 									assetData={v}
 									key={i}
-									order={i}
-									removeAsset={removeAsset}
 								/>
 							))
 						)}
@@ -95,15 +93,28 @@ export const AssetsList = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
+	moduleContainer: {
+		position: 'sticky',
+		top: 0,
+		zIndex: 2
+	},
 	pageModule: {
 		color: "white",
 		padding: "10px 40px",
-		fontSize: "18px",
-		background: "rgba(0,0,0,0.6)",
+		fontSize: "16px",
+		background: "rgba(0,0,0,0.8)",
+        boxShadow: '0 0px 2px 1px rgba(255,255,255,0.3)',
 		margin: "0px auto 5px",
 		width: "30%",
 		textAlign: "center",
 		borderRadius: "0 0 25px 25px",
-		lineHeight: "1",
+		lineHeight: "1", 
+		[theme.breakpoints.down('md')]: {
+			background: "black",
+			width: "100vw",
+			padding: "20px 0",
+			borderRadius: 0,
+			margin: 0
+		}
 	},
 }));

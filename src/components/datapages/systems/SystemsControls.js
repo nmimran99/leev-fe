@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, makeStyles, useMediaQuery, Button, Collapse } from '@material-ui/core'
+import { Grid, makeStyles, useMediaQuery, Button, Slide } from '@material-ui/core'
 import { SortBy } from '../../reuseables/SortBy'
 import { SearchBox } from '../../reuseables/SearchBox';
 import { FilterBySelect } from '../../reuseables/FilterBySelect';
@@ -39,7 +39,7 @@ export const SystemsControls = () => {
     const query = useQuery(location.search);
     const downSm = useMediaQuery(theme => theme.breakpoints.down('md'));
     const [ reloadedValue, setReloadedValue ] = useState(null);
-    const [ collapsed, setCollapsed ] = useState(!downSm ? true : false);
+    const [ collapsed, setCollapsed ] = useState(false);
     
     useEffect(() => {
         if (query.asset) {
@@ -96,8 +96,10 @@ export const SystemsControls = () => {
                 </Grid>
                     
             }
-            <Collapse in={collapsed}>
-                <Grid container justify='center' >
+           { 
+			(!downSm || collapsed) &&
+			<Slide in={true} direction={'up'} timeout={downSm ? 500  : 0}>
+                <Grid container justify='center' className={classes.filtersContainer}>
                     <Grid item xs={12} className={classes.gridItem}>
 
                         {
@@ -128,13 +130,26 @@ export const SystemsControls = () => {
                     </Grid>
                     
                 </Grid>
-            </Collapse>
+            </Slide>
+            }
         </React.Fragment>
     )
 }
 
 
-const useStyles = makeStyles(them => ({
+const useStyles = makeStyles(theme => ({
+    filtersContainer: {
+        [theme.breakpoints.down('sm')]: {
+            position: 'absolute',
+            bottom: '0',
+            background: 'rgba(0,0,0,0.8)',
+            backdropFilter: 'blur(22px)',
+            zIndex: 3,
+            padding: '40px 0 155px',
+            borderRadius: '30px 30px 0 0',
+            boxShadow: '0px -1px 1px 0px rgba(255,255,255,0.2)'
+        }
+    },
     gridItem: {
         display: 'flex',
         justifyContent: 'center',
@@ -150,13 +165,17 @@ const useStyles = makeStyles(them => ({
     },
     sortandfilter: {
         border: '1px solid rgba(255,255,255,0.2)',
-        background: 'rgba(0,0,0,0.7)',
+        background: 'black',
         color: 'white',
         borderRadius: '50px',
         padding: '5px 25px 5px 3px',
         whiteSpace: 'nowrap',
+        margin: '10px 0 0',
+        position: 'absolute',
+        bottom: '100px',
+        zIndex: 4,
         '&:hover': {
             background: 'black'
         }
-    }
+    },
 }))

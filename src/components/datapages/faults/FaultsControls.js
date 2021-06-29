@@ -1,7 +1,7 @@
 import {
 	Button,
 	ButtonGroup,
-	Collapse,
+	Slide,
 	Grid,
 	makeStyles,
 	useMediaQuery,
@@ -38,7 +38,7 @@ export const FaultsControls = ({ viewType, setViewType }) => {
 	const downSm = useMediaQuery((theme) => theme.breakpoints.down('md'));
 	const { t, i18n } = useTranslation();
 	const [reloadedValue, setReloadedValue] = useState(null);
-	const [collapsed, setCollapsed] = useState(!downSm ? true : false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	useEffect(() => {
 		if (query.asset) {
@@ -77,6 +77,11 @@ export const FaultsControls = ({ viewType, setViewType }) => {
 		setCollapsed(true);
 	};
 
+	const handleViewType = (type) => event => {
+		setViewType(type);
+		setCollapsed(false);
+	}
+
 	return (
 		<React.Fragment>
 			{downSm && (
@@ -105,8 +110,10 @@ export const FaultsControls = ({ viewType, setViewType }) => {
 					</Grid>
 				</Grid>
 			)}
-			<Collapse in={collapsed}>
-				<Grid container justify="center">
+			 {
+                (!downSm || collapsed) &&
+			<Slide in={true} direction={'up'} timeout={downSm ? 500 : 0}>
+				<Grid container justify="center" className={classes.filtersContainer}>
 					<Grid item xs={12} className={classes.gridItem}>
 						{reloadedValue && (
 							<SearchBoxSelect
@@ -119,15 +126,9 @@ export const FaultsControls = ({ viewType, setViewType }) => {
 						)}
 						{query.asset && (
 							<FilterByMultiSelect
-								optionsFunc={() =>
-									getSystemsByAssetOptions(query.asset)
-								}
-								placeholder={t(
-									'systemsModule.filterBySystemName'
-								)}
-								filterIcon={
-									<BlurOnRoundedIcon className={classes.icon} />
-								}
+								optionsFunc={() => getSystemsByAssetOptions(query.asset)}
+								placeholder={t('systemsModule.filterBySystemName')}
+								filterIcon={<BlurOnRoundedIcon className={classes.icon} />}
 								filterField={'system'}
 							/>
 						)}
@@ -135,9 +136,7 @@ export const FaultsControls = ({ viewType, setViewType }) => {
 							<FilterByMultiSelect
 								optionsFunc={getFaultsStatusListSuggestions}
 								placeholder={t('faultsModule.filterByStatus')}
-								filterIcon={
-									<DoubleArrowIcon className={classes.icon} />
-								}
+								filterIcon={<DoubleArrowIcon className={classes.icon} />}
 								filterField={'status'}
 							/>
 						)}
@@ -147,9 +146,7 @@ export const FaultsControls = ({ viewType, setViewType }) => {
 						<FilterByMultiSelect
 							optionsFunc={createUserOptions}
 							placeholder={t('faultsModule.filterByFaultOwner')}
-							filterIcon={
-								<PersonRoundedIcon className={classes.icon} />
-							}
+							filterIcon={<PersonRoundedIcon className={classes.icon} />}
 							filterField={'owner'}
 						/>
 						<ButtonGroup className={classes.typeGroup}>
@@ -166,7 +163,7 @@ export const FaultsControls = ({ viewType, setViewType }) => {
 										className={classes.icon}
 									/>
 								}
-								onClick={() => setViewType('list')}
+								onClick={handleViewType('list')}
 							>
 								{t('faultsModule.listMode')}
 							</Button>
@@ -183,19 +180,32 @@ export const FaultsControls = ({ viewType, setViewType }) => {
 										className={classes.icon}
 									/>
 								}
-								onClick={() => setViewType('blocks')}
+								onClick={handleViewType('blocks')}
 							>
 								{t('faultsModule.blocksMode')}
 							</Button>
 						</ButtonGroup>
 					</Grid>
 				</Grid>
-			</Collapse>
+			</Slide>
+}
 		</React.Fragment>
 	);
 };
 
-const useStyles = makeStyles((them) => ({
+const useStyles = makeStyles((theme) => ({
+	filtersContainer: {
+        [theme.breakpoints.down('sm')]: {
+            position: 'absolute',
+            bottom: '0',
+            background: 'rgba(0,0,0,0.8)',
+            backdropFilter: 'blur(22px)',
+            zIndex: 3,
+            padding: '40px 0 155px',
+            borderRadius: '30px 30px 0 0',
+            boxShadow: '0px -1px 1px 0px rgba(255,255,255,0.2)'
+        }
+    },
 	gridItem: {
 		display: 'flex',
 		justifyContent: 'center',
@@ -211,16 +221,20 @@ const useStyles = makeStyles((them) => ({
 		border: '1px solid rgba(255,255,255,0.2)',
 	},
 	sortandfilter: {
-		border: '1px solid rgba(255,255,255,0.2)',
-		background: 'rgba(0,0,0,0.7)',
-		color: 'white',
-		borderRadius: '50px',
-		padding: '5px 25px 5px 3px',
-		whiteSpace: 'nowrap',
-		'&:hover': {
-			background: 'black',
-		},
-	},
+        border: '1px solid rgba(255,255,255,0.2)',
+        background: 'black',
+        color: 'white',
+        borderRadius: '50px',
+        padding: '5px 25px 5px 3px',
+        whiteSpace: 'nowrap',
+        margin: '10px 0 0',
+        position: 'absolute',
+        bottom: '100px',
+        zIndex: 4,
+        '&:hover': {
+            background: 'black'
+        }
+    },
 	typeGroup: {
 		margin: '5px',
 		height: '45px',

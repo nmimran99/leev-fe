@@ -2,11 +2,20 @@ import React, { useContext, useState } from 'react';
 import { getMinPermLevel } from '../../../api/permissionsApi';
 import { AuthContext } from '../../../context/AuthContext';
 
-export const usePermissions = (module, action, userList) => {
+export const usePermissions = ({ module, action, userList }) => {
 	const { auth } = useContext(AuthContext);
 	const { permissions } = auth.user.role;
+	const { isAdmin } = auth.user;
+
+	if (isAdmin) {
+		return true;
+	}
+
 	const minPermLevel = getMinPermLevel(action);
-    const permLevel = permissions.find((p) => p.module === module)[action];
+    let permLevel = permissions.find((p) => p.module === module);
+	if (permLevel) {
+		permLevel = permLevel.action
+	}
  
 	if (permLevel < minPermLevel) {
 		return false;

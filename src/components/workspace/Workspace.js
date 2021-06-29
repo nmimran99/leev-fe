@@ -19,6 +19,7 @@ import { RepeatableTasks } from '../datapages/tasks/RepeatableTasks';
 import { Calender } from '../datapages/calender/Calender';
 import Alert from '@material-ui/lab/Alert';
 import { Dashboard } from '../datapages/dashboard/Dashboard';
+import { Clients } from '../datapages/clients/Clients';
 
 export const Workspace = ({}) => {
 	const classes = useStyles();
@@ -29,25 +30,21 @@ export const Workspace = ({}) => {
 	return (
 		<React.Fragment>
 			<FaultsContextProvider>
-				<Grid
+				<div
 					container
 					className={classes.mainContainer}
-					justify="center"
-					alignItems="flex-start"
 				>
 					<NotificationsContextProvider>
 						<Controls />
 					</NotificationsContextProvider>
 
-					<Grid
-						item
-						xs={12}
-						md={12}
-						lg={12}
-						xl={12}
+					<div
 						className={classes.mainData}
 					>
 						<Switch>
+							<Route path={'/workspace/clients'}>
+								<Clients />
+							</Route>
 							<Route path={'/workspace/assets'}>
 								<Assets />
 							</Route>
@@ -76,8 +73,8 @@ export const Workspace = ({}) => {
 								<Dashboard />
 							</Route>						
 						</Switch>
-					</Grid>
-				</Grid>
+					</div>
+				</div>
 				{Boolean(snackbar) && (
 					<Portal>
 					<Snackbar
@@ -111,10 +108,15 @@ const useStyles = makeStyles((theme) => ({
 		zIndex: 2,
 		backgroundRepeat: 'no-reaper',
 		backgroundSize: 'cover',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'flex-start',
 		[theme.breakpoints.down('sm')]: {
 			'&::-webkit-scrollbar': {
 				display: 'none',
 			},
+			flexDirection: 'column-reverse',
 		},
 	},
 
@@ -124,11 +126,14 @@ const useStyles = makeStyles((theme) => ({
 		backdropFilter: 'blur(22px)',
 		boxShadow: 'rgba(0,0,0,0.4) 0px 0px 3px 2px',
 		overflowY: 'overlay',
+		width: '100%',
 		[theme.breakpoints.down('sm')]: {
 			border: 'none',
 			borderRadius: 0,
 			margin: 0,
 			padding: 0,
+			height: 'calc(100%)',
+			paddingBottom: '64px'
 		},
 	},
 	'@global': {

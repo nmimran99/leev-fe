@@ -16,12 +16,13 @@ import {
 	Switch,
 	TextField,
 } from "@material-ui/core";
-import { ClearRounded, RecentActorsSharp } from "@material-ui/icons";
+import { ClearRounded, ContactsOutlined, RecentActorsSharp } from "@material-ui/icons";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import clsx from "clsx";
 import heLocale from "date-fns/locale/he";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { getTenantOptions } from "../../../api/adminApi";
 import { getFullName, getSuccessMessage } from "../../../api/genericApi";
 import {
 	createLocationMenuOptions,
@@ -52,8 +53,9 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	const [residentOwner, setResidentOwner] = useState(false);
 	const [assets, setAssets] = useState([]);
 	const [locations, setLocations] = useState([]);
+	const [ tenants, setTenants ] = useState([]);
 	const [details, setDetails] = useState({
-		tenant: auth.user.tenant,
+		tenant: auth.user.isAdmin ? null : auth.user.tenant,
 		email: "",
 		firstName: "",
 		lastName: "",
@@ -71,33 +73,8 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	});
 
 	useEffect(() => {
-		getRoles()
-			.then((res) => {
-				if (!res || res.status === 403 || res.status === 500) {
-					return [];
-				}
-				return getRolesSuggestions(res);
-			})
-			.then((data) => {
-				setRoles(data || []);
-				if (!userId) {
-					setIsLoading(false);
-					return;
-				}
-				return getUserDataById(userId);
-			})
-			.then((res) => {
-				if (!res) return;
-
-				setDetails({
-					...res,
-					role: res.role._id,
-				});
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	}, []);
+		prepareData()
+	}, [details.tenant]);
 
 	useEffect(() => {
 		if (details.data.isResident || details.data.isOwner) {
@@ -117,6 +94,32 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 		}
 		clearResidentData();
 	}, [residentOwner]);
+
+	const prepareData = async () => {	
+		if (!tenants.length) {
+			const tenants = await getTenantOptions();
+			setTenants(tenants);
+		}	
+		const roles = await getRoles(details.tenant);
+		if (!roles || roles.status === 403 || roles.status === 500) {
+			return [];
+		}
+		const suggestions = await getRolesSuggestions(roles);
+		setRoles(suggestions || []);
+		if (!userId || details.tenant) {
+			setIsLoading(false);
+			return;
+		}
+		const userData = await getUserDataById(userId);
+		if (!userData) return;
+		setDetails({
+			...userData,
+			role: userData.role._id,
+		});
+		
+		setIsLoading(false);
+	}
+
 
 	const populateAssets = async () => {
 		let res = await getAssetsSuggestions();
@@ -155,6 +158,9 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	const validateFields = () => {
 		return new Promise((resolve, reject) => {
 			let errList = [];
+			if (!details.tenant) {
+				errList.push({ field: "tenant", text: t("errors.isRequired") });
+			}
 			if (!details.email) {
 				errList.push({ field: "email", text: t("errors.isRequired") });
 			}
@@ -202,15 +208,18 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	const handleConfirm = () => {
 		validateFields()
 			.then((res) => {
-				if (!res) return;
+				if (!res) throw '';
 				if (mode === "update") {
 					return handleUpdateUser({ userId, ...details });
 				}
 				return handleUserSave(details);
 			})
-			.finally(() => {
+			.then(() => {
 				reloadUsers(true);
 				handleClose();
+			})
+			.catch(e => {
+				return
 			});
 	};
 
@@ -295,6 +304,71 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 										</IconButton>
 									</div>
 								</Grid>
+								{
+									auth.user.isAdmin &&
+									<Grid
+														item
+														xs={12}
+														className={classes.section}
+													>
+														<Grid item xs={12}>
+															<div className={classes.sectionTitle}>
+																{t("clientsModule.name")}
+															</div>
+														</Grid>
+														<Grid item xs={12} className={classes.fields}>
+															<Grid container justify="flex-start">
+																<Grid
+																	item
+																	xs={12}
+																	className={classes.textContainer}
+																>
+																	<Select
+																		variant={"outlined"}
+																		value={details.tenant}
+																		onChange={handleChange(`tenant`)}
+																		className={classes.selectInput}
+																		error={errors.filter((e) => e.field === "tenant").length > 0}
+																		MenuProps={{
+																			anchorOrigin: {
+																				vertical: "bottom",
+																				horizontal: "center",
+																			},
+																			transformOrigin: {
+																				vertical: "top",
+																				horizontal: "center",
+																			},
+																			getContentAnchorEl: null,
+																			disablePortal: true,
+																			classes: {
+																				paper: classes.menupaper,
+																			},
+																		}}
+																	>
+																		{tenants.map((t, i) => (
+																			<MenuItem
+																				key={i}
+																				value={t.value}
+																				style={{ direction: lang.dir }}
+																				className={classes.menuitem}
+																			>
+																				{t.label}
+																			</MenuItem>
+																		))}
+																	</Select>
+																	{errors.filter((e) => e.field === "tenant").length >
+																		0 && (
+																		<FormHelperText
+																			style={{ color: "#f44336", marginRight: "15px" }}
+																		>
+																			{t("errors.isRequired")}
+																		</FormHelperText>
+																	)}
+																</Grid>
+															</Grid>
+														</Grid>
+													</Grid>
+								}
 								<Grid item xs={12} className={classes.section}>
 									<Grid item xs={12}>
 										<div className={classes.sectionTitle}>

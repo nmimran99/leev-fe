@@ -20,7 +20,18 @@ import { LanguageContext } from "../../../context/LanguageContext";
 import { NotificationsContext } from "../../../context/NotificationsContext";
 import { Can } from "../../reuseables/Can";
 import { UserItem } from "../../user/UserItem";
-import clsx from 'clsx'
+import clsx from "clsx";
+
+import DashboardRoundedIcon from '@material-ui/icons/DashboardRounded';
+import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
+import HomeWorkIcon from '@material-ui/icons/HomeWork';
+import SettingsSystemDaydreamIcon from '@material-ui/icons/SettingsSystemDaydream';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
+import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
+import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 
 export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 	const classes = useStyles();
@@ -54,17 +65,15 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 						<UserItem showTitle showName user={auth.user} />
 					</div>
 					<List className={classes.list}>
-					
+						<Can shouldRender={!auth.user.isAdmin}>
 							<ListItem
 								button={true}
 								className={clsx(classes.listItem, classes.dashbordButton)}
 								onClick={handleClick("dashboard")}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{ root: classes.iconRoot }}>
-										<img src="https://img.icons8.com/pastel-glyph/25/4a90e2/statistics--v4.png"/>
-									</Icon>
-									{/* <BusinessRoundedIcon fontSize={'medium'} className={classes.icon} /> */}
+									<DashboardRoundedIcon classes={{ root: classes.iconRoot }} />
+							
 								</ListItemIcon>
 								<ListItemText
 									primary={t("sideMenu.dashboard")}
@@ -72,7 +81,25 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 									disableTypography={true}
 								/>
 							</ListItem>
+						</Can>
 					
+						<Can module="assets" action="read">
+							<ListItem
+								button={true}
+								className={classes.listItem}
+								onClick={handleClick("clients")}
+							>
+								<ListItemIcon className={classes.listItemIcon}>
+								<SupervisedUserCircleIcon classes={{ root: classes.iconRoot }} />
+							
+								</ListItemIcon>
+								<ListItemText
+									primary={t("sideMenu.clients")}
+									className={classes.listItemText}
+									disableTypography={true}
+								/>
+							</ListItem>
+						</Can>
 						<Can module="assets" action="read">
 							<ListItem
 								button={true}
@@ -80,10 +107,8 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								onClick={handleClick("assets")}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{ root: classes.iconRoot }}>
-										<img src="https://img.icons8.com/ios-filled/25/4a90e2/warehouse.png" />
-									</Icon>
-									{/* <BusinessRoundedIcon fontSize={'medium'} className={classes.icon} /> */}
+								<HomeWorkIcon classes={{ root: classes.iconRoot }} />
+							
 								</ListItemIcon>
 								<ListItemText
 									primary={t("sideMenu.assets")}
@@ -99,11 +124,8 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								onClick={handleClick("systems")}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{ root: classes.iconRoot }}>
-										<img src="https://img.icons8.com/ios-filled/25/4a90e2/system-task.png" />
-									</Icon>
-
-									{/* <BlurOnRoundedIcon fontSize={'medium'} className={classes.icon} /> */}
+								<SettingsSystemDaydreamIcon classes={{ root: classes.iconRoot }} />
+								
 								</ListItemIcon>
 								<ListItemText
 									primary={t("sideMenu.systems")}
@@ -119,10 +141,8 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								onClick={handleClick("tasks")}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{ root: classes.iconRoot }}>
-										<img src="https://img.icons8.com/ios-filled/25/4a90e2/task-completed.png" />
-									</Icon>
-									{/* <AssignmentRoundedIcon fontSize={'medium'} /> */}
+								<AssignmentTurnedInIcon  classes={{ root: classes.iconRoot }} />
+								
 								</ListItemIcon>
 								<ListItemText
 									primary={t("sideMenu.myTasks")}
@@ -138,10 +158,8 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								onClick={handleClick("repeatableTasks")}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{ root: classes.iconRoot }}>
-										<img src="https://img.icons8.com/ios-filled/25/4a90e2/delivery-time.png" />
-									</Icon>
-									{/* <AssignmentRoundedIcon fontSize={'medium'} /> */}
+								<SettingsBackupRestoreIcon   classes={{ root: classes.iconRoot }} />
+							
 								</ListItemIcon>
 								<ListItemText
 									primary={t("sideMenu.repeatableTasks")}
@@ -157,10 +175,8 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								onClick={handleClick("faults")}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{ root: classes.iconRoot }}>
-										<img src="https://img.icons8.com/pastel-glyph/23/4a90e2/error--v2.png" />
-									</Icon>
-									{/* <WarningRoundedIcon fontSize={'medium'} /> */}
+								<WarningRoundedIcon    classes={{ root: classes.iconRoot }} />
+						
 								</ListItemIcon>
 								<ListItemText
 									primary={t("sideMenu.faults")}
@@ -176,10 +192,8 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								onClick={handleClick("documents")}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
-									<Icon classes={{ root: classes.iconRoot }}>
-										<img src="https://img.icons8.com/pastel-glyph/25/4a90e2/regular-document--v2.png" />
-									</Icon>
-									{/* <DescriptionRoundedIcon fontSize={'medium'} /> */}
+								<DescriptionRoundedIcon     classes={{ root: classes.iconRoot }} />
+								
 								</ListItemIcon>
 								<ListItemText
 									primary={t("sideMenu.documents")}
@@ -192,11 +206,8 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 					<List className={classes.bottomList}>
 						<ListItem button={true} onClick={toggleSettings}>
 							<ListItemIcon className={classes.listItemIcon}>
-								<Icon classes={{ root: classes.iconRoot }}>
-									<img src="https://img.icons8.com/ios-filled/25/4a90e2/settings.png" />
-								</Icon>
-
-								{/* <SettingsIcon fontSize={'medium'} /> */}
+							<SettingsRoundedIcon      classes={{ root: classes.iconRoot }} />
+							
 							</ListItemIcon>
 							<ListItemText
 								primary={t("sideMenu.settings")}
@@ -206,10 +217,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 						</ListItem>
 						<ListItem button={true} onClick={userLogout}>
 							<ListItemIcon className={classes.listItemIcon}>
-								<Icon classes={{ root: classes.iconRoot }}>
-									<img src="https://img.icons8.com/ios-filled/25/4a90e2/emergency-exit.png" />
-								</Icon>
-								{/* <ExitToAppRoundedIcon fontSize={'medium'} /> */}
+							<ExitToAppRoundedIcon       classes={{ root: classes.iconRoot }} />					
 							</ListItemIcon>
 							<ListItemText
 								primary={t("sideMenu.logout")}
@@ -242,13 +250,14 @@ const useStyles = makeStyles((theme) => ({
 		height: "calc(100% - 64px)",
 		overflowY: "overlay",
 		[theme.breakpoints.down("sm")]: {
-			height: "calc(100% - 64px)",
+			height: "100%",
 			overflow: "scroll",
 			width: "100vw",
 			left: 0,
 			border: "none",
 			borderRadius: 0,
-			top: "64px",
+			paddingBottom: "74px",
+			top: 0,
 			background: "rgba(0,0,0,0.5)",
 			backdropFilter: "blur(15px)",
 		},
@@ -283,10 +292,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 	iconRoot: {
 		textAlign: "center",
-		width: "50px",
-		height: "35px",
+		width: "25px",
+		height: "25px",
 		display: "grid",
 		placeItems: "center",
+		color: '#42A5F5',
 	},
 	closeBtn: {
 		position: "absolute",
@@ -295,5 +305,5 @@ const useStyles = makeStyles((theme) => ({
 	},
 	icon: {
 		color: "white",
-	}
+	},
 }));

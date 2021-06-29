@@ -19,9 +19,9 @@ export const getMinPermLevel = (requesttype) => {
 	return types[requesttype];
 };
 
-export const getRoles = async () => {
+export const getRoles = async (tenant) => {
     try {
-        let res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/roles/getRoles`, {
+        let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/roles/getRoles`, { tenant }, {
             headers: {
                 module: 'roles',
                 requesttype: 'read'
