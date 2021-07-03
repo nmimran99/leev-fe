@@ -24,14 +24,14 @@ const useStyles = makeStyles((theme) => ({
     button: {
         background: 'rgba(0,0,0,0.7)',
         color: 'white',
-        width: '40px',
-        height: '40px',
+        padding: '12px',
+        margin: '0 5px',
         [theme.breakpoints.down('sm')]: {
             border: '1px solid rgba(255,255,255,0.2)'
         }
     },
     icon: {
-		fontSize: '18px',
-		color: 'white',
+		fontSize: '22px',
+		color: 'white',       
 	},
 }));

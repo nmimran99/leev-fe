@@ -12,7 +12,7 @@ export const FaultListView = ({ faults }) => {
     const classes = useStyles();
     const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
     const { setFaults } = useContext(FaultsContext);
-    const [ faultView, setFaultView ] = useState(null);
+    const [ faultView, setFaultView ] = useState(faults.length ? faults[0] : null);
     const [ faultsData, setFaultsData ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
 

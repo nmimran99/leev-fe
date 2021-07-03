@@ -8,7 +8,11 @@ import {
 	ListItemText,
 	makeStyles,
 	Slide,
+	Collapse,
 	useMediaQuery,
+	Drawer,
+	Avatar,
+	Fade
 } from "@material-ui/core";
 import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
 import React, { useContext } from "react";
@@ -21,7 +25,6 @@ import { NotificationsContext } from "../../../context/NotificationsContext";
 import { Can } from "../../reuseables/Can";
 import { UserItem } from "../../user/UserItem";
 import clsx from "clsx";
-
 import DashboardRoundedIcon from '@material-ui/icons/DashboardRounded';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
@@ -40,10 +43,11 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 	const { lang } = useContext(LanguageContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 	const { auth } = useContext(AuthContext);
-	const { setNotfications } = useContext(NotificationsContext);
 
 	const handleClick = (type) => (event) => {
-		toggleMenu();
+		if (menuOpen) {
+			toggleMenu();
+		}	
 		history.push(`/workspace/${type}`);
 	};
 
@@ -52,17 +56,36 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 		history.push("/login");
 	};
 
+
 	return (
-		<ClickAwayListener onClickAway={toggleMenu}>
-			<Slide in={menuOpen} direction={lang.code == "he" ? "left" : "right"}>
+	
+			<Drawer
+				variant="permanent"
+				className={clsx(classes.drawer, {
+				[classes.drawerOpen]: menuOpen,
+				[classes.drawerClose]: !menuOpen,
+				})}
+				classes={{
+				paper: clsx(classes.paperAnchorDockedRight, {
+					[classes.drawerOpen]: menuOpen,
+					[classes.drawerClose]: !menuOpen,
+				}),
+				}}
+				open={menuOpen}
+				direction={lang.code == "he" ? "left" : "right"}
+				onClick={null}
+			>
 				<div className={classes.sidemenuContainer}>
-					<div className={classes.closeBtn}>
-						<IconButton onClick={toggleMenu}>
-							<ClearRoundedIcon className={classes.icon} />
-						</IconButton>
-					</div>
+					{
+						menuOpen &&
+						<div className={classes.closeBtn}>
+							<IconButton onClick={toggleMenu}>
+								<ClearRoundedIcon className={classes.icon} />
+							</IconButton>
+						</div>
+					}
 					<div className={classes.userContainer}>
-						<UserItem showTitle showName user={auth.user} />
+						<UserItem showName showTitle avatarSize={menuOpen ? 60 : 48} user={auth.user} />
 					</div>
 					<List className={classes.list}>
 						<Can shouldRender={!auth.user.isAdmin}>
@@ -227,53 +250,49 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 						</ListItem>
 					</List>
 				</div>
-			</Slide>
-		</ClickAwayListener>
+			</Drawer>
+		
 	);
 };
 
 const useStyles = makeStyles((theme) => ({
 	userContainer: {
-		width: "fit-content",
-		padding: "10px 20px",
-		margin: "40px 0 10px",
+		width: 'auto',
+		margin: '10px auto',
+		paddingLeft: '5px',
+		transition: theme.transitions.create('width', {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.leavingScreen,
+		  }),
+		  height: '80px'
 	},
-	sidemenuContainer: {
+	drawer: {
 		zIndex: 2,
-		width: "300px",
-		background: "rgba(0,0,0,0.4)",
-		backdropFilter: "blur(22px)",
+		width: "300px",	
 		boxShadow: "rgba(0,0,0,0.25) 0px 0px 6px 3px",
 		position: "absolute",
 		top: "64px",
 		left: "0px",
 		height: "calc(100% - 64px)",
-		overflowY: "overlay",
-		[theme.breakpoints.down("sm")]: {
-			height: "100%",
-			overflow: "scroll",
-			width: "100vw",
-			left: 0,
-			border: "none",
-			borderRadius: 0,
-			paddingBottom: "74px",
-			top: 0,
-			background: "rgba(0,0,0,0.5)",
-			backdropFilter: "blur(15px)",
-		},
+		overflowY: "overlay"
 	},
 	list: {
 		width: "100%",
 		borderTop: "1px solid rgba(255,255,255,0.3)",
 		borderBottom: "1px solid rgba(255,255,255,0.3)",
-		margin: "0px auto",
+		margin: "0px",
 		padding: "10px 0",
+		width: '300px',
+		[theme.breakpoints.down('sm')]: {
+			width: '100%'
+		}
 	},
 	listItem: {
 		color: "theme.palette.primary.main",
-		margin: "0px auto",
+		margin: "0px",
 		borderRadius: "5px",
 		transition: "background box-shadow 0.3s ease-in-out",
+		
 		"&:hover": {
 			background: "rgba(0,0,0,0.6)",
 			transition: "background box-shadow 0.2s ease-in-out",
@@ -289,6 +308,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	bottomList: {
 		padding: "10px 0",
+		height: 'auto',
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'flex-end'
 	},
 	iconRoot: {
 		textAlign: "center",
@@ -305,5 +328,51 @@ const useStyles = makeStyles((theme) => ({
 	},
 	icon: {
 		color: "white",
+	},
+	paperAnchorDockedRight: {
+		border: 'none',
+	},
+	  drawerOpen: {
+		background: 'transparent',
+		
+		width: '300px',
+		background: "rgba(0,0,0,0.3)",
+		backdropFilter: "blur(22px)",
+		transition: theme.transitions.create('width', {
+		  easing: theme.transitions.easing.sharp,
+		  duration: theme.transitions.duration.enteringScreen,
+		}),
+		[theme.breakpoints.down("sm")]: {
+			height: "100%",
+			overflow: "scroll",
+			width: "100vw",
+			left: 0,
+			border: "none",
+			borderRadius: 0,
+			paddingBottom: "74px",
+			top: 0,
+			background: "rgba(0,0,0,0.5)",
+			backdropFilter: "blur(15px)",
+		},
+	  },
+	  drawerClose: {
+		background: 'transparent',
+		background: "rgba(0,0,0,0.3)",
+		backdropFilter: "blur(22px)",
+		transition: theme.transitions.create('width', {
+		  easing: theme.transitions.easing.sharp,
+		  duration: theme.transitions.duration.leavingScreen,
+		}),
+		overflowX: 'hidden',
+		width: '60px',
+		[theme.breakpoints.down('sm')]: {
+		  display: 'none'
+		},
+	  },
+	  "@global": {
+		"*::-webkit-scrollbar": {
+			width: "0em",
+			height: '0em'
+		},
 	},
 }));

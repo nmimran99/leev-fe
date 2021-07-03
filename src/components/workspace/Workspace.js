@@ -126,14 +126,16 @@ const useStyles = makeStyles((theme) => ({
 		backdropFilter: 'blur(22px)',
 		boxShadow: 'rgba(0,0,0,0.4) 0px 0px 3px 2px',
 		overflowY: 'overlay',
-		width: '100%',
+		width: 'calc(100% - 50px)',
+		margin: '0 0 0 auto',
 		[theme.breakpoints.down('sm')]: {
 			border: 'none',
 			borderRadius: 0,
 			margin: 0,
 			padding: 0,
 			height: 'calc(100%)',
-			paddingBottom: '64px'
+			paddingBottom: '64px',
+			width: '100%'
 		},
 	},
 	'@global': {

@@ -100,7 +100,7 @@ export const Controls = () => {
 					/>
 			
 			</div>
-			{menuOpen && <SideMenu toggleMenu={toggleMenu} toggleSettings={toggleSettings} menuOpen={menuOpen}/>}
+			<SideMenu toggleMenu={toggleMenu} toggleSettings={toggleSettings} menuOpen={menuOpen}/>
 			{addMenuOpen && <AddMenu toggleAddMenu={toggleAddMenu} toggleAdd={openCreate} addMenuOpen={addMenuOpen} />}
 			{notificationsList && (
 				<Notifications

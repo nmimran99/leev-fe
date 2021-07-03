@@ -1,13 +1,13 @@
 import { Backdrop, Button, Fade, FormHelperText, Grid, IconButton, LinearProgress, makeStyles, MenuItem, Modal, Paper, Select, TextField, useMediaQuery } from '@material-ui/core';
 import { ClearRounded } from '@material-ui/icons';
 import clsx from 'clsx';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getAsset } from '../../../api/assetsApi';
 import { createUserOptions } from '../../../api/userApi';
 import { AuthContext } from '../../../context/AuthContext';
 import { LanguageContext } from '../../../context/LanguageContext';
-
+import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 
 
 
@@ -15,6 +15,7 @@ export const UpsertAsset = ({ handleClose, handleSave, assetId, handleUpdate }) 
     const classes = useStyles();
     const { lang } = useContext(LanguageContext);
     const { auth } = useContext(AuthContext);
+    const previewImageRef = useRef();
     const [ mode, setMode ] = useState(handleUpdate ? 'update' : 'create')
     const { t } = useTranslation();
     const [ errors, setErrors ] = useState([]);
@@ -35,7 +36,9 @@ export const UpsertAsset = ({ handleClose, handleSave, assetId, handleUpdate }) 
         owner: '',
         type: '',
         addInfo: null,
-        createdBy: auth.user._id 
+        createdBy: auth.user._id,
+        images: [],
+        uploadedImages: [] 
     });
 
     useEffect(() => {
@@ -51,7 +54,7 @@ export const UpsertAsset = ({ handleClose, handleSave, assetId, handleUpdate }) 
             }
             getAsset(res, true)
             .then(data => {
-                setDetails(data);
+                setDetails({...data, images: [], uploadedImages: data.images});
                 setIsLoading(false)
             }) 
         })
@@ -115,6 +118,20 @@ export const UpsertAsset = ({ handleClose, handleSave, assetId, handleUpdate }) 
         }
     }
 
+
+    const handleFileUpload = event => {
+        setDetails({
+            ...details,
+            images: event.target.files
+        })
+        previewImageRef.current.src = URL.createObjectURL(event.target.files[0]) 
+    }
+
+    const removeImage = i => event => {
+        let im = details.uploadedImages;
+        im.splice(i, 1);
+        setDetails({ ...details, uploadedImages: im})
+    }
 
     return (
         isLoading ? 
@@ -289,6 +306,50 @@ export const UpsertAsset = ({ handleClose, handleSave, assetId, handleUpdate }) 
                                             </Grid>
                                     </Grid>
                                 </Grid>
+                                <Grid item xs={12} className={classes.fields}>
+                                                <Grid container justify='flex-start'>
+                                                    <Grid item xs={12} className={classes.textContainer}>
+                                                        <Button
+                                                            component={'label'}
+                                                            variant={'contained'}
+                                                            className={classes.uploadBtn}
+                                                        >
+                                                            { t("faultsModule.upsert.uploadImages")}
+                                                            <input 
+                                                                accepts='image/*'
+                                                                type='file'
+                                                                onChange={handleFileUpload}
+                                                                hidden  
+                                                            />
+                                                        </Button>
+                                                        <span className={classes.filesUploaded}>
+                                                            {`${details.images.length} ${t("faultsModule.upsert.imagesSelected")}`}
+                                                        </span>
+                                                        <img ref={previewImageRef} src='#' className={classes.previewImage} />
+                                                    </Grid>
+                                                    {
+                                                        Boolean(details.uploadedImages.length) &&
+                                                        <React.Fragment>
+                                                            <Grid item xs={12} className={classes.uploadedImagesTitle}>
+                                                                {t("faultsModule.upsert.uploadedImages")}
+                                                            </Grid>
+                                                            {
+                                                                details.uploadedImages.map((image, i) => 
+                                                                    <Grid item xs={12} className={classes.imageRow} key={i}>
+                                                                        <img src={image} className={classes.previewImage} />
+                                                                        <IconButton     
+                                                                            onClick={removeImage(i)}
+                                                                            className={classes.removeImageBtn}
+                                                                        >
+                                                                            <DeleteOutlineRoundedIcon className={classes.removeImage}/>
+                                                                        </IconButton>
+                                                                    </Grid>
+                                                                )
+                                                            }
+                                                        </React.Fragment> 
+                                                    } 
+                                                </Grid>
+                                            </Grid>
                                 {
                                     (Boolean(addInfoContext) || mode === 'update') &&
                                     <Grid item xs={12} md={6} className={classes.section}>
@@ -476,5 +537,50 @@ const useStyles = makeStyles(theme => ({
         '&:hover': { 
             boxShadow: 'inset rgba(255,255,255,0.3) 0 0 2px 1px'
         }
-    }
+    },
+    filesUploaded: {
+        color: 'white',
+        padding: '0 15px'
+    },
+    uploadBtn: {
+        margin: '9px 0',
+        background: 'rgba(0,0,0,0.1)',
+        color: 'white',
+        border: '1px solid rgba(255,255,255,0.2)',
+        borderRadius: '50px',
+        whiteSpace: 'nowrap',
+        '&:hover': {
+            boxShadow: 'inset white 0 0 2px 1px',
+            background: 'rgba(0,0,0,0.3)'
+        }
+    },
+    imageRow: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '10px 5px',
+        borderBottom: '1px solid rgba(255,255,255,0.2)'
+    },
+    previewImage: {
+        height: '80px',
+        width: 'auto',
+        borderRadius: '5px',
+        margin: '0 10px'
+        
+    },
+    removeImageBtn: {
+        color: 'rgba(255,255,255,0.5)',
+        border: '1px solid rgba(255,255,255,0.5)',
+        borderRadius: '50px',
+        padding: '6px',
+        '&:hover': {
+            color: 'white',
+            borderColor: 'white'
+        }
+    },
+    uploadedImagesTitle: {
+        color: 'white',
+        padding: '10px 5px',
+        borderBottom: '1px solid rgba(255,255,255,0.2)'
+    },
 }))
