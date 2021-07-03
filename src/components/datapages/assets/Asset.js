@@ -1,65 +1,21 @@
-import React, { useContext, useState } from "react";
 import {
-	makeStyles,
-	Grid,
-	ClickAwayListener,
-	Paper,
-	Typography,
-	Fade,
-	useMediaQuery,
-	IconButton,
-	Tooltip,
-	Backdrop,
-	Modal,
-	Snackbar,
+	Grid, Link, makeStyles, useMediaQuery
 } from "@material-ui/core";
-import clsx from "clsx";
-import { UserItem } from "../../user/UserItem";
-import { AssetControls } from "./AssetControls";
-import CategoryOutlinedIcon from "@material-ui/icons/CategoryOutlined";
-import VerticalSplitRoundedIcon from "@material-ui/icons/VerticalSplitRounded";
-import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
-import WarningRoundedIcon from "@material-ui/icons/WarningRounded";
-import AssignmentRoundedIcon from "@material-ui/icons/AssignmentRounded";
-import DescriptionRoundedIcon from "@material-ui/icons/DescriptionRounded";
-import { updateAsset } from "../../../api/assetsApi";
-import PeopleOutlineRoundedIcon from "@material-ui/icons/PeopleOutlineRounded";
-import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
-import { UpdateOwner } from "../../reuseables/UpdateOwner";
-import { UpsertAsset } from "./UpsertAsset";
-import { SnackbarContext } from "../../../context/SnackbarContext";
-import { Link } from "react-router-dom";
-import { HistoryRounded } from "@material-ui/icons";
+import { getAddress, getSecondaryAddress } from "../../../api/assetsApi";
+import HomeWorkIcon from '@material-ui/icons/HomeWork';
+import VerticalSplitIcon from '@material-ui/icons/VerticalSplit';
+import HomeIcon from '@material-ui/icons/Home';
+import { AssetControls } from "./AssetControls";
 
-export const Asset = ({ assetData }) => {
+export const Asset = ({ data }) => {
 	const classes = useStyles();
 	const history = useHistory();
-	const { t, i18n } = useTranslation();
-	const { setSnackbar } = useContext(SnackbarContext);
-	const [controlsVisible, setControlsVisible] = useState(false);
+	const { t } = useTranslation();
 	const [editMode, setEditMode] = useState(false);
 	const matches = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-	const [data, setData] = useState(assetData);
-
-	const toggleEditMode = (type) => (event) => {
-		if (editMode === type) {
-			setEditMode(false);
-		} else {
-			setEditMode(type);
-		}
-	};
-
-	const handleUpdate = async (details) => {
-		const res = await updateAsset(details);
-		if (res.status === 403) {
-			setSnackbar(res);
-		} else if (res) {
-			setData(res.data);
-		}
-		setEditMode(false);
-	};
 
 	const handleReferralClick = (type) => (event) => {
 		event.stopPropagation();
@@ -67,258 +23,182 @@ export const Asset = ({ assetData }) => {
 	};
 
 	return (
-		<Fade in={true}>
-			<Grid item xs={12} sm={8} md={6} lg={5} xl={4}>
-				<ClickAwayListener
-					onClickAway={() => (editMode ? setEditMode(false) : null)}
+		<Grid item xs={12} sm={8} md={6} lg={5} xl={4} className={classes.mainContainer}>
+				<div className={classes.imageContainer}
+					style={{ 
+						background: data.images.length ? `url(${data.images[0]})` : 'url(https://leevstore.blob.core.windows.net/images/dscn8142.jpg)',
+						backgroundSize: 'cover'
+						
+					}}
 				>
-					<Paper
-						className={classes.assetContainer}
-						elevation={9}
-						onClick={() => history.push(`/workspace/assets/${data._id}`)}
-					>
-						<Grid container className={classes.topMain} justify="center">
-							
-							<Grid item xs={12}>
-								<div className={classes.address}>
-									<Typography className={classes.addMain}>
-										{`${data.address.street} ${data.address.streetNumber}${
-											data.address.entrance || ""
-										}`}
-									</Typography>
-									<Typography className={classes.addSec}>
-										{`${data.address.city}`}
-									</Typography>
-									<Typography className={classes.addZip}>
-										{`${data.address.zipcode}, ${data.address.country}`}
-									</Typography>
-								</div>
-							</Grid>
-                            <Grid item xs={12}>
-								<div className={classes.owner}>
-									<UserItem
-										user={data.owner}
-										showPhone
-										showName
-										avatarSize={"40px"}
-										size={12}
-									/>
-								</div>
-							</Grid>
-						</Grid>
-						<div className={classes.bottomMain}>
-							<div className={classes.extraDetails}>
-								<div className={classes.type}>
-									<CategoryOutlinedIcon className={classes.typeIcon} />
-									<div className={classes.typeDetails}>
-										<div className={classes.typeData}>
-											{t(`assetsModule.${data.type}`)}
-										</div>
-									</div>
-								</div>
-								{data.addInfo.floors ? (
-									<div className={clsx(classes.type, classes.floor)}>
-										<VerticalSplitRoundedIcon className={classes.typeIcon} />
-										<div className={classes.typeDetails}>
-											<div className={classes.typeData}>
-												{`${data.addInfo.floors} ${t("assetsModule.floors")}`}
-											</div>
-										</div>
-									</div>
-								) : null}
-								{data.addInfo.floor ? (
-									<div className={clsx(classes.type, classes.floor)}>
-										<VerticalSplitRoundedIcon className={classes.typeIcon} />
-										<div className={classes.typeDetails}>
-											<div className={classes.typeData}>
-												{`${t("assetsModule.floor")} ${data.addInfo.floor}`}
-											</div>
-										</div>
-									</div>
-								) : null}
-								{data.addInfo.unit ? (
-									<div className={clsx(classes.type, classes.unit)}>
-										<HomeRoundedIcon className={classes.typeIcon} />
-										<div className={classes.typeDetails}>
-											<div className={classes.typeData}>
-												{`${t("assetsModule.unit")} ${data.addInfo.unit}`}
-											</div>
-										</div>
-									</div>
-								) : null}
-								{data.addInfo.units ? (
-									<div className={clsx(classes.type, classes.units)}>
-										<HomeRoundedIcon className={classes.typeIcon} />
-										<div className={classes.typeDetails}>
-											<div className={classes.typeData}>
-												{`${data.addInfo.units} ${t("assetsModule.units")}`}
-											</div>
-										</div>
-									</div>
-								) : null}
-							</div>
-							<div
-								className={clsx(
-									classes.buttonsContainer,
-									Boolean(editMode) && classes.buttonsContainerRound
-								)}
-							>
-								<Tooltip title={t("assetsModule.systems")}>
-									<IconButton
-										className={classes.button}
-										onClick={handleReferralClick("systems")}
-									>
-										<BlurOnRoundedIcon className={classes.typeIcon} />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title={t("assetsModule.tasks")}>
-									<IconButton
-										className={classes.button}
-										onClick={handleReferralClick("tasks")}
-									>
-										<AssignmentRoundedIcon className={classes.typeIcon} />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title={t("assetsModule.faults")}>
-									<IconButton
-										className={classes.button}
-										onClick={handleReferralClick("faults")}
-									>
-										<WarningRoundedIcon className={classes.typeIcon} />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title={t("assetsModule.documents")}>
-									<IconButton
-										className={classes.button}
-										onClick={handleReferralClick("documents")}
-									>
-										<DescriptionRoundedIcon className={classes.typeIcon} />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title={t("assetsModule.residents")}>
-									<IconButton className={classes.button}>
-										<PeopleOutlineRoundedIcon className={classes.typeIcon} />
-									</IconButton>
-								</Tooltip>
-							</div>
+				</div>
+				<div className={classes.dataContainer} onClick={() => history.push(`/workspace/assets/${data._id}`)}>
+					<div className={classes.addressContainer}>
+						<div className={classes.mainAddress}>
+							{getAddress(data)}
 						</div>
-						{editMode === "address" && (
-							<UpsertAsset
-								assetId={data._id}
-								handleUpdate={handleUpdate}
-								handleClose={() => setEditMode(false)}
-							/>
-						)}
-					</Paper>
-				</ClickAwayListener>
-			</Grid>
-		</Fade>
+						<div className={classes.secondaryAddress}>
+							{getSecondaryAddress(data)}
+						</div>
+						<div className={classes.zipCode}>
+							{data.address.zipcode}
+						</div>
+					</div>
+					<div className={classes.openFaults}>
+						{`${data.faultCount} ${t("mapModule.openFaults")} `}
+					</div>
+					<AdditionalData data={data}/>
+				</div>
+				<div className={classes.controlsContainer}>
+					<AssetControls data={data} />
+				</div>
+		</Grid>
+		
 	);
 };
 
+const AdditionalData = ({ data }) => {
+
+	const classes = useStyles();
+	const { t } = useTranslation();
+
+	const type = data.type;
+	
+	const f = type === 'building' ? data.addInfo.floors : data.addInfo.floor;
+	const ftype = type === 'building' ? 'floors' : 'floor';
+	const u = type === 'building' ? data.addInfo.units : data.addInfo.unit;
+	const utype = type === 'building' ? 'units' : 'unit';
+
+	return (
+		<div className={classes.moreInfo}>
+			<HomeWorkIcon className={classes.icon} />
+			<div className={classes.addInfoText}>
+				{`${t(`assetsModule.${type}`)}`}
+			</div>
+			<VerticalSplitIcon className={classes.icon} />
+			<div className={classes.addInfoText} style={{ display: 'flex', flexDirection: type === 'building' ? 'row' : 'row-reverse'}}>
+				<span>{f}</span>
+				&nbsp;
+				<span>
+					{`${t(`assetsModule.${ftype}`)}`}
+				</span>	
+			</div>
+			<HomeIcon className={classes.icon} />
+			<div className={classes.addInfoText} style={{ display: 'flex', flexDirection: type === 'building' ? 'row' : 'row-reverse'}}>
+				<span>
+					{u}
+				</span>
+				&nbsp;
+				<span>
+					{`${t(`assetsModule.${utype}`)}`}
+				</span>
+				
+			</div>
+		</div>
+	)
+}
+
 const useStyles = makeStyles((theme) => ({
-	assetContainer: {
-		margin: "10px",
-		background: "white",
-		borderRadius: "5px",
-		height: "auto",
-		color: "white",
-		background: "rgba(255,255,255,0.1)",
-		cursor: "pointer",
-		[theme.breakpoints.down("xs")]: {
-			margin: "10px 0",
-			borderRadius: "0",
-			border: "0",
-		},
+	mainContainer: {
+		height: '250px',
+		margin: '20px',
+		borderRadius: '5px 5px 30px 30px',
+		position: 'relative',
+		[theme.breakpoints.down('sm')]: {
+			margin : '10px 0',
+			height: '200px',
+			borderRadius: '0'
+		}
 	},
-	topMain: {
-		borderRadius: "25px",
-		display: "flex",
-		justifyContent: "space-between",
-		position: "relative",
-		[theme.breakpoints.down("xs")]: {
-			borderRadius: "0",
-		},
+	imageContainer: {
+		height: '250px',
+		width: '100%',
+		borderRadius: 'inherit',
+		position: 'absolute',
+		[theme.breakpoints.down('sm')]: {
+			height: '200px'
+		}	
 	},
-	address: {
-		padding: `30px`,
-        textAlign: 'center',
-        background: 'rgba(0,0,0,0.7)',
-        borderRadius: '5px 5px 0 0',
-        [theme.breakpoints.down('xs')]: {
-            borderRadius: '0',
-        }
+	dataContainer: {
+		height: '250px',
+		width: '100%',
+		background: 'rgba(0,0,0,0.5)',
+		backdropFilter: 'blur(0px)',
+		borderRadius: 'inherit',
+		cursor: 'pointer',
+		[theme.breakpoints.down('sm')]: {
+			height: '200px',
+		}
 	},
-	addMain: {
-		fontSize: "24px",
-		lineHeight: 1,
+	addressContainer: {
+		color: 'rgba(255,255,255,0.8)',
+		padding: '30px',
+		marginBottom: '20px',
+		[theme.breakpoints.down('sm')]: {
+			padding: '15px',
+		}
 	},
-	addSec: {
-		fontSize: "14px",
+	mainAddress: {
+		fontSize: '22px',
+		fontWeight: '500',
+		[theme.breakpoints.down('sm')]: {
+			fontSize: '18px',
+		}
 	},
-	addZip: {
-		fontSize: "14px",
+	secondaryAddress: {
+		fontSize: '14px',
+		[theme.breakpoints.down('sm')]: {
+			fontSize: '12px',
+		}
 	},
-	bottomMain: {
-		height: "auto",
-		borderRadius: "25px",
-		position: "relative",
-		background: "transparent",
-		display: "grid",
-		placeItems: "center",
+	zipCode: {
+		fontSize: '14px',
+		[theme.breakpoints.down('sm')]: {
+			fontSize: '12px',
+		}
 	},
-	owner: {
-		padding: "10px 20px 10px 10px",
-        margin: '20px auto',
-        width: 'fit-content',
-		borderRadius: "50px",
-        background: 'rgba(0,0,0,0.5)'
+	openFaults: {
+		color: 'white',
+		background: '#e53935',
+		width: 'fit-content',
+		padding: '7px 15px',
+		borderRadius: '50px',
+		margin: '0 30px',
+		fontSize: '14px',
+		[theme.breakpoints.down('sm')]: {
+			margin: '10px 15px',
+		}
 	},
-	extraDetails: {
-		display: "flex",
-		justifyContent: "center",
-		height: "30px",
-		borderRadius: "25px",
-		background: theme.palette.primary.main,
-		width: "fit-content",
-		boxShadow: "rgba(0,0,0,0.4) 0px 0px 5px 2px",
+	moreInfo: {
+		color: 'rgba(255,255,255,0.8)',
+		padding: '7px 15px 7px 1px',
+		fontSize: '14px',
+		background: 'rgba(0,0,0,1)',
+		width: 'fit-content',
+		borderRadius: '50px',
+		border: '1px solid white',
+		margin: '10px 30px',
+		display: 'flex',
+		alignItems: 'center',
+		[theme.breakpoints.down('sm')]: {
+			margin: '10px 15px',
+		}
 	},
-	type: {
-		position: "relative",
-		display: "flex",
-		padding: "5px 10px",
-		width: "fit-content",
-		background: "transparent",
-		color: "white",
-		alignItems: "center",
+	icon: {
+		fontSize: '16px',
+		margin: '0 5px',
+		border: '1px solid rgba(255,255,255,0.8)',
+		borderRadius: '50px',
+		padding: '3px',
+		color: 'rgba(255,255,255,0.8)',
 	},
-	typeIcon: {
-		fontSize: "20px",
-		color: "white",
+	addInfoText: {
+		lineHeight: '3px',
+		padding: '0 10px 0 3px'
 	},
-	typeData: {
-		padding: "0 10px 0 10px",
-		lineHeight: 1,
-	},
-	buttonsContainer: {
-		width: "fit-content",
-		margin: "10px auto 0",
-		height: "auto",
-		display: "flex",
-		flexWrap: "wrap",
-		justifyContent: "space-between",
-		borderRadius: "10px 10px 0 0",
-		transition: "border-radius 0.5s ease",
-		background: theme.palette.primary.main,
-		boxShadow: "rgba(0,0,0,0.4) 0px 0px 5px 2px",
-	},
-	buttonsContainerRound: {
-		borderRadius: "25px",
-		transition: "border-radius 0.5s ease",
-	},
-	button: {
-		"&:hover": {
-			background: "rgba(0,0,0,0.5)",
-		},
-	},
+	controlsContainer: {
+		position: 'absolute',
+		top: '20px',
+		right: '20px'
+	}
 }));

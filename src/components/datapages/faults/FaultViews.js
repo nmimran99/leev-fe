@@ -26,7 +26,7 @@ export const FaultViews = () => {
 
     useEffect(() => {
         if (!isLoading) return;
-        getFaults(auth.user.tenant, query)
+        getFaults(query)
         .then(data => {
             if (data) {
                 setFaults(data)

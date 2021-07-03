@@ -97,7 +97,8 @@
         "updateAssetOwnerInstructions": "בחר משתמש שיתפקד כמנהל הנכס",
         "addRelatedUser": "הוסף משתמש עוקב",
         "addRelatedUserIntructions": "בחר משתמש על מנת להוסיף לרשימת המקושרים התקלה",
-        "filterByClient": "סנן על פי לקוח"
+        "filterByClient": "סנן על פי לקוח",
+        "assetsMenu": "תפריט נכס"
     },
     "systemsModule": {
         "filterBySystemName": "סנן לפי שם מערכת",

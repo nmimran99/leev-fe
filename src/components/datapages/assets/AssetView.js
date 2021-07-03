@@ -56,7 +56,8 @@ export const AssetView = ({}) => {
 				setAsset(res);
 			})
 			.finally(() => {
-				setIsLoading(false);
+				setIsLoading(false); 
+				if (query.tab) return;
 				history.replace(`${location.pathname}?tab=systems`);
 			});
 	}, []);
@@ -115,6 +116,7 @@ export const AssetView = ({}) => {
 						<AssetControls
 							removeAsset={() => null}
 							toggleEditMode={toggleEditMode}
+							data={asset}
 						/>
 						<ReturnToPrevios />
 					</div>
@@ -239,7 +241,7 @@ const useStyles = makeStyles((theme) => ({
 	controlsContainer: {
 		padding: "20px",
 		display: "flex",
-		justifyContent: "space-between",
+		justifyContent: "flex-end",
 		[theme.breakpoints.down("sm")]: {
 			padding: "10px",
 		},

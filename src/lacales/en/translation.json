@@ -97,7 +97,8 @@
         "updateAssetOwnerInstructions": "Choose a user to act as asset manager",
         "addRelatedUser": "Add related user",
         "addRelatedUserIntructions": "Choose a user to add to the fault related users list",
-        "filterByClient": "Filter by Client"
+        "filterByClient": "Filter by Client",
+        "assetsMenu": "Asset Menu"
     },
     "systemsModule": {
         "filterBySystemName": "Filter by system name",

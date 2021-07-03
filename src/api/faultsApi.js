@@ -65,11 +65,11 @@ export const getMinifiedFaults = async (filters) => {
 	}
 };
 
-export const getFaults = async (tenant, filters) => {
+export const getFaults = async (filters) => {
 	try {
 		const res = await axios.post(
 			`${process.env.REACT_APP_BACKEND_URL}/faults/getFaults`,
-			{ tenant, filters },
+			{ filters },
 			{
 				headers: {
 					requesttype: 'read',

@@ -13,6 +13,7 @@ import { queryParamsToObject } from "../../../api/genericApi";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "../../reuseables/customHooks/useQuery";
+import { getFaults } from "../../../api/faultsApi";
 
 export const AssetsList = () => {
 	const location = useLocation();
@@ -25,26 +26,36 @@ export const AssetsList = () => {
 
 	useEffect(() => {
 		if (!isLoading) return;
-		getAssets(query)
-			.then((res) => {
-				if (res) {
-					return applyFilters(queryParamsToObject(location.search), res);
-				}
-			})
-			.then((data) => {
-				if (data) {
-					setAssets(data);
-				}
-			})
-			.catch((e) => {
-				console.log(e.message);
-			})
-			.finally(() => setIsLoading(false));
+		prepareData();
 	}, [isLoading]);
 
 	useEffect(() => {
 		setIsLoading(true);
 	}, [location.search]);
+
+	const prepareData = async () => {
+		try {
+			let asts = await getAssets(query)
+			if (!asts.length) return;
+			asts = await applyFilters(queryParamsToObject(location.search), asts);
+			if (!asts.length) return;
+			let fts = await getFaults({ assets: asts.map(a => a._id)})
+			asts = asts.map(a => {
+				return {
+					...a,
+					faultCount: fts.reduce((val, f) => (f.asset._id == a._id ? val + 1 : val),0)
+				}
+			})
+			setAssets(asts)
+			setIsLoading(false);
+
+		} catch(e) {
+			console.log(e.message);
+			setIsLoading(false);
+		};
+
+		
+	}
 
 	const removeAsset = (assetId, data) => {
 		setAlertDialog({
@@ -77,7 +88,7 @@ export const AssetsList = () => {
 						) : (
 							assets.map((v, i) => (
 								<Asset
-									assetData={v}
+									data={v}
 									key={i}
 								/>
 							))

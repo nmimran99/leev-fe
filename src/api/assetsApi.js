@@ -123,6 +123,19 @@ export const getFullAddress = (data) => {
 	}`;
 };
 
+export const getAddress = (data) => {
+	let unit = data.type === 'apartment' ? data.addInfo.unit || '' : '';
+	return `${data.address.street} ${data.address.streetNumber}${
+		data.address.entrance || ''
+	}${
+		Boolean(unit) ? `, ${i18next.t('assetsModule.unit')} ${unit}` : ''
+	}`;
+};
+
+export const getSecondaryAddress = (data) => {
+	return `${data.address.city}, ${data.address.country}`;
+}
+
 export const getShortAddress = (data) => {
 	return `${data.address.street} ${data.address.streetNumber}${
 		data.address.entrance || ''
@@ -137,16 +150,32 @@ export const getUnit = (data) => {
 };
 
 export const updateAsset = async (details) => {
-	const { _id, owner, address, addInfo, type } = details;
+	console.log(details)
 	try {
+		let formData = new FormData();
+		Object.entries(details).forEach((f) => {
+			if (f[0] === 'images') {
+				for (let i = 0; i < details.images.length; i++) {
+					formData.append('images', details.images[i]);
+				}
+			} else if (f[1] instanceof Object) {
+				console.log(f[0])
+				formData.append(f[0], JSON.stringify(f[1]));
+			} else {
+				formData.append(f[0], f[1]);
+			}
+		});
+
+		let config = {
+			headers: {
+				'Content-Type': `multipart/form-data`,
+				module: 'assets',
+				requesttype: 'update',
+			},
+		};
 		const res = await axios.post(
 			`${process.env.REACT_APP_BACKEND_URL}/assets/updateAsset`,
-			{ assetId: _id, owner, address, addInfo, type }, {
-                headers: {
-                    requesttype: 'update',
-                    module: 'assets'
-                }
-            }
+			formData, config
 		);
 		if (res.status === 200) {
 			return res;
@@ -214,15 +243,30 @@ export const createAssetAddress = (address) => {
 };
 
 export const createNewAsset = async (details) => {
+	console.log(details)
 	try {
+		let formData = new FormData();
+		Object.entries(details).forEach((f) => {
+			if (f[0] === 'images') {
+				for (let i = 0; i < details.images.length; i++) {
+					formData.append('images', details.images[i]);
+				}
+			} else if (f[1] instanceof Object) {
+				formData.append(f[0], JSON.stringify(f[1]));
+			} else {
+				formData.append(f[0], f[1]);
+			}
+		});
+
+		let config = {
+			headers: {
+				'Content-Type': `multipart/form-data`,
+				module: 'assets',
+				requesttype: 'create',
+			},
+		};
 		const res = await axios.post(
-			`${process.env.REACT_APP_BACKEND_URL}/assets/createAsset`,
-			{ ...details }, {
-                headers: {
-                    requesttype: 'create',
-                    module: 'assets'
-                }
-            }
+			`${process.env.REACT_APP_BACKEND_URL}/assets/createAsset`,formData, config
 		);
 		if (res) {
 			return res.data;

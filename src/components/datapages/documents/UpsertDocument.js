@@ -93,7 +93,7 @@ export const UpsertDocument = ({ handleClose, handleSave, documentId }) => {
 				asset: details.asset,
 				system: details.system || null,
 			}),
-			getFaults(auth.user.tenant, {
+			getFaults({
 				asset: details.asset,
 				system: details.system || null,
 			}),
