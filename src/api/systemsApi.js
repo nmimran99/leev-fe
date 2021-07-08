@@ -247,7 +247,7 @@ export const updateSystemAdditionalData = async (systemData) => {
 
 export const createSystemMenuOptions = (systems) => {
 	return new Promise((resolve, reject) => {
-		let options = [];
+		let options = [{ text: i18next.t('general.none'), value: '' }];
 		systems.forEach((s) => {
 			options.push({ text: s.name, value: s._id });
 		});

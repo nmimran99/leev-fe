@@ -79,7 +79,7 @@ export const UpsertTask = ({
 		uploadedImages: [],
 	});
 
-	console.log(errors)
+
 	useEffect(() => {
 		if (!details.isUsingSteps) {
 			setDetails({ ...details, steps: [], isSequential: false });
@@ -188,7 +188,6 @@ export const UpsertTask = ({
 	const loadLocationOptions = async (assetId) => {
         return getLocationsByAsset(assetId)
         .then(locations => {
-            console.log(locations)
             return createLocationMenuOptions(locations)
         })
         .then(data => {

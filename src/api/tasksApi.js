@@ -37,6 +37,10 @@ export const createNewTask = async (details) => {
 		} else if (f[1] instanceof Array) {
 			formData.append(f[0], JSON.stringify(f[1]));
 		} else {
+			if (!f[1]) {
+				formData.append(f[0], '');
+				return
+			}
 			formData.append(f[0], f[1]);
 		}
 	});
@@ -267,6 +271,10 @@ export const updateTask = async (details) => {
 		} else if (f[1] instanceof Array) {
 			formData.append(f[0], JSON.stringify(f[1]));
 		} else {
+			if (f[1] === null) {
+				formData.append(f[0], '');
+				return
+			}
 			formData.append(f[0], f[1]);
 		}
 	});

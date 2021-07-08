@@ -3,7 +3,6 @@ import i18next from "i18next";
 import { getServerError, getUnauthorizedMessage } from "./genericApi";
 
 export const createLocation = async (details) => {
-    console.log(details)
 	try {
 		const res = await axios.post(
 			`${process.env.REACT_APP_BACKEND_URL}/locations/createLocation`,
@@ -81,7 +80,6 @@ export const getLocationsByAsset = async (assetId) => {
                 },
             }
         );
-        console.log(res)
         if (res.status === 200) {
             return res.data;
         }

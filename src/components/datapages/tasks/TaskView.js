@@ -222,21 +222,21 @@ export const TaskView = () => {
 							<div className={classes.asset}>{getFullAddress(task.asset)}</div>
 						</Grid>
 					)}
-					{task.system && (
+					{(task.system || task.location) && (
 						<Grid item xs={12} className={classes.systemItem}>
 							<div className={classes.systemlocationContainer}>
 								<div className={clsx(classes.sysloc, classes.sys)}>
 									<BlurOnRoundedIcon className={classes.systemIcon} />
-									{task.system.name}
+									{task.system ? task.system.name : t('general.none')}
 								</div>
 								<div className={clsx(classes.sysloc, classes.loc)}>
 									<RoomIcon className={classes.systemIcon} />
-									{task.location.name}
+									{task.location ? task.location.name : t('general.none')}
 								</div>
 							</div>
 						</Grid>
 					)}
-
+					
 					{!task.asset && (
 						<Grid item xs={12}>
 							<div className={classes.taskNotLinkedToAsset}>
