@@ -7,7 +7,7 @@ export const SocketContextProvider = ({ id, children}) => {
     const [ socket, setSocket ] = useState(null);
 
     useEffect(() => {
-        const newSocket = io.connect('http://10.0.0.194:8000', { query: { id }})
+        const newSocket = io.connect(`${process.env.REACT_APP_CHAT_URL}`, { query: { id }})
         setSocket(newSocket);
         return () => newSocket.close();
     }, [id])
