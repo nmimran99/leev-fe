@@ -12,20 +12,17 @@ export const Topbar = ({ toggleNewMessage, toggleMessenger}) => {
 	return (
 		<div className={classes.mainContainer}>
             <div className={classes.newMessageContainer}>
-                <IconButton className={classes.newMessage} onClick={toggleNewMessage}>
-                    <PlaylistAddOutlinedIcon  className={classes.icon}/>
-                </IconButton>
+            <IconButton className={classes.newMessage} onClick={toggleMessenger}>
+                <CloseRoundedIcon  className={classes.icon}/>
+            </IconButton> 
+                
             </div>
             <div className={classes.title}>
                 {t("messenger.messages")}
-            </div>
-            {
-                downSm &&
-                <IconButton className={classes.newMessage} onClick={toggleMessenger}>
-                    <CloseRoundedIcon  className={classes.icon}/>
-                </IconButton>
-                
-            }
+            </div> 
+            <IconButton className={classes.newMessage} onClick={toggleNewMessage}>
+                <PlaylistAddOutlinedIcon  className={classes.icon}/>
+            </IconButton>
         </div>
 	);
 };
@@ -36,7 +33,10 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'space-between',
         color: 'white',
-        alignItems: 'center'
+        alignItems: 'center',
+        [theme.breakpoints.down('sm')]: {
+            flexDirection: 'row-reverse' 
+        }
     },
     icon: {
         color: 'rgba(255,255,255,0.8)',
