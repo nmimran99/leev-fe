@@ -11,12 +11,15 @@ import { differenceInHours } from "date-fns";
 import { useLocation } from "react-router";
 import { Can } from "../../reuseables/Can";
 
-import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
-import AppsOutlinedIcon from '@material-ui/icons/AppsOutlined';
-import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined';
-import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
-import MapOutlinedIcon from '@material-ui/icons/MapOutlined';
+import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
+import AppsOutlinedIcon from "@material-ui/icons/AppsOutlined";
+import EventAvailableOutlinedIcon from "@material-ui/icons/EventAvailableOutlined";
+import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
+import MapOutlinedIcon from "@material-ui/icons/MapOutlined";
+import ForumOutlinedIcon from "@material-ui/icons/ForumOutlined";
 import { useTranslation } from "react-i18next";
+import { ConversationsContext } from "../../../context/ConversationsContext";
+import { AuthContext } from "../../../context/AuthContext";
 
 // import { MenuIcon } from '../../../assets/icons/MenuIcon';
 // import { NotificationsIcon } from '../../../assets/icons/NotificationsIcon';
@@ -30,13 +33,17 @@ export const Navbar = ({
 	toggleMapView,
 	toggleNotifications,
 	toggleCalenderView,
+	toggleMessenger,
 }) => {
 	const classes = useStyles();
 	const location = useLocation();
-	const matches = useMediaQuery(theme => theme.breakpoints.down('sm'));
+	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const { notifications } = useContext(NotificationsContext);
+	const { conversations } = useContext(ConversationsContext);
 	const { t } = useTranslation();
+	const { auth } = useContext(AuthContext);
 	const [notifCount, setNotifCount] = useState(0);
+	const [convCount, setConvCount] = useState(0);
 	const [mapActive, setMapActive] = useState(location.pathname.includes("map"));
 	const [calenderActive, setCalenderActive] = useState(
 		location.pathname.includes("calender")
@@ -54,6 +61,23 @@ export const Navbar = ({
 		setNotifCount(count);
 	}, [notifications]);
 
+	useEffect(() => {
+		if (conversations.length) {
+			const r = conversations.reduce((totalMessages, c) => {
+				if (c.messages.length) {
+					let unreadCount = c.messages.filter(
+						(m) => m.read === false && m.from !== auth.user._id
+					).length;
+					return totalMessages + unreadCount;
+				}
+				return totalMessages;
+			}, 0);
+			setConvCount(r);
+			return;
+		}
+		setConvCount(0);
+	}, [conversations]);
+
 	return (
 		<div className={classes.navbar}>
 			<Grid
@@ -62,28 +86,26 @@ export const Navbar = ({
 				justify="space-between"
 				style={{ height: "64px" }}
 			>
-				{
-					!matches && 
+				{!matches && (
 					<Grid item className={classes.menuGridItem}>
 						<IconButton
 							aria-label="menu"
 							className={classes.iconButton}
 							color="inherit"
 							onClick={toggleMenu}
-							
 						>
-							<AppsOutlinedIcon className={classes.iconRoot} style={{ width: '35px', height: '35px'}}/>
+							<AppsOutlinedIcon
+								className={classes.iconRoot}
+								style={{ width: "35px", height: "35px" }}
+							/>
 						</IconButton>
-						
+
 						<div className={classes.logobox}>Leev</div>
-						
-						
 					</Grid>
-				}
+				)}
 				<Grid item xs={12} md={3} lg={2} xl={2}>
 					<div className={classes.navbarIcons}>
-						{
-							matches &&
+						{matches && (
 							<IconButton
 								aria-label="menu"
 								className={classes.iconButton}
@@ -92,28 +114,29 @@ export const Navbar = ({
 								classes={{ label: classes.iconLabel }}
 							>
 								<AppsOutlinedIcon className={classes.iconRoot} />
-								<div className={classes.bottomLabel}>
-								{t("general.menu")}
-							</div>
+								<div className={classes.bottomLabel}>{t("general.menu")}</div>
 							</IconButton>
-						}
-					
-						<IconButton
-							aria-label="Calender"
-							className={classes.iconButton}
-							color={"inherit"}
-							onClick={toggleCalenderView}
-							disabled={calenderActive}
-							classes={{ label: classes.iconLabel }}
+						)}
+						<Badge
+							badgeContent={convCount}
+							color="secondary"
+							classes={{
+								badge: classes.badge,
+							}}
 						>
-							<EventAvailableOutlinedIcon className={classes.iconRoot} />
-							<div className={classes.bottomLabel}>
-								{t("general.calendar")}
-							</div>
-							{/* <Icon classes={{ root: classes.iconRoot }}>
-								<img src="https://img.icons8.com/ios-filled/24/4a90e2/tear-off-calendar.png" />
-							</Icon> */}
-						</IconButton>
+							<IconButton
+								aria-label="Calender"
+								className={classes.iconButton}
+								color={"inherit"}
+								onClick={toggleMessenger}
+								classes={{ label: classes.iconLabel }}
+							>
+								<ForumOutlinedIcon className={classes.iconRoot} />
+								<div className={classes.bottomLabel}>
+									{t("general.messages")}
+								</div>
+							</IconButton>
+						</Badge>
 						<IconButton
 							aria-label="Add"
 							className={classes.iconButton}
@@ -125,9 +148,7 @@ export const Navbar = ({
 							{/* <Icon classes={{ root: classes.iconRoot }}>
 								<img src="https://img.icons8.com/ios-filled/28/4a90e2/plus-2-math.png" />
 							</Icon> */}
-							<div className={classes.bottomLabel}>
-								{t("general.create")}
-							</div>
+							<div className={classes.bottomLabel}>{t("general.create")}</div>
 						</IconButton>
 						<Can module="map" action="read">
 							<IconButton
@@ -139,16 +160,13 @@ export const Navbar = ({
 								classes={{ label: classes.iconLabel }}
 							>
 								<MapOutlinedIcon className={classes.iconRoot} />
-								<div className={classes.bottomLabel}>
-									{t("general.map")}
-								</div>
+								<div className={classes.bottomLabel}>{t("general.map")}</div>
 								{/* <Icon classes={{ root: classes.iconRoot }}>
 									<img src="https://img.icons8.com/ios-filled/24/4a90e2/map.png" />
 								</Icon> */}
 							</IconButton>
 						</Can>
 
-						
 						<IconButton
 							aria-label="Notifications"
 							className={classes.iconButton}
@@ -164,14 +182,14 @@ export const Navbar = ({
 								}}
 							>
 								<NotificationsNoneIcon className={classes.iconRoot} />
-								
+
 								{/* <Icon classes={{ root: classes.iconRoot }}>
 									<img src="https://img.icons8.com/ios-filled/24/4a90e2/appointment-reminders--v1.png" />
 								</Icon> */}
 							</Badge>
 							<div className={classes.bottomLabel}>
-									{t("general.notifications")}
-								</div>
+								{t("general.notifications")}
+							</div>
 						</IconButton>
 					</div>
 				</Grid>
@@ -193,10 +211,10 @@ const useStyles = makeStyles((theme) => ({
 		background: "rgba(0,0,0,0.8)",
 		backdropFilter: "blur(8px)",
 		boxShadow: "rgba(0,0,0,0.4) 0px 0px 5px 2px",
-		[theme.breakpoints.down('sm')]: {
-			borderRadius: '30px 30px 0 0',
+		[theme.breakpoints.down("sm")]: {
+			borderRadius: "30px 30px 0 0",
 			background: "black",
-		}
+		},
 	},
 	menuGridItem: {
 		display: "flex",
@@ -207,13 +225,13 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		justifyContent: "space-between",
 		width: "auto",
-		padding: '0 10px',
-		[theme.breakpoints.down('md')]: {
-			padding: '0 20px',
+		padding: "0 10px",
+		[theme.breakpoints.down("md")]: {
+			padding: "0 20px",
 		},
-		[theme.breakpoints.down('xs')]: {
-			padding: '0 10px',
-		}
+		[theme.breakpoints.down("xs")]: {
+			padding: "0 10px",
+		},
 	},
 	drawer: {
 		height: "calc(100vh - 128px)",
@@ -250,7 +268,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	iconButton: {
-		padding: "6px"
+		padding: "6px",
 	},
 	icon: {
 		fontSize: "28px",
@@ -264,8 +282,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 	badge: {
 		border: `1px solid black`,
-		top: "12px",
-		right: "12px",
+		top: "6px",
+		right: "6px",
 	},
 	imageIcon: {
 		height: "36px",
@@ -277,18 +295,18 @@ const useStyles = makeStyles((theme) => ({
 		height: "30px",
 		display: "grid",
 		placeItems: "center",
-		color: '#42A5F5',
-		[theme.breakpoints.down('sm')]: {
+		color: "#42A5F5",
+		[theme.breakpoints.down("sm")]: {
 			width: "25px",
 			height: "25px",
-		}
+		},
 	},
 	iconLabel: {
-		flexDirection: 'column'
+		flexDirection: "column",
 	},
 	bottomLabel: {
-		color: 'white',
-		fontSize: '11px',
-		padding: '5px 0 0'
-	}
+		color: "white",
+		fontSize: "11px",
+		padding: "5px 0 0",
+	},
 }));

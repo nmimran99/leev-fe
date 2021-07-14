@@ -485,6 +485,7 @@
         "client": "לקוח",
         "create": "יצירה",
         "calendar": "לוח שנה",
+        "messages": "הודעות",
         "map": "מפה",
         "notifications": "התראות",
         "menu": "תפריט"
@@ -676,5 +677,11 @@
     "languages": {
         "he": "עברית",
         "en": "אנגלית"
+    },
+    "messenger": {
+        "edit": "ערוך",
+        "messages": "הודעות",
+        "newMessage": "הודעה חדשה",
+        "searchUser": "חיפוש משתמש"
     }
 }

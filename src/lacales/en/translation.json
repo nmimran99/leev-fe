@@ -485,6 +485,7 @@
         "client": "client",
         "create": "Create",
         "calendar": "Calendar",
+        "messages": "Messages",
         "map": "Map",
         "notifications": "Notifications",
         "menu": "Menu"
@@ -675,5 +676,11 @@
     "languages": {
         "he": "Hebrew",
         "en": "English"
+    },
+    "messenger": {
+        "edit": "Edit",
+        "messages": "Messages",
+        "newMessage": "New Message",
+        "searchUser": "Search User"
     }
 }

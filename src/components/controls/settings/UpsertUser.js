@@ -55,7 +55,7 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	const [locations, setLocations] = useState([]);
 	const [ tenants, setTenants ] = useState([]);
 	const [details, setDetails] = useState({
-		tenant: auth.user.isAdmin ? null : auth.user.tenant,
+		tenant: auth.user.isAdmin ? null : mode === 'create' ? auth.user.tenant : null,
 		email: "",
 		firstName: "",
 		lastName: "",
@@ -96,10 +96,11 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	}, [residentOwner]);
 
 	const prepareData = async () => {	
-		if (!tenants.length) {
+		if (!tenants.length && auth.user.isAdmin) {
 			const tenants = await getTenantOptions();
 			setTenants(tenants);
 		}	
+		
 		const roles = await getRoles(details.tenant);
 		if (!roles || roles.status === 403 || roles.status === 500) {
 			return [];

@@ -1,9 +1,10 @@
-import { Grid, makeStyles } from '@material-ui/core';
+import { Grid, makeStyles, useMediaQuery } from '@material-ui/core';
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { getNotifications } from '../../api/notificationsApi';
 import { EnvContext } from '../../context/EnvContext';
 import { NotificationsContext } from '../../context/NotificationsContext';
+import { Messenger } from '../messages/Messenger';
 import { CreateContainer } from '../reuseables/CreateContainer';
 import { AddMenu } from './navbar/AddMenu';
 import { Navbar } from './navbar/Navbar';
@@ -16,12 +17,14 @@ export const Controls = () => {
 	const history = useHistory();
 	const location = useLocation();
 	const { notifications, setNotifications } = useContext(NotificationsContext);
-	const { env } = useContext(EnvContext);
+	const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
 	const [ menuOpen, setMenuOpen ] = useState(false);
 	const [ addMenuOpen, setAddMenuOpen ] = useState(false);
 	const [ create, setCreate ] = useState(null);
 	const [ notificationsList, setNotificationsList ] = useState(false);
 	const [ settings, setSettings ] = useState(false);
+	const [ messenger, setMessenger ] = useState(false);
+	
 
 	useEffect(() => {
 		fetchNotifications(0);
@@ -85,20 +88,27 @@ export const Controls = () => {
 		}
 	}; 
 
+	const toggleMessenger = () => {
+		if (messenger) {
+			setMessenger(false);
+		} else {
+			setMessenger(true);
+		}
+	}
+
 	return (
 		<React.Fragment>
-			<div container className={classes.controlsContainer} justify="center">
-			
-					<Navbar
-						toggleMenu={toggleMenu}
-						menuOpen={menuOpen}
-						toggleAddMenu={toggleAddMenu}
-						toggleNotifications={toggleNotifications}
-						toggleMapView={toggleMapView}
-						toggleCalenderView={toggleCalenderView}
-						
-					/>
-			
+			<div container className={classes.controlsContainer} justify="center">	
+				<Navbar
+					toggleMenu={toggleMenu}
+					menuOpen={menuOpen}
+					toggleAddMenu={toggleAddMenu}
+					toggleNotifications={toggleNotifications}
+					toggleMapView={toggleMapView}
+					toggleCalenderView={toggleCalenderView}
+					toggleMessenger={toggleMessenger}
+					
+				/>
 			</div>
 			<SideMenu toggleMenu={toggleMenu} toggleSettings={toggleSettings} menuOpen={menuOpen}/>
 			{addMenuOpen && <AddMenu toggleAddMenu={toggleAddMenu} toggleAdd={openCreate} addMenuOpen={addMenuOpen} />}
@@ -111,6 +121,7 @@ export const Controls = () => {
 			)}
 			{Boolean(create) && <CreateContainer isOpen={true} handleClose={() => setCreate(null)} itemType={create} />}
 			{Boolean(settings) && <Settings handleClose={() => setSettings(false)} open={settings} />}
+			{Boolean(messenger) && <Messenger toggleMessenger={toggleMessenger} />}
 		</React.Fragment>
 	);
 };
