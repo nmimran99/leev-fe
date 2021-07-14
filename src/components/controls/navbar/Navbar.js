@@ -1,31 +1,23 @@
-import React, { useState, useContext, useEffect } from "react";
 import {
-	makeStyles,
-	IconButton,
-	Grid,
 	Badge,
+	Grid,
+	IconButton,
+	makeStyles,
 	useMediaQuery,
 } from "@material-ui/core";
-import { NotificationsContext } from "../../../context/NotificationsContext";
-import { differenceInHours } from "date-fns";
-import { useLocation } from "react-router";
-import { Can } from "../../reuseables/Can";
-
-import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
-import AppsOutlinedIcon from "@material-ui/icons/AppsOutlined";
-import EventAvailableOutlinedIcon from "@material-ui/icons/EventAvailableOutlined";
 import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
-import MapOutlinedIcon from "@material-ui/icons/MapOutlined";
+import AppsOutlinedIcon from "@material-ui/icons/AppsOutlined";
 import ForumOutlinedIcon from "@material-ui/icons/ForumOutlined";
+import MapOutlinedIcon from "@material-ui/icons/MapOutlined";
+import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
+import { differenceInHours } from "date-fns";
+import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ConversationsContext } from "../../../context/ConversationsContext";
+import { useLocation } from "react-router";
 import { AuthContext } from "../../../context/AuthContext";
-
-// import { MenuIcon } from '../../../assets/icons/MenuIcon';
-// import { NotificationsIcon } from '../../../assets/icons/NotificationsIcon';
-// import { CalenderIcon } from '../../../assets/icons/CalenderIcon';
-// import { MapIcon } from '../../../assets/icons/MapIcon';
-// import { AddIcon } from '../../../assets/icons/AddIcon';
+import { ConversationsContext } from "../../../context/ConversationsContext";
+import { NotificationsContext } from "../../../context/NotificationsContext";
+import { Can } from "../../reuseables/Can";
 
 export const Navbar = ({
 	toggleMenu,
@@ -125,7 +117,7 @@ export const Navbar = ({
 							}}
 						>
 							<IconButton
-								aria-label="Calender"
+								aria-label="messages"
 								className={classes.iconButton}
 								color={"inherit"}
 								onClick={toggleMessenger}
@@ -145,9 +137,6 @@ export const Navbar = ({
 							classes={{ label: classes.iconLabel }}
 						>
 							<AddCircleOutlineOutlinedIcon className={classes.iconRoot} />
-							{/* <Icon classes={{ root: classes.iconRoot }}>
-								<img src="https://img.icons8.com/ios-filled/28/4a90e2/plus-2-math.png" />
-							</Icon> */}
 							<div className={classes.bottomLabel}>{t("general.create")}</div>
 						</IconButton>
 						<Can module="map" action="read">
@@ -161,9 +150,6 @@ export const Navbar = ({
 							>
 								<MapOutlinedIcon className={classes.iconRoot} />
 								<div className={classes.bottomLabel}>{t("general.map")}</div>
-								{/* <Icon classes={{ root: classes.iconRoot }}>
-									<img src="https://img.icons8.com/ios-filled/24/4a90e2/map.png" />
-								</Icon> */}
 							</IconButton>
 						</Can>
 
@@ -182,10 +168,6 @@ export const Navbar = ({
 								}}
 							>
 								<NotificationsNoneIcon className={classes.iconRoot} />
-
-								{/* <Icon classes={{ root: classes.iconRoot }}>
-									<img src="https://img.icons8.com/ios-filled/24/4a90e2/appointment-reminders--v1.png" />
-								</Icon> */}
 							</Badge>
 							<div className={classes.bottomLabel}>
 								{t("general.notifications")}
