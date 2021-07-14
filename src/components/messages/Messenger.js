@@ -134,6 +134,7 @@ const useStyles = makeStyles((theme) => ({
 			top: "0",
 			right: "0",
 			borderRadius: "0",
+			border: 'none',
 		}
 	},
 	leftContainer: {

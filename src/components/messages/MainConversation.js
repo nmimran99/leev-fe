@@ -63,16 +63,16 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center'
     },
     messagesContainer: {
-        height: 'calc(100% - 140px)',
+        height: 'calc(100% - 170px)',
     },
     inputContainer: {
-        padding: '0 20px',
+        padding: '0px 20px 30px',
         background: 'rgba(0,0,0,0.6)',
         borderRadius: "0 0 20px 0",
         height: '50px',
         display: 'flex',
         alignItems: 'center',
-
+        
 
     },
     form: {
