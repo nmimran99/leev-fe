@@ -488,7 +488,11 @@
         "messages": "הודעות",
         "map": "מפה",
         "notifications": "התראות",
-        "menu": "תפריט"
+        "menu": "תפריט",
+        "noSystemAssigned": "לא צוינה מערכת",
+        "noLocationAssigned": "לא צוין מיקום",
+        "noOwnerAssigned": "לא מונה משתמש",
+        "noUserAssigned": "לא מונה משתמש"
     },
     "scheduler": {
         "startDate": "תאריך התחלה",

@@ -3,49 +3,39 @@ import {
 	IconButton,
 	LinearProgress,
 	makeStyles,
-	useMediaQuery,
+	useMediaQuery
 } from "@material-ui/core";
-import dateFormat from "dateformat";
+import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
+import DoneIcon from "@material-ui/icons/Done";
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import RoomIcon from "@material-ui/icons/Room";
+import clsx from "clsx";
+import { format, parseISO } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router";
 import { getFullAddress } from "../../../api/assetsApi";
+import { getNextIterationDate } from "../../../api/genericApi";
 import {
-	getTask,
-	updateTaskOwner,
-	updateTaskStatus,
-	saveTaskComment,
-	updateTaskComment,
-	addTaskRelatedUser,
-	removeTaskRelatedUser,
-	updateTask,
-	updateTaskSchedule,
-	completeTaskStep,
+	addTaskRelatedUser, completeTaskStep, getTask, removeTaskRelatedUser, saveTaskComment, updateTask, updateTaskComment, updateTaskOwner, updateTaskSchedule, updateTaskStatus
 } from "../../../api/tasksApi";
 import { LanguageContext } from "../../../context/LanguageContext";
+import { SnackbarContext } from "../../../context/SnackbarContext";
 import { AddRelatedUser } from "../../reuseables/AddRelatedUser";
+import { Can } from "../../reuseables/Can";
 import { Carousel } from "../../reuseables/Carousel";
 import { CommentSection } from "../../reuseables/CommentSection";
 import { ItemLink } from "../../reuseables/ItemLink";
+import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
+import { Scheduler } from "../../reuseables/scheduler/Scheduler";
 import { StatusTag } from "../../reuseables/StatusTag";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
-import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
+import { TimeActive } from "../../reuseables/TimeActive";
 import { UpdateOwner } from "../../reuseables/UpdateOwner";
 import { UpdateStatus } from "../../reuseables/UpdateStatus";
 import { UserList } from "../../reuseables/UserList";
 import { UserItem } from "../../user/UserItem";
-import { UpsertTask } from "./UpsertTask";
 import { TaskViewControls } from "./TaskViewControls";
-import { TimeActive } from "../../reuseables/TimeActive";
-import { Scheduler } from "../../reuseables/scheduler/Scheduler";
-import { SnackbarContext } from "../../../context/SnackbarContext";
-import { format, parseISO } from "date-fns";
-import DoneIcon from "@material-ui/icons/Done";
-import clsx from "clsx";
-import { Can } from "../../reuseables/Can";
-import { getNextIterationDate } from "../../../api/genericApi";
-import RoomIcon from "@material-ui/icons/Room";
-import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
+import { UpsertTask } from "./UpsertTask";
 
 export const TaskView = () => {
 	const history = useHistory();
@@ -217,34 +207,6 @@ export const TaskView = () => {
 						</div>
 						<ReturnToPrevios />
 					</div>
-					{task.asset && (
-						<Grid item xs={12}>
-							<div className={classes.asset}>{getFullAddress(task.asset)}</div>
-						</Grid>
-					)}
-					{(task.system || task.location) && (
-						<Grid item xs={12} className={classes.systemItem}>
-							<div className={classes.systemlocationContainer}>
-								<div className={clsx(classes.sysloc, classes.sys)}>
-									<BlurOnRoundedIcon className={classes.systemIcon} />
-									{task.system ? task.system.name : t('general.none')}
-								</div>
-								<div className={clsx(classes.sysloc, classes.loc)}>
-									<RoomIcon className={classes.systemIcon} />
-									{task.location ? task.location.name : t('general.none')}
-								</div>
-							</div>
-						</Grid>
-					)}
-					
-					{!task.asset && (
-						<Grid item xs={12}>
-							<div className={classes.taskNotLinkedToAsset}>
-								<InfoOutlinedIcon className={classes.infoIcon} />
-								{t("tasksModule.taskNotLinkedToAsset")}
-							</div>
-						</Grid>
-					)}
 					
 					<Grid item xs={12} className={classes.controlsGriditem}>
 						<TaskViewControls
@@ -281,6 +243,26 @@ export const TaskView = () => {
 							</div>
 						</Grid>
 					)}
+					{/* {task.asset && (
+						<Grid item xs={12}>
+							<div className={classes.asset}>{getFullAddress(task.asset)}</div>
+						</Grid>
+					)}
+					{(task.system || task.location) && (
+						<Grid item xs={12} className={classes.systemItem}>
+							<div className={classes.systemlocationContainer}>
+								<div className={clsx(classes.sysloc, classes.sys, !task.system && classes.notAssigned)}>
+									<BlurOnRoundedIcon className={classes.systemIcon} />
+									{task.system ? task.system.name : t("general.noSystemAssigned")}
+								</div>
+								<div className={clsx(classes.sysloc, classes.loc, !task.location && classes.notAssigned)}>
+									<RoomIcon className={classes.systemIcon} />
+									{task.location ? task.location.name : t("general.noLocationAssigned")}
+								</div>
+							</div>
+						</Grid>
+					)} */}
+					
 				</Grid>
 				<Grid
 					item
@@ -291,6 +273,24 @@ export const TaskView = () => {
 					xl={9}
 					className={classes.rightContainer}
 				>
+					<div className={classes.asset}>{getFullAddress(task.asset)}</div>
+					<div className={clsx(classes.system, !task.system && classes.notAssigned)}>
+						<BlurOnRoundedIcon className={classes.systemIcon} />
+						{task.system ? task.system.name : t('general.noSystemAssigned')}
+					</div>
+					<div className={clsx(classes.location, !task.location && classes.notAssigned)}>
+						<RoomIcon className={classes.systemIcon} />
+						{task.location ? task.location.name : t('general.noLocationAssigned')}
+					</div>
+
+					{!task.asset && (
+						<Grid item xs={12}>
+							<div className={classes.taskNotLinkedToAsset}>
+								<InfoOutlinedIcon className={classes.infoIcon} />
+								{t("tasksModule.taskNotLinkedToAsset")}
+							</div>
+						</Grid>
+					)}
 					<div className={classes.title}>{task.title}</div>
 					<div className={classes.desc}>
 						<div className={classes.itemDates}>
@@ -533,59 +533,40 @@ const useStyles = makeStyles((theme) => ({
 		color: "white",
 		fontSize: "16px",
 		background: "black",
+		width: "fit-content",
 		padding: "10px 20px",
-		borderRadius: "5px",
+		borderRadius: "50px",
 		boxShadow: "rgba(0,0,0,0.25) 0 0 5px 2px",
 		textAlign: "center",
-		[theme.breakpoints.down("sm")]: {
-			borderRadius: "5px 5px 0 0",
-			boxShadow: "none",
-		},
+		whiteSpace: "nowrap",
 	},
-	systemItem: {
-		display: "flex",
-		justifyContent: "center",
-	},
-	systemlocationContainer: {
+	system: {
 		display: "flex",
 		alignItems: "center",
-		justifyContent: "space-between",
+		justifyContent: "center",
 		width: "fit-content",
 		color: "white",
-		borderRadius: "0 0 50px 50px",
+		borderRadius: "50px",
+		padding: "10px 20px",
+		background: "rgba(0,0,0,0.3)",
 		whiteSpace: "nowrap",
-		[theme.breakpoints.down("sm")]: {
-			flexDirection: "column",
-			width: "100%",
-		},
+		margin: "10px 0",
 	},
-	sysloc: {
+	location: {
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "center",
-		padding: "8px 40px 8px 30px",
-		width: "200px",
-		[theme.breakpoints.down("sm")]: {
-			width: "100%",
-			padding: "8px 0",
-		},
-	},
-	sys: {
-		background: "rgba(0,0,0,0.3)",
-		borderRadius: "0 0 0 50px",
-		[theme.breakpoints.down("sm")]: {
-			borderRadius: "0",
-		},
-	},
-	loc: {
+		width: "fit-content",
+		color: "white",
+		borderRadius: "50px",
+		padding: "10px 20px",
 		background: "rgba(255,255,255,0.2)",
-		borderRadius: "0 0 50px 0",
-		[theme.breakpoints.down("sm")]: {
-			borderRadius: "0 0 5px 5px",
-		},
+		whiteSpace: "nowrap",
+		margin: "0px 0",
 	},
 	systemIcon: {
-		margin: "0 10px",
+		margin: "0 10px 0 0",
+		fontSize: "18px",
 	},
 	title: {
 		color: "white",
@@ -593,6 +574,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: "15px 0",
 		alignSelf: "flex-end",
 		width: "100%",
+		marginTop: "20px",
 	},
 	desc: {
 		background: "rgba(0,0,0,0.4)",
@@ -644,7 +626,7 @@ const useStyles = makeStyles((theme) => ({
 	controlsGriditem: {
 		display: "flex",
 		justifyContent: "flex-end",
-		margin: "10px 0 0",
+		margin: '10px 0'	
 	},
 	taskId: {
 		padding: "5px 0",
@@ -846,4 +828,7 @@ const useStyles = makeStyles((theme) => ({
 	scheduleData: {
 		fontSize: "18px",
 	},
+	notAssigned: {
+		filter: 'brightness(60%)'
+	}
 }));

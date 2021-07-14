@@ -25,13 +25,13 @@ const useStyles = makeStyles((theme) => ({
         background: 'rgba(0,0,0,0.7)',
         color: 'white',
         padding: '12px',
-        margin: '0 5px',
+        margin: '0',
         [theme.breakpoints.down('sm')]: {
             border: '1px solid rgba(255,255,255,0.2)'
         }
     },
     icon: {
-		fontSize: '22px',
+		fontSize: '20px',
 		color: 'white',       
 	},
 }));

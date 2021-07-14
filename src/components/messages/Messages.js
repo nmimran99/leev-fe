@@ -33,7 +33,7 @@ export const Messages = ({ data }) => {
 
 	return (
 		<div className={classes.messagesContainer} ref={ms} >
-            {
+            {    
               loadMessages()
             }
         </div>

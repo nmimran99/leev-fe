@@ -2,15 +2,19 @@ import {
     FormControl,
     IconButton,
     makeStyles,
-    OutlinedInput
+    OutlinedInput,
+	useMediaQuery
 } from "@material-ui/core";
 import SendRoundedIcon from "@material-ui/icons/SendRounded";
 import clsx from "clsx";
 import React, { useContext, useState } from "react";
+import { EnvContext } from "../../context/EnvContext";
 import { LanguageContext } from "../../context/LanguageContext";
 
 export const MessageInput = ({ handleClick }) => {
 	const classes = useStyles();
+	const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
+	const { env, setEnv } = useContext(EnvContext);
 	const [value, setValue] = useState("");
     const { lang } = useContext(LanguageContext);
 
@@ -21,16 +25,24 @@ export const MessageInput = ({ handleClick }) => {
         }
     };
 
+	const toggleInputFocus = () => {
+	
+		if (!downSm) return;
+		if (env.inputFocused) {
+			setEnv({
+				...env, 
+				inputFocused: false
+			});
+			return;
+		}
+		setEnv({
+			...env, 
+			inputFocused: true
+		});
+	}
+
 	return (
 		<React.Fragment>
-			<FormControl variant="outlined" className={classes.form}>
-				<OutlinedInput
-					value={value}
-					onChange={(event) => setValue(event.target.value)}
-					className={classes.textInput}
-					onKeyDown={e => e.key === 'Enter' ? send() : null}
-				/>
-			</FormControl>
 			<IconButton
 				className={classes.postBtn}
 				onClick={() => null}
@@ -43,6 +55,19 @@ export const MessageInput = ({ handleClick }) => {
 					)}
 				/>
 			</IconButton>
+			<FormControl variant="outlined" className={classes.form}>
+				<OutlinedInput
+					value={value}
+					onChange={(event) => setValue(event.target.value)}
+					className={classes.textInput}
+					onKeyDown={e => e.key === 'Enter' ? send() : null}
+					inputProps={{
+						onFocus: toggleInputFocus,
+						onBlur: toggleInputFocus
+					}}
+					
+				/>
+			</FormControl>	
 		</React.Fragment>
 	);
 };

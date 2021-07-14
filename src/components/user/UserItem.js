@@ -1,16 +1,21 @@
 import { Avatar, makeStyles, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getUserDataById } from '../../api/userApi';
 
 
 export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, size, column }) => {
     
-    const [ userData, setUserData ] = useState(user)
+    const { t } = useTranslation()
+    const [ userData, setUserData ] = useState(user || {})
     const [ isLoading, setIsLoading ] = useState(true);
     const classes = useStyles();
 
     useEffect(() => {
-        if (!user) return;
+        if (!user) {
+            setIsLoading(false);
+            return;
+        };
         if (!user._id) {
             getUserDataById(user)
             .then(data => {
@@ -36,24 +41,24 @@ export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, siz
                 <React.Fragment>
                     {
                         Boolean(avatarSize) &&
-                        <Avatar className={classes.avatar} alt={'abc'} src={userData.avatar} style={{ height: avatarSize || '60px', width: avatarSize || '60px' }}/>
+                        <Avatar className={classes.avatar} alt={'abc'} src={userData.avatar || 'https://leevstore.blob.core.windows.net/images/leev_logo_round.png'} style={{ height: avatarSize || '60px', width: avatarSize || '60px' }}/>
                     }
                     
                     <div className={classes.dataContainer}>
                         {
                             showName &&
                             <Typography className={classes.fullname} style={{ fontSize: `${size * 1.2}px` || '16px' }}>
-                                {`${userData.firstName} ${userData.lastName}`}
+                                {(userData.firstName || userData.lastName) ? `${userData.firstName} ${userData.lastName}` : t('general.noUserAssigned')}
                             </Typography>
                         } 
                         {
-                            showTitle &&
+                            (showTitle && userData.role) &&
                             <Typography className={classes.title} style={{ fontSize: `${size * 1.1}px` || '18px' }}>
-                                {userData.role.roleName || 'עובד כללי'}
+                                {userData.role.roleName}
                             </Typography>
                         }
                         {
-                            showPhone &&
+                            (showPhone && userData.phoneNumber) &&
                             <Typography className={classes.phoneNumber} style={{ fontSize: `${size * 1}px` || '14px' }}>
                                 {userData.phoneNumber}
                             </Typography>

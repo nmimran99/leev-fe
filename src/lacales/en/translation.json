@@ -488,7 +488,11 @@
         "messages": "Messages",
         "map": "Map",
         "notifications": "Notifications",
-        "menu": "Menu"
+        "menu": "Menu",
+        "noSystemAssigned": "System not assigned",
+        "noLocationAssigned": "Location not assigned",
+        "noOwnerAssigned": "Owner not assigned",
+        "noUserAssigned": "User not assigned"
     },
     "scheduler": {
         "startDate": "Start Date",

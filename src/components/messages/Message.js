@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	messageText: {
 		color: "white",
-		borderRadius: "5px",
+		borderRadius: "10px",
 		padding: "10px 20px",
 		fontSize: "15px",
 		width: "fit-content",

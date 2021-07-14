@@ -28,6 +28,7 @@ import { UpsertFault } from "./UpsertFault";
 import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
 import RoomIcon from "@material-ui/icons/Room";
 import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
+import clsx from 'clsx';
 
 export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	const history = useHistory();
@@ -148,6 +149,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 			setFault({
 				...fault,
 				status: res.status,
+				closedDate: res.closedDate
 			});
 			if (updateFaultState) {
 				updateFaultState(res._id, "status", res.status);
@@ -230,13 +232,13 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					className={classes.rightContainer}
 				>
 					<div className={classes.asset}>{getFullAddress(fault.asset)}</div>
-					<div className={classes.system}>
+					<div className={clsx(classes.system, !fault.system && classes.notAssigned)}>
 						<BlurOnRoundedIcon className={classes.systemIcon} />
-						{fault.system.name}
+						{fault.system ? fault.system.name : t('general.noSystemAssigned')}
 					</div>
-					<div className={classes.location}>
+					<div className={clsx(classes.location, !fault.location && classes.notAssigned)}>
 						<RoomIcon className={classes.systemIcon} />
-						{fault.location.name}
+						{fault.location ? fault.location.name : t('general.noLocationAssigned')}
 					</div>
 
 					<div className={classes.title}>{fault.title}</div>
@@ -248,7 +250,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 									lang.dateformat
 								)}`}
 							</div>
-							{Boolean(fault.closedDate) && (
+							{Boolean(fault.closedDate) && fault.status.state === 'close' && (
 								<div className={classes.closedDate}>
 									{`${t("general.closedDate")} ${format(
 										parseISO(fault.closedDate),
@@ -280,14 +282,17 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					<Grid container justify='center'>
 						<Grid item xs={12}>
 							<div className={classes.owner}>
-								<UserItem
-									user={fault.owner}
-									showTitle
-									showPhone
-									showName
-									size={12}
-									avatarSize={50}
-								/>
+								{
+									<UserItem
+										user={fault.owner || null}
+										showTitle
+										showPhone
+										showName
+										size={12}
+										avatarSize={50}
+									/>
+								}
+								
 							</div>
 						</Grid>
 						<Grid item xl={10} md={6} sm={6} xs={12}>
@@ -553,4 +558,7 @@ const useStyles = makeStyles((theme) => ({
 	status: {
 		margin: "10px 0",
 	},
+	notAssigned: {
+		filter: 'brightness(60%)'
+	}
 }));
