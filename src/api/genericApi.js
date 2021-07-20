@@ -7,6 +7,7 @@ import heLocale from 'date-fns/locale/he';
 import deLocale from 'date-fns/locale/de'
 import usLocale from 'date-fns/locale/en-US'
 import { getDateParts } from './calenderApi';
+import lamejs from 'lamejs';
 
 export const localizations = {
 	he: {

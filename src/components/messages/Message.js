@@ -9,6 +9,15 @@ import DoneIcon from "@material-ui/icons/Done";
 import DoneAllIcon from "@material-ui/icons/DoneAll";
 import { AutorenewSharp } from "@material-ui/icons";
 
+
+
+const AudioPlayer = ({ blob }) => {
+	const url = window.URL.createObjectURL( new Blob(blob, {type: 'audio/mp3'}));
+	return (
+		<audio src={url} controls />
+	)
+}
+
 export const Message = ({ data }) => {
 	const classes = useStyles();
 	const { t } = useTranslation();
@@ -22,6 +31,7 @@ export const Message = ({ data }) => {
 			return { ...data };
 		});
 	}, [data]);
+
 
 	return (
 		<Grid
@@ -40,12 +50,19 @@ export const Message = ({ data }) => {
 				)}
 			>
 				<div className={classes.messageText}>
-					<div
-						className={classes.text}
-						style={{ textAlign: lang.dir === "rtl" ? "right" : "left" }}
-					>
-						{message.data.text}
-					</div>
+					{
+						message.data.audio ? 
+							<AudioPlayer arrayBuffer={message.data.audio} /> :
+						message.data.text ?
+						<div
+							className={classes.text}
+							style={{ textAlign: lang.dir === "rtl" ? "right" : "left" }}
+						>
+							{message.data.text}
+						</div> : 
+						null
+					}
+					
 					<div className={classes.time}>
 						{message.from === auth.user._id ? (
 							<div>

@@ -92,6 +92,7 @@ const useStyles = makeStyles((theme) => ({
         height: '50px',
         display: 'flex',
         alignItems: 'center',
+        position: 'relative',
         [theme.breakpoints.down('sm')]: {
             paddingBottom: '30px',
             borderRadius: "0",

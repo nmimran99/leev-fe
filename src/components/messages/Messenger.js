@@ -41,7 +41,7 @@ export const Messenger = ({ toggleMessenger }) => {
 	const sendMessage = (value) => {
 		socket.emit("send-message", {
 			tenant: auth.user.tenant,
-			text: value,
+			payload: value,
 			from: auth.user._id,
             to: current.participant,
             conversation: current._id

@@ -22,6 +22,7 @@
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.1.0",
     "jss-rtl": "^0.3.0",
+    "lamejs": "^1.2.0",
     "loadash": "^1.0.0",
     "react": "^17.0.1",
     "react-beautiful-dnd": "^13.0.0",

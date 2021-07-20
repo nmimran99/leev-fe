@@ -1,53 +1,58 @@
 import {
-    FormControl,
-    IconButton,
-    makeStyles,
-    OutlinedInput,
-	useMediaQuery
+	FormControl,
+	IconButton,
+	makeStyles,
+	OutlinedInput,
+	useMediaQuery,
+	Slide,
 } from "@material-ui/core";
 import SendRoundedIcon from "@material-ui/icons/SendRounded";
 import clsx from "clsx";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { EnvContext } from "../../context/EnvContext";
 import { LanguageContext } from "../../context/LanguageContext";
+import MicNoneRoundedIcon from "@material-ui/icons/MicNoneRounded";
+import { Recorder } from './Recorder';
 
-export const MessageInput = ({ handleClick }) => {
+export const MessageInput = ({ handleClick}) => {
 	const classes = useStyles();
-	const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
+	const downSm = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const { env, setEnv } = useContext(EnvContext);
 	const [value, setValue] = useState("");
-    const { lang } = useContext(LanguageContext);
+	const { lang } = useContext(LanguageContext);
+	const [recording, setRecording] = useState(false);
 
-    const send = () => {
-        if (value) {
-            handleClick(value);
-            setValue('');
-        }
-    };
+	const send = () => {
+		if (value) {
+			handleClick(value);
+			setValue("");
+		}
+	};
+
+	const submitRecording = (file) => {
+		handleClick(file);
+	}
 
 	const toggleInputFocus = () => {
-	
 		if (!downSm) return;
+
 		if (env.inputFocused) {
 			setEnv({
-				...env, 
-				inputFocused: false
+				...env,
+				inputFocused: false, 
 			});
 			return;
 		}
 		setEnv({
-			...env, 
-			inputFocused: true
+			...env,
+			inputFocused: true,
 		});
-	}
+	};
+
 
 	return (
 		<React.Fragment>
-			<IconButton
-				className={classes.postBtn}
-				onClick={() => null}
-				onClick={send}
-			>
+			<IconButton className={classes.postBtn} onClick={send} disabled={recording}>
 				<SendRoundedIcon
 					className={clsx(
 						classes.icon,
@@ -60,14 +65,15 @@ export const MessageInput = ({ handleClick }) => {
 					value={value}
 					onChange={(event) => setValue(event.target.value)}
 					className={classes.textInput}
-					onKeyDown={e => e.key === 'Enter' ? send() : null}
+					onKeyDown={(e) => (e.key === "Enter" ? send() : null)}
 					inputProps={{
 						onFocus: toggleInputFocus,
-						onBlur: toggleInputFocus
+						onBlur: toggleInputFocus,
 					}}
-					
+					disabled={recording}
 				/>
-			</FormControl>	
+			</FormControl>
+			<Recorder recording={recording} setRecording={setRecording} handleRecordedMessage={submitRecording} />
 		</React.Fragment>
 	);
 };
@@ -130,5 +136,11 @@ const useStyles = makeStyles((theme) => ({
 	icon: {
 		fontSize: "20px",
 		color: "white",
+	},
+	recordButton: {
+		color: "white",
+		padding: "7px",
+		margin: " 0 5px 1px",
+		border: "1px solid rgba(255,255,255,0.5)",
 	},
 }));

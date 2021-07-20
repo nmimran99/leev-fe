@@ -31,3 +31,4 @@ export const countUnreadMessages = (messages, sender) => {
         return total
     }, 0)
 }
+
