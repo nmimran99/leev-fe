@@ -1,32 +1,21 @@
 import {
-	Backdrop,
-	Button,
-	Fade,
 	FormControlLabel,
 	Grid,
-	IconButton,
-	LinearProgress,
 	makeStyles,
 	MenuItem,
-	Modal,
-	Paper,
 	Select,
 	Switch,
 	TextField,
 } from "@material-ui/core";
-import { ClearRounded } from "@material-ui/icons";
-import clsx from "clsx";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { createTenant, getTenant, updateTenant } from "../../../api/adminApi";
-import {
-	getFullName,
-	getSuccessMessage,
-	localizations,
-} from "../../../api/genericApi";
+import { getSuccessMessage, localizations } from "../../../api/genericApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
+import { ModalContainer } from "../../reuseables/ModalContainer";
 
 export const UpsertClient = ({ handleClose, tenantId }) => {
 	const classes = useStyles();
@@ -54,7 +43,7 @@ export const UpsertClient = ({ handleClose, tenantId }) => {
 					contactNumber: data.contactNumber,
 					contactName: data.contactName,
 					lang: data.lang,
-					isActive: data.isActive
+					isActive: data.isActive,
 				});
 			})
 			.finally(() => setIsLoading(false));
@@ -132,290 +121,224 @@ export const UpsertClient = ({ handleClose, tenantId }) => {
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
-		<Modal
-			open={true}
-			onClose={handleClose}
-			closeAfterTransition
-			BackdropComponent={Backdrop}
-			BackdropProps={{
-				timeout: 500,
-			}}
-			className={classes.modal}
+		<ModalContainer
+			handleClose={handleClose}
+			title={
+				mode === "update"
+					? t("clientsModule.upsert.editClientDetails")
+					: t("clientsModule.upsert.createClient")
+			}
+			handleConfirm={handleConfirm}
 		>
-			<Fade in={true}>
-				<Grid
-					container
-					justify="center"
-					alignItems="center"
-					style={{ outline: "0" }}
-				>
-					<Grid
-						item
-						xs={12}
-						sm={10}
-						md={8}
-						lg={8}
-						xl={6}
-						className={classes.gridCont}
-					>
-						<Paper
-							elevation={6}
-							className={classes.paper}
-							style={{ direction: lang.dir }}
+			<Grid item xs={12} className={classes.section}>
+				<Grid item xs={12}>
+					<div className={classes.sectionTitle}>
+						{t("clientsModule.upsert.generalDetails")}
+					</div>
+				</Grid>
+				<Grid item xs={12} className={classes.fields}>
+					<Grid container justify="flex-start">
+						<Grid
+							item
+							xs={12}
+							sm={6}
+							md={6}
+							lg={4}
+							xl={4}
+							className={classes.textContainer}
 						>
-							<Grid container>
-								<Grid item xs={12} className={classes.headerRow}>
-									<div className={classes.title}>
-										{mode === "update"
-											? t("clientsModule.upsert.editClientDetails")
-											: t("clientsModule.upsert.createClient")}
-									</div>
-									<div className={classes.close}>
-										<IconButton
-											className={classes.iconBtn}
-											onClick={handleClose}
-										>
-											<ClearRounded className={classes.icon} />
-										</IconButton>
-									</div>
-								</Grid>
-								<Grid item xs={12} className={classes.section}>
-									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>
-											{t("clientsModule.upsert.generalDetails")}
-										</div>
-									</Grid>
-									<Grid item xs={12} className={classes.fields}>
-										<Grid container justify="flex-start">
-											<Grid
-												item
-												xs={12}
-												sm={6}
-												md={6}
-												lg={4}
-												xl={4}
-												className={classes.textContainer}
-											>
-												<TextField
-													variant={"outlined"}
-													label={t(`clientsModule.name`)}
-													error={
-														errors.filter((e) => e.field === `name`).length > 0
-													}
-													value={details.name}
-													onChange={handleChange("name")}
-													className={classes.textField}
-													size={"medium"}
-													helperText={
-														errors.filter((e) => e.field === `name`).length >
-															0 && t("errors.isRequired")
-													}
-													inputProps={{
-														maxLength: 60,
-													}}
-													FormHelperTextProps={{
-														style: {
-															color:
-																errors.filter((e) => e.field === `name`)
-																	.length > 0 && "rgb(244, 67, 54)",
-														},
-													}}
-												/>
-											</Grid>
-											<Grid
-												item
-												xs={12}
-												sm={6}
-												md={6}
-												lg={4}
-												xl={4}
-												className={classes.textContainer}
-											>
-												<TextField
-													variant={"outlined"}
-													label={t(`clientsModule.contactName`)}
-													error={
-														errors.filter((e) => e.field === `contactName`)
-															.length > 0
-													}
-													value={details.contactName}
-													onChange={handleChange("contactName")}
-													className={classes.textField}
-													size={"medium"}
-													helperText={
-														errors.filter((e) => e.field === `contactName`)
-															.length > 0 && t("errors.isRequired")
-													}
-													inputProps={{
-														maxLength: 60,
-													}}
-													FormHelperTextProps={{
-														style: {
-															color:
-																errors.filter((e) => e.field === `contactName`)
-																	.length > 0 && "rgb(244, 67, 54)",
-														},
-													}}
-												/>
-											</Grid>
-											<Grid
-												item
-												xs={12}
-												sm={6}
-												md={6}
-												lg={4}
-												xl={4}
-												className={classes.textContainer}
-											>
-												<TextField
-													variant={"outlined"}
-													label={t(`clientsModule.contactNumber`)}
-													error={
-														errors.filter((e) => e.field === `contactNumber`)
-															.length > 0
-													}
-													type="tel"
-													value={details.contactNumber}
-													onChange={handleChange("contactNumber")}
-													className={classes.textField}
-													size={"medium"}
-													helperText={
-														errors.filter((e) => e.field === `contactNumber`)
-															.length > 0 && t("errors.isRequired")
-													}
-													inputProps={{
-														maxLength: 60,
-													}}
-													FormHelperTextProps={{
-														style: {
-															color:
-																errors.filter(
-																	(e) => e.field === `contactNumber`
-																).length > 0 && "rgb(244, 67, 54)",
-														},
-													}}
-												/>
-											</Grid>
-										</Grid>
-									</Grid>
-								</Grid>
-								<Grid
-									item
-									xs={12}
-									sm={6}
-									md={6}
-									lg={4}
-									xl={4}
-									className={classes.section}
-								>
-									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>
-											{t("clientsModule.lang")}
-										</div>
-									</Grid>
-									<Grid item xs={12} className={classes.fields}>
-										<Grid container justify="flex-start">
-											<Grid item xs={12} className={classes.textContainer}>
-												<Select
-													variant={"outlined"}
-													error={
-														errors.filter((e) => e.field === `lang`).length > 0
-													}
-													value={details.lang}
-													onChange={handleChange(`lang`)}
-													className={classes.selectInput}
-													MenuProps={{
-														anchorOrigin: {
-															vertical: "bottom",
-															horizontal: "center",
-														},
-														transformOrigin: {
-															vertical: "top",
-															horizontal: "center",
-														},
-														getContentAnchorEl: null,
-														classes: {
-															paper: classes.menupaper,
-														},
-													}}
-												>
-													{Object.entries(localizations).map((lng, i) => (
-														<MenuItem
-															key={i}
-															value={lng[1].code}
-															style={{ direction: lang.dir }}
-															className={classes.menuitem}
-														>
-															{t(`languages.${lng[0]}`)}
-														</MenuItem>
-													))}
-												</Select>
-											</Grid>
-										</Grid>
-									</Grid>
-								</Grid>
-								<Grid
-									item
-									xs={12}
-									sm={6}
-									md={6}
-									lg={4}
-									xl={4}
-									className={classes.section}
-								>
-									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>
-											{t("clientsModule.upsert.isActive")}
-										</div>
-									</Grid>
-									<Grid item xs={12} className={classes.fields}>
-										<Grid container justify="flex-start">
-											<Grid item xs={12} className={classes.textContainer}>
-												<FormControlLabel
-													className={classes.switchLabel}
-													control={
-														<Switch
-															checked={details.isActive}
-															onChange={handleChange("isActive")}
-															classes={{
-																switchBase: classes.switchBase,
-																checked: classes.checked,
-																track: classes.track,
-															}}
-														/>
-													}
-													label={
-														details.isActive
-															? t("clientsModule.upsert.active")
-															: t("clientsModule.upsert.inactive")
-													}
-												/>
-											</Grid>
-										</Grid>
-									</Grid>
-								</Grid>
-								<Grid item xs={12} className={classes.controls}>
-									<Button
-										className={clsx(classes.control, classes.save)}
-										onClick={handleConfirm}
-									>
-										{t("controls.confirm")}
-									</Button>
-									<Button
-										className={clsx(classes.control, classes.cancel)}
-										onClick={handleClose}
-									>
-										{t("controls.cancel")}
-									</Button>
-								</Grid>
-							</Grid>
-						</Paper>
+							<TextField
+								variant={"outlined"}
+								label={t(`clientsModule.name`)}
+								error={errors.filter((e) => e.field === `name`).length > 0}
+								value={details.name}
+								onChange={handleChange("name")}
+								className={classes.textField}
+								size={"medium"}
+								helperText={
+									errors.filter((e) => e.field === `name`).length > 0 &&
+									t("errors.isRequired")
+								}
+								inputProps={{
+									maxLength: 60,
+								}}
+								FormHelperTextProps={{
+									style: {
+										color:
+											errors.filter((e) => e.field === `name`).length > 0 &&
+											"rgb(244, 67, 54)",
+									},
+								}}
+							/>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+							sm={6}
+							md={6}
+							lg={4}
+							xl={4}
+							className={classes.textContainer}
+						>
+							<TextField
+								variant={"outlined"}
+								label={t(`clientsModule.contactName`)}
+								error={
+									errors.filter((e) => e.field === `contactName`).length > 0
+								}
+								value={details.contactName}
+								onChange={handleChange("contactName")}
+								className={classes.textField}
+								size={"medium"}
+								helperText={
+									errors.filter((e) => e.field === `contactName`).length > 0 &&
+									t("errors.isRequired")
+								}
+								inputProps={{
+									maxLength: 60,
+								}}
+								FormHelperTextProps={{
+									style: {
+										color:
+											errors.filter((e) => e.field === `contactName`).length >
+												0 && "rgb(244, 67, 54)",
+									},
+								}}
+							/>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+							sm={6}
+							md={6}
+							lg={4}
+							xl={4}
+							className={classes.textContainer}
+						>
+							<TextField
+								variant={"outlined"}
+								label={t(`clientsModule.contactNumber`)}
+								error={
+									errors.filter((e) => e.field === `contactNumber`).length > 0
+								}
+								type="tel"
+								value={details.contactNumber}
+								onChange={handleChange("contactNumber")}
+								className={classes.textField}
+								size={"medium"}
+								helperText={
+									errors.filter((e) => e.field === `contactNumber`).length >
+										0 && t("errors.isRequired")
+								}
+								inputProps={{
+									maxLength: 60,
+								}}
+								FormHelperTextProps={{
+									style: {
+										color:
+											errors.filter((e) => e.field === `contactNumber`).length >
+												0 && "rgb(244, 67, 54)",
+									},
+								}}
+							/>
+						</Grid>
 					</Grid>
 				</Grid>
-			</Fade>
-		</Modal>
+			</Grid>
+			<Grid item xs={12} className={classes.section}>
+				<Grid item xs={12}>
+					<div className={classes.sectionTitle}>{t("clientsModule.lang")}</div>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+					md={6}
+					lg={4}
+					xl={4}
+					className={classes.fields}
+				>
+					<Grid container justify="flex-start">
+						<Grid item xs={12} className={classes.textContainer}>
+							<Select
+								variant={"outlined"}
+								error={errors.filter((e) => e.field === `lang`).length > 0}
+								value={details.lang}
+								onChange={handleChange(`lang`)}
+								className={classes.selectInput}
+								MenuProps={{
+									anchorOrigin: {
+										vertical: "bottom",
+										horizontal: "center",
+									},
+									transformOrigin: {
+										vertical: "top",
+										horizontal: "center",
+									},
+									getContentAnchorEl: null,
+									classes: {
+										paper: classes.menupaper,
+									},
+								}}
+							>
+								{Object.entries(localizations).map((lng, i) => (
+									<MenuItem
+										key={i}
+										value={lng[1].code}
+										style={{ direction: lang.dir }}
+										className={classes.menuitem}
+									>
+										{t(`languages.${lng[0]}`)}
+									</MenuItem>
+								))}
+							</Select>
+						</Grid>
+					</Grid>
+				</Grid>
+			</Grid>
+			<Grid
+				item
+				xs={12}
+				sm={6}
+				md={6}
+				lg={4}
+				xl={4}
+				className={classes.section}
+			>
+				<Grid item xs={12}>
+					<div className={classes.sectionTitle}>
+						{t("clientsModule.upsert.isActive")}
+					</div>
+				</Grid>
+				<Grid item xs={12} className={classes.fields}>
+					<Grid container justify="flex-start">
+						<Grid item xs={12} className={classes.textContainer}>
+							<FormControlLabel
+								className={classes.switchLabel}
+								control={
+									<Switch
+										checked={details.isActive}
+										onChange={handleChange("isActive")}
+										classes={{
+											switchBase: classes.switchBase,
+											checked: classes.checked,
+											track: classes.track,
+										}}
+									/>
+								}
+								label={
+									details.isActive
+										? t("clientsModule.upsert.active")
+										: t("clientsModule.upsert.inactive")
+								}
+							/>
+						</Grid>
+					</Grid>
+				</Grid>
+			</Grid>
+		</ModalContainer>
 	);
 };
 
@@ -424,7 +347,7 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "center",
-		backdropFilter: "blur(10px)",
+		backdropFilter: "blur(22px)",
 		"input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button":
 			{
 				"-webkit-appearance": "none",
@@ -436,9 +359,9 @@ const useStyles = makeStyles((theme) => ({
 		height: "fit-content",
 	},
 	paper: {
-		background: "rgba(0,0,0,0.4)",
-		border: "1px solid rgba(255,255,255,0.2)",
-		borderRadius: "10px",
+		background: "rgba(255,255,255,0.1)",
+		border: "1px solid rgba(255,255,255,0.5)",
+		borderRadius: "5px",
 		padding: "10px 20px",
 		overflowY: "overlay",
 		maxHeight: "80vh",
@@ -459,6 +382,7 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: "center",
 		width: "100%",
 		borderBottom: "1px solid rgba(255,255,255,0.2)",
+		marginBottom: "10px",
 	},
 	title: {
 		color: "white",
@@ -482,16 +406,18 @@ const useStyles = makeStyles((theme) => ({
 	sectionTitle: {
 		color: "white",
 		fontSize: "16px",
-		padding: "10px 20px",
+		padding: "7px 20px",
+		marginLeft: "25px",
 		width: "fit-content",
-		borderRadius: "10px 10px 0 0",
-		background: "rgba(0,0,0,0.4)",
+		borderRadius: "8px",
 		whiteSpace: "nowrap",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
+		[theme.breakpoints.down("sm")]: {
+			marginLeft: "15px",
+		},
 	},
 	fields: {
 		padding: "10px 20px",
-		borderRadius: "0px 10px 10px 10px",
-		background: "rgba(0,0,0,0.4)",
 		[theme.breakpoints.down("sm")]: {
 			padding: "10px",
 		},
@@ -529,7 +455,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	controls: {
 		borderTop: "1px solid rgba(255,255,255,0.2)",
-		padding: "10px 0",
+		padding: "10px 0 0",
 		display: "flex",
 		justifyContent: "space-between",
 	},
@@ -539,13 +465,14 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "16px",
 		margin: "5px",
 		padding: "5px 30px",
-		borderRadius: "30px",
+		borderRadius: "5px",
 		color: "white",
 	},
 	save: {
-		background: "rgba(0,0,0,0.2)",
+		background: theme.palette.leading,
 		"&:hover": {
-			background: "black",
+			background: theme.palette.leading,
+			filter: "brightness(120%)",
 		},
 		"&:disabled": {
 			color: "rgba(255,255,255,0.3)",
@@ -553,7 +480,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	cancel: {
 		"&:hover": {
-			boxShadow: "inset rgba(255,255,255,0.3) 0 0 2px 1px",
+			boxShadow: "inset white 0 0 3px 0px",
 		},
 	},
 	chips: {

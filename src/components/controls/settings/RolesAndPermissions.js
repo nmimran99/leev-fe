@@ -1,13 +1,14 @@
-import { Grid, IconButton, LinearProgress, List, ListItem, makeStyles, Tooltip } from '@material-ui/core';
+import { Grid, IconButton, List, ListItem, makeStyles, Tooltip } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getFullName, getSuccessMessage } from '../../../api/genericApi';
+import { getSuccessMessage } from '../../../api/genericApi';
 import { createRole, filterRoles, getRoles, updateRole } from '../../../api/permissionsApi';
 import { LanguageContext } from '../../../context/LanguageContext';
 import { SnackbarContext } from '../../../context/SnackbarContext';
 import { Can } from '../../reuseables/Can';
+import { LoadingProgress } from '../../reuseables/LoadingProgress';
 import { SearchBox } from '../../reuseables/SearchBox';
 import { UpsertRole } from './UpsertRole';
 
@@ -82,7 +83,7 @@ export const RolesAndPermissions = () => {
     }
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<Grid container className={classes.usersContainer}>
 			<Grid item xs={10} className={classes.gridSearch}>

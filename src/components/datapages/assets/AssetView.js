@@ -1,8 +1,6 @@
 import {
-	Grid,
-	LinearProgress,
-	makeStyles,
-	useMediaQuery,
+	Grid, makeStyles,
+	useMediaQuery
 } from "@material-ui/core";
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
 import VerticalSplitRoundedIcon from "@material-ui/icons/VerticalSplitRounded";
@@ -12,13 +10,14 @@ import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router";
 import {
 	getAssetExtended,
-	getShortAddress,
-	updateAsset,
+	getShortAddress
 } from "../../../api/assetsApi";
 import { getServerError, updateQueryParams } from "../../../api/genericApi";
 import { updateLocation } from "../../../api/locationsApi";
 import { SnackbarContext } from "../../../context/SnackbarContext";
+import { UpsertContext } from "../../../context/UpsertContext";
 import { useQuery } from "../../reuseables/customHooks/useQuery";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 import { UserItem } from "../../user/UserItem";
 import { AssetControls } from "./AssetControls";
@@ -27,7 +26,6 @@ import { LocationsGrid } from "./tableViews/LocationsGrid";
 import { ResidentsGrid } from "./tableViews/ResidentsGrid";
 import { SystemsGrid } from "./tableViews/SystemsGrid";
 import { TasksGrid } from "./tableViews/TasksGrid";
-import { UpsertAsset } from "./UpsertAsset";
 
 const modules = ["systems", "locations", "faults", "tasks", "residents"];
 
@@ -39,6 +37,7 @@ export const AssetView = ({}) => {
 	const query = useQuery(location.search);
 	const { t } = useTranslation();
 	const { setSnackbar } = useContext(SnackbarContext);
+	const { setUpsertData } = useContext(UpsertContext); 
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const [isLoading, setIsLoading] = useState(true);
 	const [asset, setAsset] = useState(null);
@@ -62,25 +61,9 @@ export const AssetView = ({}) => {
 			});
 	}, []);
 
-	const handleUpdate = async (details) => {
-		const res = await updateAsset(details);
-		if (res.status === 403) {
-			setSnackbar(res);
-		} else if (res) {
-			setAsset({
-				...asset,
-				...res.data,
-			});
-		}
-		setEditMode(false);
-	};
 
-	const toggleEditMode = (type) => (event) => {
-		if (editMode === type) {
-			setEditMode(false);
-		} else {
-			setEditMode(type);
-		}
+	const toggleEditMode = () => {
+		setUpsertData({ itemId: asset._id, module: 'assets' })
 	};
 
 	const handleTabChange = (tabName) => (event) => {
@@ -105,7 +88,7 @@ export const AssetView = ({}) => {
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<React.Fragment>
 			<Grid container justify="center">
@@ -223,13 +206,6 @@ export const AssetView = ({}) => {
 					</Grid>
 				</Grid>
 			</Grid>
-			{editMode === "address" && (
-				<UpsertAsset
-					assetId={asset._id}
-					handleUpdate={handleUpdate}
-					handleClose={() => setEditMode(false)}
-				/>
-			)}
 		</React.Fragment>
 	);
 };

@@ -258,3 +258,7 @@ export const changePassword = async (userId, password) => {
 		return getServerError();
     }
 }
+
+export const isResident = (user) => {
+    return user.data.isResident || user.data.isOwner;
+}

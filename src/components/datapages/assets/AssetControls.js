@@ -47,7 +47,7 @@ export const AssetControls = ({ data, toggleEditMode }) => {
 		<div>
 			{
 				toggleEditMode && 
-				<IconButton className={classes.expandIcon} onClick={toggleEditMode('address')}>
+				<IconButton className={classes.expandIcon} onClick={toggleEditMode}>
 					<EditRoundedIcon className={classes.icon} />
 				</IconButton>
 			}

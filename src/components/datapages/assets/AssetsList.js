@@ -1,19 +1,17 @@
+import { Grid, makeStyles } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { Grid, LinearProgress, makeStyles } from "@material-ui/core";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import {
-	getAssets,
-	removeAsset as removeAssetDB,
-	getFullAddress,
-	applyFilters,
+	applyFilters, getAssets, getFullAddress, removeAsset as removeAssetDB
 } from "../../../api/assetsApi";
+import { getFaults } from "../../../api/faultsApi";
+import { queryParamsToObject } from "../../../api/genericApi";
+import { AlertDialog } from "../../reuseables/AlertDialog";
+import { useQuery } from "../../reuseables/customHooks/useQuery";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { Asset } from "./Asset";
 import { AssetsControls } from "./AssetsControls";
-import { AlertDialog } from "../../reuseables/AlertDialog";
-import { queryParamsToObject } from "../../../api/genericApi";
-import { useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useQuery } from "../../reuseables/customHooks/useQuery";
-import { getFaults } from "../../../api/faultsApi";
 
 export const AssetsList = () => {
 	const location = useLocation();
@@ -84,7 +82,7 @@ export const AssetsList = () => {
 				<Grid item xs={12} lg={11} xl={10}>
 					<Grid container justify="center">
 						{isLoading ? (
-							<LinearProgress />
+							<LoadingProgress />
 						) : (
 							assets.map((v, i) => (
 								<Asset

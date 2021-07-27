@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     },
     icon: {
         fontSize: '72px',
-        color: '#42A5F5'
+        color: theme.palette.leading
     },
     secondaryRow: {
         color: 'rgba(255,255,255,0.8)',

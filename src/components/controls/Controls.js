@@ -2,9 +2,13 @@ import { Grid, makeStyles, useMediaQuery } from '@material-ui/core';
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { getNotifications } from '../../api/notificationsApi';
+import { isResident } from '../../api/userApi';
+import { AuthContext } from '../../context/AuthContext';
 import { EnvContext } from '../../context/EnvContext';
 import { NotificationsContext } from '../../context/NotificationsContext';
+import { UpsertContext } from '../../context/UpsertContext';
 import { Messenger } from '../messages/Messenger';
+import { Can } from '../reuseables/Can';
 import { CreateContainer } from '../reuseables/CreateContainer';
 import { AddMenu } from './navbar/AddMenu';
 import { Navbar } from './navbar/Navbar';
@@ -17,10 +21,12 @@ export const Controls = () => {
 	const history = useHistory();
 	const location = useLocation();
 	const { notifications, setNotifications } = useContext(NotificationsContext);
+	const { upsertData, setUpsertData } = useContext(UpsertContext);
+	const { auth } = useContext(AuthContext);
+	const { env } = useContext(EnvContext);
 	const downSm = useMediaQuery(theme => theme.breakpoints.down('sm'));
 	const [ menuOpen, setMenuOpen ] = useState(false);
 	const [ addMenuOpen, setAddMenuOpen ] = useState(false);
-	const [ create, setCreate ] = useState(null);
 	const [ notificationsList, setNotificationsList ] = useState(false);
 	const [ settings, setSettings ] = useState(false);
 	const [ messenger, setMessenger ] = useState(false);
@@ -69,7 +75,7 @@ export const Controls = () => {
 
 	const openCreate = (itemType) => (event) => {
 		toggleAddMenu();
-		setCreate(itemType);
+		setUpsertData({ itemId: null, module: itemType })
 	};
 
 	const toggleNotifications = () => {
@@ -98,7 +104,8 @@ export const Controls = () => {
 
 	return (
 		<React.Fragment>
-			<div container className={classes.controlsContainer} justify="center">	
+		
+				<div container className={classes.controlsContainer} justify="center">	
 				<Navbar
 					toggleMenu={toggleMenu}
 					menuOpen={menuOpen}
@@ -110,8 +117,12 @@ export const Controls = () => {
 					
 				/>
 			</div>
+		
 			<SideMenu toggleMenu={toggleMenu} toggleSettings={toggleSettings} menuOpen={menuOpen}/>
-			{addMenuOpen && <AddMenu toggleAddMenu={toggleAddMenu} toggleAdd={openCreate} addMenuOpen={addMenuOpen} />}
+			<Can shouldRender={!isResident(auth.user)}>
+				{addMenuOpen && <AddMenu toggleAddMenu={toggleAddMenu} toggleAdd={openCreate} addMenuOpen={addMenuOpen} />}
+			</Can>
+			
 			{notificationsList && (
 				<Notifications
 					open={notificationsList}
@@ -119,7 +130,9 @@ export const Controls = () => {
 					fetchNotifications={fetchNotifications}
 				/>
 			)}
-			{Boolean(create) && <CreateContainer isOpen={true} handleClose={() => setCreate(null)} itemType={create} />}
+			<Can shouldRender={!isResident(auth.user)}>
+				{Boolean(upsertData.module) && <CreateContainer isOpen={true} handleClose={() => setUpsertData({ itemId: null, module: null })} />}
+			</Can>
 			{Boolean(settings) && <Settings handleClose={() => setSettings(false)} open={settings} />}
 			{Boolean(messenger) && <Messenger toggleMessenger={toggleMessenger} />}
 		</React.Fragment>
@@ -134,7 +147,6 @@ const useStyles = makeStyles((theme) => ({
 		width: '100%',
 		[theme.breakpoints.down('sm')]: {
 			borderRadius: '30px 30px 0 0',
-			position: 'fixed',
 			bottom: '0',
 			background: 'black',
 			height: '84px',

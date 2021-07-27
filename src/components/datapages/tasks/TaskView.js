@@ -1,10 +1,4 @@
-import {
-	Grid,
-	IconButton,
-	LinearProgress,
-	makeStyles,
-	useMediaQuery
-} from "@material-ui/core";
+import { Grid, IconButton, makeStyles } from "@material-ui/core";
 import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
 import DoneIcon from "@material-ui/icons/Done";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
@@ -13,19 +7,29 @@ import clsx from "clsx";
 import { format, parseISO } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useLocation, useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { getFullAddress } from "../../../api/assetsApi";
 import { getNextIterationDate } from "../../../api/genericApi";
 import {
-	addTaskRelatedUser, completeTaskStep, getTask, removeTaskRelatedUser, saveTaskComment, updateTask, updateTaskComment, updateTaskOwner, updateTaskSchedule, updateTaskStatus
+	addTaskRelatedUser,
+	completeTaskStep,
+	getTask,
+	removeTaskRelatedUser,
+	saveTaskComment,
+	updateTaskComment,
+	updateTaskOwner,
+	updateTaskSchedule,
+	updateTaskStatus,
 } from "../../../api/tasksApi";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
+import { UpsertContext } from "../../../context/UpsertContext";
 import { AddRelatedUser } from "../../reuseables/AddRelatedUser";
 import { Can } from "../../reuseables/Can";
 import { Carousel } from "../../reuseables/Carousel";
 import { CommentSection } from "../../reuseables/CommentSection";
 import { ItemLink } from "../../reuseables/ItemLink";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 import { Scheduler } from "../../reuseables/scheduler/Scheduler";
 import { StatusTag } from "../../reuseables/StatusTag";
@@ -35,60 +39,36 @@ import { UpdateStatus } from "../../reuseables/UpdateStatus";
 import { UserList } from "../../reuseables/UserList";
 import { UserItem } from "../../user/UserItem";
 import { TaskViewControls } from "./TaskViewControls";
-import { UpsertTask } from "./UpsertTask";
 
 export const TaskView = () => {
 	const history = useHistory();
-	const location = useLocation();
 	const { t } = useTranslation();
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { setSnackbar } = useContext(SnackbarContext);
-	const downSm = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+	const { setUpsertData } = useContext(UpsertContext);
 	const [task, setTask] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { taskId } = useParams();
-	const [editTask, setEditTask] = useState(null);
 	const [changeOwner, setChangeOwner] = useState(false);
 	const [addRelatedUserModal, setAddRelatedUserModal] = useState(null);
 	const [changeStatus, setChangeStatus] = useState(null);
 	const [scheduling, setScheduling] = useState(null);
 
 	useEffect(() => {
-		getTask(taskId)
-			.then((res) => {
-				if (!res) {
-					history.push("/workspace/tasks");
-				} else if (res.status === 403) {
-					setSnackbar(res);
-					history.push("/workspace/tasks");
-				}
-				setTask(res);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
+		prepareData();
 	}, []);
 
-	const updateTaskDetails = (details) => {
-		updateTask(details)
-			.then((res) => {
-				if (res.status === 403) {
-					setSnackbar(res);
-				} else if (res) {
-					if (location.pathname === `/workspace/tasks/${res.taskId}`) {
-						setTask(res);
-					} else {
-						history.push(`/workspace/tasks/${res.taskId}`);
-					}
-				}
-				setEditTask(null);
-				return;
-			})
-			.catch((e) => {
-				console.log(e.message);
-				history.push(`/workspace/tasks`);
-			});
+	const prepareData = async () => {
+		const res = await getTask(taskId);
+		if (!res) {
+			history.push("/workspace/tasks");
+		} else if (res.status === 403) {
+			setSnackbar(res);
+			history.push("/workspace/tasks");
+		}
+		setTask(res);
+		setIsLoading(false);
 	};
 
 	const updateOwner = (userId) => {
@@ -189,8 +169,12 @@ export const TaskView = () => {
 		});
 	};
 
+	const toggleEditMode = () => {
+		setUpsertData({ itemId: task._id, module: "tasks" });
+	};
+
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<React.Fragment>
 			<Grid
@@ -199,7 +183,6 @@ export const TaskView = () => {
 				justify="space-between"
 				alignItems="flex-start"
 			>
-				
 				<Grid container className={classes.controls}>
 					<div className={classes.topHeaderGriditem}>
 						<div className={classes.taskId}>
@@ -207,11 +190,11 @@ export const TaskView = () => {
 						</div>
 						<ReturnToPrevios />
 					</div>
-					
+
 					<Grid item xs={12} className={classes.controlsGriditem}>
 						<TaskViewControls
 							task={task}
-							editTask={() => setEditTask(task._id)}
+							editTask={toggleEditMode}
 							updateOwner={() => setChangeOwner(true)}
 							changeStatus={() => setChangeStatus(true)}
 							handleScheduler={() => setScheduling(true)}
@@ -222,7 +205,6 @@ export const TaskView = () => {
 							item
 							xs={12}
 							className={classes.controlsGriditem}
-							
 							onClick={() => setChangeStatus(true)}
 							style={{
 								justifyContent: "flex-start",
@@ -243,26 +225,6 @@ export const TaskView = () => {
 							</div>
 						</Grid>
 					)}
-					{/* {task.asset && (
-						<Grid item xs={12}>
-							<div className={classes.asset}>{getFullAddress(task.asset)}</div>
-						</Grid>
-					)}
-					{(task.system || task.location) && (
-						<Grid item xs={12} className={classes.systemItem}>
-							<div className={classes.systemlocationContainer}>
-								<div className={clsx(classes.sysloc, classes.sys, !task.system && classes.notAssigned)}>
-									<BlurOnRoundedIcon className={classes.systemIcon} />
-									{task.system ? task.system.name : t("general.noSystemAssigned")}
-								</div>
-								<div className={clsx(classes.sysloc, classes.loc, !task.location && classes.notAssigned)}>
-									<RoomIcon className={classes.systemIcon} />
-									{task.location ? task.location.name : t("general.noLocationAssigned")}
-								</div>
-							</div>
-						</Grid>
-					)} */}
-					
 				</Grid>
 				<Grid
 					item
@@ -274,13 +236,25 @@ export const TaskView = () => {
 					className={classes.rightContainer}
 				>
 					<div className={classes.asset}>{getFullAddress(task.asset)}</div>
-					<div className={clsx(classes.system, !task.system && classes.notAssigned)}>
+					<div
+						className={clsx(
+							classes.system,
+							!task.system && classes.notAssigned
+						)}
+					>
 						<BlurOnRoundedIcon className={classes.systemIcon} />
-						{task.system ? task.system.name : t('general.noSystemAssigned')}
+						{task.system ? task.system.name : t("general.noSystemAssigned")}
 					</div>
-					<div className={clsx(classes.location, !task.location && classes.notAssigned)}>
+					<div
+						className={clsx(
+							classes.location,
+							!task.location && classes.notAssigned
+						)}
+					>
 						<RoomIcon className={classes.systemIcon} />
-						{task.location ? task.location.name : t('general.noLocationAssigned')}
+						{task.location
+							? task.location.name
+							: t("general.noLocationAssigned")}
 					</div>
 
 					{!task.asset && (
@@ -493,13 +467,7 @@ export const TaskView = () => {
 					instructions={t("tasksModule.addRelatedUserInstructions")}
 				/>
 			)}
-			{Boolean(editTask) && (
-				<UpsertTask
-					taskId={editTask}
-					handleClose={() => setEditTask(null)}
-					handleUpdate={updateTaskDetails}
-				/>
-			)}
+
 			{Boolean(scheduling) && (
 				<Scheduler
 					scData={task.schedule}
@@ -615,18 +583,18 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		justifyContent: "space-between",
 		margin: "10px 0",
-		width: '100%',
-		[theme.breakpoints.down('sm')]: {
-            border: '1px solid rgba(255,255,255,0.2)',
-			background: 'black',
-			borderRadius: '50px',
-			padding: '5px 5px 5px 25px'
-        }
+		width: "100%",
+		[theme.breakpoints.down("sm")]: {
+			border: "1px solid rgba(255,255,255,0.2)",
+			background: "black",
+			borderRadius: "50px",
+			padding: "5px 5px 5px 25px",
+		},
 	},
 	controlsGriditem: {
 		display: "flex",
 		justifyContent: "flex-end",
-		margin: '10px 0'	
+		margin: "10px 0",
 	},
 	taskId: {
 		padding: "5px 0",
@@ -829,6 +797,6 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "18px",
 	},
 	notAssigned: {
-		filter: 'brightness(60%)'
-	}
+		filter: "brightness(60%)",
+	},
 }));

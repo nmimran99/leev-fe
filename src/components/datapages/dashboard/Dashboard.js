@@ -1,23 +1,18 @@
-import { Grid, LinearProgress, makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
+import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	Route,
-	Switch,
-	useHistory,
-	useLocation,
-	useRouteMatch,
-} from "react-router";
+import { useHistory, useLocation, useRouteMatch } from "react-router";
 import { getAsset, getFullAddress } from "../../../api/assetsApi";
 import { getDashboardData } from "../../../api/dashboardApi";
 import { removeQueryParam } from "../../../api/genericApi";
 import { getAssetsSuggestions } from "../../../api/systemsApi";
 import { useQuery } from "../../reuseables/customHooks/useQuery";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { SearchBoxSelect } from "../../reuseables/SearchBoxSelect";
-import clsx from "clsx";
+import { AverageTimeToClose } from "./charts/AverageTimeToClose";
 import { LastOperations } from "./charts/LastOperations";
 import { OpenItems } from "./charts/OpenItems";
-import { AverageTimeToClose } from "./charts/AverageTimeToClose";
 import { PendingFaults } from "./charts/PendingFaults";
 import { UpcomingTasks } from "./charts/UpcomingTasks";
 
@@ -49,7 +44,7 @@ export const Dashboard = () => {
 				search: removeQueryParam(location.search, "asset"),
 			});
 		}
-        setIsLoading(true);
+		setIsLoading(true);
 	}, [location.search]);
 
 	useEffect(() => {
@@ -59,7 +54,6 @@ export const Dashboard = () => {
 			})
 			.finally(() => setIsLoading(false));
 	}, [isLoading]);
-
 
 	const handleReloaded = async (assetId) => {
 		const res = await getAsset(assetId, false);
@@ -72,14 +66,12 @@ export const Dashboard = () => {
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<Grid container justify="center">
-            <Grid item xs={12} className={classes.moduleContainer}>
-                    <div className={classes.pageModule}>
-                        {t("sideMenu.dashboard")}
-                    </div>
-                </Grid>
+			<Grid item xs={12} className={classes.moduleContainer}>
+				<div className={classes.pageModule}>{t("sideMenu.dashboard")}</div>
+			</Grid>
 			<Grid
 				item
 				xs={12}
@@ -93,19 +85,18 @@ export const Dashboard = () => {
 					reloadedValue={reloadedValue.value}
 				/>
 			</Grid>
-            <Grid
+			<Grid
 				item
 				xl={8}
 				lg={6}
-                xs={12
-                }
+				xs={12}
 				className={clsx(classes.griditem, classes.sideGrid)}
 			>
 				<Grid container>
 					<OpenItems openFaults={data.openFaults} openTasks={data.openTasks} />
 					<AverageTimeToClose data={data.avgTimeToClose} />
-                    <PendingFaults pendingFaults={data.pendingFaults} />
-                    <UpcomingTasks upcomingTasks={data.upcomingTasks} />
+					<PendingFaults pendingFaults={data.pendingFaults} />
+					<UpcomingTasks upcomingTasks={data.upcomingTasks} />
 				</Grid>
 			</Grid>
 			<Grid
@@ -117,7 +108,7 @@ export const Dashboard = () => {
 			>
 				<LastOperations operations={data.lastOperations} />
 			</Grid>
-			
+
 			<Grid
 				item
 				xs={12}
@@ -128,33 +119,33 @@ export const Dashboard = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
-    filtersGrid: {
-        display: 'flex',
-        justifyContent: 'center',
-		margin: '20px 0 0'
-    },
-    moduleContainer: {
-		position: 'sticky',
+	filtersGrid: {
+		display: "flex",
+		justifyContent: "center",
+		margin: "20px 0 0",
+	},
+	moduleContainer: {
+		position: "sticky",
 		top: 0,
-		zIndex: 2
+		zIndex: 2,
 	},
 	pageModule: {
 		color: "white",
 		padding: "10px 40px",
 		fontSize: "16px",
 		background: "rgba(0,0,0,0.8)",
-        boxShadow: '0 0px 2px 1px rgba(255,255,255,0.3)',
+		boxShadow: "0 0px 2px 1px rgba(255,255,255,0.3)",
 		margin: "0px auto 5px",
 		width: "30%",
 		textAlign: "center",
 		borderRadius: "0 0 25px 25px",
-		lineHeight: "1", 
-		[theme.breakpoints.down('sm')]: {
+		lineHeight: "1",
+		[theme.breakpoints.down("sm")]: {
 			background: "black",
 			width: "100vw",
 			padding: "20px 0",
 			borderRadius: 0,
-			margin: 0
-		}
+			margin: 0,
+		},
 	},
 }));

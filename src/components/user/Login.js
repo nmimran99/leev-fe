@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import { Visibility, VisibilityOff, Error } from '@material-ui/icons';
 import colorSplash from '../../assets/images/grey.jpg';
-import { attemptToSignin, handleLS } from '../../api/userApi';
+import { attemptToSignin, handleLS, isResident } from '../../api/userApi';
 import { useTranslation } from 'react-i18next';
 import { LanguageContext } from '../../context/LanguageContext';
 import { getLocalization } from '../../api/genericApi';
@@ -83,13 +83,14 @@ export const Login = () => {
                 history.push(location.state.from.pathname || '');
             } else {
                 if (res.data.user.isAdmin) {
-                    history.push('/workspace/assets');
+                    history.push('/workspace/clients');
+                } else if (isResident(res.data.user)) {
+                    history.push('/workspace/faults');
+                } else {
+                    history.push('/workspace/dashboard');
                 }
-                history.push('/workspace/dashboard');
             }
-            
         }
-        
         setIsLoading(false);
     };
 

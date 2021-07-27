@@ -1,23 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
 import {
-	Button,
-	Fade,
-	Grid,
-	LinearProgress,
-	makeStyles,
-	Slide,
-	useMediaQuery,
+	Grid, makeStyles, useMediaQuery
 } from "@material-ui/core";
-import { useTranslation } from "react-i18next";
-import { getFullName } from "../../../../api/genericApi";
-import { UserItem } from "../../../user/UserItem";
 import clsx from "clsx";
-import { StatusTag } from "../../../reuseables/StatusTag";
-import { ItemLink } from "../../../reuseables/ItemLink";
+import React, { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router";
 import { getAssetData } from "../../../../api/assetsApi";
 import { getServerError, removeQueryParam } from "../../../../api/genericApi";
 import { SnackbarContext } from "../../../../context/SnackbarContext";
+import { ItemLink } from "../../../reuseables/ItemLink";
+import { LoadingProgress } from "../../../reuseables/LoadingProgress";
+import { StatusTag } from "../../../reuseables/StatusTag";
 
 export const FaultsGrid = ({ assetId }) => {
 	const classes = useStyles();
@@ -48,7 +41,7 @@ export const FaultsGrid = ({ assetId }) => {
 
 	return (
 		isLoading ? 
-		<LinearProgress /> :
+		<LoadingProgress /> :
 		<Grid container justify="center">
 			<Grid container className={classes.headersContainer} justify="center">
 				<Grid item xs={4}>

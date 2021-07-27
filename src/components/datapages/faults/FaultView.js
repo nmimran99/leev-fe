@@ -1,11 +1,11 @@
 import {
-	Grid,
-	LinearProgress,
-	makeStyles,
-	useMediaQuery,
+	Grid, makeStyles,
+	useMediaQuery
 } from "@material-ui/core";
+import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
+import RoomIcon from "@material-ui/icons/Room";
+import clsx from "clsx";
 import { format, parseISO } from "date-fns";
-import dateFormat from "dateformat";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router";
@@ -13,10 +13,12 @@ import { getFullAddress } from "../../../api/assetsApi";
 import * as faultApi from "../../../api/faultsApi";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
+import { UpsertContext } from "../../../context/UpsertContext";
 import { AddRelatedUser } from "../../reuseables/AddRelatedUser";
-import { Can } from "../../reuseables/Can";
 import { Carousel } from "../../reuseables/Carousel";
 import { CommentSection } from "../../reuseables/CommentSection";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
+import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 import { StatusTag } from "../../reuseables/StatusTag";
 import { UpdateOwner } from "../../reuseables/UpdateOwner";
 import { UpdateStatus } from "../../reuseables/UpdateStatus";
@@ -24,24 +26,16 @@ import { UserList } from "../../reuseables/UserList";
 import { UserItem } from "../../user/UserItem";
 import { FaultLink } from "./FaultLink";
 import { FaultViewControls } from "./FaultViewControls";
-import { UpsertFault } from "./UpsertFault";
-import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
-import RoomIcon from "@material-ui/icons/Room";
-import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
-import clsx from 'clsx';
-
-export const FaultView = ({ fid, faultData, updateFaultState }) => {
-	const history = useHistory();
 	const location = useLocation();
 	const { t } = useTranslation();
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { setSnackbar } = useContext(SnackbarContext);
+	const { setUpsertData } = useContext(UpsertContext);
 	const downSm = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const [fault, setFault] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { faultId } = useParams();
-	const [editFault, setEditFault] = useState(null);
 	const [changeOwner, setChangeOwner] = useState(false);
 	const [addRelatedUserModal, setAddRelatedUserModal] = useState(null);
 	const [changeStatus, setChangeStatus] = useState(null);
@@ -53,60 +47,40 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	}, [fault]);
 
 	useEffect(() => {
+		prepareData();
+	}, [faultData, faultId]);
+
+	const prepareData = async () => {
 		if (faultData) {
 			setFault(faultData);
 			setIsLoading(false);
 			return;
 		}
-		faultApi.getFault(faultId || fid, false).then((res) => {
-			if (!res) {
-				history.push("/workspace/faults");
-			} else if (res.status === 403) {
-				setSnackbar(res);
-				history.push("/workspace/faults");
-			}
-			setFault(res);
-		});
-	}, [faultData, faultId]);
-
-	const updateFaultDetails = (details) => {
-		faultApi
-			.updateFault(details)
-			.then((res) => {
-				if (res.status === 403) {
-					setSnackbar(res);
-				} else if (res) {
-					if (location.pathname === `/workspace/faults/${res.faultId}`) {
-						setFault(res);
-					} else {
-						history.push(`/workspace/faults/${res.faultId}`);
-					}
-				}
-				setEditFault(null);
-				return;
-			})
-			.catch((e) => {
-				console.log(e.message);
-				history.push(`/workspace/faults`);
-			});
+		const res = await faultApi.getFault(faultId || fid, false);
+		if (!res) {
+			history.push("/workspace/faults");
+		} else if (res.status === 403) {
+			setSnackbar(res);
+			history.push("/workspace/faults");
+		}
+		setFault(res);
 	};
 
-	const updateOwner = (userId) => {
-		faultApi.updateFaultOwner(fault._id, userId).then((res) => {
-			if (res.status === 403) {
-				setSnackbar(res);
-			} else {
-				setFault({
-					...fault,
-					owner: res.owner,
-					relatedUsers: res.relatedUsers,
-				});
-				if (updateFaultState) {
-					updateFaultState(res._id, "owner", res.owner);
-				}
+	const updateOwner = async (userId) => {
+		const res = await faultApi.updateFaultOwner(fault._id, userId);
+		if (res.status === 403) {
+			setSnackbar(res);
+		} else {
+			setFault({
+				...fault,
+				owner: res.owner,
+				relatedUsers: res.relatedUsers,
+			});
+			if (updateFaultState) {
+				updateFaultState(res._id, "owner", res.owner);
 			}
-			setChangeOwner(false);
-		});
+		}
+		setChangeOwner(false);
 	};
 
 	const removeRelatedUser = async (userId) => {
@@ -149,7 +123,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 			setFault({
 				...fault,
 				status: res.status,
-				closedDate: res.closedDate
+				closedDate: res.closedDate,
 			});
 			if (updateFaultState) {
 				updateFaultState(res._id, "status", res.status);
@@ -184,8 +158,12 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 		return Promise.resolve(res);
 	};
 
+	const toggleEditMode = (faultId) => (event) => {
+		setUpsertData({ itemId: faultId, module: "faults" });
+	};
+
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<React.Fragment>
 			<Grid
@@ -204,7 +182,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					<Grid item xs={12} className={classes.controlsGriditem}>
 						<FaultViewControls
 							fault={fault}
-							editFault={() => setEditFault(fault._id)}
+							editFault={toggleEditMode(fault._id)}
 							updateOwner={() => setChangeOwner(true)}
 							changeStatus={() => setChangeStatus(true)}
 						/>
@@ -232,13 +210,25 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					className={classes.rightContainer}
 				>
 					<div className={classes.asset}>{getFullAddress(fault.asset)}</div>
-					<div className={clsx(classes.system, !fault.system && classes.notAssigned)}>
+					<div
+						className={clsx(
+							classes.system,
+							!fault.system && classes.notAssigned
+						)}
+					>
 						<BlurOnRoundedIcon className={classes.systemIcon} />
-						{fault.system ? fault.system.name : t('general.noSystemAssigned')}
+						{fault.system ? fault.system.name : t("general.noSystemAssigned")}
 					</div>
-					<div className={clsx(classes.location, !fault.location && classes.notAssigned)}>
+					<div
+						className={clsx(
+							classes.location,
+							!fault.location && classes.notAssigned
+						)}
+					>
 						<RoomIcon className={classes.systemIcon} />
-						{fault.location ? fault.location.name : t('general.noLocationAssigned')}
+						{fault.location
+							? fault.location.name
+							: t("general.noLocationAssigned")}
 					</div>
 
 					<div className={classes.title}>{fault.title}</div>
@@ -250,7 +240,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 									lang.dateformat
 								)}`}
 							</div>
-							{Boolean(fault.closedDate) && fault.status.state === 'close' && (
+							{Boolean(fault.closedDate) && fault.status.state === "close" && (
 								<div className={classes.closedDate}>
 									{`${t("general.closedDate")} ${format(
 										parseISO(fault.closedDate),
@@ -279,7 +269,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					xl={3}
 					className={classes.leftContainer}
 				>
-					<Grid container justify='center'>
+					<Grid container justify="center">
 						<Grid item xs={12}>
 							<div className={classes.owner}>
 								{
@@ -292,7 +282,6 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 										avatarSize={50}
 									/>
 								}
-								
 							</div>
 						</Grid>
 						<Grid item xl={10} md={6} sm={6} xs={12}>
@@ -349,14 +338,6 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					followerList={[...fault.relatedUsers, fault.owner]}
 					title={t("faultsModule.addRelatedUser")}
 					instructions={t("faultsModule.addRelatedUserInstructions")}
-				/>
-			)}
-
-			{Boolean(editFault) && (
-				<UpsertFault
-					faultId={editFault}
-					handleClose={() => setEditFault(null)}
-					handleUpdate={updateFaultDetails}
 				/>
 			)}
 		</React.Fragment>
@@ -460,7 +441,7 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "space-between",
 		alignItems: "center",
 		padding: "20px 30px 0px 30px",
-		
+
 		[theme.breakpoints.down("sm")]: {
 			padding: "20px 15px 0px",
 		},
@@ -468,20 +449,19 @@ const useStyles = makeStyles((theme) => ({
 	controlsGriditem: {
 		display: "flex",
 		justifyContent: "flex-end",
-		margin: '10px 0'
-		
+		margin: "10px 0",
 	},
 	topHeaderGriditem: {
 		display: "flex",
 		justifyContent: "space-between",
 		margin: "10px 0",
-		width: '100%',
-		[theme.breakpoints.down('sm')]: {
-            border: '1px solid rgba(255,255,255,0.2)',
-			background: 'black',
-			borderRadius: '50px',
-			padding: '5px 5px 5px 25px'
-        }
+		width: "100%",
+		[theme.breakpoints.down("sm")]: {
+			border: "1px solid rgba(255,255,255,0.2)",
+			background: "black",
+			borderRadius: "50px",
+			padding: "5px 5px 5px 25px",
+		},
 	},
 	faultId: {
 		padding: "10px 0",
@@ -559,6 +539,6 @@ const useStyles = makeStyles((theme) => ({
 		margin: "10px 0",
 	},
 	notAssigned: {
-		filter: 'brightness(60%)'
-	}
+		filter: "brightness(60%)",
+	},
 }));

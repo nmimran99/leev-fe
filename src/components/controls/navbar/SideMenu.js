@@ -18,7 +18,7 @@ import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { clearUserLS } from "../../../api/userApi";
+import { clearUserLS, isResident } from "../../../api/userApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { NotificationsContext } from "../../../context/NotificationsContext";
@@ -88,7 +88,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 						<UserItem showName showTitle avatarSize={menuOpen ? 60 : 48} user={auth.user} />
 					</div>
 					<List className={classes.list}>
-						<Can shouldRender={!auth.user.isAdmin}>
+						<Can shouldRender={!auth.user.isAdmin && !isResident(auth.user)}>
 							<ListItem
 								button={true}
 								className={clsx(classes.listItem, classes.dashbordButton)}
@@ -106,7 +106,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 							</ListItem>
 						</Can>
 					
-						<Can module="assets" action="read">
+						<Can module="clients" action="read" shouldRender={!isResident(auth.user)}>
 							<ListItem
 								button={true}
 								className={classes.listItem}
@@ -123,7 +123,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								/>
 							</ListItem>
 						</Can>
-						<Can module="assets" action="read">
+						<Can module="assets" action="read" shouldRender={!isResident(auth.user)}>
 							<ListItem
 								button={true}
 								className={classes.listItem}
@@ -140,7 +140,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								/>
 							</ListItem>
 						</Can>
-						<Can module="systems" action="read">
+						<Can module="systems" action="read" shouldRender={!isResident(auth.user)}>
 							<ListItem
 								button={true}
 								className={classes.listItem}
@@ -157,7 +157,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								/>
 							</ListItem>
 						</Can>
-						<Can module="tasks" action="read">
+						<Can module="tasks" action="read" shouldRender={!isResident(auth.user)}>
 							<ListItem
 								button={true}
 								className={classes.listItem}
@@ -174,7 +174,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								/>
 							</ListItem>
 						</Can>
-						<Can module="tasks" action="read">
+						<Can module="tasks" action="read" shouldRender={!isResident(auth.user)}> 
 							<ListItem
 								button={true}
 								className={classes.listItem}
@@ -208,7 +208,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								/>
 							</ListItem>
 						</Can>
-						<Can module="tasks" action="faults">
+						<Can module="documents" action="read" shouldRender={!isResident(auth.user)}>
 							<ListItem
 								button={true}
 								className={classes.listItem}
@@ -288,7 +288,7 @@ const useStyles = makeStyles((theme) => ({
 		}
 	},
 	listItem: {
-		color: "theme.palette.primary.main",
+		color: theme.palette.primary.main,
 		margin: "0px",
 		borderRadius: "5px",
 		transition: "background box-shadow 0.3s ease-in-out",

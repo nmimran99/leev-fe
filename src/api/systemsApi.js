@@ -75,6 +75,33 @@ export const getSystemsByAsset = async (assetId) => {
 	
 };
 
+export const getSystem = async (systemId) => {
+    try {   
+        const res = await axios.post(
+            `${process.env.REACT_APP_BACKEND_URL}/systems/getSystem`,
+            { systemId },
+            {
+                headers: {
+                    module: 'systems',
+                    requesttype: 'read',
+                },
+            }
+        );
+        if (res.status === 200) {
+            return res.data;
+        }
+        return [];
+    } catch(e) {
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+    }
+	
+};
+
+
+
 export const applyFilters = (filters, systems) => {
 	return new Promise((resolve, reject) => {
 		if (!filters) resolve(systems);

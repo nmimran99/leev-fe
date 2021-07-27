@@ -1,22 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-	Button,
-	Grid,
-	LinearProgress,
-	makeStyles,
-	Slide,
-	useMediaQuery,
-} from "@material-ui/core";
-import { useTranslation } from "react-i18next";
-import { getFullName } from "../../../../api/genericApi";
-import { UserItem } from "../../../user/UserItem";
+import { Grid, makeStyles, useMediaQuery } from "@material-ui/core";
 import clsx from "clsx";
-import { StatusTag } from "../../../reuseables/StatusTag";
-import { ItemLink } from "../../../reuseables/ItemLink";
+import React, { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router";
 import { getAssetData } from "../../../../api/assetsApi";
 import { getServerError, removeQueryParam } from "../../../../api/genericApi";
 import { SnackbarContext } from "../../../../context/SnackbarContext";
+import { ItemLink } from "../../../reuseables/ItemLink";
+import { LoadingProgress } from "../../../reuseables/LoadingProgress";
+import { StatusTag } from "../../../reuseables/StatusTag";
 
 export const TasksGrid = ({ assetId }) => {
 	const classes = useStyles();
@@ -25,29 +17,29 @@ export const TasksGrid = ({ assetId }) => {
 	const { t } = useTranslation();
 	const { setSnackbar } = useContext(SnackbarContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-	const [ isLoading, setIsLoading ] = useState(true);
-	const [ tasks, setTasks ] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [tasks, setTasks] = useState([]);
 
 	useEffect(() => {
-		getAssetData(assetId, 'tasks')
-		.then(res => {
-			if (!res || [403, 500].includes(res.status)) {
-				history.push({
-					path: location.pathname,
-					search: removeQueryParam(location.search, 'tab'),
-				});
-				setSnackbar(res || getServerError());
-			};
-			setTasks(res.tasks)
-		})
-		.finally(() => {
-			setIsLoading(false)
-		})
-	}, [])
+		getAssetData(assetId, "tasks")
+			.then((res) => {
+				if (!res || [403, 500].includes(res.status)) {
+					history.push({
+						path: location.pathname,
+						search: removeQueryParam(location.search, "tab"),
+					});
+					setSnackbar(res || getServerError());
+				}
+				setTasks(res.tasks);
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
+	}, []);
 
-	return (
-		isLoading ? 
-		<LinearProgress /> :
+	return isLoading ? (
+		<LoadingProgress />
+	) : (
 		<Grid container justify="center">
 			<Grid container className={classes.headersContainer} justify="center">
 				<Grid item xs={4}>
