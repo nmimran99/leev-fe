@@ -1,45 +1,35 @@
 import {
-	Avatar,
-	Backdrop,
-	Button,
+	Avatar, Button,
 	Chip,
-	Collapse,
-	Fade,
-	FormControlLabel,
+	Collapse, FormControlLabel,
 	FormHelperText,
 	Grid,
 	IconButton,
 	LinearProgress,
 	makeStyles,
-	MenuItem,
-	Modal,
-	Paper,
-	Select,
+	MenuItem, Select,
 	Switch,
-	TextField,
-	useMediaQuery,
+	TextField
 } from "@material-ui/core";
-import { ClearRounded } from "@material-ui/icons";
+import AddIcon from "@material-ui/icons/Add";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
-import clsx from "clsx";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getFullName } from "../../../api/genericApi";
+import { createLocationMenuOptions, getLocationsByAsset } from "../../../api/locationsApi";
 import {
 	createSystemMenuOptions,
 	getAssetsSuggestions,
-	getSystemsByAsset,
+	getSystemsByAsset
 } from "../../../api/systemsApi";
 import { getTask } from "../../../api/tasksApi";
 import { createUserOptions } from "../../../api/userApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
-import { SnackbarContext } from "../../../context/SnackbarContext";
+import { ModalContainer } from "../../reuseables/ModalContainer";
+import { ScheduleItem } from "../../reuseables/scheduler/ScheduleItem";
 import { UserItem } from "../../user/UserItem";
 import { TaskSteps } from "./TaskSteps";
-import AddIcon from "@material-ui/icons/Add";
-import { ScheduleItem } from "../../reuseables/scheduler/ScheduleItem";
-import { createLocationMenuOptions, getLocationsByAsset } from "../../../api/locationsApi";
 
 export const UpsertTask = ({
 	handleClose,
@@ -50,10 +40,8 @@ export const UpsertTask = ({
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { auth } = useContext(AuthContext);
-	const { setSnackbar } = useContext(SnackbarContext);
-	const downSm = useMediaQuery((theme) => theme.breakpoints.down("md"));
-	const { t, i18n } = useTranslation();
-	const [mode, setMode] = useState(handleUpdate ? "update" : "create");
+	const { t } = useTranslation();
+	const [mode, setMode] = useState(taskId ? "update" : "create");
 	const [errors, setErrors] = useState([]);
 	const [assets, setAssets] = useState([]);
 	const [systems, setSystems] = useState([]);
@@ -92,34 +80,7 @@ export const UpsertTask = ({
 	}, [details.isUsingSteps]);
 
 	useEffect(() => {
-		createUserOptions()
-			.then((data) => {
-				setUserList(data);
-				return getAssetsSuggestions();
-			})
-			.then((data) => {
-				setAssets(data);
-				if (!taskId) {
-					setIsLoading(false);
-					return;
-				}
-				getTask(taskId, true)
-					.then((data) => {
-						return Promise.all([
-							loadSystemOptions(data.asset),
-							loadLocationOptions(data.asset),
-							Promise.resolve(data),
-						]);
-					})
-					.then((res) => {
-						let data = res[2];
-						if (!data) return;
-						setDetails({ ...data, images: [], uploadedImages: data.images });
-					})
-					.finally(() => {
-						setIsLoading(false);
-					});
-			});
+		prepareData();
 	}, []);
 
 	useEffect(() => {
@@ -144,6 +105,21 @@ export const UpsertTask = ({
             })
         }
 	}, [details.isRepeatable]);
+
+	const prepareData = async () => {
+		const [ userOptions, assetSuggestions ] = await Promise.all([createUserOptions(), getAssetsSuggestions()]);
+		setUserList(userOptions);
+		setAssets(assetSuggestions);
+		if (!taskId) {
+			setIsLoading(false);
+			return;
+		}
+		const data = await getTask(taskId, true);
+		await Promise.all([loadSystemOptions(data.asset), loadLocationOptions(data.asset)]);
+		if (!data) return;
+		setDetails({ ...data, images: [], uploadedImages: data.images });
+		setIsLoading(false);
+	}
 
 	const validateFields = () => {
 		return new Promise((resolve, reject) => {
@@ -333,53 +309,16 @@ export const UpsertTask = ({
 	return isLoading ? (
 		<LinearProgress />
 	) : (
-		<Modal
-			open={true}
-			onClose={handleClose}
-			closeAfterTransition
-			BackdropComponent={Backdrop}
-			BackdropProps={{
-				timeout: 500,
-			}}
-			className={classes.modal}
-		>
-			<Fade in={true}>
-				<Grid
-					container
-					justify="center"
-					alignItems="center"
-					style={{ outline: "0" }}
-				>
-					<Grid
-						item
-						xs={12}
-						sm={10}
-						md={8}
-						lg={8}
-						xl={6}
-						className={classes.gridCont}
-					>
-						<Paper
-							elevation={6}
-							className={classes.paper}
-							style={{ direction: lang.dir }}
-						>
-							<Grid container>
-								<Grid item xs={12} className={classes.headerRow}>
-									<div className={classes.title}>
-										{mode === "update"
+		<ModalContainer
+			handleClose={handleClose}
+			title={
+				mode === "update"
 											? t("tasksModule.upsert.updateTaskDetails")
-											: t("tasksModule.upsert.createTask")}
-									</div>
-									<div className={classes.close}>
-										<IconButton
-											className={classes.iconBtn}
-											onClick={handleClose}
-										>
-											<ClearRounded className={classes.icon} />
-										</IconButton>
-									</div>
-								</Grid>
+											: t("tasksModule.upsert.createTask")
+			}
+			handleConfirm={handleConfirm}
+		>
+								
 								<Grid
 									item
 									xs={12}
@@ -881,70 +820,12 @@ export const UpsertTask = ({
 										</Grid>
 									</Grid>
 								</Grid>
-								<Grid item xs={12} className={classes.controls}>
-									<Button
-										className={clsx(classes.control, classes.save)}
-										onClick={handleConfirm}
-									>
-										{t("controls.confirm")}
-									</Button>
-									<Button
-										className={clsx(classes.control, classes.cancel)}
-										onClick={handleClose}
-									>
-										{t("controls.cancel")}
-									</Button>
-								</Grid>
-							</Grid>
-						</Paper>
-					</Grid>
-				</Grid>
-			</Fade>
-		</Modal>
+						</ModalContainer>
 	);
 };
 
 const useStyles = makeStyles((theme) => ({
-	modal: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		backdropFilter: "blur(10px)",
-	},
-
-	gridCont: {
-		height: "fit-content",
-	},
-	paper: {
-		background: "rgba(0,0,0,0.4)",
-		border: "1px solid rgba(255,255,255,0.2)",
-		borderRadius: "10px",
-		padding: "10px 20px",
-		overflowY: "overlay",
-		height: "80vh",
-		[theme.breakpoints.down("sm")]: {
-			height: "81vh",
-			borderRadius: "0",
-			border: "0",
-			padding: "10px 5px",
-		},
-		"&:focus": {
-			outline: "none",
-		},
-	},
-	headerRow: {
-		display: "flex",
-		justifyContent: "space-between",
-		alignItems: "center",
-		width: "100%",
-		borderBottom: "1px solid rgba(255,255,255,0.2)",
-	},
-	title: {
-		color: "white",
-		padding: "20px 10px 10px",
-		fontSize: "20px",
-		whiteSpace: "nowrap",
-	},
+	
 	iconBtn: {
 		margin: "10px",
 		"&:hover": {
@@ -961,16 +842,18 @@ const useStyles = makeStyles((theme) => ({
 	sectionTitle: {
 		color: "white",
 		fontSize: "16px",
-		padding: "10px 20px",
+		padding: "7px 20px",
+		marginLeft: "25px",
 		width: "fit-content",
-		borderRadius: "10px 10px 0 0",
-		background: "rgba(0,0,0,0.4)",
+		borderRadius: "8px",
 		whiteSpace: "nowrap",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
+		[theme.breakpoints.down("sm")]: {
+			marginLeft: "15px",
+		},
 	},
 	fields: {
 		padding: "10px 20px",
-		borderRadius: "0px 10px 10px 10px",
-		background: "rgba(0,0,0,0.4)",
 		[theme.breakpoints.down("sm")]: {
 			padding: "10px",
 		},

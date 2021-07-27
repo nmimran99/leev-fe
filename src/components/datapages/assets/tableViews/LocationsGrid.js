@@ -5,20 +5,18 @@ import {
 	Grid,
 	LinearProgress,
 	makeStyles,
-	useMediaQuery,
+	useMediaQuery
 } from "@material-ui/core";
-import clsx from "clsx";
-import React, { useContext, useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { getFullName } from "../../../../api/genericApi";
-import { UserItem } from "../../../user/UserItem";
 import EditIcon from '@material-ui/icons/Edit';
-import { UpsertLocation } from "../../locations/UpsertLocation";
-import { updateLocation } from '../../../../api/locationsApi';
-import { SnackbarContext } from "../../../../context/SnackbarContext";
+import clsx from "clsx";
+import React, { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router";
 import { getAssetData } from "../../../../api/assetsApi";
-import { getServerError, removeQueryParam } from "../../../../api/genericApi";
+import { getFullName, getServerError, removeQueryParam } from "../../../../api/genericApi";
+import { SnackbarContext } from "../../../../context/SnackbarContext";
+import { UpsertContext } from "../../../../context/UpsertContext";
+import { UserItem } from "../../../user/UserItem";
 
 
 export const LocationsGrid = ({ assetId, handleUpdateLocation }) => {
@@ -27,31 +25,30 @@ export const LocationsGrid = ({ assetId, handleUpdateLocation }) => {
 	const location = useLocation();
 	const { t } = useTranslation();
 	const { setSnackbar } = useContext(SnackbarContext);
+	const { setUpsertData } = useContext(UpsertContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const [ isLoading, setIsLoading ] = useState(true);
 	const [ locations, setLocations ] = useState([]);
 	const [ faults, setFaults ] = useState([]);
 	const [expanded, setExpanded] = useState(null);
-	const [ editLocation, setEditlocation ] = useState(null);
 
 	useEffect(() => {
-		getAssetData(assetId, 'locations')
-		.then(res => {
-			if (!res || [403, 500].includes(res.status)) {
-				history.push({
-					path: location.pathname,
-					search: removeQueryParam(location.search, 'tab'),
-				});
-				setSnackbar(res || getServerError());
-			};
-			setLocations(res.locations);
-			setFaults(res.faults);
-		})
-		.finally(() => {
-			setIsLoading(false)
-		})
+		prepareData();
 	}, [])
 	
+	const prepareData = async () => {
+		const res = await getAssetData(assetId, 'locations')
+		if (!res || [403, 500].includes(res.status)) {
+			history.push({
+				path: location.pathname,
+				search: removeQueryParam(location.search, 'tab'),
+			});
+			setSnackbar(res || getServerError());
+		};
+		setLocations(res.locations);
+		setFaults(res.faults);
+		setIsLoading(false)
+	}
 
 	const handleExpanded = (locationId) => {
 		if (expanded === locationId) {
@@ -61,6 +58,9 @@ export const LocationsGrid = ({ assetId, handleUpdateLocation }) => {
 		}
 	};
 
+	const toggleEditMode = (lcoationId) => event => {
+		setUpsertData({ itemId: lcoationId, module: 'locations' })
+	}
 	return (
 		isLoading ? 
 		<LinearProgress /> :
@@ -97,7 +97,7 @@ export const LocationsGrid = ({ assetId, handleUpdateLocation }) => {
 									<Button
 										endIcon={<EditIcon className={classes.editIcon} />}
 										className={classes.editBtn}
-										onClick={() => setEditlocation(location._id)}
+										onClick={toggleEditMode(location._id)}
 									>
 										{location.name}
 									</Button>
@@ -154,14 +154,6 @@ export const LocationsGrid = ({ assetId, handleUpdateLocation }) => {
 				  ))
 				: "no rows"}
 		</Grid>
-		{
-			Boolean(editLocation) &&
-			<UpsertLocation 
-				locationId={editLocation}
-				handleClose={() => setEditlocation(null)}
-				handleUpdate={handleUpdateLocation}
-			/>
-		}
 		</React.Fragment>
 		
 	);

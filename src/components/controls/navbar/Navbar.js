@@ -14,6 +14,7 @@ import { differenceInHours } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
+import { isResident } from "../../../api/userApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { ConversationsContext } from "../../../context/ConversationsContext";
 import { NotificationsContext } from "../../../context/NotificationsContext";
@@ -95,7 +96,7 @@ export const Navbar = ({
 						<div className={classes.logobox}>Leev</div>
 					</Grid>
 				)}
-				<Grid item xs={12} md={3} lg={2} xl={2}>
+				<div className={classes.navbarIconsContainer}>
 					<div className={classes.navbarIcons}>
 						{matches && (
 							<IconButton
@@ -129,17 +130,19 @@ export const Navbar = ({
 								</div>
 							</IconButton>
 						</Badge>
-						<IconButton
-							aria-label="Add"
-							className={classes.iconButton}
-							color={"inherit"}
-							onClick={toggleAddMenu}
-							classes={{ label: classes.iconLabel }}
-						>
-							<AddCircleOutlineOutlinedIcon className={classes.iconRoot} />
-							<div className={classes.bottomLabel}>{t("general.create")}</div>
-						</IconButton>
-						<Can module="map" action="read">
+						<Can shouldRender={!isResident(auth.user)}>
+							<IconButton
+								aria-label="Add"
+								className={classes.iconButton}
+								color={"inherit"}
+								onClick={toggleAddMenu}
+								classes={{ label: classes.iconLabel }}
+							>
+								<AddCircleOutlineOutlinedIcon className={classes.iconRoot} />
+								<div className={classes.bottomLabel}>{t("general.create")}</div>
+							</IconButton>
+						</Can>
+						<Can module="map" action="read" shouldRender={!isResident(auth.user)}>
 							<IconButton
 								aria-label="Map"
 								className={classes.iconButton}
@@ -174,7 +177,7 @@ export const Navbar = ({
 							</div>
 						</IconButton>
 					</div>
-				</Grid>
+				</div>
 			</Grid>
 		</div>
 	);
@@ -194,9 +197,14 @@ const useStyles = makeStyles((theme) => ({
 		backdropFilter: "blur(8px)",
 		boxShadow: "rgba(0,0,0,0.4) 0px 0px 5px 2px",
 		[theme.breakpoints.down("sm")]: {
-			borderRadius: "30px 30px 0 0",
+			borderRadius: "0",
 			background: "black",
 		},
+	},
+	navbarIconsContainer: {
+		[theme.breakpoints.down('sm')]: {
+			width: '100%'
+		}
 	},
 	menuGridItem: {
 		display: "flex",
@@ -250,7 +258,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	iconButton: {
-		padding: "6px",
+		padding: "6px 20px",
 	},
 	icon: {
 		fontSize: "28px",

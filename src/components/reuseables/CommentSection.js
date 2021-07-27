@@ -24,6 +24,7 @@ import { LanguageContext } from "../../context/LanguageContext";
 import { Can } from "./Can";
 import AddAPhotoRoundedIcon from "@material-ui/icons/AddAPhotoRounded";
 import { ClearRounded } from "@material-ui/icons";
+import { EnvContext } from "../../context/EnvContext";
 
 export const CommentSection = ({
 	parent,
@@ -35,6 +36,7 @@ export const CommentSection = ({
 	const { t } = useTranslation();
 	const { lang } = useContext(LanguageContext);
 	const { auth } = useContext(AuthContext);
+	const { env ,setEnv } = useContext(EnvContext);
 	const ctx = useRef(null);
 	const [commentList, setCommentList] = useState(parent.comments || []);
 	const [parentId, setParentId] = useState(parent._id);
@@ -94,6 +96,16 @@ export const CommentSection = ({
 	const handleFileUpload = (event) => {
 		setCommentImage(event.target.files[0]);
 	};
+
+	const toggleInputFocused = () => {
+		if (textFocused) {
+			setTextFocused(false);
+			setEnv({ ...env, inputFocused: false})
+		} else {
+			setTextFocused(true);
+			setEnv({ ...env, inputFocused: true})
+		}
+	}
 
 	return (
 		<Grid container className={classes.mainContainer}>
@@ -241,7 +253,8 @@ export const CommentSection = ({
 										classes.textInput,
 										textFocused ? classes.focused : null
 									)}
-									onFocus={() => setTextFocused(true)}
+									onFocus={toggleInputFocused}
+									onBlur={toggleInputFocused}
 									multiline
 									classes={{
 										inputMultiline: classes.multiLine,

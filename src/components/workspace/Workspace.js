@@ -23,6 +23,7 @@ import { Dashboard } from "../datapages/dashboard/Dashboard";
 import { Clients } from "../datapages/clients/Clients";
 import { AuthContext } from "../../context/AuthContext";
 import { ConversationsContextProvider } from "../../context/ConversationsContext";
+import { UpsertContextProvider } from "../../context/UpsertContext";
 
 export const Workspace = ({}) => {
 	const classes = useStyles();
@@ -32,6 +33,7 @@ export const Workspace = ({}) => {
 
 	return (
 		<React.Fragment>
+			<UpsertContextProvider>
 			<FaultsContextProvider>
 				<div container className={classes.mainContainer}>
 					<SocketContextProvider id={auth.user._id}>
@@ -98,6 +100,7 @@ export const Workspace = ({}) => {
 					</Portal>
 				)}
 			</FaultsContextProvider>
+			</UpsertContextProvider>
 		</React.Fragment>
 	);
 };
@@ -127,15 +130,15 @@ const useStyles = makeStyles((theme) => ({
 		backdropFilter: "blur(22px)",
 		boxShadow: "rgba(0,0,0,0.4) 0px 0px 3px 2px",
 		overflowY: "overlay",
-		width: "calc(100% - 50px)",
+		width: "calc(100% - 60px)",
 		margin: "0 0 0 auto",
 		[theme.breakpoints.down("sm")]: {
 			border: "none",
 			borderRadius: 0,
 			margin: 0,
 			padding: 0,
-			height: "calc(100%)",
-			paddingBottom: "64px",
+			height: "calc(100% - 84px)",
+			
 			width: "100%",
 		},
 	},

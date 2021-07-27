@@ -40,7 +40,7 @@ export const InitialRouter = ({...rest}) => {
             auth.isAuth
             ? <Redirect
                 to={{
-                    pathname: "/workspace/dashboard"
+                    pathname: "/workspace"
             }}/> 
             :   <Redirect
                     to={{

@@ -22,17 +22,18 @@ import { SystemAdditionalDetails } from './SystemAdditionalDetails';
 import { UpsertSystem } from './UpsertSystem';
 import { UpdateOwner } from '../../reuseables/UpdateOwner';
 import { SnackbarContext } from '../../../context/SnackbarContext';
+import { UpsertContext } from '../../../context/UpsertContext';
 
 export const System = ({ systemData }) => {
 	const classes = useStyles();
 	const { t, i18n } = useTranslation();
 	const { setSnackbar } = useContext(SnackbarContext)
+	const { setUpsertData } = useContext(UpsertContext);
 	const downSm = useMediaQuery((theme) => theme.breakpoints.down('md'));
 	const [data, setData] = useState(systemData);
 	const [editOwner, setEditOwner] = useState(false);
 	const [editName, setEditName] = useState(false);
 	const [expanded, setExpanded] = useState(false);
-	const [editDetails, setEditDetails] = useState(null);
 	const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
 	const [showLinkedUsers, setShowLinkedUsers] = useState(false);
 
@@ -59,21 +60,6 @@ export const System = ({ systemData }) => {
 			setData(res);
 			setEditOwner(false);
 		}
-	};
-
-	const updateSystemData = (systemData) => {
-		updateSystemAdditionalData(systemData)
-			.then((res) => {
-				if (res.status === 403) {
-					setSnackbar(res)
-				} else if (res) {
-			
-					setData(res);
-				}
-			})
-			.finally(() => {
-				setEditDetails(null);
-			});
 	};
 
 	const setSystemName = (name) => {
@@ -104,11 +90,14 @@ export const System = ({ systemData }) => {
 		if (expanded) {
 			setShowLinkedUsers(false);
 			setEditOwner(false);
-			setEditDetails(null);
 			setExpanded(false);
 			return;
 		}
 		setExpanded(true);
+	};
+
+	const toggleEditMode = () => {
+		setUpsertData({ itemId: systemData._id, module: 'systems' })
 	};
 
 	return (
@@ -152,13 +141,13 @@ export const System = ({ systemData }) => {
 					</Grid>
 					<Grid item lg={8}>
 						<SystemControls
-						editName={editName}
-						expanded={expanded}
-						system={data}
-						showLinkedUsersToggle={showLinkedUsersToggle}
-						toggleEditOwner={toggleEditOwner}
-						toggleAdditionalDetails={showAdditionalDetailsToggle}
-					/>
+							editName={editName}
+							expanded={expanded}
+							system={data}
+							showLinkedUsersToggle={showLinkedUsersToggle}
+							toggleEditOwner={toggleEditOwner}
+							toggleAdditionalDetails={showAdditionalDetailsToggle}
+						/>
 					</Grid>
 					
 				</Grid>
@@ -181,16 +170,8 @@ export const System = ({ systemData }) => {
 					data={data.data}
 					isOpen={showAdditionalDetails}
 					systemId={data._id}
-					toggleEdit={() => setEditDetails(data._id)}
+					toggleEdit={toggleEditMode}
 				/>
-				{Boolean(editDetails) && (
-					<UpsertSystem
-						handleClose={() => setEditDetails(null)}
-						systemId={editDetails}
-						handleUpdate={updateSystemData}
-						data={data.data}
-					/>
-				)}
 			</Paper>
 		</Grid>
 	);

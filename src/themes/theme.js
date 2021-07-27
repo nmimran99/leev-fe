@@ -90,5 +90,6 @@ export const theme = createMuiTheme({
 		textSecondary: {
 			main: grey[100],
 		},
+		leading: '#42A5F5'
 	},
 });

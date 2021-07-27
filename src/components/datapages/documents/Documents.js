@@ -10,12 +10,12 @@ import {
 import { getServerError, getSuccessMessage } from '../../../api/genericApi';
 import { AuthContext } from '../../../context/AuthContext';
 import { SnackbarContext } from '../../../context/SnackbarContext';
+import { UpsertContext } from '../../../context/UpsertContext';
 import { AlertDialog } from '../../reuseables/AlertDialog';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
+import { NoDataFound } from '../../reuseables/NoDataFound';
 import { Document } from './Document';
 import { DocumentsControls } from './DocumentsControls';
-import { UpsertDocument } from './UpsertDocument';
-import { NoDataFound } from '../../reuseables/NoDataFound';
 
 export const Documents = () => {
 	const classes = useStyles();
@@ -24,6 +24,7 @@ export const Documents = () => {
 	const { auth } = useContext(AuthContext);
 	const { t } = useTranslation();
 	const { setSnackbar } = useContext(SnackbarContext);
+	const { setUpsertData } = useContext(UpsertContext); 
 	const [docs, setDocs] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [alertDialog, setAlertDialog] = useState(null);
@@ -93,6 +94,10 @@ export const Documents = () => {
 		window.open(file.url)
 	}
 
+	const toggleEditMode = documentId  => {
+		setUpsertData({ itemId: documentId, module: 'documents'})
+	}
+
 	return (
 		<Grid container justify="center">
 			<Grid xs={12} className={classes.moduleContainer}>
@@ -117,7 +122,7 @@ export const Documents = () => {
 								data={d}
 								deleteFile={deleteFile}
 								downloadFile={downloadFile}
-								setEdit={setEdit}
+								toggleEditMode={toggleEditMode}
 								previewFile={previewFile}
 							/>
 						</Grid>
@@ -132,15 +137,6 @@ export const Documents = () => {
 					open={Boolean(alertDialog)}
 				/>
 			)}
-			{
-				edit &&
-				<UpsertDocument 
-					handleClose={() => setEdit(null)}
-					handleSave={handleSave}
-					documentId={edit}
-				/>
-			}
-		
 		</Grid>
 	);
 };

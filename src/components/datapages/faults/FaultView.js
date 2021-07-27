@@ -2,10 +2,12 @@ import {
 	Grid,
 	LinearProgress,
 	makeStyles,
-	useMediaQuery,
+	useMediaQuery
 } from "@material-ui/core";
+import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
+import RoomIcon from "@material-ui/icons/Room";
+import clsx from 'clsx';
 import { format, parseISO } from "date-fns";
-import dateFormat from "dateformat";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router";
@@ -13,10 +15,11 @@ import { getFullAddress } from "../../../api/assetsApi";
 import * as faultApi from "../../../api/faultsApi";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
+import { UpsertContext } from "../../../context/UpsertContext";
 import { AddRelatedUser } from "../../reuseables/AddRelatedUser";
-import { Can } from "../../reuseables/Can";
 import { Carousel } from "../../reuseables/Carousel";
 import { CommentSection } from "../../reuseables/CommentSection";
+import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 import { StatusTag } from "../../reuseables/StatusTag";
 import { UpdateOwner } from "../../reuseables/UpdateOwner";
 import { UpdateStatus } from "../../reuseables/UpdateStatus";
@@ -24,11 +27,6 @@ import { UserList } from "../../reuseables/UserList";
 import { UserItem } from "../../user/UserItem";
 import { FaultLink } from "./FaultLink";
 import { FaultViewControls } from "./FaultViewControls";
-import { UpsertFault } from "./UpsertFault";
-import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
-import RoomIcon from "@material-ui/icons/Room";
-import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
-import clsx from 'clsx';
 
 export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	const history = useHistory();
@@ -37,11 +35,11 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { setSnackbar } = useContext(SnackbarContext);
+	const { setUpsertData } = useContext(UpsertContext);
 	const downSm = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const [fault, setFault] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { faultId } = useParams();
-	const [editFault, setEditFault] = useState(null);
 	const [changeOwner, setChangeOwner] = useState(false);
 	const [addRelatedUserModal, setAddRelatedUserModal] = useState(null);
 	const [changeStatus, setChangeStatus] = useState(null);
@@ -53,60 +51,40 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 	}, [fault]);
 
 	useEffect(() => {
+		prepareData();
+	}, [faultData, faultId]);
+
+	const prepareData = async () => {
 		if (faultData) {
 			setFault(faultData);
 			setIsLoading(false);
 			return;
 		}
-		faultApi.getFault(faultId || fid, false).then((res) => {
-			if (!res) {
-				history.push("/workspace/faults");
-			} else if (res.status === 403) {
-				setSnackbar(res);
-				history.push("/workspace/faults");
-			}
-			setFault(res);
-		});
-	}, [faultData, faultId]);
+		const res = await faultApi.getFault(faultId || fid, false)
+		if (!res) {
+			history.push("/workspace/faults");
+		} else if (res.status === 403) {
+			setSnackbar(res);
+			history.push("/workspace/faults");
+		}
+		setFault(res);
+	}
 
-	const updateFaultDetails = (details) => {
-		faultApi
-			.updateFault(details)
-			.then((res) => {
-				if (res.status === 403) {
-					setSnackbar(res);
-				} else if (res) {
-					if (location.pathname === `/workspace/faults/${res.faultId}`) {
-						setFault(res);
-					} else {
-						history.push(`/workspace/faults/${res.faultId}`);
-					}
-				}
-				setEditFault(null);
-				return;
-			})
-			.catch((e) => {
-				console.log(e.message);
-				history.push(`/workspace/faults`);
+	const updateOwner = async (userId) => {
+		const res = await faultApi.updateFaultOwner(fault._id, userId)
+		if (res.status === 403) {
+			setSnackbar(res);
+		} else {
+			setFault({
+				...fault,
+				owner: res.owner,
+				relatedUsers: res.relatedUsers,
 			});
-	};
-
-	const updateOwner = (userId) => {
-		faultApi.updateFaultOwner(fault._id, userId).then((res) => {
-			if (res.status === 403) {
-				setSnackbar(res);
-			} else {
-				setFault({
-					...fault,
-					owner: res.owner,
-					relatedUsers: res.relatedUsers,
-				});
-				if (updateFaultState) {
-					updateFaultState(res._id, "owner", res.owner);
-				}
+			if (updateFaultState) {
+				updateFaultState(res._id, "owner", res.owner);
 			}
-			setChangeOwner(false);
-		});
+		}
+		setChangeOwner(false);
 	};
 
 	const removeRelatedUser = async (userId) => {
@@ -184,6 +162,10 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 		return Promise.resolve(res);
 	};
 
+	const toggleEditMode = (faultId) => event => {
+		setUpsertData({ itemId: faultId, module: 'faults' })
+	}
+
 	return isLoading ? (
 		<LinearProgress />
 	) : (
@@ -204,7 +186,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					<Grid item xs={12} className={classes.controlsGriditem}>
 						<FaultViewControls
 							fault={fault}
-							editFault={() => setEditFault(fault._id)}
+							editFault={toggleEditMode(fault._id)}
 							updateOwner={() => setChangeOwner(true)}
 							changeStatus={() => setChangeStatus(true)}
 						/>
@@ -352,13 +334,6 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 				/>
 			)}
 
-			{Boolean(editFault) && (
-				<UpsertFault
-					faultId={editFault}
-					handleClose={() => setEditFault(null)}
-					handleUpdate={updateFaultDetails}
-				/>
-			)}
 		</React.Fragment>
 	);
 };

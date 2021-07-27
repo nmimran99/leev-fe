@@ -11,7 +11,7 @@ import dateFormat from "dateformat";
 import { format, parseISO } from 'date-fns';
 import { LanguageContext } from "../../../context/LanguageContext";
 
-export const Document = ({ data, deleteFile, downloadFile, setEdit, previewFile }) => {
+export const Document = ({ data, deleteFile, downloadFile, toggleEditMode, previewFile }) => {
 	const classes = useStyles();
 	const { t } = useTranslation();
 	const { lang } = useContext(LanguageContext);
@@ -30,7 +30,7 @@ export const Document = ({ data, deleteFile, downloadFile, setEdit, previewFile 
 					<DocumentControls
 						deleteFile={deleteFile(data._id, data.description)}
 						downloadFile={() => downloadFile(data.url)}
-						editDocument={() => setEdit(data._id)}
+						editDocument={() => toggleEditMode(data._id)}
 						previewFile={() => previewFile(data)}
 					/>
 				</Grid>

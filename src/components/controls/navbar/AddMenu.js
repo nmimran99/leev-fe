@@ -51,7 +51,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 						<ListItem
 							button={true}
 							className={classes.listItem}
-							onClick={toggleAdd('client')}
+							onClick={toggleAdd('clients')}
 						>
 							<ListItemIcon className={classes.listItemIcon}>
 								<SupervisedUserCircleIcon classes={{ root: classes.iconRoot }} />
@@ -67,7 +67,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 							<ListItem
 								button={true}
 								className={classes.listItem}
-								onClick={toggleAdd('asset')}
+								onClick={toggleAdd('assets')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
 									<HomeWorkIcon classes={{ root: classes.iconRoot }} />
@@ -83,7 +83,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 							<ListItem
 								button={true}
 								className={classes.listItem}
-								onClick={toggleAdd('system')}
+								onClick={toggleAdd('systems')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
 									<SettingsSystemDaydreamIcon classes={{ root: classes.iconRoot }} />
@@ -99,7 +99,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 							<ListItem
 								button={true}
 								className={classes.listItem}
-								onClick={toggleAdd('location')}
+								onClick={toggleAdd('locations')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
 									<AddLocationRoundedIcon classes={{ root: classes.iconRoot }} />
@@ -115,7 +115,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 							<ListItem
 								button={true}
 								className={classes.listItem}
-								onClick={toggleAdd('task')}
+								onClick={toggleAdd('tasks')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
 									<AssignmentTurnedInIcon  classes={{ root: classes.iconRoot }} />
@@ -132,7 +132,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 							<ListItem
 								button={true}
 								className={classes.listItem}
-								onClick={toggleAdd('fault')}
+								onClick={toggleAdd('faults')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
 									<WarningRoundedIcon    classes={{ root: classes.iconRoot }} />
@@ -148,7 +148,7 @@ export const AddMenu = ({ toggleAddMenu, toggleAdd, addMenuOpen }) => {
 							<ListItem
 								button={true}
 								className={classes.listItem}
-								onClick={toggleAdd('document')}
+								onClick={toggleAdd('documents')}
 							>
 								<ListItemIcon className={classes.listItemIcon}>
 									<DescriptionRoundedIcon     classes={{ root: classes.iconRoot }} />
@@ -196,7 +196,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: '10px 0',
 	},
 	listItem: {
-		color: 'theme.palette.primary.main',
+		color: theme.palette.primary.main,
 		padding: '10px 20px',
 		transition: 'background box-shadow 0.3s ease-in-out',
 		'&:hover': {
@@ -222,7 +222,7 @@ const useStyles = makeStyles((theme) => ({
 		height: "25px",
 		display: "grid",
 		placeItems: "center",
-		color: '#42A5F5',
+		color: theme.palette.leading,
 	},
 	header: {
 		height: '40px',

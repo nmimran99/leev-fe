@@ -16,7 +16,11 @@ import {
 	Switch,
 	TextField,
 } from "@material-ui/core";
-import { ClearRounded, ContactsOutlined, RecentActorsSharp } from "@material-ui/icons";
+import {
+	ClearRounded,
+	ContactsOutlined,
+	RecentActorsSharp,
+} from "@material-ui/icons";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import clsx from "clsx";
 import heLocale from "date-fns/locale/he";
@@ -39,6 +43,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
 import { Can } from "../../reuseables/Can";
+import { ModalContainer } from "../../reuseables/ModalContainer";
 
 export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	const classes = useStyles();
@@ -53,9 +58,13 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	const [residentOwner, setResidentOwner] = useState(false);
 	const [assets, setAssets] = useState([]);
 	const [locations, setLocations] = useState([]);
-	const [ tenants, setTenants ] = useState([]);
+	const [tenants, setTenants] = useState([]);
 	const [details, setDetails] = useState({
-		tenant: auth.user.isAdmin ? null : mode === 'create' ? auth.user.tenant : null,
+		tenant: auth.user.isAdmin
+			? null
+			: mode === "create"
+			? auth.user.tenant
+			: null,
 		email: "",
 		firstName: "",
 		lastName: "",
@@ -73,7 +82,7 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	});
 
 	useEffect(() => {
-		prepareData()
+		prepareData();
 	}, [details.tenant]);
 
 	useEffect(() => {
@@ -95,12 +104,12 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 		clearResidentData();
 	}, [residentOwner]);
 
-	const prepareData = async () => {	
+	const prepareData = async () => {
 		if (!tenants.length && auth.user.isAdmin) {
 			const tenants = await getTenantOptions();
 			setTenants(tenants);
-		}	
-		
+		}
+
 		const roles = await getRoles(details.tenant);
 		if (!roles || roles.status === 403 || roles.status === 500) {
 			return [];
@@ -117,10 +126,9 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 			...userData,
 			role: userData.role._id,
 		});
-		
-		setIsLoading(false);
-	}
 
+		setIsLoading(false);
+	};
 
 	const populateAssets = async () => {
 		let res = await getAssetsSuggestions();
@@ -209,7 +217,7 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	const handleConfirm = () => {
 		validateFields()
 			.then((res) => {
-				if (!res) throw '';
+				if (!res) throw "";
 				if (mode === "update") {
 					return handleUpdateUser({ userId, ...details });
 				}
@@ -219,8 +227,8 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 				reloadUsers(true);
 				handleClose();
 			})
-			.catch(e => {
-				return
+			.catch((e) => {
+				return;
 			});
 	};
 
@@ -228,7 +236,11 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 		let val = ["isActive", "isResident", "isOwner"].includes(field)
 			? event.target.checked
 			: event.target.value;
-		if (["isResident", "isOwner", "asset", "location", "unitNumber"].includes(field)) {
+		if (
+			["isResident", "isOwner", "asset", "location", "unitNumber"].includes(
+				field
+			)
+		) {
 			setDetails({
 				...details,
 				employedBy: "",
@@ -258,708 +270,571 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	return isLoading ? (
 		<LinearProgress />
 	) : (
-		<Modal
-			open={true}
-			onClose={handleClose}
-			closeAfterTransition
-			BackdropComponent={Backdrop}
-			BackdropProps={{
-				timeout: 500,
-			}}
-			className={classes.modal}
+		<ModalContainer
+			handleClose={handleClose}
+			title={
+				mode === "update"
+					? t("users.upsert.editUserDetails")
+					: t("users.upsert.createUser")
+			}
+			handleConfirm={handleConfirm}
+			paperStyles={{ background: 'linear-gradient(148deg, rgba(85,85,85,1) 0%, rgba(100,100,100,1) 35%, rgba(130,130,130,1) 100%)'}}
 		>
-			<Fade in={true}>
-				<Grid
-					container
-					justify="center"
-					alignItems="center"
-					style={{ outline: "0" }}
-				>
-					<Grid
-						item
-						xs={12}
-						sm={10}
-						md={8}
-						lg={8}
-						xl={6}
-						className={classes.gridCont}
-					>
-						<Paper
-							elevation={6}
-							className={classes.paper}
-							style={{ direction: lang.dir }}
-						>
-							<Grid container>
-								<Grid item xs={12} className={classes.headerRow}>
-									<div className={classes.title}>
-										{mode === "update"
-											? t("users.upsert.editUserDetails")
-											: t("users.upsert.createUser")}
-									</div>
-									<div className={classes.close}>
-										<IconButton
-											className={classes.iconBtn}
-											onClick={handleClose}
+			{auth.user.isAdmin && (
+				<Grid item xs={12} className={classes.section}>
+					<Grid item xs={12}>
+						<div className={classes.sectionTitle}>
+							{t("clientsModule.name")}
+						</div>
+					</Grid>
+					<Grid item xs={12} className={classes.fields}>
+						<Grid container justify="flex-start">
+							<Grid item xs={12} className={classes.textContainer}>
+								<Select
+									variant={"outlined"}
+									value={details.tenant}
+									onChange={handleChange(`tenant`)}
+									className={classes.selectInput}
+									error={errors.filter((e) => e.field === "tenant").length > 0}
+									MenuProps={{
+										anchorOrigin: {
+											vertical: "bottom",
+											horizontal: "center",
+										},
+										transformOrigin: {
+											vertical: "top",
+											horizontal: "center",
+										},
+										getContentAnchorEl: null,
+										disablePortal: true,
+										classes: {
+											paper: classes.menupaper,
+										},
+									}}
+								>
+									{tenants.map((t, i) => (
+										<MenuItem
+											key={i}
+											value={t.value}
+											style={{ direction: lang.dir }}
+											className={classes.menuitem}
 										>
-											<ClearRounded className={classes.icon} />
-										</IconButton>
-									</div>
-								</Grid>
-								{
-									auth.user.isAdmin &&
-									<Grid
-														item
-														xs={12}
-														className={classes.section}
-													>
-														<Grid item xs={12}>
-															<div className={classes.sectionTitle}>
-																{t("clientsModule.name")}
-															</div>
-														</Grid>
-														<Grid item xs={12} className={classes.fields}>
-															<Grid container justify="flex-start">
-																<Grid
-																	item
-																	xs={12}
-																	className={classes.textContainer}
-																>
-																	<Select
-																		variant={"outlined"}
-																		value={details.tenant}
-																		onChange={handleChange(`tenant`)}
-																		className={classes.selectInput}
-																		error={errors.filter((e) => e.field === "tenant").length > 0}
-																		MenuProps={{
-																			anchorOrigin: {
-																				vertical: "bottom",
-																				horizontal: "center",
-																			},
-																			transformOrigin: {
-																				vertical: "top",
-																				horizontal: "center",
-																			},
-																			getContentAnchorEl: null,
-																			disablePortal: true,
-																			classes: {
-																				paper: classes.menupaper,
-																			},
-																		}}
-																	>
-																		{tenants.map((t, i) => (
-																			<MenuItem
-																				key={i}
-																				value={t.value}
-																				style={{ direction: lang.dir }}
-																				className={classes.menuitem}
-																			>
-																				{t.label}
-																			</MenuItem>
-																		))}
-																	</Select>
-																	{errors.filter((e) => e.field === "tenant").length >
-																		0 && (
-																		<FormHelperText
-																			style={{ color: "#f44336", marginRight: "15px" }}
-																		>
-																			{t("errors.isRequired")}
-																		</FormHelperText>
-																	)}
-																</Grid>
-															</Grid>
-														</Grid>
-													</Grid>
-								}
-								<Grid item xs={12} className={classes.section}>
-									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>
-											{t("users.upsert.generalDetails")}
-										</div>
-									</Grid>
-									<Grid item xs={12} className={classes.fields}>
-										<Grid container justify="flex-start">
-											<Grid
-												item
-												xs={12}
-												sm={6}
-												md={6}
-												lg={4}
-												xl={4}
-												className={classes.textContainer}
-											>
-												<TextField
-													variant={"outlined"}
-													label={t(`users.email`)}
-													error={
-														errors.filter((e) => e.field === `email`).length > 0
-													}
-													value={details.email}
-													onChange={handleChange("email")}
-													className={classes.textField}
-													size={"medium"}
-													helperText={
-														errors.filter((e) => e.field === `email`).length >
-															0 && t("errors.isRequired")
-													}
-													inputProps={{
-														maxLength: 60,
-													}}
-													FormHelperTextProps={{
-														style: {
-															color:
-																errors.filter((e) => e.field === `email`)
-																	.length > 0 && "rgb(244, 67, 54)",
-														},
-													}}
-												/>
-											</Grid>
-											<Grid
-												item
-												xs={12}
-												sm={6}
-												md={6}
-												lg={4}
-												xl={4}
-												className={classes.textContainer}
-											>
-												<TextField
-													variant={"outlined"}
-													label={t(`users.firstName`)}
-													error={
-														errors.filter((e) => e.field === `firstName`)
-															.length > 0
-													}
-													value={details.firstName}
-													onChange={handleChange("firstName")}
-													className={classes.textField}
-													size={"medium"}
-													helperText={
-														errors.filter((e) => e.field === `firstName`)
-															.length > 0 && t("errors.isRequired")
-													}
-													inputProps={{
-														maxLength: 60,
-													}}
-													FormHelperTextProps={{
-														style: {
-															color:
-																errors.filter((e) => e.field === `firstName`)
-																	.length > 0 && "rgb(244, 67, 54)",
-														},
-													}}
-												/>
-											</Grid>
-											<Grid
-												item
-												xs={12}
-												sm={6}
-												md={6}
-												lg={4}
-												xl={4}
-												className={classes.textContainer}
-											>
-												<TextField
-													variant={"outlined"}
-													label={t(`users.lastName`)}
-													error={
-														errors.filter((e) => e.field === `lastName`)
-															.length > 0
-													}
-													value={details.lastName}
-													onChange={handleChange("lastName")}
-													className={classes.textField}
-													size={"medium"}
-													helperText={
-														errors.filter((e) => e.field === `lastName`)
-															.length > 0 && t("errors.isRequired")
-													}
-													inputProps={{
-														maxLength: 60,
-													}}
-													FormHelperTextProps={{
-														style: {
-															color:
-																errors.filter((e) => e.field === `lastName`)
-																	.length > 0 && "rgb(244, 67, 54)",
-														},
-													}}
-												/>
-											</Grid>
-											<Grid
-												item
-												xs={12}
-												sm={6}
-												md={6}
-												lg={4}
-												xl={4}
-												className={classes.textContainer}
-											>
-												<TextField
-													variant={"outlined"}
-													label={t(`users.phoneNumber`)}
-													error={
-														errors.filter((e) => e.field === `phoneNumber`)
-															.length > 0
-													}
-													value={details.phoneNumber}
-													onChange={handleChange("phoneNumber")}
-													className={classes.textField}
-													size={"medium"}
-													helperText={
-														errors.filter((e) => e.field === `phoneNumber`)
-															.length > 0 && t("errors.isRequired")
-													}
-													type="tel"
-													inputProps={{
-														maxLength: 60,
-													}}
-													FormHelperTextProps={{
-														style: {
-															color:
-																errors.filter((e) => e.field === `phoneNumber`)
-																	.length > 0 && "rgb(244, 67, 54)",
-														},
-													}}
-												/>
-											</Grid>
-											<Grid
-												item
-												xs={12}
-												sm={6}
-												md={6}
-												lg={4}
-												xl={4}
-												className={classes.textContainer}
-											>
-												<MuiPickersUtilsProvider
-													utils={DateFnsUtils}
-													locale={heLocale}
-												>
-													<DatePicker
-														format="dd/MM/yyyy"
-														label={t(`users.birthDate`)}
-														value={details.birthDate}
-														onChange={handleChangeDate}
-														inputVariant={"outlined"}
-														className={classes.textField}
-														autoOk={true}
-														disableFuture={true}
-													/>
-												</MuiPickersUtilsProvider>
-											</Grid>
-											{!(details.data.isResident || details.data.isOwner) && (
-												<Grid
-													item
-													xs={12}
-													sm={6}
-													md={6}
-													lg={4}
-													xl={4}
-													className={classes.textContainer}
-												>
-													<TextField
-														variant={"outlined"}
-														label={t(`users.employedBy`)}
-														error={
-															errors.filter((e) => e.field === `employedBy`)
-																.length > 0
-														}
-														value={details.employedBy}
-														onChange={handleChange("employedBy")}
-														className={classes.textField}
-														size={"medium"}
-														helperText={
-															errors.filter((e) => e.field === `employedBy`)
-																.length > 0 && t("errors.isRequired")
-														}
-														inputProps={{
-															maxLength: 60,
-														}}
-														FormHelperTextProps={{
-															style: {
-																color:
-																	errors.filter((e) => e.field === `employedBy`)
-																		.length > 0 && "rgb(244, 67, 54)",
-															},
-														}}
-													/>
-												</Grid>
-											)}
-										</Grid>
-									</Grid>
-								</Grid>
-								<Can module="roles" action="update">
-									<Grid item xs={12} sm={6} lg={4} className={classes.section}>
-										<Grid item xs={12}>
-											<div className={classes.sectionTitle}>
-												{t("users.upsert.role")}
-											</div>
-										</Grid>
-										<Grid item xs={12} className={classes.fields}>
-											<Grid container justify="flex-start">
-												<Grid item xs={12} className={classes.textContainer}>
-													<Select
-														variant={"outlined"}
-														error={
-															errors.filter((e) => e.field === `role`).length >
-															0
-														}
-														value={details.role}
-														onChange={handleChange(`role`)}
-														className={classes.selectInput}
-														MenuProps={{
-															anchorOrigin: {
-																vertical: "bottom",
-																horizontal: "center",
-															},
-															transformOrigin: {
-																vertical: "top",
-																horizontal: "center",
-															},
-															getContentAnchorEl: null,
-															classes: {
-																paper: classes.menupaper,
-															},
-														}}
-													>
-														{roles.map((role, i) => (
-															<MenuItem
-																key={i}
-																value={role.value}
-																style={{ direction: lang.dir }}
-																className={classes.menuitem}
-															>
-																{role.name}
-															</MenuItem>
-														))}
-													</Select>
-													{errors.filter((e) => e.field === "asset").length >
-														0 && (
-														<FormHelperText
-															style={{ color: "#f44336", marginRight: "15px" }}
-														>
-															{t("errors.isRequired")}
-														</FormHelperText>
-													)}
-												</Grid>
-											</Grid>
-										</Grid>
-									</Grid>
-								</Can>
-
-								<Can module="roles" action="update">
-									<Grid item xs={12} sm={6} lg={4} className={classes.section}>
-										<Grid item xs={12}>
-											<div className={classes.sectionTitle}>
-												{t("users.upsert.activity")}
-											</div>
-										</Grid>
-										<Grid item xs={12} className={classes.fields}>
-											<Grid container justify="flex-start">
-												<Grid item xs={12} className={classes.textContainer}>
-													<FormControlLabel
-														className={classes.switchLabel}
-														control={
-															<Switch
-																checked={details.isActive}
-																onChange={handleChange("isActive")}
-																classes={{
-																	switchBase: classes.switchBase,
-																	checked: classes.checked,
-																	track: classes.track,
-																}}
-															/>
-														}
-														label={
-															details.isActive
-																? t("users.upsert.userActive")
-																: t("users.upsert.userInactive")
-														}
-													/>
-												</Grid>
-											</Grid>
-										</Grid>
-									</Grid>
-								</Can>
-								<Grid item xs={12} className={classes.section}>
-									<Grid item xs={12}>
-										<div className={classes.sectionTitle}>
-											{t("users.upsert.residency")}
-										</div>
-									</Grid>
-									<Grid item xs={12} className={classes.fields}>
-										<Grid container justify="flex-start">
-											<Grid item xs={12} className={classes.textContainer}>
-												<FormControlLabel
-													className={classes.switchLabel}
-													control={
-														<Switch
-															checked={details.data.isResident}
-															onChange={handleChange("isResident")}
-															classes={{
-																switchBase: classes.switchBase,
-																checked: classes.checked,
-																track: classes.track,
-															}}
-														/>
-													}
-													label={
-														details.data.isResident
-															? t("users.upsert.isResident")
-															: t("users.upsert.notResident")
-													}
-												/>
-											</Grid>
-
-											<Grid item xs={12} className={classes.textContainer}>
-												<FormControlLabel
-													className={classes.switchLabel}
-													control={
-														<Switch
-															checked={details.data.isOwner}
-															onChange={handleChange("isOwner")}
-															classes={{
-																switchBase: classes.switchBase,
-																checked: classes.checked,
-																track: classes.track,
-															}}
-														/>
-													}
-													label={
-														details.data.isOwner
-															? t("users.upsert.isOwner")
-															: t("users.upsert.notOwner")
-													}
-												/>
-											</Grid>
-											{Boolean(assets.length) && (
-												<React.Fragment>
-													<Grid
-														item
-														xs={12}
-														sm={5}
-														md={5}
-														lg={5}
-														xl={5}
-														className={classes.section}
-													>
-														<Grid item xs={12}>
-															<div className={classes.sectionTitle}>
-																{t("locationsModule.owningAsset")}
-															</div>
-														</Grid>
-														<Grid item xs={12} className={classes.fields}>
-															<Grid container justify="flex-start">
-																<Grid
-																	item
-																	xs={12}
-																	className={classes.textContainer}
-																>
-																	<Select
-																		variant={"outlined"}
-																		value={details.data.asset}
-																		onChange={handleChange(`asset`)}
-																		className={classes.selectInput}
-																		MenuProps={{
-																			anchorOrigin: {
-																				vertical: "bottom",
-																				horizontal: "center",
-																			},
-																			transformOrigin: {
-																				vertical: "top",
-																				horizontal: "center",
-																			},
-																			getContentAnchorEl: null,
-																			disablePortal: true,
-																			classes: {
-																				paper: classes.menupaper,
-																			},
-																		}}
-																	>
-																		{assets.map((asset, i) => (
-																			<MenuItem
-																				key={i}
-																				value={asset.value}
-																				style={{ direction: lang.dir }}
-																				className={classes.menuitem}
-																			>
-																				{asset.text}
-																			</MenuItem>
-																		))}
-																	</Select>
-																</Grid>
-															</Grid>
-														</Grid>
-													</Grid>
-
-													<Grid
-														item
-														xs={12}
-														sm={5}
-														md={5}
-														lg={5}
-														xl={5}
-														className={classes.section}
-													>
-														<Grid item xs={12}>
-															<div className={classes.sectionTitle}>
-																{t("locationsModule.locationName")}
-															</div>
-														</Grid>
-														<Grid item xs={12} className={classes.fields}>
-															<Grid container justify="flex-start">
-																<Grid
-																	item
-																	xs={12}
-																	className={classes.textContainer}
-																>
-																	<Select
-																		variant={"outlined"}
-																		value={details.data.location}
-																		onChange={handleChange(`location`)}
-																		className={classes.selectInput}
-																		MenuProps={{
-																			anchorOrigin: {
-																				vertical: "bottom",
-																				horizontal: "center",
-																			},
-																			transformOrigin: {
-																				vertical: "top",
-																				horizontal: "center",
-																			},
-																			getContentAnchorEl: null,
-																			disablePortal: true,
-																			classes: {
-																				paper: classes.menupaper,
-																			},
-																		}}
-																	>
-																		{locations.map((location, i) => (
-																			<MenuItem
-																				key={i}
-																				value={location.value}
-																				style={{ direction: lang.dir }}
-																				className={classes.menuitem}
-																			>
-																				{location.text}
-																			</MenuItem>
-																		))}
-																	</Select>
-																</Grid>
-															</Grid>
-														</Grid>
-													</Grid>
-													<Grid item xs={12} sm={6} lg={4} className={classes.section}>
-										<Grid item xs={12}>
-											<div className={classes.sectionTitle}>
-												{t("users.upsert.unitNumber")}
-											</div>
-										</Grid>
-										<Grid item xs={12} className={classes.fields}>
-											<Grid container justify="flex-start">
-												<Grid item xs={12} className={classes.textContainer}>
-													<TextField
-														variant={"outlined"}
-														error={
-															errors.filter((e) => e.field === `unitNumber`).length > 0
-														}
-														value={details.data.unitNumber}
-														onChange={handleChange("unitNumber")}
-														className={classes.textField}
-														size={"medium"}
-														helperText={
-															errors.filter((e) => e.field === `unitNumber`).length >
-																0 && t("errors.isRequired")
-														}
-														inputProps={{
-															maxLength: 60,
-														}}
-														FormHelperTextProps={{
-															style: {
-																color:
-																	errors.filter((e) => e.field === `unitNumber`)
-																		.length > 0 && "rgb(244, 67, 54)",
-															},
-														}}
-													/>
-												</Grid>
-											</Grid>
-										</Grid>
-									</Grid>
-												</React.Fragment>
-											)}
-										</Grid>
-									</Grid>
-								</Grid>
-								<Grid item xs={12} className={classes.controls}>
-									<Button
-										className={clsx(classes.control, classes.save)}
-										onClick={handleConfirm}
+											{t.label}
+										</MenuItem>
+									))}
+								</Select>
+								{errors.filter((e) => e.field === "tenant").length > 0 && (
+									<FormHelperText
+										style={{ color: "#f44336", marginRight: "15px" }}
 									>
-										{t("controls.confirm")}
-									</Button>
-									<Button
-										className={clsx(classes.control, classes.cancel)}
-										onClick={handleClose}
-									>
-										{t("controls.cancel")}
-									</Button>
-								</Grid>
+										{t("errors.isRequired")}
+									</FormHelperText>
+								)}
 							</Grid>
-						</Paper>
+						</Grid>
 					</Grid>
 				</Grid>
-			</Fade>
-		</Modal>
+			)}
+			<Grid item xs={12} className={classes.section}>
+				<Grid item xs={12}>
+					<div className={classes.sectionTitle}>
+						{t("users.upsert.generalDetails")}
+					</div>
+				</Grid>
+				<Grid item xs={12} className={classes.fields}>
+					<Grid container justify="flex-start">
+						<Grid
+							item
+							xs={12}
+							sm={6}
+							md={6}
+							lg={4}
+							xl={4}
+							className={classes.textContainer}
+						>
+							<TextField
+								variant={"outlined"}
+								label={t(`users.email`)}
+								error={errors.filter((e) => e.field === `email`).length > 0}
+								value={details.email}
+								onChange={handleChange("email")}
+								className={classes.textField}
+								size={"medium"}
+								helperText={
+									errors.filter((e) => e.field === `email`).length > 0 &&
+									t("errors.isRequired")
+								}
+								inputProps={{
+									maxLength: 60,
+								}}
+								FormHelperTextProps={{
+									style: {
+										color:
+											errors.filter((e) => e.field === `email`).length > 0 &&
+											"rgb(244, 67, 54)",
+									},
+								}}
+							/>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+							sm={6}
+							md={6}
+							lg={4}
+							xl={4}
+							className={classes.textContainer}
+						>
+							<TextField
+								variant={"outlined"}
+								label={t(`users.firstName`)}
+								error={errors.filter((e) => e.field === `firstName`).length > 0}
+								value={details.firstName}
+								onChange={handleChange("firstName")}
+								className={classes.textField}
+								size={"medium"}
+								helperText={
+									errors.filter((e) => e.field === `firstName`).length > 0 &&
+									t("errors.isRequired")
+								}
+								inputProps={{
+									maxLength: 60,
+								}}
+								FormHelperTextProps={{
+									style: {
+										color:
+											errors.filter((e) => e.field === `firstName`).length >
+												0 && "rgb(244, 67, 54)",
+									},
+								}}
+							/>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+							sm={6}
+							md={6}
+							lg={4}
+							xl={4}
+							className={classes.textContainer}
+						>
+							<TextField
+								variant={"outlined"}
+								label={t(`users.lastName`)}
+								error={errors.filter((e) => e.field === `lastName`).length > 0}
+								value={details.lastName}
+								onChange={handleChange("lastName")}
+								className={classes.textField}
+								size={"medium"}
+								helperText={
+									errors.filter((e) => e.field === `lastName`).length > 0 &&
+									t("errors.isRequired")
+								}
+								inputProps={{
+									maxLength: 60,
+								}}
+								FormHelperTextProps={{
+									style: {
+										color:
+											errors.filter((e) => e.field === `lastName`).length > 0 &&
+											"rgb(244, 67, 54)",
+									},
+								}}
+							/>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+							sm={6}
+							md={6}
+							lg={4}
+							xl={4}
+							className={classes.textContainer}
+						>
+							<TextField
+								variant={"outlined"}
+								label={t(`users.phoneNumber`)}
+								error={
+									errors.filter((e) => e.field === `phoneNumber`).length > 0
+								}
+								value={details.phoneNumber}
+								onChange={handleChange("phoneNumber")}
+								className={classes.textField}
+								size={"medium"}
+								helperText={
+									errors.filter((e) => e.field === `phoneNumber`).length > 0 &&
+									t("errors.isRequired")
+								}
+								type="tel"
+								inputProps={{
+									maxLength: 60,
+								}}
+								FormHelperTextProps={{
+									style: {
+										color:
+											errors.filter((e) => e.field === `phoneNumber`).length >
+												0 && "rgb(244, 67, 54)",
+									},
+								}}
+							/>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+							sm={6}
+							md={6}
+							lg={4}
+							xl={4}
+							className={classes.textContainer}
+						>
+							<MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
+								<DatePicker
+									format="dd/MM/yyyy"
+									label={t(`users.birthDate`)}
+									value={details.birthDate}
+									onChange={handleChangeDate}
+									inputVariant={"outlined"}
+									className={classes.textField}
+									autoOk={true}
+									disableFuture={true}
+								/>
+							</MuiPickersUtilsProvider>
+						</Grid>
+						{!(details.data.isResident || details.data.isOwner) && (
+							<Grid
+								item
+								xs={12}
+								sm={6}
+								md={6}
+								lg={4}
+								xl={4}
+								className={classes.textContainer}
+							>
+								<TextField
+									variant={"outlined"}
+									label={t(`users.employedBy`)}
+									error={
+										errors.filter((e) => e.field === `employedBy`).length > 0
+									}
+									value={details.employedBy}
+									onChange={handleChange("employedBy")}
+									className={classes.textField}
+									size={"medium"}
+									helperText={
+										errors.filter((e) => e.field === `employedBy`).length > 0 &&
+										t("errors.isRequired")
+									}
+									inputProps={{
+										maxLength: 60,
+									}}
+									FormHelperTextProps={{
+										style: {
+											color:
+												errors.filter((e) => e.field === `employedBy`).length >
+													0 && "rgb(244, 67, 54)",
+										},
+									}}
+								/>
+							</Grid>
+						)}
+					</Grid>
+				</Grid>
+			</Grid>
+			<Can module="roles" action="update">
+				<Grid item xs={12} sm={6} lg={4} className={classes.section}>
+					<Grid item xs={12}>
+						<div className={classes.sectionTitle}>{t("users.upsert.role")}</div>
+					</Grid>
+					<Grid item xs={12} className={classes.fields}>
+						<Grid container justify="flex-start">
+							<Grid item xs={12} className={classes.textContainer}>
+								<Select
+									variant={"outlined"}
+									error={errors.filter((e) => e.field === `role`).length > 0}
+									value={details.role}
+									onChange={handleChange(`role`)}
+									className={classes.selectInput}
+									MenuProps={{
+										anchorOrigin: {
+											vertical: "bottom",
+											horizontal: "center",
+										},
+										transformOrigin: {
+											vertical: "top",
+											horizontal: "center",
+										},
+										getContentAnchorEl: null,
+										classes: {
+											paper: classes.menupaper,
+										},
+									}}
+								>
+									{roles.map((role, i) => (
+										<MenuItem
+											key={i}
+											value={role.value}
+											style={{ direction: lang.dir }}
+											className={classes.menuitem}
+										>
+											{role.name}
+										</MenuItem>
+									))}
+								</Select>
+								{errors.filter((e) => e.field === "asset").length > 0 && (
+									<FormHelperText
+										style={{ color: "#f44336", marginRight: "15px" }}
+									>
+										{t("errors.isRequired")}
+									</FormHelperText>
+								)}
+							</Grid>
+						</Grid>
+					</Grid>
+				</Grid>
+			</Can>
+
+			<Can module="roles" action="update">
+				<Grid item xs={12} sm={6} lg={4} className={classes.section}>
+					<Grid item xs={12}>
+						<div className={classes.sectionTitle}>
+							{t("users.upsert.activity")}
+						</div>
+					</Grid>
+					<Grid item xs={12} className={classes.fields}>
+						<Grid container justify="flex-start">
+							<Grid item xs={12} className={classes.textContainer}>
+								<FormControlLabel
+									className={classes.switchLabel}
+									control={
+										<Switch
+											checked={details.isActive}
+											onChange={handleChange("isActive")}
+											classes={{
+												switchBase: classes.switchBase,
+												checked: classes.checked,
+												track: classes.track,
+											}}
+										/>
+									}
+									label={
+										details.isActive
+											? t("users.upsert.userActive")
+											: t("users.upsert.userInactive")
+									}
+								/>
+							</Grid>
+						</Grid>
+					</Grid>
+				</Grid>
+			</Can>
+			<Grid item xs={12} className={classes.section}>
+				<Grid item xs={12}>
+					<div className={classes.sectionTitle}>
+						{t("users.upsert.residency")}
+					</div>
+				</Grid>
+				<Grid item xs={12} className={classes.fields}>
+					<Grid container justify="flex-start">
+						<Grid item xs={12} className={classes.textContainer}>
+							<FormControlLabel
+								className={classes.switchLabel}
+								control={
+									<Switch
+										checked={details.data.isResident}
+										onChange={handleChange("isResident")}
+										classes={{
+											switchBase: classes.switchBase,
+											checked: classes.checked,
+											track: classes.track,
+										}}
+									/>
+								}
+								label={
+									details.data.isResident
+										? t("users.upsert.isResident")
+										: t("users.upsert.notResident")
+								}
+							/>
+						</Grid>
+
+						<Grid item xs={12} className={classes.textContainer}>
+							<FormControlLabel
+								className={classes.switchLabel}
+								control={
+									<Switch
+										checked={details.data.isOwner}
+										onChange={handleChange("isOwner")}
+										classes={{
+											switchBase: classes.switchBase,
+											checked: classes.checked,
+											track: classes.track,
+										}}
+									/>
+								}
+								label={
+									details.data.isOwner
+										? t("users.upsert.isOwner")
+										: t("users.upsert.notOwner")
+								}
+							/>
+						</Grid>
+						{Boolean(assets.length) && (
+							<React.Fragment>
+								<Grid
+									item
+									xs={12}
+									sm={5}
+									md={5}
+									lg={5}
+									xl={5}
+									className={classes.section}
+								>
+									<Grid item xs={12}>
+										<div className={classes.sectionTitle}>
+											{t("locationsModule.owningAsset")}
+										</div>
+									</Grid>
+									<Grid item xs={12} className={classes.fields}>
+										<Grid container justify="flex-start">
+											<Grid item xs={12} className={classes.textContainer}>
+												<Select
+													variant={"outlined"}
+													value={details.data.asset}
+													onChange={handleChange(`asset`)}
+													className={classes.selectInput}
+													MenuProps={{
+														anchorOrigin: {
+															vertical: "bottom",
+															horizontal: "center",
+														},
+														transformOrigin: {
+															vertical: "top",
+															horizontal: "center",
+														},
+														getContentAnchorEl: null,
+														disablePortal: true,
+														classes: {
+															paper: classes.menupaper,
+														},
+													}}
+												>
+													{assets.map((asset, i) => (
+														<MenuItem
+															key={i}
+															value={asset.value}
+															style={{ direction: lang.dir }}
+															className={classes.menuitem}
+														>
+															{asset.text}
+														</MenuItem>
+													))}
+												</Select>
+											</Grid>
+										</Grid>
+									</Grid>
+								</Grid>
+
+								<Grid
+									item
+									xs={12}
+									sm={5}
+									md={5}
+									lg={5}
+									xl={5}
+									className={classes.section}
+								>
+									<Grid item xs={12}>
+										<div className={classes.sectionTitle}>
+											{t("locationsModule.locationName")}
+										</div>
+									</Grid>
+									<Grid item xs={12} className={classes.fields}>
+										<Grid container justify="flex-start">
+											<Grid item xs={12} className={classes.textContainer}>
+												<Select
+													variant={"outlined"}
+													value={details.data.location}
+													onChange={handleChange(`location`)}
+													className={classes.selectInput}
+													MenuProps={{
+														anchorOrigin: {
+															vertical: "bottom",
+															horizontal: "center",
+														},
+														transformOrigin: {
+															vertical: "top",
+															horizontal: "center",
+														},
+														getContentAnchorEl: null,
+														disablePortal: true,
+														classes: {
+															paper: classes.menupaper,
+														},
+													}}
+												>
+													{locations.map((location, i) => (
+														<MenuItem
+															key={i}
+															value={location.value}
+															style={{ direction: lang.dir }}
+															className={classes.menuitem}
+														>
+															{location.text}
+														</MenuItem>
+													))}
+												</Select>
+											</Grid>
+										</Grid>
+									</Grid>
+								</Grid>
+								<Grid item xs={12} sm={6} lg={4} className={classes.section}>
+									<Grid item xs={12}>
+										<div className={classes.sectionTitle}>
+											{t("users.upsert.unitNumber")}
+										</div>
+									</Grid>
+									<Grid item xs={12} className={classes.fields}>
+										<Grid container justify="flex-start">
+											<Grid item xs={12} className={classes.textContainer}>
+												<TextField
+													variant={"outlined"}
+													error={
+														errors.filter((e) => e.field === `unitNumber`)
+															.length > 0
+													}
+													value={details.data.unitNumber}
+													onChange={handleChange("unitNumber")}
+													className={classes.textField}
+													size={"medium"}
+													helperText={
+														errors.filter((e) => e.field === `unitNumber`)
+															.length > 0 && t("errors.isRequired")
+													}
+													inputProps={{
+														maxLength: 60,
+													}}
+													FormHelperTextProps={{
+														style: {
+															color:
+																errors.filter((e) => e.field === `unitNumber`)
+																	.length > 0 && "rgb(244, 67, 54)",
+														},
+													}}
+												/>
+											</Grid>
+										</Grid>
+									</Grid>
+								</Grid>
+							</React.Fragment>
+						)}
+					</Grid>
+				</Grid>
+			</Grid>
+		</ModalContainer>
 	);
 };
 
 const useStyles = makeStyles((theme) => ({
-	modal: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		backdropFilter: "blur(10px)",
-		'input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button': { 
-		'-webkit-appearance': 'none', 
-			margin: '0' 
-		}
-	},
-
-	gridCont: {
-		height: "fit-content",
-	},
-	paper: {
-		background: "rgba(0,0,0,0.4)",
-		border: "1px solid rgba(255,255,255,0.2)",
-		borderRadius: "10px",
-		padding: "10px 20px",
-		overflowY: "overlay",
-		maxHeight: "80vh",
-		[theme.breakpoints.down("sm")]: {
-			maxHeight: "81vh",
-			top: 0,
-			borderRadius: "0",
-			border: "0",
-			padding: "10px 5px",
-		},
-		"&:focus": {
-			outline: "none",
-		},
-	},
-	headerRow: {
-		display: "flex",
-		justifyContent: "space-between",
-		alignItems: "center",
-		width: "100%",
-		borderBottom: "1px solid rgba(255,255,255,0.2)",
-	},
-	title: {
-		color: "white",
-		padding: "20px 10px 10px",
-		fontSize: "20px",
-		whiteSpace: "nowrap",
-	},
 	iconBtn: {
 		margin: "10px",
 		"&:hover": {
@@ -976,16 +851,18 @@ const useStyles = makeStyles((theme) => ({
 	sectionTitle: {
 		color: "white",
 		fontSize: "16px",
-		padding: "10px 20px",
+		padding: "7px 20px",
+		marginLeft: "25px",
 		width: "fit-content",
-		borderRadius: "10px 10px 0 0",
-		background: "rgba(0,0,0,0.4)",
+		borderRadius: "8px",
 		whiteSpace: "nowrap",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
+		[theme.breakpoints.down("sm")]: {
+			marginLeft: "15px",
+		},
 	},
 	fields: {
 		padding: "10px 20px",
-		borderRadius: "0px 10px 10px 10px",
-		background: "rgba(0,0,0,0.4)",
 		[theme.breakpoints.down("sm")]: {
 			padding: "10px",
 		},
