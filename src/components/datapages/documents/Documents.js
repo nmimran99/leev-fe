@@ -1,21 +1,23 @@
-import { Grid, LinearProgress, makeStyles } from '@material-ui/core';
-import React, { useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { Grid, makeStyles } from "@material-ui/core";
+import React, { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router";
 import {
 	deleteDocument,
-	downloadDocument, getDocuments,
-	updateDocumentDetails
-} from '../../../api/documentsApi';
-import { getServerError, getSuccessMessage } from '../../../api/genericApi';
-import { AuthContext } from '../../../context/AuthContext';
-import { SnackbarContext } from '../../../context/SnackbarContext';
-import { UpsertContext } from '../../../context/UpsertContext';
-import { AlertDialog } from '../../reuseables/AlertDialog';
-import { useQuery } from '../../reuseables/customHooks/useQuery';
-import { NoDataFound } from '../../reuseables/NoDataFound';
-import { Document } from './Document';
-import { DocumentsControls } from './DocumentsControls';
+	downloadDocument,
+	getDocuments,
+	updateDocumentDetails,
+} from "../../../api/documentsApi";
+import { getServerError, getSuccessMessage } from "../../../api/genericApi";
+import { AuthContext } from "../../../context/AuthContext";
+import { SnackbarContext } from "../../../context/SnackbarContext";
+import { UpsertContext } from "../../../context/UpsertContext";
+import { AlertDialog } from "../../reuseables/AlertDialog";
+import { useQuery } from "../../reuseables/customHooks/useQuery";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
+import { NoDataFound } from "../../reuseables/NoDataFound";
+import { Document } from "./Document";
+import { DocumentsControls } from "./DocumentsControls";
 
 export const Documents = () => {
 	const classes = useStyles();
@@ -24,12 +26,11 @@ export const Documents = () => {
 	const { auth } = useContext(AuthContext);
 	const { t } = useTranslation();
 	const { setSnackbar } = useContext(SnackbarContext);
-	const { setUpsertData } = useContext(UpsertContext); 
+	const { setUpsertData } = useContext(UpsertContext);
 	const [docs, setDocs] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [alertDialog, setAlertDialog] = useState(null);
-	const [ edit, setEdit ] = useState(null)
-
+	const [edit, setEdit] = useState(null);
 
 	useEffect(() => {
 		getDocuments(auth.user.tenant, query)
@@ -54,14 +55,14 @@ export const Documents = () => {
 
 	const deleteFile = (documentId, desc) => (event) => {
 		setAlertDialog({
-			text: `${t('documentsModule.deleteFilePrompt')} "${desc}"?`,
-			title: t('documentsModule.deleteFileTitle'),
+			text: `${t("documentsModule.deleteFilePrompt")} "${desc}"?`,
+			title: t("documentsModule.deleteFileTitle"),
 			handleConfirm: async () => {
 				const res = await deleteDocument(auth.user.tenant, documentId);
 				if (res) {
 					setDocs(docs.filter((d) => d._id !== res._id));
 					setAlertDialog(null);
-					setSnackbar(getSuccessMessage('document', res.docId, 'deleted'))
+					setSnackbar(getSuccessMessage("document", res.docId, "deleted"));
 				}
 			},
 			handleCancel: () => setAlertDialog(null),
@@ -74,68 +75,65 @@ export const Documents = () => {
 
 	const handleSave = (documentId, details) => {
 		updateDocumentDetails(documentId, details)
-		.then(res => {
-			if (res.status === 403) {
-				setSnackbar(res);
-			} else if (res) {
-				setDocs(docs.map(d => {
-					if (d._id === res._id) {
-						return res;
-					}
-					return d;
-				}));
-				setSnackbar(getSuccessMessage('document', res.docId, 'updated'));
-			}
-		})
-		.finally(() => setEdit(null))
-	}
-	
-	const previewFile = file => {
-		window.open(file.url)
-	}
+			.then((res) => {
+				if (res.status === 403) {
+					setSnackbar(res);
+				} else if (res) {
+					setDocs(
+						docs.map((d) => {
+							if (d._id === res._id) {
+								return res;
+							}
+							return d;
+						})
+					);
+					setSnackbar(getSuccessMessage("document", res.docId, "updated"));
+				}
+			})
+			.finally(() => setEdit(null));
+	};
 
-	const toggleEditMode = documentId  => {
-		setUpsertData({ itemId: documentId, module: 'documents'})
-	}
+	const previewFile = (file) => {
+		window.open(file.url);
+	};
+
+	const toggleEditMode = (documentId) => {
+		setUpsertData({ itemId: documentId, module: "documents" });
+	};
 
 	return (
 		<Grid container justify="center">
 			<Grid xs={12} className={classes.moduleContainer}>
-				<div className={classes.pageModule}>{t('documentsModule.documents')}</div>
+				<div className={classes.pageModule}>
+					{t("documentsModule.documents")}
+				</div>
 			</Grid>
 			<Grid item xs={12}>
 				<DocumentsControls />
 			</Grid>
 			{isLoading ? (
-				<LinearProgress />
+				<LoadingProgress />
 			) : (
-				<Grid
-					container
-					justify="center"
-					className={classes.docsContainer}
-				>
-					{
-					docs.length ? 
-					docs.map((d, i) => (
-						<Grid item xs={12} sm={8} md={5} lg={4} xl={3} key={i}>
-							<Document
-								data={d}
-								deleteFile={deleteFile}
-								downloadFile={downloadFile}
-								toggleEditMode={toggleEditMode}
-								previewFile={previewFile}
-							/>
-						</Grid>
-					)) : 
-					<NoDataFound />
-					}
+				<Grid container justify="center" className={classes.docsContainer}>
+					{docs.length ? (
+						docs.map((d, i) => (
+							<Grid item xs={12} sm={8} md={5} lg={4} xl={3} key={i}>
+								<Document
+									data={d}
+									deleteFile={deleteFile}
+									downloadFile={downloadFile}
+									toggleEditMode={toggleEditMode}
+									previewFile={previewFile}
+								/>
+							</Grid>
+						))
+					) : (
+						<NoDataFound />
+					)}
 				</Grid>
 			)}
 			{Boolean(alertDialog) && (
-				<AlertDialog
-					alertDialog={alertDialog}
-					open={Boolean(alertDialog)}
-				/>
+				<AlertDialog alertDialog={alertDialog} open={Boolean(alertDialog)} />
 			)}
 		</Grid>
 	);
@@ -143,30 +141,30 @@ export const Documents = () => {
 
 const useStyles = makeStyles((theme) => ({
 	moduleContainer: {
-		position: 'sticky',
+		position: "sticky",
 		top: 0,
-		zIndex: 2
+		zIndex: 2,
 	},
 	pageModule: {
 		color: "white",
 		padding: "10px 40px",
 		fontSize: "16px",
 		background: "rgba(0,0,0,0.8)",
-        boxShadow: '0 0px 2px 1px rgba(255,255,255,0.3)',
+		boxShadow: "0 0px 2px 1px rgba(255,255,255,0.3)",
 		margin: "0px auto 5px",
 		width: "30%",
 		textAlign: "center",
 		borderRadius: "0 0 25px 25px",
-		lineHeight: "1", 
-		[theme.breakpoints.down('sm')]: {
+		lineHeight: "1",
+		[theme.breakpoints.down("sm")]: {
 			background: "black",
 			width: "100vw",
 			padding: "20px 0",
 			borderRadius: 0,
-			margin: 0
-		}
+			margin: 0,
+		},
 	},
 	docsContainer: {
-		padding: '10px',
+		padding: "10px",
 	},
 }));

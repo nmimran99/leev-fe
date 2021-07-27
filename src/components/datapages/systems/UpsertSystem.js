@@ -1,35 +1,26 @@
 import DateFnsUtils from "@date-io/date-fns";
 import {
 	Avatar,
-	Backdrop,
-	Button,
 	Chip,
-	Fade,
 	FormControlLabel,
 	FormHelperText,
 	Grid,
-	IconButton,
-	LinearProgress,
 	makeStyles,
 	MenuItem,
-	Modal,
-	Paper,
 	Radio,
 	RadioGroup,
 	Select,
 	TextField,
-	useMediaQuery,
 } from "@material-ui/core";
 import { ClearRounded } from "@material-ui/icons";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import clsx from "clsx";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getFullName, getLocale } from "../../../api/genericApi";
 import { getAssetsSuggestions, getSystem } from "../../../api/systemsApi";
 import { createUserOptions } from "../../../api/userApi";
-import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ModalContainer } from "../../reuseables/ModalContainer";
 import { UserItem } from "../../user/UserItem";
 
@@ -43,7 +34,7 @@ export const UpsertSystem = ({
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { t } = useTranslation();
-	const [ isLoading, setIsLoading ] = useState(true);
+	const [isLoading, setIsLoading] = useState(true);
 	const [mode, setMode] = useState(systemId ? "update" : "create");
 	const [errors, setErrors] = useState([]);
 	const [assets, setAssets] = useState([]);
@@ -54,41 +45,39 @@ export const UpsertSystem = ({
 		owner: "",
 		relatedUsers: [],
 	});
-	const [addData, setAddData] = useState(
-		{
-			general: {
-				location: "",
-				manufacturingYear: "",
-				SID: "",
-			},
-			manufacturer: {
-				name: "",
-				contactName: "",
-				email: "",
-				phoneNumber: "",
-				extension: "",
-			},
-			supplier: {
-				name: "",
-				contactName: "",
-				email: "",
-				phoneNumber: "",
-				extension: "",
-			},
-			insurance: {
-				name: "",
-				contanctName: "",
-				email: "",
-				phoneNumber: "",
-				extension: "",
-				expiryDate: null,
-			},
-			warranty: {
-				issuer: "",
-				expiryDate: null,
-			},
-		}
-	);
+	const [addData, setAddData] = useState({
+		general: {
+			location: "",
+			manufacturingYear: "",
+			SID: "",
+		},
+		manufacturer: {
+			name: "",
+			contactName: "",
+			email: "",
+			phoneNumber: "",
+			extension: "",
+		},
+		supplier: {
+			name: "",
+			contactName: "",
+			email: "",
+			phoneNumber: "",
+			extension: "",
+		},
+		insurance: {
+			name: "",
+			contanctName: "",
+			email: "",
+			phoneNumber: "",
+			extension: "",
+			expiryDate: null,
+		},
+		warranty: {
+			issuer: "",
+			expiryDate: null,
+		},
+	});
 
 	const validateFields = () => {
 		return new Promise((resolve, reject) => {
@@ -117,7 +106,10 @@ export const UpsertSystem = ({
 	}, []);
 
 	const prepareData = async () => {
-		const [ userOptions, assetSuggestions ] = await Promise.all([createUserOptions(), getAssetsSuggestions()]);
+		const [userOptions, assetSuggestions] = await Promise.all([
+			createUserOptions(),
+			getAssetsSuggestions(),
+		]);
 		setUserList(userOptions);
 		setAssets(assetSuggestions);
 		if (!systemId) {
@@ -127,7 +119,7 @@ export const UpsertSystem = ({
 		const res = await getSystem(systemId);
 		setAddData(res.data);
 		setIsLoading(false);
-	}
+	};
 
 	const handleConfirm = () => {
 		validateFields().then((res) => {
@@ -195,10 +187,9 @@ export const UpsertSystem = ({
 		});
 	};
 
-	return (
-		isLoading ? (
-			<LinearProgress />
-		) : (
+	return isLoading ? (
+		<LoadingProgress />
+	) : (
 		<ModalContainer
 			handleClose={handleClose}
 			title={
@@ -985,7 +976,7 @@ export const UpsertSystem = ({
 				</Grid>
 			</Grid>
 		</ModalContainer>
-	));
+	);
 };
 
 const useStyles = makeStyles((theme) => ({

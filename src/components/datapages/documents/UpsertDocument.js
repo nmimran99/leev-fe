@@ -1,25 +1,19 @@
 import {
 	Avatar,
-	Backdrop,
 	Button,
 	Chip,
-	Fade,
 	FormHelperText,
 	Grid,
-	IconButton,
-	LinearProgress,
 	makeStyles,
 	MenuItem,
-	Modal,
-	Paper,
 	Select,
 	TextField,
 	useMediaQuery,
 } from "@material-ui/core";
-import { ClearRounded } from "@material-ui/icons";
 import clsx from "clsx";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { getDocument } from "../../../api/documentsApi";
 import { getFaults } from "../../../api/faultsApi";
 import { getFullName } from "../../../api/genericApi";
 import {
@@ -31,11 +25,16 @@ import { getTasks } from "../../../api/tasksApi";
 import { createUserOptions } from "../../../api/userApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
-import { UserItem } from "../../user/UserItem";
-import { getDocument } from "../../../api/documentsApi";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ModalContainer } from "../../reuseables/ModalContainer";
+import { UserItem } from "../../user/UserItem";
 
-export const UpsertDocument = ({ handleClose, handleSave, handleUpdate, documentId }) => {
+export const UpsertDocument = ({
+	handleClose,
+	handleSave,
+	handleUpdate,
+	documentId,
+}) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 	const { auth } = useContext(AuthContext);
@@ -101,14 +100,17 @@ export const UpsertDocument = ({ handleClose, handleSave, handleUpdate, document
 	}, [details.asset, details.system]);
 
 	const prepareData = async () => {
-		const [ userOptions, assetSuggestions ] = await Promise.all([createUserOptions(), getAssetsSuggestions()]);
+		const [userOptions, assetSuggestions] = await Promise.all([
+			createUserOptions(),
+			getAssetsSuggestions(),
+		]);
 		setUserList(userOptions);
 		setAssets(assetSuggestions);
 		if (!documentId) {
-			setIsLoading(false)
+			setIsLoading(false);
 			return;
 		}
-		const data = await getDocument(documentId)
+		const data = await getDocument(documentId);
 		await loadSystemOptions(data.asset);
 		if (!data) return;
 		setDetails({ ...data, file: null });
@@ -133,7 +135,7 @@ export const UpsertDocument = ({ handleClose, handleSave, handleUpdate, document
 	};
 
 	const loadSystemOptions = async (assetId) => {
-		const systems = await getSystemsByAsset(assetId)
+		const systems = await getSystemsByAsset(assetId);
 		const systemOptions = await createSystemMenuOptions(systems);
 		setSystems(systemOptions);
 	};
@@ -141,12 +143,11 @@ export const UpsertDocument = ({ handleClose, handleSave, handleUpdate, document
 	const handleConfirm = () => {
 		validateFields().then((res) => {
 			if (!res) return;
-			if (mode === 'create') {
+			if (mode === "create") {
 				handleSave(details);
 				return;
 			}
 			handleUpdate(details);
-			
 		});
 	};
 
@@ -185,7 +186,7 @@ export const UpsertDocument = ({ handleClose, handleSave, handleUpdate, document
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<ModalContainer
 			handleClose={handleClose}

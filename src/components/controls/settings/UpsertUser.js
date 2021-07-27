@@ -1,28 +1,13 @@
 import DateFnsUtils from "@date-io/date-fns";
 import {
-	Backdrop,
-	Button,
-	Fade,
 	FormControlLabel,
 	FormHelperText,
-	Grid,
-	IconButton,
-	LinearProgress,
-	makeStyles,
-	MenuItem,
-	Modal,
-	Paper,
-	Select,
+	Grid, makeStyles,
+	MenuItem, Select,
 	Switch,
-	TextField,
+	TextField
 } from "@material-ui/core";
-import {
-	ClearRounded,
-	ContactsOutlined,
-	RecentActorsSharp,
-} from "@material-ui/icons";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import clsx from "clsx";
 import heLocale from "date-fns/locale/he";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -30,19 +15,20 @@ import { getTenantOptions } from "../../../api/adminApi";
 import { getFullName, getSuccessMessage } from "../../../api/genericApi";
 import {
 	createLocationMenuOptions,
-	getLocationsByAsset,
+	getLocationsByAsset
 } from "../../../api/locationsApi";
 import { getRoles, getRolesSuggestions } from "../../../api/permissionsApi";
 import { getAssetsSuggestions } from "../../../api/systemsApi";
 import {
 	createUser,
 	getUserDataById,
-	updateUserData,
+	updateUserData
 } from "../../../api/userApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
 import { Can } from "../../reuseables/Can";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ModalContainer } from "../../reuseables/ModalContainer";
 
 export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
@@ -268,7 +254,7 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<ModalContainer
 			handleClose={handleClose}

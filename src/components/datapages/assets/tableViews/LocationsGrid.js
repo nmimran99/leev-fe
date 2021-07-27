@@ -2,9 +2,7 @@ import {
 	Avatar,
 	Button,
 	Collapse,
-	Grid,
-	LinearProgress,
-	makeStyles,
+	Grid, makeStyles,
 	useMediaQuery
 } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
@@ -16,6 +14,7 @@ import { getAssetData } from "../../../../api/assetsApi";
 import { getFullName, getServerError, removeQueryParam } from "../../../../api/genericApi";
 import { SnackbarContext } from "../../../../context/SnackbarContext";
 import { UpsertContext } from "../../../../context/UpsertContext";
+import { LoadingProgress } from "../../../reuseables/LoadingProgress";
 import { UserItem } from "../../../user/UserItem";
 
 
@@ -62,8 +61,8 @@ export const LocationsGrid = ({ assetId, handleUpdateLocation }) => {
 		setUpsertData({ itemId: lcoationId, module: 'locations' })
 	}
 	return (
-		isLoading ? 
-		<LinearProgress /> :
+		true ? 
+		<LoadingProgress /> :
 		<React.Fragment>
 		<Grid container justify="center">
 			<Grid container className={classes.headersContainer} justify="center">

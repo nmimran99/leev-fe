@@ -1,9 +1,4 @@
-import {
-	Grid,
-	IconButton,
-	LinearProgress,
-	makeStyles
-} from "@material-ui/core";
+import { Grid, IconButton, makeStyles } from "@material-ui/core";
 import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
 import DoneIcon from "@material-ui/icons/Done";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
@@ -16,7 +11,15 @@ import { useHistory, useParams } from "react-router";
 import { getFullAddress } from "../../../api/assetsApi";
 import { getNextIterationDate } from "../../../api/genericApi";
 import {
-	addTaskRelatedUser, completeTaskStep, getTask, removeTaskRelatedUser, saveTaskComment, updateTaskComment, updateTaskOwner, updateTaskSchedule, updateTaskStatus
+	addTaskRelatedUser,
+	completeTaskStep,
+	getTask,
+	removeTaskRelatedUser,
+	saveTaskComment,
+	updateTaskComment,
+	updateTaskOwner,
+	updateTaskSchedule,
+	updateTaskStatus,
 } from "../../../api/tasksApi";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
@@ -26,6 +29,7 @@ import { Can } from "../../reuseables/Can";
 import { Carousel } from "../../reuseables/Carousel";
 import { CommentSection } from "../../reuseables/CommentSection";
 import { ItemLink } from "../../reuseables/ItemLink";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 import { Scheduler } from "../../reuseables/scheduler/Scheduler";
 import { StatusTag } from "../../reuseables/StatusTag";
@@ -65,7 +69,7 @@ export const TaskView = () => {
 		}
 		setTask(res);
 		setIsLoading(false);
-	}
+	};
 
 	const updateOwner = (userId) => {
 		updateTaskOwner(task._id, userId).then((res) => {
@@ -166,11 +170,11 @@ export const TaskView = () => {
 	};
 
 	const toggleEditMode = () => {
-		setUpsertData({ itemId: task._id, module: 'tasks' })
-	}
+		setUpsertData({ itemId: task._id, module: "tasks" });
+	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<React.Fragment>
 			<Grid
@@ -179,7 +183,6 @@ export const TaskView = () => {
 				justify="space-between"
 				alignItems="flex-start"
 			>
-				
 				<Grid container className={classes.controls}>
 					<div className={classes.topHeaderGriditem}>
 						<div className={classes.taskId}>
@@ -187,7 +190,7 @@ export const TaskView = () => {
 						</div>
 						<ReturnToPrevios />
 					</div>
-					
+
 					<Grid item xs={12} className={classes.controlsGriditem}>
 						<TaskViewControls
 							task={task}
@@ -202,7 +205,6 @@ export const TaskView = () => {
 							item
 							xs={12}
 							className={classes.controlsGriditem}
-							
 							onClick={() => setChangeStatus(true)}
 							style={{
 								justifyContent: "flex-start",
@@ -234,13 +236,25 @@ export const TaskView = () => {
 					className={classes.rightContainer}
 				>
 					<div className={classes.asset}>{getFullAddress(task.asset)}</div>
-					<div className={clsx(classes.system, !task.system && classes.notAssigned)}>
+					<div
+						className={clsx(
+							classes.system,
+							!task.system && classes.notAssigned
+						)}
+					>
 						<BlurOnRoundedIcon className={classes.systemIcon} />
-						{task.system ? task.system.name : t('general.noSystemAssigned')}
+						{task.system ? task.system.name : t("general.noSystemAssigned")}
 					</div>
-					<div className={clsx(classes.location, !task.location && classes.notAssigned)}>
+					<div
+						className={clsx(
+							classes.location,
+							!task.location && classes.notAssigned
+						)}
+					>
 						<RoomIcon className={classes.systemIcon} />
-						{task.location ? task.location.name : t('general.noLocationAssigned')}
+						{task.location
+							? task.location.name
+							: t("general.noLocationAssigned")}
 					</div>
 
 					{!task.asset && (
@@ -569,18 +583,18 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		justifyContent: "space-between",
 		margin: "10px 0",
-		width: '100%',
-		[theme.breakpoints.down('sm')]: {
-            border: '1px solid rgba(255,255,255,0.2)',
-			background: 'black',
-			borderRadius: '50px',
-			padding: '5px 5px 5px 25px'
-        }
+		width: "100%",
+		[theme.breakpoints.down("sm")]: {
+			border: "1px solid rgba(255,255,255,0.2)",
+			background: "black",
+			borderRadius: "50px",
+			padding: "5px 5px 5px 25px",
+		},
 	},
 	controlsGriditem: {
 		display: "flex",
 		justifyContent: "flex-end",
-		margin: '10px 0'	
+		margin: "10px 0",
 	},
 	taskId: {
 		padding: "5px 0",
@@ -783,6 +797,6 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "18px",
 	},
 	notAssigned: {
-		filter: 'brightness(60%)'
-	}
+		filter: "brightness(60%)",
+	},
 }));

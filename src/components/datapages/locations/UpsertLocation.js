@@ -1,9 +1,12 @@
 import {
-	Avatar, Chip, FormHelperText,
-	Grid, LinearProgress,
+	Avatar,
+	Chip,
+	FormHelperText,
+	Grid,
 	makeStyles,
-	MenuItem, Select,
-	TextField
+	MenuItem,
+	Select,
+	TextField,
 } from "@material-ui/core";
 import { ClearRounded } from "@material-ui/icons";
 import React, { useContext, useEffect, useState } from "react";
@@ -14,6 +17,7 @@ import { getAssetsSuggestions } from "../../../api/systemsApi";
 import { createUserOptions } from "../../../api/userApi";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ModalContainer } from "../../reuseables/ModalContainer";
 import { UserItem } from "../../user/UserItem";
 
@@ -43,26 +47,29 @@ export const UpsertLocation = ({
 	}, []);
 
 	const prepareData = async () => {
-		const [ userOptions, assetSuggestions ] = await Promise.all([createUserOptions(), getAssetsSuggestions()]);
+		const [userOptions, assetSuggestions] = await Promise.all([
+			createUserOptions(),
+			getAssetsSuggestions(),
+		]);
 		setUserList(userOptions);
 		setAssets(assetSuggestions);
 		if (!locationId) {
 			setIsLoading(false);
 			return;
-		};
+		}
 		const res = await getLocationData(locationId);
 		if (res.status === 403) {
 			setSnackbar(res);
 			handleClose();
 			return;
-		}		
+		}
 		setDetails({
 			relatedUsers: res.relatedUsers,
 			name: res.name,
 			asset: res.asset,
 		});
 		setIsLoading(false);
-	}
+	};
 
 	const validateFields = () => {
 		return new Promise((resolve, reject) => {
@@ -138,7 +145,7 @@ export const UpsertLocation = ({
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<ModalContainer
 			handleClose={handleClose}

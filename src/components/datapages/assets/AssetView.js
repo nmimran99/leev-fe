@@ -1,7 +1,5 @@
 import {
-	Grid,
-	LinearProgress,
-	makeStyles,
+	Grid, makeStyles,
 	useMediaQuery
 } from "@material-ui/core";
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
@@ -19,6 +17,7 @@ import { updateLocation } from "../../../api/locationsApi";
 import { SnackbarContext } from "../../../context/SnackbarContext";
 import { UpsertContext } from "../../../context/UpsertContext";
 import { useQuery } from "../../reuseables/customHooks/useQuery";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 import { UserItem } from "../../user/UserItem";
 import { AssetControls } from "./AssetControls";
@@ -89,7 +88,7 @@ export const AssetView = ({}) => {
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<React.Fragment>
 			<Grid container justify="center">

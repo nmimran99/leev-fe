@@ -1,4 +1,4 @@
-import { Grid, LinearProgress, makeStyles, useMediaQuery } from "@material-ui/core";
+import { Grid, makeStyles, useMediaQuery } from "@material-ui/core";
 import clsx from "clsx";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,7 @@ import { useHistory, useLocation } from "react-router";
 import { getAssetData } from "../../../../api/assetsApi";
 import { getServerError, removeQueryParam } from "../../../../api/genericApi";
 import { SnackbarContext } from "../../../../context/SnackbarContext";
+import { LoadingProgress } from "../../../reuseables/LoadingProgress";
 import { UserItem } from "../../../user/UserItem";
 
 export const SystemsGrid = ({ assetId }) => {
@@ -15,31 +16,30 @@ export const SystemsGrid = ({ assetId }) => {
 	const { t } = useTranslation();
 	const { setSnackbar } = useContext(SnackbarContext);
 	const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-	const [ isLoading, setIsLoading ] = useState(true);
-	const [ systems, setSystems ] = useState([]);
-	const [ faults, setFaults ] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [systems, setSystems] = useState([]);
+	const [faults, setFaults] = useState([]);
 
 	useEffect(() => {
-		getAssetData(assetId, 'systems')
-		.then(res => {
-			if (!res || [403, 500].includes(res.status)) {
-				history.push({
-					path: location.pathname,
-					search: removeQueryParam(location.search, 'tab'),
-				});
-				setSnackbar(res || getServerError());
-			};
-			setSystems(res.systems);
-			setFaults(res.faults)
-		})
-		.finally(() => {
-			setIsLoading(false)
-		})
-	}, [])
-	return (
-		isLoading ? 
-		<LinearProgress /> :
-
+		getAssetData(assetId, "systems")
+			.then((res) => {
+				if (!res || [403, 500].includes(res.status)) {
+					history.push({
+						path: location.pathname,
+						search: removeQueryParam(location.search, "tab"),
+					});
+					setSnackbar(res || getServerError());
+				}
+				setSystems(res.systems);
+				setFaults(res.faults);
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
+	}, []);
+	return isLoading ? (
+		<LoadingProgress />
+	) : (
 		<Grid container justify="center">
 			<Grid container className={classes.headersContainer} justify="center">
 				<Grid item xs={4}>

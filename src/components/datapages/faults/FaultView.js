@@ -1,12 +1,10 @@
 import {
-	Grid,
-	LinearProgress,
-	makeStyles,
+	Grid, makeStyles,
 	useMediaQuery
 } from "@material-ui/core";
 import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
 import RoomIcon from "@material-ui/icons/Room";
-import clsx from 'clsx';
+import clsx from "clsx";
 import { format, parseISO } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,6 +17,7 @@ import { UpsertContext } from "../../../context/UpsertContext";
 import { AddRelatedUser } from "../../reuseables/AddRelatedUser";
 import { Carousel } from "../../reuseables/Carousel";
 import { CommentSection } from "../../reuseables/CommentSection";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 import { StatusTag } from "../../reuseables/StatusTag";
 import { UpdateOwner } from "../../reuseables/UpdateOwner";
@@ -27,9 +26,6 @@ import { UserList } from "../../reuseables/UserList";
 import { UserItem } from "../../user/UserItem";
 import { FaultLink } from "./FaultLink";
 import { FaultViewControls } from "./FaultViewControls";
-
-export const FaultView = ({ fid, faultData, updateFaultState }) => {
-	const history = useHistory();
 	const location = useLocation();
 	const { t } = useTranslation();
 	const classes = useStyles();
@@ -60,7 +56,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 			setIsLoading(false);
 			return;
 		}
-		const res = await faultApi.getFault(faultId || fid, false)
+		const res = await faultApi.getFault(faultId || fid, false);
 		if (!res) {
 			history.push("/workspace/faults");
 		} else if (res.status === 403) {
@@ -68,10 +64,10 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 			history.push("/workspace/faults");
 		}
 		setFault(res);
-	}
+	};
 
 	const updateOwner = async (userId) => {
-		const res = await faultApi.updateFaultOwner(fault._id, userId)
+		const res = await faultApi.updateFaultOwner(fault._id, userId);
 		if (res.status === 403) {
 			setSnackbar(res);
 		} else {
@@ -127,7 +123,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 			setFault({
 				...fault,
 				status: res.status,
-				closedDate: res.closedDate
+				closedDate: res.closedDate,
 			});
 			if (updateFaultState) {
 				updateFaultState(res._id, "status", res.status);
@@ -162,12 +158,12 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 		return Promise.resolve(res);
 	};
 
-	const toggleEditMode = (faultId) => event => {
-		setUpsertData({ itemId: faultId, module: 'faults' })
-	}
+	const toggleEditMode = (faultId) => (event) => {
+		setUpsertData({ itemId: faultId, module: "faults" });
+	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<React.Fragment>
 			<Grid
@@ -214,13 +210,25 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					className={classes.rightContainer}
 				>
 					<div className={classes.asset}>{getFullAddress(fault.asset)}</div>
-					<div className={clsx(classes.system, !fault.system && classes.notAssigned)}>
+					<div
+						className={clsx(
+							classes.system,
+							!fault.system && classes.notAssigned
+						)}
+					>
 						<BlurOnRoundedIcon className={classes.systemIcon} />
-						{fault.system ? fault.system.name : t('general.noSystemAssigned')}
+						{fault.system ? fault.system.name : t("general.noSystemAssigned")}
 					</div>
-					<div className={clsx(classes.location, !fault.location && classes.notAssigned)}>
+					<div
+						className={clsx(
+							classes.location,
+							!fault.location && classes.notAssigned
+						)}
+					>
 						<RoomIcon className={classes.systemIcon} />
-						{fault.location ? fault.location.name : t('general.noLocationAssigned')}
+						{fault.location
+							? fault.location.name
+							: t("general.noLocationAssigned")}
 					</div>
 
 					<div className={classes.title}>{fault.title}</div>
@@ -232,7 +240,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 									lang.dateformat
 								)}`}
 							</div>
-							{Boolean(fault.closedDate) && fault.status.state === 'close' && (
+							{Boolean(fault.closedDate) && fault.status.state === "close" && (
 								<div className={classes.closedDate}>
 									{`${t("general.closedDate")} ${format(
 										parseISO(fault.closedDate),
@@ -261,7 +269,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					xl={3}
 					className={classes.leftContainer}
 				>
-					<Grid container justify='center'>
+					<Grid container justify="center">
 						<Grid item xs={12}>
 							<div className={classes.owner}>
 								{
@@ -274,7 +282,6 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 										avatarSize={50}
 									/>
 								}
-								
 							</div>
 						</Grid>
 						<Grid item xl={10} md={6} sm={6} xs={12}>
@@ -333,7 +340,6 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					instructions={t("faultsModule.addRelatedUserInstructions")}
 				/>
 			)}
-
 		</React.Fragment>
 	);
 };
@@ -435,7 +441,7 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "space-between",
 		alignItems: "center",
 		padding: "20px 30px 0px 30px",
-		
+
 		[theme.breakpoints.down("sm")]: {
 			padding: "20px 15px 0px",
 		},
@@ -443,20 +449,19 @@ const useStyles = makeStyles((theme) => ({
 	controlsGriditem: {
 		display: "flex",
 		justifyContent: "flex-end",
-		margin: '10px 0'
-		
+		margin: "10px 0",
 	},
 	topHeaderGriditem: {
 		display: "flex",
 		justifyContent: "space-between",
 		margin: "10px 0",
-		width: '100%',
-		[theme.breakpoints.down('sm')]: {
-            border: '1px solid rgba(255,255,255,0.2)',
-			background: 'black',
-			borderRadius: '50px',
-			padding: '5px 5px 5px 25px'
-        }
+		width: "100%",
+		[theme.breakpoints.down("sm")]: {
+			border: "1px solid rgba(255,255,255,0.2)",
+			background: "black",
+			borderRadius: "50px",
+			padding: "5px 5px 5px 25px",
+		},
 	},
 	faultId: {
 		padding: "10px 0",
@@ -534,6 +539,6 @@ const useStyles = makeStyles((theme) => ({
 		margin: "10px 0",
 	},
 	notAssigned: {
-		filter: 'brightness(60%)'
-	}
+		filter: "brightness(60%)",
+	},
 }));

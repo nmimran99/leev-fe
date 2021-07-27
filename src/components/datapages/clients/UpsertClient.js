@@ -1,7 +1,6 @@
 import {
 	FormControlLabel,
 	Grid,
-	LinearProgress,
 	makeStyles,
 	MenuItem,
 	Select,
@@ -15,6 +14,7 @@ import { getSuccessMessage, localizations } from "../../../api/genericApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ModalContainer } from "../../reuseables/ModalContainer";
 
 export const UpsertClient = ({ handleClose, tenantId }) => {
@@ -121,7 +121,7 @@ export const UpsertClient = ({ handleClose, tenantId }) => {
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<ModalContainer
 			handleClose={handleClose}

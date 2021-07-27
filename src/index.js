@@ -6,6 +6,7 @@ import { AuthContextProvider } from './context/AuthContext'
 import './i18n';
 import { LanguageContextProvider } from './context/LanguageContext';
 import { EnvContextProvider } from './context/EnvContext';
+import { LoadingProgress } from './components/reuseables/LoadingProgress';
 
 Object.defineProperty(Array.prototype, "chunk", {
 	value: function (chunkSize) {
@@ -20,7 +21,7 @@ ReactDOM.render(
     <EnvContextProvider>
       <LanguageContextProvider>
         <AuthContextProvider>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<LoadingProgress initial={true} />}>
             <App />
           </Suspense>   
         </AuthContextProvider>

@@ -1,16 +1,17 @@
-import { Avatar, Grid, IconButton, LinearProgress, List, ListItem, makeStyles, Tooltip } from '@material-ui/core';
-import React, { useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { createUser, filterUsers, getResidentList, getUserList } from '../../../api/userApi';
-import { AuthContext } from '../../../context/AuthContext';
-import { SnackbarContext } from '../../../context/SnackbarContext';
-import { LanguageContext } from '../../../context/LanguageContext';
-import { getFullName, getSuccessMessage } from '../../../api/genericApi';
-import { SearchBox } from '../../reuseables/SearchBox';
+import { Avatar, Grid, IconButton, List, ListItem, makeStyles, Tooltip } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-import { UpsertUser } from './UpsertUser';
+import React, { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { getFullName } from '../../../api/genericApi';
+import { filterUsers, getResidentList } from '../../../api/userApi';
+import { AuthContext } from '../../../context/AuthContext';
+import { LanguageContext } from '../../../context/LanguageContext';
+import { SnackbarContext } from '../../../context/SnackbarContext';
 import { Can } from '../../reuseables/Can';
+import { LoadingProgress } from '../../reuseables/LoadingProgress';
+import { SearchBox } from '../../reuseables/SearchBox';
+import { UpsertUser } from './UpsertUser';
 
 export const Residents = () => {
 	const classes = useStyles();
@@ -58,7 +59,7 @@ export const Residents = () => {
     }
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<Grid container className={classes.usersContainer}>
 			<Grid item xs={10} className={classes.gridSearch}>

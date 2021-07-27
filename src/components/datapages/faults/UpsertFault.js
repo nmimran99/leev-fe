@@ -1,12 +1,14 @@
 import {
-	Avatar, Button,
-	Chip, FormHelperText,
+	Avatar,
+	Button,
+	Chip,
+	FormHelperText,
 	Grid,
 	IconButton,
-	LinearProgress,
 	makeStyles,
-	MenuItem, Select,
-	TextField
+	MenuItem,
+	Select,
+	TextField,
 } from "@material-ui/core";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import React, { useContext, useEffect, useState } from "react";
@@ -15,16 +17,17 @@ import { getFault } from "../../../api/faultsApi";
 import { getFullName } from "../../../api/genericApi";
 import {
 	createLocationMenuOptions,
-	getLocationsByAsset
+	getLocationsByAsset,
 } from "../../../api/locationsApi";
 import {
 	createSystemMenuOptions,
 	getAssetsSuggestions,
-	getSystemsByAsset
+	getSystemsByAsset,
 } from "../../../api/systemsApi";
 import { createUserOptions } from "../../../api/userApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ModalContainer } from "../../reuseables/ModalContainer";
 import { UserItem } from "../../user/UserItem";
 
@@ -66,19 +69,25 @@ export const UpsertFault = ({
 	}, []);
 
 	const prepareData = async () => {
-		const [ userOptions, assetSuggestions ] = await Promise.all([createUserOptions(), getAssetsSuggestions()]);
+		const [userOptions, assetSuggestions] = await Promise.all([
+			createUserOptions(),
+			getAssetsSuggestions(),
+		]);
 		setUserList(userOptions);
 		setAssets(assetSuggestions);
 		if (!faultId) {
 			setIsLoading(false);
 			return;
 		}
-		const data = await getFault(faultId, true)
-		await Promise.all([loadSystemOptions(data.asset),loadLocationOptions(data.asset)]);
+		const data = await getFault(faultId, true);
+		await Promise.all([
+			loadSystemOptions(data.asset),
+			loadLocationOptions(data.asset),
+		]);
 		if (!data) return;
 		setDetails({ ...data, images: [], uploadedImages: data.images });
 		setIsLoading(false);
-	}
+	};
 
 	const validateFields = () => {
 		return new Promise((resolve, reject) => {
@@ -108,7 +117,7 @@ export const UpsertFault = ({
 	};
 
 	const loadSystemOptions = async (assetId) => {
-		const systems = await getSystemsByAsset(assetId)
+		const systems = await getSystemsByAsset(assetId);
 		const data = await createSystemMenuOptions(systems);
 		setSystems(data);
 		return true;
@@ -166,7 +175,7 @@ export const UpsertFault = ({
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<ModalContainer
 			handleClose={handleClose}

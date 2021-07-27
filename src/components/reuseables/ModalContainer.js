@@ -1,13 +1,6 @@
 import {
-	Fade,
-	Button,
-	Slide,
-	Grid,
-	IconButton,
-	LinearProgress,
-	makeStyles,
-	Modal,
-	Paper,
+	Button, Fade, Grid,
+	IconButton, makeStyles, Paper, Slide
 } from "@material-ui/core";
 import { ClearRounded } from "@material-ui/icons";
 import clsx from "clsx";

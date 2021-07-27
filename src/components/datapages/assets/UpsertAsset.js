@@ -1,28 +1,18 @@
 import {
-	Backdrop,
-	Button,
-	Fade,
-	FormHelperText,
+	Button, FormHelperText,
 	Grid,
-	IconButton,
-	LinearProgress,
-	makeStyles,
-	MenuItem,
-	Modal,
-	Paper,
-	Select,
-	TextField,
-	useMediaQuery,
+	IconButton, makeStyles,
+	MenuItem, Select,
+	TextField
 } from "@material-ui/core";
-import { ClearRounded } from "@material-ui/icons";
-import clsx from "clsx";
+import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getAsset } from "../../../api/assetsApi";
 import { createUserOptions } from "../../../api/userApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
-import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
+import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ModalContainer } from "../../reuseables/ModalContainer";
 
 export const UpsertAsset = ({
@@ -151,7 +141,7 @@ export const UpsertAsset = ({
 	};
 
 	return isLoading ? (
-		<LinearProgress />
+		<LoadingProgress />
 	) : (
 		<ModalContainer
 			handleClose={handleClose}
