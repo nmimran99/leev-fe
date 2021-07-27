@@ -26,6 +26,9 @@ import { UserList } from "../../reuseables/UserList";
 import { UserItem } from "../../user/UserItem";
 import { FaultLink } from "./FaultLink";
 import { FaultViewControls } from "./FaultViewControls";
+
+export const FaultView = ({ fid, faultData, updateFaultState }) => {
+	const history = useHistory();
 	const location = useLocation();
 	const { t } = useTranslation();
 	const classes = useStyles();
