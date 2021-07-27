@@ -83,7 +83,7 @@ export const RolesAndPermissions = () => {
     }
 
 	return isLoading ? (
-		<LoadingProgress />
+		<LoadingProgress initial={true} />
 	) : (
 		<Grid container className={classes.usersContainer}>
 			<Grid item xs={10} className={classes.gridSearch}>

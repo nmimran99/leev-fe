@@ -328,7 +328,7 @@ export const UpsertTask = ({
 	};
 
 	return isLoading ? (
-		<LoadingProgress />
+		<LoadingProgress initial={true} />
 	) : (
 		<ModalContainer
 			handleClose={handleClose}

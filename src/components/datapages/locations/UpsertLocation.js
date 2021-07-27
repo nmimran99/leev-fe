@@ -145,7 +145,7 @@ export const UpsertLocation = ({
 	};
 
 	return isLoading ? (
-		<LoadingProgress />
+		<LoadingProgress initial={true} />
 	) : (
 		<ModalContainer
 			handleClose={handleClose}

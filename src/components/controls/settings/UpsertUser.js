@@ -254,7 +254,7 @@ export const UpsertUser = ({ handleClose, userId, reloadUsers }) => {
 	};
 
 	return isLoading ? (
-		<LoadingProgress />
+		<LoadingProgress initial={true}/>
 	) : (
 		<ModalContainer
 			handleClose={handleClose}

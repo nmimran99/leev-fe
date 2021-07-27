@@ -61,7 +61,7 @@ export const LocationsGrid = ({ assetId, handleUpdateLocation }) => {
 		setUpsertData({ itemId: lcoationId, module: 'locations' })
 	}
 	return (
-		true ? 
+		isLoading ? 
 		<LoadingProgress /> :
 		<React.Fragment>
 		<Grid container justify="center">

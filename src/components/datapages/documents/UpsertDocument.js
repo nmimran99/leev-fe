@@ -186,7 +186,7 @@ export const UpsertDocument = ({
 	};
 
 	return isLoading ? (
-		<LoadingProgress />
+		<LoadingProgress initial={true} />
 	) : (
 		<ModalContainer
 			handleClose={handleClose}
