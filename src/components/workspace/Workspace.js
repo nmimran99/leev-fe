@@ -1,7 +1,6 @@
 import { Grid, makeStyles, Portal, Snackbar } from "@material-ui/core";
 import React, { useContext } from "react";
 import { Route, Switch } from "react-router-dom";
-import greyJpg from "../../assets/images/grey.jpg";
 import { FaultsContextProvider } from "../../context/FaultsContext";
 import { Controls } from "../controls/Controls";
 import { Assets } from "../datapages/assets/Assets";
@@ -108,7 +107,7 @@ export const Workspace = ({}) => {
 const useStyles = makeStyles((theme) => ({
 	mainContainer: {
 		height: "100%",
-		background: `url(${greyJpg})`,
+		background: `url(https://leevstore.blob.core.windows.net/images/grey.jpg)`,
 		zIndex: 2,
 		backgroundRepeat: "no-reaper",
 		backgroundSize: "cover",

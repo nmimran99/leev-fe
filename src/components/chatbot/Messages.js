@@ -1,7 +1,6 @@
 import { Grid, makeStyles, Avatar, Fade } from '@material-ui/core';
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Message } from './Message';
-import logo from '../../assets/logo/leev_logo.png';
 import { useTranslation } from 'react-i18next';
 
 
@@ -28,7 +27,7 @@ export const Messages = ({ data }) => {
 		<div className={classes.messagesContainer} ref={ms} >
             <Fade in={Boolean(data.length)}>
             <div className={classes.topProfile}>
-                <Avatar src={logo} className={classes.avatar}/>
+                <Avatar src={URL('https://leevstore.blob.core.windows.net/images/leev_logo_round.png')} className={classes.avatar}/>
                 <div className={classes.welcome}>
                     {t("chatbot.welcome")}
                 </div>

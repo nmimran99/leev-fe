@@ -1,23 +1,13 @@
-import { makeStyles, IconButton, ClickAwayListener } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import {
-	GoogleMap,
-	InfoWindow,
-	InfoBox,
-	Marker,
-	useJsApiLoader,
-	MarkerClusterer,
+	GoogleMap, Marker, MarkerClusterer, useJsApiLoader
 } from '@react-google-maps/api';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import { addQueryParam } from '../../../api/genericApi';
 import { getMapData } from '../../../api/mapApi';
 import { useQuery } from '../../reuseables/customHooks/useQuery';
-import house from '../../../assets/icons/house.png';
-import { FaultMinified } from '../faults/FaultMinified';
-import { getFullAddress } from '../../../api/assetsApi';
-import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
-import ChevronLeftRoundedIcon from '@material-ui/icons/ChevronLeftRounded';
-import { useTranslation } from 'react-i18next';
 
 const containerStyle = {
 	width: '100%',

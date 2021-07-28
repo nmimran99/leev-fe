@@ -17,7 +17,6 @@ import {
 	makeStyles,
 } from "@material-ui/core";
 import { Visibility, VisibilityOff, Error } from "@material-ui/icons";
-import colorSplash from "../../assets/images/grey.jpg";
 import {
 	attemptToSignin,
 	handleLS,
@@ -204,7 +203,7 @@ const useStyles = makeStyles(theme => ({
 		width: "100%",
 		height: "100%",
 		position: "fixed",
-		backgroundImage: `url(${colorSplash})`,
+		backgroundImage: `url(https://leevstore.blob.core.windows.net/images/grey.jpg)`,
 		backgroundSize: "cover",
 	},
 	loginContainer: {

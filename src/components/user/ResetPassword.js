@@ -18,7 +18,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { changePassword, verifyResetPasswordHandle } from "../../api/userApi";
-import colorSplash from "../../assets/images/grey.jpg";
 import { LanguageContext } from "../../context/LanguageContext";
 import { ChangeLanguage } from "../reuseables/ChangeLanguage";
 
@@ -314,7 +313,7 @@ const useStyles = makeStyles((theme) => ({
 		width: "100%",
 		height: "100%",
 		position: "fixed",
-		backgroundImage: `url(${colorSplash})`,
+		backgroundImage: `url(https://leevstore.blob.core.windows.net/images/grey.jpg)`,
 		backgroundSize: "cover",
 	},
 	loginContainer: {

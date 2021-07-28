@@ -18,7 +18,6 @@ import {
     Fade
 } from '@material-ui/core';
 import { Visibility, VisibilityOff, Error } from '@material-ui/icons';
-import colorSplash from '../../assets/images/grey.jpg';
 import { attemptToSignin, handleLS, isResident } from '../../api/userApi';
 import { useTranslation } from 'react-i18next';
 import { LanguageContext } from '../../context/LanguageContext';
@@ -219,7 +218,7 @@ const useStyles = makeStyles({
         width: '100%',
         height: '100%',
         position: 'fixed',
-        backgroundImage: `url(${colorSplash})`,
+        backgroundImage: `url(https://leevstore.blob.core.windows.net/images/grey.jpg)`,
         backgroundSize: 'cover'
     },
     loginContainer: {   
