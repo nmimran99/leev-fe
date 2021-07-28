@@ -14,7 +14,6 @@ export const Asset = ({ data }) => {
 	const classes = useStyles();
 	const history = useHistory();
 	const { t } = useTranslation();
-	const [editMode, setEditMode] = useState(false);
 	const matches = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
 	const handleReferralClick = (type) => (event) => {
@@ -104,6 +103,8 @@ const useStyles = makeStyles((theme) => ({
 		margin: '20px',
 		borderRadius: '5px 5px 30px 30px',
 		position: 'relative',
+		border: '1px solid rgba(255,255,255,0.2)',
+		boxShadow: '0 0 5px 2px rgba(0,0,0,0.3)',
 		[theme.breakpoints.down('sm')]: {
 			margin : '10px 0',
 			height: '200px',
@@ -122,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
 	dataContainer: {
 		height: '250px',
 		width: '100%',
-		background: 'rgba(0,0,0,0.5)',
+		background: 'rgba(0,0,0,0.25)',
 		backdropFilter: 'blur(0px)',
 		borderRadius: 'inherit',
 		cursor: 'pointer',
@@ -131,7 +132,7 @@ const useStyles = makeStyles((theme) => ({
 		}
 	},
 	addressContainer: {
-		color: 'rgba(255,255,255,0.8)',
+		color: 'rgba(255,255,255,1)',
 		padding: '30px',
 		marginBottom: '20px',
 		[theme.breakpoints.down('sm')]: {
@@ -173,7 +174,7 @@ const useStyles = makeStyles((theme) => ({
 		color: 'rgba(255,255,255,0.8)',
 		padding: '7px 15px 7px 1px',
 		fontSize: '14px',
-		background: 'rgba(0,0,0,1)',
+		background: 'rgba(0,0,0,0.7)',
 		width: 'fit-content',
 		borderRadius: '50px',
 		border: '1px solid white',

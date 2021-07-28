@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { Route, Redirect } from 'react-router-dom';
 import { authenticate, handleLS } from '../../api/userApi';
+import { LoadingProgress } from '../reuseables/LoadingProgress';
 
 export const ProtectedWorkspace = ({ children, isAuthenticated,...rest}) => {
     
@@ -34,7 +35,7 @@ export const ProtectedWorkspace = ({ children, isAuthenticated,...rest}) => {
     return (
         <Route {...rest}
           render={({ location }) => isLoading ? 
-            'loading' : 
+          <LoadingProgress initial={true} /> : 
             auth.isAuth
             ? children
             :   <Redirect

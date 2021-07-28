@@ -42,7 +42,7 @@ export const Notifications = ({
 
 	return (
 		<ClickAwayListener onClickAway={toggleNotifications}>
-			<Slide in={open} direction={'up'} timeout={300}>
+			<Slide in={open} direction={'right'} timeout={300}>
 				<div className={classes.container}>
 					<div className={classes.header}>
 						<div>{t('notificationsModule.notifications')}</div>
@@ -102,20 +102,25 @@ export const Notifications = ({
 
 const useStyles = makeStyles((theme) => ({
 	container: {
+		top: "61px",
+		right: "7px",
+		width: "600px",
+		height: "80vh",
 		zIndex: 2,
-		width: '360px',
-		background: 'rgba(0,0,0,0.4)',
-		backdropFilter: 'blur(10px)',
-		boxShadow: 'rgba(0,0,0,0.25) 0px 0px 6px 3px',
-		position: 'absolute',
-		right: 0,
-		top: '64px',
-		height: 'calc(100% - 64px)',
+		position: "absolute",
+		background: "rgba(0,0,0,0.4)",
+		boxShadow: "rgb(0 0 0 / 25%) 0px 0px 6px 3px",
+		backdropFilter: "blur(10px)",
+		border: "1px solid rgba(255,255,255,0.3)",
+		borderRadius: "5px",
 		[theme.breakpoints.down('sm')]: {
 			width: '100%',
 			height: '100%',
 			top: 0,
-			background: 'rgba(0,0,0,0.6)'
+			right: 0,
+			background: 'rgba(0,0,0,0.6)',
+			border: 'none',
+			borderRadius: "0x",
 		},
 	},
 	list: {

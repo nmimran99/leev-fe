@@ -41,7 +41,7 @@ export const AssetsList = () => {
 			asts = asts.map(a => {
 				return {
 					...a,
-					faultCount: fts.reduce((val, f) => (f.asset._id == a._id ? val + 1 : val),0)
+					faultCount: fts.reduce((val, f) => (f.asset._id == a._id && f.status.state === 'open' ? val + 1 : val),0)
 				}
 			})
 			setAssets(asts)

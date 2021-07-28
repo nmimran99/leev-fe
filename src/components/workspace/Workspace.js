@@ -126,8 +126,8 @@ const useStyles = makeStyles((theme) => ({
 
 	mainData: {
 		height: "calc(100% - 64px)",
-		background: "rgba(0,0,0,0.4)",
-		backdropFilter: "blur(22px)",
+		background: "rgba(0,0,0,0.05)",
+		backdropFilter: "blur(40px)",
 		boxShadow: "rgba(0,0,0,0.4) 0px 0px 3px 2px",
 		overflowY: "overlay",
 		width: "calc(100% - 60px)",
