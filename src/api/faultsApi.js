@@ -121,6 +121,9 @@ export const createNewFault = async (details) => {
 			for (let i = 0; i < details.images.length; i++) {
 				formData.append('images', details.images[i]);
 			}
+		} else if (Array.isArray(f[1])) { 
+			console.log(f[1])
+			formData.append(f[0], JSON.stringify(f[1]));
 		} else {
 			formData.append(f[0], f[1]);
 		}
@@ -162,6 +165,8 @@ export const updateFault = async (details) => {
 			}
 		} else if (f[0] === 'uploadedImages') {
 			formData.append('uploadedImages', JSON.stringify(f[1]));
+		} else if (Array.isArray(f[1])) { 
+			formData.append(f[0], JSON.stringify(f[1]));
 		} else {
 			formData.append(f[0], f[1]);
 		}
@@ -395,3 +400,94 @@ export const createExternalFault = async (details) => {
 	}
 }
 
+export const createTag = async (value) => {
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/faults/createTag`,
+			{ value },
+			{
+				headers: {
+					requesttype: 'update',
+					module: 'faults',
+				},
+			}
+		);
+		if (res.status === 200) {
+			return res.data;
+		}
+	} catch (e) {
+		if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+	}
+};
+
+export const addFaultTag = async (faultId, tagId) => {
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/faults/addFaultTag`,
+			{ faultId, tagId },
+			{
+				headers: {
+					requesttype: 'update',
+					module: 'faults',
+				},
+			}
+		);
+		if (res.status === 200) {
+			return res.data;
+		}
+	} catch (e) {
+		if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+	}
+};
+
+export const removeFaultTag = async (faultId, tagId) => {
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/faults/removeFaultTag`,
+			{ faultId, tagId },
+			{
+				headers: {
+					requesttype: 'update',
+					module: 'faults',
+				},
+			}
+		);
+		if (res.status === 200) {
+			return res.data;
+		}
+	} catch (e) {
+		if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+	}
+};
+
+export const getFaultTagOptions = async (faultId, searchText) => {
+	try {
+		const res = await axios.post(
+			`${process.env.REACT_APP_BACKEND_URL}/faults/getFaultTagOptions`,
+			{ faultId, searchText },
+			{
+				headers: {
+					requesttype: 'update',
+					module: 'faults',
+				},
+			}
+		);
+		if (res.status === 200) {
+			return res.data;
+		}
+	} catch (e) {
+		if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+	}
+};

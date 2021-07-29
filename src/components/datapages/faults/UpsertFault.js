@@ -13,7 +13,7 @@ import {
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getFault } from "../../../api/faultsApi";
+import { createTag, getFault, getFaultTagOptions } from "../../../api/faultsApi";
 import { getFullName } from "../../../api/genericApi";
 import {
 	createLocationMenuOptions,
@@ -30,6 +30,10 @@ import { LanguageContext } from "../../../context/LanguageContext";
 import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ModalContainer } from "../../reuseables/ModalContainer";
 import { UserItem } from "../../user/UserItem";
+import CheckCircleOutlinedIcon from '@material-ui/icons/CheckCircleOutlined';
+import clsx from 'clsx'
+import AddIcon from '@material-ui/icons/Add';
+import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 
 export const UpsertFault = ({
 	handleClose,
@@ -48,6 +52,8 @@ export const UpsertFault = ({
 	const [locations, setLocations] = useState([]);
 	const [userList, setUserList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [tagValue, setTagValue] = useState("");
+	const [tagOptions, setTagOptions] = useState([]);
 	const [details, setDetails] = useState({
 		tenant: auth.user.tenant,
 		title: "",
@@ -60,13 +66,20 @@ export const UpsertFault = ({
 		createdBy: auth.user._id,
 		images: [],
 		uploadedImages: [],
+		tags: []
 	});
-
-	useEffect(() => {}, [details]);
 
 	useEffect(() => {
 		prepareData();
 	}, []);
+
+	useEffect(() => {
+		if (!tagValue) {
+			setTagOptions([]);
+			return;
+		}
+		getTagOptions();
+	}, [tagValue]);
 
 	const prepareData = async () => {
 		const [userOptions, assetSuggestions] = await Promise.all([
@@ -86,6 +99,7 @@ export const UpsertFault = ({
 		]);
 		if (!data) return;
 		setDetails({ ...data, images: [], uploadedImages: data.images });
+		console.log(data)
 		setIsLoading(false);
 	};
 
@@ -133,9 +147,13 @@ export const UpsertFault = ({
 	const handleConfirm = () => {
 		validateFields().then((res) => {
 			if (!res) return;
+			let preped = {
+				...details,
+				tags: [...details.tags.map(t => t._id)]
+			}
 			if (mode === "update") {
-				handleUpdate(details);
-			} else handleSave(details);
+				handleUpdate(preped);
+			} else handleSave(preped);
 		});
 	};
 
@@ -173,6 +191,51 @@ export const UpsertFault = ({
 		im.splice(i, 1);
 		setDetails({ ...details, uploadedImages: im });
 	};
+
+	const handleTagValueChange = e => {
+		let val = e.target.value;
+		setTagValue(val);
+	};
+
+	const getTagOptions = async () => {
+		const options = await getFaultTagOptions(faultId, tagValue);
+		setTagOptions(options.filter(o => {
+			let op = details.tags.find(dt => dt._id === o._id);
+			if (!op) {
+				return o
+			}
+		}))
+	}
+
+	const handleAddTag = tag => async event => {
+		setTagOptions(tagOptions.filter(o => {
+			return o._id !== tag._id
+		}))
+		setDetails({
+			...details, 
+			tags: [...details.tags, tag]
+		})
+		setTagValue('')
+	}
+
+	const handleRemoveTag = (tag) => event => {
+		setDetails({
+			...details, 
+			tags: details.tags.filter(t => t._id !== tag._id)
+		});
+	}
+
+	const createAndAddTag = async () => {
+		const tag = await createTag(tagValue);
+		console.log(tag)
+		if (tag) {
+			setDetails({
+				...details, 
+				tags: [ ...details.tags, tag]
+			});
+		};
+		setTagValue('');
+	}
 
 	return isLoading ? (
 		<LoadingProgress initial={true} />
@@ -414,6 +477,78 @@ export const UpsertFault = ({
 								multiline={true}
 								rows={7}
 							/>
+						</Grid>
+					</Grid>
+				</Grid>
+			</Grid>
+			<Grid item xs={12} className={classes.section}>
+				<Grid item xs={12}>
+					<div className={classes.sectionTitle}>
+						{t("faultsModule.upsert.faultTags")}
+					</div>
+				</Grid>
+				<Grid item xs={12} className={classes.fields}>
+					<Grid container justify="flex-start">
+						<Grid item xs={12} className={classes.textContainer}>
+							<div className={classes.addTagExplain}>
+								{t("faultsModule.upsert.addTagExplanation")}
+							</div>
+							<div className={classes.addTagRow}>
+								<TextField
+									variant={"outlined"}
+									label={t(`faultsModule.upsert.describe`)}
+									value={tagValue}
+									onChange={handleTagValueChange}
+									className={clsx(classes.textField, classes.tagValueInput)}
+									size={"medium"}
+									helperText={`${20 - (tagValue.length || 0)} ${t("faultsModule.upsert.titleLimit")}`}
+									inputProps={{
+										maxLength: 20,
+									}}
+									FormHelperTextProps={{
+										style: {
+											color: "rgba(255,255,255,0.6)",
+										},
+									}}
+								/>
+								<Button
+									startIcon={<CheckCircleOutlinedIcon className={classes.addTagIcon} />}
+									className={classes.addTagButton}
+									disabled={!tagValue || tagOptions.length}
+									onClick={createAndAddTag}
+								>
+									{t("faultsModule.addTag")}
+								</Button>
+							</div>
+							{
+								Boolean(tagOptions.length) &&
+								<div className={classes.optionsContainer}>
+									{
+										tagOptions.map(to => 
+											<Button className={classes.tagOptionBtn}
+												startIcon={<AddIcon className={classes.icon}/>}
+												onClick={handleAddTag(to)}
+											>
+												{to.value}
+											</Button>
+										)
+									}
+								</div>
+							}
+							<div className={classes.tagList}>
+							{
+								details.tags.length ? 
+								details.tags.map((tag) => 
+									<div className={classes.tag} key={tag._id} >
+										{tag.value}
+										<ClearOutlinedIcon className={classes.removeTagIcon} onClick={handleRemoveTag(tag)} />
+									</div>
+								) : 
+								<div className={classes.noTags}>
+									{t("faultsModule.upsert.noTags")}
+								</div>
+							}
+							</div>	
 						</Grid>
 					</Grid>
 				</Grid>
@@ -741,4 +876,88 @@ const useStyles = makeStyles((theme) => ({
 		padding: "10px 5px",
 		borderBottom: "1px solid rgba(255,255,255,0.2)",
 	},
+	addTagExplain: {
+		fontSize: '12px',
+		color: 'rgba(255,255,255,0.6)',
+		marginBottom: '8px'
+	},
+	addTagRow: {
+		display: 'flex'
+	},
+	tagValueInput: {
+		width: '60%',
+		[theme.breakpoints.down('sm')]: {
+			width: '75%',
+		}
+	},
+	addTagButton: {
+		width: 'fit-content',
+		color: 'white',
+		height: '35px',
+		borderRadius: '50px',
+		padding: '5px 20px 5px 10px',
+		fontSize: '13px',
+		margin: '10px',
+		border: '1px solid rgba(255,255,255,0.2)'
+	},
+	addTagIcon: {
+		fontSize: '24px'
+	},
+	tagList: {
+		padding: '10px',
+		borderRadius: '5px',
+		display: 'flex',
+		flexWrap: 'wrap'
+	},
+	noTags: {
+		border: '1px solid rgba(255,255,255,0.5)',
+		color: 'white',
+		fontSize: '12px',
+		width: 'fit-content',
+		height: '22px',
+		borderRadius: '50px',
+		padding: '3px 10px',
+		lineHeight: 1.8
+	},
+	tag: {
+		background: 'rgba(255,255,255,0.5)',
+		borderRadius: '50px',
+		padding: '0px 10px',
+		display: 'grid',
+		placeItems: 'center',
+		fontSize: '12px',
+		margin: '4px 3px',
+		height: '22px',
+		color: 'black',
+		lineHeight: 1,
+		width: 'fit-content',
+		display: 'flex'
+	},
+	optionsContainer: {
+		background: 'rgba(0,0,0,0.4)',
+		width: '60%',
+		display: 'flex',
+		borderRadius: '5px',
+		padding: '10px',
+		flexFlow: 'wrap',
+		[theme.breakpoints.down('sm')]: {
+			width: '90%',
+		}
+	},
+	tagOptionBtn: {
+		background: 'rgba(255,255,255,0.4)',
+		borderRadius: '50px',
+		margin: '3px',
+		fontSize: '13px',
+		padding: '3px 20px 3px 10px',
+		color: 'white',
+		'&:hover': {
+			background: theme.palette.leading,
+		}
+	},
+	removeTagIcon: {
+		fontSize: '14px',
+		color: 'rgba(0,0,0,0.5)',
+		padding: '0 0 0 5px'
+	}
 }));

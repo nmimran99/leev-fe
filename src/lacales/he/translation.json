@@ -212,7 +212,11 @@
             "uploadImages": "העלה תמונות",
             "addFaultImages": "הוספת תמונות נוספות",
             "imagesSelected": "תמונות נבחרו",
-            "uploadedImages": "עריכת תמונות קיימות"
+            "uploadedImages": "עריכת תמונות קיימות",
+            "addTagExplanation": "מומלץ להוסיף תגיות לתקלה על מנת לאפשר ניתוח מעמיק של התקלות ותהליך הסקת מסקנות יעיל יותר.",
+            "faultTags": "תגיות ומילות מפתח",
+            "describe": "מילות מפתח או תגיות",
+            "noTags": "לא נוספו תגיות או מילות מפתח..."
         },
         "updateOwner": "עידכון ממונה על תקלה",
         "updateOwnerInstructions": "בחר משתמש על מנת לעדכן ממונה על תקלה",
@@ -220,7 +224,9 @@
         "addRelatedUserInstructions": "בחר משתמש על מנת להוסיפו לרשימת המקושרים לתקלה",
         "changeStatus": "שינוי סטטוס",
         "changeStatusInstructions": "בחר סטטוס על מנת לשנות את סטטוס התקלה",   
-        "faultSuccesfullyCreated": "תקלה נוצרה בהצלחה"
+        "faultSuccesfullyCreated": "תקלה נוצרה בהצלחה",
+        "addTag": "הוסף"
+        
     },
     "tasksModule": {
         "tasks": "משימות",

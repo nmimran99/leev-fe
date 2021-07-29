@@ -1,7 +1,8 @@
 import {
-	Grid, makeStyles,
+	Grid, IconButton, makeStyles,
 	useMediaQuery
 } from "@material-ui/core";
+import AddIcon from '@material-ui/icons/Add';
 import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
 import RoomIcon from "@material-ui/icons/Room";
 import clsx from "clsx";
@@ -67,6 +68,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 			history.push("/workspace/faults");
 		}
 		setFault(res);
+		console.log(res)
 	};
 
 	const updateOwner = async (userId) => {
@@ -236,6 +238,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 
 					<div className={classes.title}>{fault.title}</div>
 					<div className={classes.desc}>
+						
 						<div className={classes.itemDates}>
 							<div className={classes.openDate}>
 								{`${t("general.createDate")} ${format(
@@ -254,6 +257,21 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 						</div>
 
 						{fault.description}
+						<div className={classes.tagsContainer}>
+							{/* <IconButton 								
+								className={classes.addTag}
+							>
+								<AddIcon className={classes.addTagIcon} />
+							</IconButton> */}
+							{
+								fault.tags.map((tag) => 
+									<div className={classes.tag} key={tag._id} > 
+										{tag.value}
+									</div>
+								)
+							}
+							
+						</div>
 					</div>
 					{Boolean(fault.images.length) && (
 						<Carousel
@@ -415,9 +433,9 @@ const useStyles = makeStyles((theme) => ({
 	desc: {
 		background: "rgba(0,0,0,0.4)",
 		borderRadius: "10px",
-		padding: "20px",
+		padding: "10px",
 		color: "white",
-		width: "90%",
+		width: "95%",
 		wordBreak: "break-word",
 	},
 	leftContainer: {
@@ -544,4 +562,37 @@ const useStyles = makeStyles((theme) => ({
 	notAssigned: {
 		filter: "brightness(60%)",
 	},
+	tagsContainer: {
+		display: 'flex',
+		padding: '4px 0',
+		width: 'fit-content',
+		borderRadius: '50px',
+		marginTop: '30px',
+		flexFlow: 'wrap'
+	},
+	tag: {
+		background: 'rgba(255,255,255,0.5)',
+		borderRadius: '50px',
+		padding: '0px 10px',
+		display: 'grid',
+		placeItems: 'center',
+		fontSize: '12px',
+		margin: '4px 3px',
+		height: '22px',
+		color: 'black',
+		lineHeight: 1
+	},
+	addTag: {
+		color: 'white',
+		borderRadius: '50px',
+		fontSize: '11px',
+		height: '22px',
+		width: '22px',
+		border: '1px solid rgba(255,255,255,0.4)',
+		padding: 0,
+		margin: '4px 3px', 
+	},
+	addTagIcon: {
+		fontSize: '16px',
+	}
 }));
