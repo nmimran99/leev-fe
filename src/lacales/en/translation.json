@@ -212,7 +212,11 @@
             "uploadImages": "Upload Images",
             "addFaultImages": "Add More Images",
             "imagesSelected": "Images Selected",
-            "uploadedImages": "Edit existing images"
+            "uploadedImages": "Edit existing images",
+            "addTagExplanation": "Adding tags is highly recommended, and will help to analyze faults and get better insigts.",
+            "faultTags": "Fault Tags or Keywords",
+            "describe": "Which keywords might fit?",
+            "noTags": "No tags were added yet..."
         },
         "updateOwner": "Update Fault Owner",
         "updateOwnerInstructions": "Choose user to update as fault owner",
@@ -220,7 +224,9 @@
         "addRelatedUserInstructions": "Choose a user to add to the related users list",
         "changeStatus": "Change Status",
         "changeStatusInstructions":"Choose a status to update as the fault's status",
-        "faultSuccesfullyCreated": "Fault has been successfully created"
+        "faultSuccesfullyCreated": "Fault has been successfully created",
+        "addTag": "Add"
+        
     },
     "tasksModule": {
         "tasks": "Tasks",
