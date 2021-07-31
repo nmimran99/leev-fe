@@ -14,7 +14,6 @@ import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
 import SaveRoundedIcon from "@material-ui/icons/SaveRounded";
 import SendRoundedIcon from "@material-ui/icons/SendRounded";
 import clsx from "clsx";
-import _ from "lodash";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router";
@@ -122,7 +121,7 @@ export const CommentSection = ({
 					</Button>
 				</Grid>
 			)}
-			{_.takeRight(commentList, numOfComments).map((c, i) => (
+			{ commentList.slice(Math.max(commentList.length - numOfComments, 0)).map((c, i) => (
 				<Grid item xs={12} className={clsx(classes.comment)} key={i}>
 					<div className={classes.commentContainer}>
 						<Avatar
