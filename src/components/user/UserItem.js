@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getUserDataById } from '../../api/userApi';
 
 
-export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, size, column }) => {
+export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, size, column, showCompany }) => {
     
     const { t } = useTranslation()
     const [ userData, setUserData ] = useState(user || {})
@@ -55,6 +55,12 @@ export const UserItem = ({ user, showPhone, showTitle, showName, avatarSize, siz
                             (showTitle && userData.role) &&
                             <Typography className={classes.title} style={{ fontSize: `${size * 1.1}px` || '18px' }}>
                                 {userData.role.roleName}
+                            </Typography>
+                        }
+                        {
+                            (showCompany && userData.employedBy) &&
+                            <Typography className={classes.title} style={{ fontSize: `${size * 1.1}px` || '18px' }}>
+                                {userData.employedBy}
                             </Typography>
                         }
                         {

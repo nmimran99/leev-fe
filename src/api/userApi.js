@@ -79,9 +79,9 @@ export const getUserList = async () => {
     }
 }
 
-export const getResidentList = async () => {
+export const getResidentList = async (filters) => {
     try {
-        let res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/getResidentList`, {
+        let res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/getResidentList?asset=${filters.asset}`, {
             headers: {
                 module: 'users',
                 requesttype: 'read'

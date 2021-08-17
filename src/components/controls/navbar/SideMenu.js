@@ -35,6 +35,7 @@ import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 
 export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 	const classes = useStyles();
@@ -220,6 +221,23 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								</ListItemIcon>
 								<ListItemText
 									primary={t("sideMenu.documents")}
+									className={classes.listItemText}
+									disableTypography={true}
+								/>
+							</ListItem>
+						</Can>
+						<Can module="reports" action="create">
+							<ListItem
+								button={true}
+								className={classes.listItem}
+								onClick={handleClick("reports")}
+							>
+								<ListItemIcon className={classes.listItemIcon}>
+								<AssessmentIcon classes={{ root: classes.iconRoot }} />
+								
+								</ListItemIcon>
+								<ListItemText
+									primary={t("sideMenu.reports")}
 									className={classes.listItemText}
 									disableTypography={true}
 								/>

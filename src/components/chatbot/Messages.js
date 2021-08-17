@@ -27,7 +27,7 @@ export const Messages = ({ data }) => {
 		<div className={classes.messagesContainer} ref={ms} >
             <Fade in={Boolean(data.length)}>
             <div className={classes.topProfile}>
-                <Avatar src={URL('https://leevstore.blob.core.windows.net/images/leev_logo_round.png')} className={classes.avatar}/>
+                <Avatar src={'https://leevstore.blob.core.windows.net/images/leev_logo_round.png'} className={classes.avatar}/>
                 <div className={classes.welcome}>
                     {t("chatbot.welcome")}
                 </div>
