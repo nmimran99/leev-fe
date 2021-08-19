@@ -42,10 +42,10 @@ export const FaultList = ({ faults }) => {
 
 const useStyles = makeStyles((theme) => ({
 	mainContainer: {
-
+		width: '100%'
 	},
 	header: {
-		color: "rgba(255,255,255,0.8)",
+		color: "white",
 		fontSize: "14px",
 		padding: "10px",
 		borderBottom: "1px solid rgba(255,255,255,0.2)",	

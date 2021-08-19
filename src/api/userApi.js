@@ -204,7 +204,6 @@ export const updateUserData = async (details) => {
                 requesttype: 'update'
             }
         });
-        console.log(res)
         if (res.status === 200) {
             return res.data;
         }
@@ -236,7 +235,6 @@ export const sendRecoveryEmail = async (email) => {
 export const verifyResetPasswordHandle = async (handle) => {
     try {
         let res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/verifyResetPasswordHandle`, { handle });
-        console.log(res)
         if (res.status === 200) {
             return res.data;
         }  

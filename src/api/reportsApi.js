@@ -151,11 +151,11 @@ export const getReportPublic = async (reportId) => {
 export const getReports = async () => {
     try {
         const res = await axios.post(
-            `${process.env.REACT_APP_BACKEND_URL}/reports/getReports`,
+            `${process.env.REACT_APP_BACKEND_URL}/reports/getReports`, {},
             {
                 headers: {
                     module: 'reports',
-                    requesttype: 'read',
+                    requesttype: 'create',
                 },
             }
         );

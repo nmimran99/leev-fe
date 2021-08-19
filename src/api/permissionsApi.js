@@ -14,7 +14,7 @@ export const getMinPermLevel = (requesttype) => {
 		comment: 1,
 		upload: 2,
 		download: 2,
-
+		share: 2
 	};
 	return types[requesttype];
 };

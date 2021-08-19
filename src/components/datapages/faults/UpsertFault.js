@@ -99,7 +99,6 @@ export const UpsertFault = ({
 		]);
 		if (!data) return;
 		setDetails({ ...data, images: [], uploadedImages: data.images });
-		console.log(data)
 		setIsLoading(false);
 	};
 
@@ -227,7 +226,6 @@ export const UpsertFault = ({
 
 	const createAndAddTag = async () => {
 		const tag = await createTag(tagValue);
-		console.log(tag)
 		if (tag) {
 			setDetails({
 				...details, 

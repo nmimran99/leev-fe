@@ -61,9 +61,6 @@ export const UpsertRole = ({
 			.finally(() => setIsLoading(false));
 	}, []);
 
-	useEffect(() => {
-		console.log(permissions);
-	}, [permissions]);
 
 	const validateFields = () => {
 		return new Promise((resolve, reject) => {
@@ -97,7 +94,6 @@ export const UpsertRole = ({
 	};
 
 	const handleSliderChange = (module, field, value) => {
-		console.log(module, field, value);
 		setPermissions((prevState) => {
 			return prevState.map((r) => {
 				if (r.module === module) {

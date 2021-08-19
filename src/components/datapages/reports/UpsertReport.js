@@ -40,8 +40,6 @@ export const UpsertReport = ({ data, handleClose }) => {
 	const [ toSend, setToSend ] = useState([]);
 
 	useEffect(() => {
-		console.log(data);
-
 		setIsLoading(false);
 	}, []);
 
@@ -60,7 +58,6 @@ export const UpsertReport = ({ data, handleClose }) => {
 
 	const handleGenerateLink = async () => {
 		setGenerating(true);
-        console.log({ ...data, name })
 		const res = await generateReportLink({ ...data, name });
         if (!res) {
             setSnackbar(getServerError());

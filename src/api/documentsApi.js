@@ -172,8 +172,7 @@ export const updateDocumentDetails = async (details) => {
 export const getDocumentFromURL = async (url) => {
 	try {
 		const res = axios.get(url);
-		console.log(res)
 	} catch(e) {
-		console.log(e)
+		console.log(e.message)
 	}
 }

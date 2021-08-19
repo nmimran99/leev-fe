@@ -1,6 +1,6 @@
 import { Button, Grid, makeStyles } from "@material-ui/core";
-import AddRoundedIcon from '@material-ui/icons/AddRounded';
-import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
+import AddRoundedIcon from "@material-ui/icons/AddRounded";
+import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 import { format, parseISO } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,7 @@ import { ItemCounter } from "./reportItems/ItemCounter";
 import { MostUsedTags } from "./reportItems/MostUsedTags";
 import { SystemLocationGraph } from "./reportItems/SystemLocationGraph";
 import { TopUser } from "./reportItems/TopUser";
+import { Can } from "../../reuseables/Can";
 
 export const FaultsReport = ({ setUpsert }) => {
 	const classes = useStyles();
@@ -25,7 +26,7 @@ export const FaultsReport = ({ setUpsert }) => {
 	const { auth } = useContext(AuthContext);
 	const { t } = useTranslation();
 	const { lang } = useContext(LanguageContext);
-	const [ viewMode, setViewMode ] = useState(false);
+	const [viewMode, setViewMode] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [data, setData] = useState(null);
 
@@ -42,7 +43,7 @@ export const FaultsReport = ({ setUpsert }) => {
 			return;
 		}
 		if (!location.search) {
-			history.push('/workspace/reports')
+			history.push("/workspace/reports");
 		}
 		let queryParams = queryParamsToObject(location.search);
 		let res = await getReportData({ module: "faults", ...queryParams });
@@ -52,11 +53,11 @@ export const FaultsReport = ({ setUpsert }) => {
 
 	const handleShare = () => {
 		setUpsert({
-			reportId: 'faultsGeneral',
+			reportId: "faultsGeneral",
 			parameters: queryParamsToObject(location.search),
-			asset: data.asset._id
-		})
-	}
+			asset: data.asset._id,
+		});
+	};
 
 	return isLoading ? (
 		<LoadingProgress />
@@ -69,37 +70,34 @@ export const FaultsReport = ({ setUpsert }) => {
 						lang.dateonly
 					)} - ${format(parseISO(data.toDate), lang.dateonly)}`}
 				</div>
-				{
-					!viewMode &&
-					<Button
-						className={classes.distributeBtn}
-						onClick={handleShare}
-					>
-						{t("reportsModule.distributeReport")}
-					</Button>
-				}
-				
+
+				{!viewMode && (
+					<Can module="reports" action={"share"}>
+						<Button className={classes.distributeBtn} onClick={handleShare}>
+							{t("reportsModule.distributeReport")}
+						</Button>
+					</Can>
+				)}
 			</Grid>
 			<Grid item xs={12} className={classes.assetContainer}>
 				<div className={classes.asset}>{getFullAddress(data.asset)}</div>
-			</Grid>				
+			</Grid>
 			<Grid item xs={12} className={classes.gridContainer}>
 				<div className={classes.itemsContainer}>
 					<ItemCounter
 						itemCount={data.openFaultCount}
 						itemLabel={t("reportsModule.faultsOpened")}
 						color={"red"}
-                        TopIcon={<AddRoundedIcon className={classes.addedIcon}/>}
+						TopIcon={<AddRoundedIcon className={classes.addedIcon} />}
 					/>
 					<ItemCounter
 						itemCount={data.closedFaultCount}
 						itemLabel={t("reportsModule.faultsClosed")}
 						color={"green"}
-                        TopIcon={<CheckRoundedIcon className={classes.closedIcon}/>}
+						TopIcon={<CheckRoundedIcon className={classes.closedIcon} />}
 					/>
 				</div>
-				{
-					!(auth.user.data.isResident || auth.user.data.isOwner) &&
+				{!(auth.user.data.isResident || auth.user.data.isOwner) && (
 					<div className={classes.topUsersContainer}>
 						<div className={classes.topUsersHeader}>
 							{t("reportsModule.topUsers")}
@@ -112,8 +110,7 @@ export const FaultsReport = ({ setUpsert }) => {
 							/>
 						))}
 					</div>
-				}
-				
+				)}
 			</Grid>
 			<Grid container className={classes.gridContainer}>
 				<Grid item xs={12} lg={9} className={classes.graphContainer}>
@@ -125,9 +122,9 @@ export const FaultsReport = ({ setUpsert }) => {
 					<MostUsedTags data={data.mostUsedTags} />
 				</Grid>
 			</Grid>
-            <Grid container className={classes.gridContainer}>
-                <FaultList faults={data.closedFaults} />
-            </Grid>
+			<Grid container className={classes.gridContainer}>
+				<FaultList faults={data.closedFaults} />
+			</Grid>
 		</Grid>
 	);
 };
@@ -154,7 +151,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: "20px",
 		color: "white",
 		fontSize: "20px",
-		whiteSpace: 'nowrap',	
+		whiteSpace: "nowrap",
 		[theme.breakpoints.down("sm")]: {
 			fontSize: "16px",
 			padding: "10px 20px",
@@ -165,10 +162,10 @@ const useStyles = makeStyles((theme) => ({
 		padding: "0 20px",
 		fontSize: "18px",
 		marginTop: "20px",
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		position: 'static',
+		display: "flex",
+		justifyContent: "space-between",
+		alignItems: "center",
+		position: "static",
 		[theme.breakpoints.down("sm")]: {
 			fontSize: "13px",
 			background: "rgba(0,0,0,0.4)",
@@ -185,7 +182,7 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down("sm")]: {
 			flexWrap: "wrap",
 			justifyContent: "center",
-            padding: '20px 0'
+			padding: "20px 0",
 		},
 	},
 	topUsersHeader: {
@@ -200,7 +197,7 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down("md")]: {
 			margin: "auto",
 			width: "100%",
-            padding: '15px 10px'
+			padding: "15px 10px",
 		},
 	},
 	graphContainer: {
@@ -210,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down("md")]: {
 			width: "100%",
 			display: "flex",
-			justifyContent: "center"
+			justifyContent: "center",
 		},
 	},
 	tagsContainer: {
@@ -218,38 +215,38 @@ const useStyles = makeStyles((theme) => ({
 			padding: "0 10px",
 		},
 	},
-    closedIcon: {
-        color: theme.palette.leading,
-        fontSize: '60px',
-        [theme.breakpoints.down('sm')]: {
-            height: '40px',
-        }
-    },
-    addedIcon: {
-        color: theme.palette.leading,
-        fontSize: '60px',
-        [theme.breakpoints.down('sm')]: {
-            height: '40px',
-        }
-    },
-	distributeBtn: {
-		color: 'white',
-		background: theme.palette.leading,
-		borderRadius: '50px',
-		padding: '5px 20px',
-		boxShadow: '0 0 3px 2px rgba(0,0,0,0.25)',
-		'&:hover': {
-			background: theme.palette.leading,
-			boxShadow: '0 0 10px 4px rgba(0,0,0,0.25)',
+	closedIcon: {
+		color: theme.palette.leading,
+		fontSize: "60px",
+		[theme.breakpoints.down("sm")]: {
+			height: "40px",
 		},
-		[theme.breakpoints.down('sm')]: {
-			position: 'absolute',
+	},
+	addedIcon: {
+		color: theme.palette.leading,
+		fontSize: "60px",
+		[theme.breakpoints.down("sm")]: {
+			height: "40px",
+		},
+	},
+	distributeBtn: {
+		color: "white",
+		background: theme.palette.leading,
+		borderRadius: "50px",
+		padding: "5px 20px",
+		boxShadow: "0 0 3px 2px rgba(0,0,0,0.25)",
+		"&:hover": {
+			background: theme.palette.leading,
+			boxShadow: "0 0 10px 4px rgba(0,0,0,0.25)",
+		},
+		[theme.breakpoints.down("sm")]: {
+			position: "absolute",
 			zIndex: 5,
-			top: '15px',
-			right: '10px',
-			padding: '3px 15px',
-			fontSize: '12px',
-			whiteSpace: 'nowrap'		
-		}
-	}
+			top: "15px",
+			right: "10px",
+			padding: "3px 15px",
+			fontSize: "12px",
+			whiteSpace: "nowrap",
+		},
+	},
 }));

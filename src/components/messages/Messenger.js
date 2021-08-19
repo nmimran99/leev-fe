@@ -33,7 +33,6 @@ export const Messenger = ({ toggleMessenger }) => {
 		if (!current) return;
 		let messageCount = countUnreadMessages(current.messages, auth.user._id);
 		if (messageCount > 0) {
-			console.log(('here'))
 			readAllMessages();
 		}
 	}, [current])

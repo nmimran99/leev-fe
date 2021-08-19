@@ -25,6 +25,9 @@ export const ReportsList = () => {
 
 	const prepareData = async () => {
 		const res = await getReports();
+		if (res.status === 403) {
+			history.push('/workspace/faults')
+		}
 		setReports(res);
 		setIsLoading(false);
 	};

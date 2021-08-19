@@ -14,9 +14,9 @@ export const usePermissions = ({ module, action, userList }) => {
 	const minPermLevel = getMinPermLevel(action);
     let permLevel = permissions.find((p) => p.module === module);
 	if (permLevel) {
-		permLevel = permLevel.action
+		permLevel = permLevel[action]
 	}
- 
+
 	if (permLevel < minPermLevel) {
 		return false;
 	} else if (permLevel === 1) {

@@ -122,7 +122,6 @@ export const createNewFault = async (details) => {
 				formData.append('images', details.images[i]);
 			}
 		} else if (Array.isArray(f[1])) { 
-			console.log(f[1])
 			formData.append(f[0], JSON.stringify(f[1]));
 		} else {
 			formData.append(f[0], f[1]);

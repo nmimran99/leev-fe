@@ -24,7 +24,6 @@ export const MainConversation = ({ setCurrent, current, sendMessage, readAllMess
     }, [current.messages])
 
     useEffect(() => {
-        console.log('this runs')
         if (env.inputFocused) {
             inputContainer.current.style.paddingBottom = '0px';
             messagesCotainer.current.style.height = 'calc(100% - 140px)';
