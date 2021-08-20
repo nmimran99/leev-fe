@@ -1,6 +1,5 @@
-import { makeStyles, Snackbar } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import React, { useContext, useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import { createNewAsset, updateAsset } from '../../api/assetsApi';

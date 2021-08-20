@@ -156,13 +156,11 @@ export const TaskView = () => {
 
 	const handleCompleteStep = (step) => async (event) => {
 		const { order, isCompleted } = step;
-		console.log(isCompleted);
 		const res = await completeTaskStep(task._id, order, !isCompleted);
 		if (res.status === 403 || res.status === 500) {
 			setSnackbar(res);
 			return;
 		}
-		console.log(res);
 		setTask({
 			...task,
 			steps: res.steps,

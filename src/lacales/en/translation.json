@@ -34,7 +34,8 @@
         "settings": "Settings",
         "logout": "Sign out",
         "dashboard": "Overview Dashboard",
-        "clients": "Clients"
+        "clients": "Clients",
+        "reports": "Reports"
     },
     "clientsModule": {
         "_id": "Object Id",
@@ -646,7 +647,9 @@
         "roleName": "Role Name",
         "completeSteps": "Complete task steps",
         "dashboard": "Overview Dashboard",
-        "locations": "Locations"
+        "locations": "Locations",
+        "reports": "Reports",
+        "share": "Share"
     },
     "locationsModule": {
         "updateLocationDetails": "Update Location Details",
@@ -692,5 +695,44 @@
         "messages": "Messages",
         "newMessage": "New Message",
         "searchUser": "Search User"
+    },
+    "reportsModule": {
+        "reports": "Reports",
+        "faultsReport": "Faults reports",
+        "tasksReport": "Tasks reports",
+        "startDate": "From",
+        "endDate": "To",
+        "generateReport": "Generate Report",
+        "asset": "Asset",
+        "header": "Faults summary between",
+        "faultsOpened": "Faults Opened",
+        "faultsClosed": "Faults Closed",
+        "userActions": "Actions",
+        "topUsers": "Top performing users",
+        "system": "Sytems",
+        "location": "Locations",
+        "chartHeader": "Number of faults by",
+        "mostUsedTags": "Most used tags",
+        "closedFaults": "Closed fault list",
+        "faultId": "Fault ID",
+        "faultDesc": "Description",
+        "reportMenu": "Report Menu",
+        "distributeReport": "Share Report",
+        "shareLink": "Share Report Link",
+        "shareReport": "Share Report",
+        "upsertInstructions": "Please provide a name for the report to generate a report link.",
+        "reportName": "Report Name",
+        "generateLink": "Generate Link",
+        "generating": "Generating",
+        "copiedToClipboard": "Link copied to clipboard",
+        "linkNotCopied": "Link was not copied correctly",
+        "selectedUsers": "Users",
+        "selectedTenants": "Tenants",
+        "sendTo": "Send to",
+        "selected": "selected",
+        "sendToAll": "Send to all",
+        "previousReports": "Previous reports",
+        "createDate": "Create Date",
+        "createdBy": "Created By"
     }
 }

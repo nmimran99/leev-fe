@@ -27,7 +27,6 @@ export const RolesAndPermissions = () => {
 		if (!isLoading) return;
 		getRoles()
 			.then((res) => {
-                console.log(res)
 				if (res.status === 403) {
 					setSnackbar(res);
 					setIsLoading(false);

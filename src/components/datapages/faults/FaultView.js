@@ -68,7 +68,6 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 			history.push("/workspace/faults");
 		}
 		setFault(res);
-		console.log(res)
 	};
 
 	const updateOwner = async (userId) => {

@@ -18,6 +18,8 @@ import { Chatbot } from './components/chatbot/Chatbot';
 import { ResetPassword } from './components/user/ResetPassword';
 import { EnvContext } from './context/EnvContext';
 import { AlertTitle } from '@material-ui/lab';
+import { FaultsReport } from './components/datapages/reports/FaultsReport';
+import { Reports } from './components/datapages/reports/Reports';
 
 
 function App() {

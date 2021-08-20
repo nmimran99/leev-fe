@@ -12,7 +12,7 @@ import {
 	useMediaQuery,
 	Drawer,
 	Avatar,
-	Fade
+	Fade,
 } from "@material-ui/core";
 import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
 import React, { useContext } from "react";
@@ -25,16 +25,17 @@ import { NotificationsContext } from "../../../context/NotificationsContext";
 import { Can } from "../../reuseables/Can";
 import { UserItem } from "../../user/UserItem";
 import clsx from "clsx";
-import DashboardRoundedIcon from '@material-ui/icons/DashboardRounded';
-import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
-import HomeWorkIcon from '@material-ui/icons/HomeWork';
-import SettingsSystemDaydreamIcon from '@material-ui/icons/SettingsSystemDaydream';
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
-import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
-import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
-import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
-import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
+import DashboardRoundedIcon from "@material-ui/icons/DashboardRounded";
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
+import HomeWorkIcon from "@material-ui/icons/HomeWork";
+import SettingsSystemDaydreamIcon from "@material-ui/icons/SettingsSystemDaydream";
+import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
+import SettingsBackupRestoreIcon from "@material-ui/icons/SettingsBackupRestore";
+import WarningRoundedIcon from "@material-ui/icons/WarningRounded";
+import DescriptionRoundedIcon from "@material-ui/icons/DescriptionRounded";
+import SettingsRoundedIcon from "@material-ui/icons/SettingsRounded";
+import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
+import AssessmentIcon from "@material-ui/icons/Assessment";
 
 export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 	const classes = useStyles();
@@ -47,7 +48,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 	const handleClick = (type) => (event) => {
 		if (menuOpen) {
 			toggleMenu();
-		}	
+		}
 		history.push(`/workspace/${type}`);
 	};
 
@@ -56,225 +57,258 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 		history.push("/login");
 	};
 
-
 	return (
-	
-			<Drawer
-				variant="permanent"
-				className={clsx(classes.drawer, {
+		<Drawer
+			variant="permanent"
+			className={clsx(classes.drawer, {
 				[classes.drawerOpen]: menuOpen,
 				[classes.drawerClose]: !menuOpen,
-				})}
-				classes={{
+			})}
+			classes={{
 				paper: clsx(classes.paperAnchorDockedRight, {
 					[classes.drawerOpen]: menuOpen,
 					[classes.drawerClose]: !menuOpen,
 				}),
-				}}
-				open={menuOpen}
-				direction={lang.code == "he" ? "left" : "right"}
-				onClick={null}
-			>
-				<div className={classes.sidemenuContainer}>
-					{
-						menuOpen &&
-						<div className={classes.closeBtn}>
-							<IconButton onClick={toggleMenu}>
-								<ClearRoundedIcon className={classes.icon} />
-							</IconButton>
-						</div>
-					}
-					<div className={classes.userContainer}>
-						<UserItem showName showTitle avatarSize={menuOpen ? 60 : 48} user={auth.user} />
+			}}
+			open={menuOpen}
+			direction={lang.code == "he" ? "left" : "right"}
+			onClick={null}
+		>
+			<div className={classes.sidemenuContainer}>
+				{menuOpen && (
+					<div className={classes.closeBtn}>
+						<IconButton onClick={toggleMenu}>
+							<ClearRoundedIcon className={classes.icon} />
+						</IconButton>
 					</div>
-					<List className={classes.list}>
-						<Can shouldRender={!auth.user.isAdmin && !isResident(auth.user)}>
-							<ListItem
-								button={true}
-								className={clsx(classes.listItem, classes.dashbordButton)}
-								onClick={handleClick("dashboard")}
-							>
-								<ListItemIcon className={classes.listItemIcon}>
-									<DashboardRoundedIcon classes={{ root: classes.iconRoot }} />
-							
-								</ListItemIcon>
-								<ListItemText
-									primary={t("sideMenu.dashboard")}
-									className={classes.listItemText}
-									disableTypography={true}
-								/>
-							</ListItem>
-						</Can>
-					
-						<Can module="clients" action="read" shouldRender={!isResident(auth.user)}>
-							<ListItem
-								button={true}
-								className={classes.listItem}
-								onClick={handleClick("clients")}
-							>
-								<ListItemIcon className={classes.listItemIcon}>
-								<SupervisedUserCircleIcon classes={{ root: classes.iconRoot }} />
-							
-								</ListItemIcon>
-								<ListItemText
-									primary={t("sideMenu.clients")}
-									className={classes.listItemText}
-									disableTypography={true}
-								/>
-							</ListItem>
-						</Can>
-						<Can module="assets" action="read" shouldRender={!isResident(auth.user)}>
-							<ListItem
-								button={true}
-								className={classes.listItem}
-								onClick={handleClick("assets")}
-							>
-								<ListItemIcon className={classes.listItemIcon}>
-								<HomeWorkIcon classes={{ root: classes.iconRoot }} />
-							
-								</ListItemIcon>
-								<ListItemText
-									primary={t("sideMenu.assets")}
-									className={classes.listItemText}
-									disableTypography={true}
-								/>
-							</ListItem>
-						</Can>
-						<Can module="systems" action="read" shouldRender={!isResident(auth.user)}>
-							<ListItem
-								button={true}
-								className={classes.listItem}
-								onClick={handleClick("systems")}
-							>
-								<ListItemIcon className={classes.listItemIcon}>
-								<SettingsSystemDaydreamIcon classes={{ root: classes.iconRoot }} />
-								
-								</ListItemIcon>
-								<ListItemText
-									primary={t("sideMenu.systems")}
-									className={classes.listItemText}
-									disableTypography={true}
-								/>
-							</ListItem>
-						</Can>
-						<Can module="tasks" action="read" shouldRender={!isResident(auth.user)}>
-							<ListItem
-								button={true}
-								className={classes.listItem}
-								onClick={handleClick("tasks")}
-							>
-								<ListItemIcon className={classes.listItemIcon}>
-								<AssignmentTurnedInIcon  classes={{ root: classes.iconRoot }} />
-								
-								</ListItemIcon>
-								<ListItemText
-									primary={t("sideMenu.myTasks")}
-									className={classes.listItemText}
-									disableTypography={true}
-								/>
-							</ListItem>
-						</Can>
-						<Can module="tasks" action="read" shouldRender={!isResident(auth.user)}> 
-							<ListItem
-								button={true}
-								className={classes.listItem}
-								onClick={handleClick("repeatableTasks")}
-							>
-								<ListItemIcon className={classes.listItemIcon}>
-								<SettingsBackupRestoreIcon   classes={{ root: classes.iconRoot }} />
-							
-								</ListItemIcon>
-								<ListItemText
-									primary={t("sideMenu.repeatableTasks")}
-									className={classes.listItemText}
-									disableTypography={true}
-								/>
-							</ListItem>
-						</Can>
-						<Can module="tasks" action="faults">
-							<ListItem
-								button={true}
-								className={classes.listItem}
-								onClick={handleClick("faults")}
-							>
-								<ListItemIcon className={classes.listItemIcon}>
-								<WarningRoundedIcon    classes={{ root: classes.iconRoot }} />
-						
-								</ListItemIcon>
-								<ListItemText
-									primary={t("sideMenu.faults")}
-									className={classes.listItemText}
-									disableTypography={true}
-								/>
-							</ListItem>
-						</Can>
-						<Can module="documents" action="read" shouldRender={!isResident(auth.user)}>
-							<ListItem
-								button={true}
-								className={classes.listItem}
-								onClick={handleClick("documents")}
-							>
-								<ListItemIcon className={classes.listItemIcon}>
-								<DescriptionRoundedIcon     classes={{ root: classes.iconRoot }} />
-								
-								</ListItemIcon>
-								<ListItemText
-									primary={t("sideMenu.documents")}
-									className={classes.listItemText}
-									disableTypography={true}
-								/>
-							</ListItem>
-						</Can>
-					</List>
-					<List className={classes.bottomList}>
-						<ListItem button={true} onClick={toggleSettings}>
-							<ListItemIcon className={classes.listItemIcon}>
-							<SettingsRoundedIcon      classes={{ root: classes.iconRoot }} />
-							
-							</ListItemIcon>
-							<ListItemText
-								primary={t("sideMenu.settings")}
-								className={classes.listItemText}
-								disableTypography={true}
-							/>
-						</ListItem>
-						<ListItem button={true} onClick={userLogout}>
-							<ListItemIcon className={classes.listItemIcon}>
-							<ExitToAppRoundedIcon       classes={{ root: classes.iconRoot }} />					
-							</ListItemIcon>
-							<ListItemText
-								primary={t("sideMenu.logout")}
-								className={classes.listItemText}
-								disableTypography={true}
-							/>
-						</ListItem>
-					</List>
+				)}
+				<div className={classes.userContainer}>
+					<UserItem
+						showName
+						showTitle
+						avatarSize={menuOpen ? 60 : 48}
+						user={auth.user}
+					/>
 				</div>
-			</Drawer>
-		
+				<List className={classes.list}>
+					<Can shouldRender={!auth.user.isAdmin && !isResident(auth.user)}>
+						<ListItem
+							button={true}
+							className={clsx(classes.listItem, classes.dashbordButton)}
+							onClick={handleClick("dashboard")}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<DashboardRoundedIcon classes={{ root: classes.iconRoot }} />
+							</ListItemIcon>
+							<ListItemText
+								primary={t("sideMenu.dashboard")}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+					</Can>
+					<Can shouldRender={auth.user.isAdmin}>
+						<ListItem
+							button={true}
+							className={classes.listItem}
+							onClick={handleClick("clients")}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<SupervisedUserCircleIcon
+									classes={{ root: classes.iconRoot }}
+								/>
+							</ListItemIcon>
+							<ListItemText
+								primary={t("sideMenu.clients")}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+					</Can>
+					<Can
+						module="assets"
+						action="read"
+						shouldRender={!isResident(auth.user)}
+					>
+						<ListItem
+							button={true}
+							className={classes.listItem}
+							onClick={handleClick("assets")}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<HomeWorkIcon classes={{ root: classes.iconRoot }} />
+							</ListItemIcon>
+							<ListItemText
+								primary={t("sideMenu.assets")}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+					</Can>
+					<Can
+						module="systems"
+						action="read"
+						shouldRender={!isResident(auth.user)}
+					>
+						<ListItem
+							button={true}
+							className={classes.listItem}
+							onClick={handleClick("systems")}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<SettingsSystemDaydreamIcon
+									classes={{ root: classes.iconRoot }}
+								/>
+							</ListItemIcon>
+							<ListItemText
+								primary={t("sideMenu.systems")}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+					</Can>
+					<Can
+						module="tasks"
+						action="read"
+						shouldRender={!isResident(auth.user)}
+					>
+						<ListItem
+							button={true}
+							className={classes.listItem}
+							onClick={handleClick("tasks")}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<AssignmentTurnedInIcon classes={{ root: classes.iconRoot }} />
+							</ListItemIcon>
+							<ListItemText
+								primary={t("sideMenu.myTasks")}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+					</Can>
+					<Can
+						module="tasks"
+						action="read"
+						shouldRender={!isResident(auth.user)}
+					>
+						<ListItem
+							button={true}
+							className={classes.listItem}
+							onClick={handleClick("repeatableTasks")}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<SettingsBackupRestoreIcon
+									classes={{ root: classes.iconRoot }}
+								/>
+							</ListItemIcon>
+							<ListItemText
+								primary={t("sideMenu.repeatableTasks")}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+					</Can>
+					<Can module="tasks" action="faults">
+						<ListItem
+							button={true}
+							className={classes.listItem}
+							onClick={handleClick("faults")}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<WarningRoundedIcon classes={{ root: classes.iconRoot }} />
+							</ListItemIcon>
+							<ListItemText
+								primary={t("sideMenu.faults")}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+					</Can>
+					<Can
+						module="documents"
+						action="read"
+						shouldRender={!isResident(auth.user)}
+					>
+						<ListItem
+							button={true}
+							className={classes.listItem}
+							onClick={handleClick("documents")}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<DescriptionRoundedIcon classes={{ root: classes.iconRoot }} />
+							</ListItemIcon>
+							<ListItemText
+								primary={t("sideMenu.documents")}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+					</Can>
+					<Can module="reports" action="create">
+						<ListItem
+							button={true}
+							className={classes.listItem}
+							onClick={handleClick("reports")}
+						>
+							<ListItemIcon className={classes.listItemIcon}>
+								<AssessmentIcon classes={{ root: classes.iconRoot }} />
+							</ListItemIcon>
+							<ListItemText
+								primary={t("sideMenu.reports")}
+								className={classes.listItemText}
+								disableTypography={true}
+							/>
+						</ListItem>
+					</Can>
+				</List>
+				<List className={classes.bottomList}>
+					<ListItem button={true} onClick={toggleSettings}>
+						<ListItemIcon className={classes.listItemIcon}>
+							<SettingsRoundedIcon classes={{ root: classes.iconRoot }} />
+						</ListItemIcon>
+						<ListItemText
+							primary={t("sideMenu.settings")}
+							className={classes.listItemText}
+							disableTypography={true}
+						/>
+					</ListItem>
+					<ListItem button={true} onClick={userLogout}>
+						<ListItemIcon className={classes.listItemIcon}>
+							<ExitToAppRoundedIcon classes={{ root: classes.iconRoot }} />
+						</ListItemIcon>
+						<ListItemText
+							primary={t("sideMenu.logout")}
+							className={classes.listItemText}
+							disableTypography={true}
+						/>
+					</ListItem>
+				</List>
+			</div>
+		</Drawer>
 	);
 };
 
 const useStyles = makeStyles((theme) => ({
 	userContainer: {
-		width: 'auto',
-		margin: '10px auto',
-		paddingLeft: '5px',
-		transition: theme.transitions.create('width', {
+		width: "auto",
+		margin: "10px auto",
+		paddingLeft: "5px",
+		transition: theme.transitions.create("width", {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
-		  }),
-		  height: '80px'
+		}),
+		height: "80px",
 	},
 	drawer: {
 		zIndex: 2,
-		width: "300px",	
+		width: "300px",
 		boxShadow: "rgba(0,0,0,0.25) 0px 0px 6px 3px",
 		position: "absolute",
 		top: "64px",
 		left: "0px",
 		height: "calc(100% - 64px)",
-		overflowY: "overlay"
+		overflowY: "overlay",
 	},
 	list: {
 		width: "100%",
@@ -282,17 +316,17 @@ const useStyles = makeStyles((theme) => ({
 		borderBottom: "1px solid rgba(255,255,255,0.3)",
 		margin: "0px",
 		padding: "10px 0",
-		width: '300px',
-		[theme.breakpoints.down('sm')]: {
-			width: '100%'
-		}
+		width: "300px",
+		[theme.breakpoints.down("sm")]: {
+			width: "100%",
+		},
 	},
 	listItem: {
 		color: theme.palette.primary.main,
 		margin: "0px",
 		borderRadius: "5px",
 		transition: "background box-shadow 0.3s ease-in-out",
-		
+
 		"&:hover": {
 			background: "rgba(0,0,0,0.6)",
 			transition: "background box-shadow 0.2s ease-in-out",
@@ -308,10 +342,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	bottomList: {
 		padding: "10px 0",
-		height: 'auto',
-		display: 'flex',
-		flexDirection: 'column',
-		alignItems: 'flex-end'
+		height: "auto",
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "flex-end",
 	},
 	iconRoot: {
 		textAlign: "center",
@@ -319,7 +353,7 @@ const useStyles = makeStyles((theme) => ({
 		height: "25px",
 		display: "grid",
 		placeItems: "center",
-		color: '#42A5F5',
+		color: "#42A5F5",
 	},
 	closeBtn: {
 		position: "absolute",
@@ -330,17 +364,17 @@ const useStyles = makeStyles((theme) => ({
 		color: "white",
 	},
 	paperAnchorDockedRight: {
-		border: 'none',
+		border: "none",
 	},
-	  drawerOpen: {
-		background: 'transparent',
-		
-		width: '300px',
+	drawerOpen: {
+		background: "transparent",
+
+		width: "300px",
 		background: "rgba(0,0,0,0.3)",
 		backdropFilter: "blur(22px)",
-		transition: theme.transitions.create('width', {
-		  easing: theme.transitions.easing.sharp,
-		  duration: theme.transitions.duration.enteringScreen,
+		transition: theme.transitions.create("width", {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.enteringScreen,
 		}),
 		[theme.breakpoints.down("sm")]: {
 			height: "100%",
@@ -354,25 +388,25 @@ const useStyles = makeStyles((theme) => ({
 			background: "rgba(0,0,0,0.5)",
 			backdropFilter: "blur(15px)",
 		},
-	  },
-	  drawerClose: {
-		background: 'transparent',
+	},
+	drawerClose: {
+		background: "transparent",
 		background: "rgba(0,0,0,0.3)",
 		backdropFilter: "blur(22px)",
-		transition: theme.transitions.create('width', {
-		  easing: theme.transitions.easing.sharp,
-		  duration: theme.transitions.duration.leavingScreen,
+		transition: theme.transitions.create("width", {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.leavingScreen,
 		}),
-		overflowX: 'hidden',
-		width: '60px',
-		[theme.breakpoints.down('sm')]: {
-		  display: 'none'
+		overflowX: "hidden",
+		width: "60px",
+		[theme.breakpoints.down("sm")]: {
+			display: "none",
 		},
-	  },
-	  "@global": {
+	},
+	"@global": {
 		"*::-webkit-scrollbar": {
 			width: "0em",
-			height: '0em'
+			height: "0em",
 		},
 	},
 }));

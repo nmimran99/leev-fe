@@ -150,7 +150,6 @@ export const getUnit = (data) => {
 };
 
 export const updateAsset = async (details) => {
-	console.log(details)
 	try {
 		let formData = new FormData();
 		Object.entries(details).forEach((f) => {
@@ -159,7 +158,6 @@ export const updateAsset = async (details) => {
 					formData.append('images', details.images[i]);
 				}
 			} else if (f[1] instanceof Object) {
-				console.log(f[0])
 				formData.append(f[0], JSON.stringify(f[1]));
 			} else {
 				formData.append(f[0], f[1]);
@@ -243,7 +241,6 @@ export const createAssetAddress = (address) => {
 };
 
 export const createNewAsset = async (details) => {
-	console.log(details)
 	try {
 		let formData = new FormData();
 		Object.entries(details).forEach((f) => {

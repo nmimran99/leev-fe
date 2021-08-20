@@ -6,7 +6,7 @@ import React, {useContext} from 'react';
 import { getLocale } from '../../../api/genericApi';
 import { LanguageContext } from '../../../context/LanguageContext';
 
-export const CustomDatePicker = ({ data, handleChange, label, disablePast, isError, helperText }) => {
+export const CustomDatePicker = ({ data, handleChange, label, disablePast, isError, helperText, size, minDate, maxDate }) => {
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
 
@@ -27,6 +27,9 @@ export const CustomDatePicker = ({ data, handleChange, label, disablePast, isErr
 					disablePast={disablePast}
 					error={isError}
 					helperText={helperText}
+					size={size ? size : 'medium'}
+					minDate={minDate}
+					maxDate={maxDate}
 				/>
 			</MuiPickersUtilsProvider>
 	);

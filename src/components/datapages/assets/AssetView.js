@@ -47,7 +47,7 @@ export const AssetView = ({}) => {
 	useEffect(() => {
 		getAssetExtended(params.assetId)
 			.then((res) => {
-				console.log(res);
+
 				if (!res || [403, 500].includes(res.status)) {
 					history.push("/workspace/assets");
 					setSnackbar(res || getServerError());

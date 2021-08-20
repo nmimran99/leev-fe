@@ -1,28 +1,27 @@
-import { Grid, makeStyles, Portal, Snackbar } from "@material-ui/core";
-import React, { useContext } from "react";
-import { Route, Switch } from "react-router-dom";
-import { FaultsContextProvider } from "../../context/FaultsContext";
-import { Controls } from "../controls/Controls";
-import { Assets } from "../datapages/assets/Assets";
-import { Documents } from "../datapages/documents/Documents";
-import { Faults } from "../datapages/faults/Faults";
-import { Systems } from "../datapages/systems/Systems";
-import { Tasks } from "../datapages/tasks/Tasks";
-import { NotificationsContextProvider } from "../../context/NotificationsContext";
-import { SocketContextProvider } from "../../context/SocketContext";
-import { MapView } from "../datapages/map/MapView";
-import { SnackbarContext } from "../../context/SnackbarContext";
-import { useTranslation } from "react-i18next";
-import MuiAlert from "@material-ui/lab/Alert";
-import { Settings } from "../controls/settings/Settings";
-import { RepeatableTasks } from "../datapages/tasks/RepeatableTasks";
-import { Calender } from "../datapages/calender/Calender";
+import { makeStyles, Portal, Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { Dashboard } from "../datapages/dashboard/Dashboard";
-import { Clients } from "../datapages/clients/Clients";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { Route, Switch } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { ConversationsContextProvider } from "../../context/ConversationsContext";
+import { FaultsContextProvider } from "../../context/FaultsContext";
+import { NotificationsContextProvider } from "../../context/NotificationsContext";
+import { SnackbarContext } from "../../context/SnackbarContext";
+import { SocketContextProvider } from "../../context/SocketContext";
 import { UpsertContextProvider } from "../../context/UpsertContext";
+import { Controls } from "../controls/Controls";
+import { Assets } from "../datapages/assets/Assets";
+import { Calender } from "../datapages/calender/Calender";
+import { Clients } from "../datapages/clients/Clients";
+import { Dashboard } from "../datapages/dashboard/Dashboard";
+import { Documents } from "../datapages/documents/Documents";
+import { Faults } from "../datapages/faults/Faults";
+import { MapView } from "../datapages/map/MapView";
+import { Reports } from "../datapages/reports/Reports";
+import { Systems } from "../datapages/systems/Systems";
+import { RepeatableTasks } from "../datapages/tasks/RepeatableTasks";
+import { Tasks } from "../datapages/tasks/Tasks";
 
 export const Workspace = ({}) => {
 	const classes = useStyles();
@@ -73,6 +72,9 @@ export const Workspace = ({}) => {
 							</Route>
 							<Route path={"/workspace/dashboard"}>
 								<Dashboard />
+							</Route>
+							<Route path={"/workspace/reports"}>
+								<Reports />
 							</Route>
 						</Switch>
 					</div>

@@ -14,7 +14,6 @@ export const Clients = () => {
 
 	useEffect(() => {
 		getTenants(page, rowsPerPage).then((res) => {
-            console.log(responsiveFontSizes)
 			setRows(res);
 		});
 	}, [page, rowsPerPage]);
