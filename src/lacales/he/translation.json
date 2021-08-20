@@ -647,7 +647,9 @@
         "roleName": "שם תפקיד",
         "completeSteps": "השלמת צעדי משימה",
         "dashboard": "תצוגת מצב",
-        "locations": "מיקומים"
+        "locations": "מיקומים",
+        "reports": "דו\"חות",
+        "share": "שיתוף"
     },
     "locationsModule": {
         "updateLocationDetails": "עידכון פרטי מיקום",
@@ -696,7 +698,6 @@
         "searchUser": "חיפוש משתמש"
     },
     "reportsModule": {
-        "reports": "דוחות",
         "faultsReport": "דו\"ח תקלות",
         "tasksReport": "דו\"ח משימות",
         "startDate": "מתאריך",

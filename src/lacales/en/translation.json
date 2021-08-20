@@ -647,7 +647,9 @@
         "roleName": "Role Name",
         "completeSteps": "Complete task steps",
         "dashboard": "Overview Dashboard",
-        "locations": "Locations"
+        "locations": "Locations",
+        "reports": "Reports",
+        "share": "Share"
     },
     "locationsModule": {
         "updateLocationDetails": "Update Location Details",
