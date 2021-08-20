@@ -733,6 +733,7 @@
         "sendToAll": "Send to all",
         "previousReports": "Previous reports",
         "createDate": "Create Date",
-        "createdBy": "Created By"
+        "createdBy": "Created By",
+        "reportSentSuccessfully": "Report sent successfully"
     }
 }

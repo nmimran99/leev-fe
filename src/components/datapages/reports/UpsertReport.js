@@ -9,48 +9,63 @@ import {
 	TextField,
 	Button,
 	CircularProgress,
-	Collapse
+	Collapse,
 } from "@material-ui/core";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
-import { distributeReport, generateLink, generateReportLink } from "../../../api/reportsApi";
-import { SnackbarContext } from '../../../context/SnackbarContext';
-import { getServerError } from "../../../api/genericApi";
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import clsx from 'clsx'
+import {
+	distributeReport,
+	generateLink,
+	generateReportLink,
+	getReport,
+} from "../../../api/reportsApi";
+import { SnackbarContext } from "../../../context/SnackbarContext";
+import {
+	getReportDistributedSnack,
+	getServerError,
+} from "../../../api/genericApi";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
+import clsx from "clsx";
 import { getResidentList, getUserList } from "../../../api/userApi";
 import { UserItem } from "../../user/UserItem";
-import MailOutlineRoundedIcon from '@material-ui/icons/MailOutlineRounded';
+import MailOutlineRoundedIcon from "@material-ui/icons/MailOutlineRounded";
 
 export const UpsertReport = ({ data, handleClose }) => {
 	const classes = useStyles();
 
 	const { lang } = useContext(LanguageContext);
 	const { t } = useTranslation();
-    const { setSnackbar } = useContext(SnackbarContext)
+	const { setSnackbar } = useContext(SnackbarContext);
 	const [isLoading, setIsLoading] = useState(true);
+	const [sending, setSending] = useState(false);
 	const [name, setName] = useState("");
 	const [generating, setGenerating] = useState(null);
-    const [ reportId, setReportId ] = useState(null);
-	const [ broadcastTo, setBroadcastTo ] = useState('users');
-	const [ userList, setUserList ] = useState({ users: [], tenants: []});
-	const [ toSend, setToSend ] = useState([]);
+	const [reportId, setReportId] = useState(data.reportId);
+	const [broadcastTo, setBroadcastTo] = useState("users");
+	const [userList, setUserList] = useState({ users: [], tenants: [] });
+	const [toSend, setToSend] = useState([]);
 
 	useEffect(() => {
 		setIsLoading(false);
 	}, []);
 
 	useEffect(() => {
-		if (!reportId) return;
-		handleGetUsers();
-	}, [reportId])
+		prepareData();
+	}, [reportId]);
 
 	useEffect(() => {
 		setToSend([]);
-	}, [broadcastTo])
+	}, [broadcastTo]);
+
+	const prepareData = async () => {
+		if (!reportId) return;
+		await handleGetUsers();
+		let rep = await getReport(reportId);
+		setName(rep.name);
+	}
 
 	const handleChangeName = (e) => {
 		setName(e.target.value);
@@ -59,49 +74,61 @@ export const UpsertReport = ({ data, handleClose }) => {
 	const handleGenerateLink = async () => {
 		setGenerating(true);
 		const res = await generateReportLink({ ...data, name });
-        if (!res) {
-            setSnackbar(getServerError());
-            handleClose();
-            return;
-        }
-        setReportId(res);
-        setGenerating(false);
+		if (!res) {
+			setSnackbar(getServerError());
+			handleClose();
+			return;
+		}
+		setReportId(res);
+		setGenerating(false);
 	};
 
-    const copyToClipboard = async (e) => {
+	const copyToClipboard = async (e) => {
 		if (navigator.clipboard) {
 			await navigator.clipboard.writeText(generateLink(reportId));
-			setSnackbar({ severity: 'success', text: t("reportsModule.copiedToClipboard") });
+			setSnackbar({
+				severity: "success",
+				text: t("reportsModule.copiedToClipboard"),
+			});
 			return;
-		};
-		setSnackbar({ severity: 'error', text: t("reportsModule.linkNotCopied") })
-    }
+		}
+		setSnackbar({ severity: "error", text: t("reportsModule.linkNotCopied") });
+	};
 
-	const toggleBroadcast = (type) => event => {
-		setBroadcastTo(type)
-	}
+	const toggleBroadcast = (type) => (event) => {
+		setBroadcastTo(type);
+	};
 
 	const handleGetUsers = async () => {
 		let users = await getUserList();
 		let tenants = await getResidentList({ asset: data.asset });
-		setUserList({users, tenants})
-	}
+		setUserList({ users, tenants });
+	};
 
-	const handleToggleToSend = (uid) => event => {
-		if (toSend.find(ts => ts === uid)) {
-			setToSend(ts => ts.filter(u => u !== uid))
+	const handleToggleToSend = (uid) => (event) => {
+		if (toSend.find((ts) => ts === uid)) {
+			setToSend((ts) => ts.filter((u) => u !== uid));
 		} else {
-			setToSend(ts => [...ts, uid])
+			setToSend((ts) => [...ts, uid]);
 		}
-	}
+	};
 
-	const handleDistribute = (toAll) => async event => {
+	const handleDistribute = (toAll) => async (event) => {
+		setSending(true);
 		let sendList = toSend;
 		if (toAll) {
-			sendList = userList[broadcastTo].map(u => u._id);
+			sendList = userList[broadcastTo].map((u) => u._id);
 		}
 		const res = await distributeReport(reportId, sendList);
-	}
+		if (!res) {
+			setSnackbar(getServerError());
+			setSending(false);
+			return;
+		}
+		setSnackbar(getReportDistributedSnack());
+		setToSend([]);
+		setSending(false);
+	};
 
 	return isLoading ? (
 		<LoadingProgress />
@@ -137,16 +164,14 @@ export const UpsertReport = ({ data, handleClose }) => {
 									<ClearRoundedIcon className={classes.icon} />
 								</IconButton>
 							</div>
-							{
-								!reportId &&
+							{!reportId && (
 								<div className={classes.instructions}>
 									{t("reportsModule.upsertInstructions")}
 								</div>
-							}
-							
+							)}
+
 							<div className={classes.nameContainer}>
-								{
-									!reportId ? 
+								{!reportId ? (
 									<React.Fragment>
 										<TextField
 											variant={"outlined"}
@@ -167,78 +192,110 @@ export const UpsertReport = ({ data, handleClose }) => {
 												t("reportsModule.generateLink")
 											)}
 										</Button>
-									</React.Fragment> :
-									<div className={classes.reportName}>
-										{name}
-									</div>
-								}
-								
+									</React.Fragment>
+								) : (
+									<div className={classes.reportName}>{name}</div>
+								)}
 							</div>
-                            {
-                                <Collapse in={reportId}>
-								<div>
-									<div className={classes.linkContainer}>
-										<div className={classes.link}>
-											<input type='text' value={reportId} id={'linkInput'} hidden />
-											{generateLink(reportId)}
-										</div>
-										<IconButton className={classes.copyLink} onClick={copyToClipboard}>
-											<FileCopyIcon className={classes.copyIcon} />
-										</IconButton>  
-									</div>
-									<div className={classes.broadcastContainer}>
-										<div className={classes.broadcastToggle}>
-											<div className={clsx(classes.selectedOption, classes.optionUsers, broadcastTo === 'users' && classes.activeSelected)} onClick={toggleBroadcast('users')}>
-												{t("reportsModule.selectedUsers")}
+							{
+								<Collapse in={reportId}>
+									<div>
+										<div className={classes.linkContainer}>
+											<div className={classes.link}>
+												<input
+													type="text"
+													value={reportId}
+													id={"linkInput"}
+													hidden
+												/>
+												{generateLink(reportId)}
 											</div>
-											<div className={clsx(classes.selectedOption, classes.optionTenants, broadcastTo === 'tenants' && classes.activeSelected)} onClick={toggleBroadcast('tenants')}>
-												{t("reportsModule.selectedTenants")}
-											</div>											
+											<IconButton
+												className={classes.copyLink}
+												onClick={copyToClipboard}
+											>
+												<FileCopyIcon className={classes.copyIcon} />
+											</IconButton>
 										</div>
-										<div className={classes.userlist}>
-											{
-												userList &&
-												userList[broadcastTo].map(u => 
-													<div className={classes.userContainer} onClick={handleToggleToSend(u._id)}>
-														<UserItem 
-															user={u}
-															avatarSize={40}
-															size={11}
-															showName
-															showTitle
-														/>
-														<IconButton
-															className={clsx(classes.checkBtn, toSend.find(us => us === u._id) && classes.checked)}
+										<div className={classes.broadcastContainer}>
+											<div className={classes.broadcastToggle}>
+												<div
+													className={clsx(
+														classes.selectedOption,
+														classes.optionUsers,
+														broadcastTo === "users" && classes.activeSelected
+													)}
+													onClick={toggleBroadcast("users")}
+												>
+													{t("reportsModule.selectedUsers")}
+												</div>
+												<div
+													className={clsx(
+														classes.selectedOption,
+														classes.optionTenants,
+														broadcastTo === "tenants" && classes.activeSelected
+													)}
+													onClick={toggleBroadcast("tenants")}
+												>
+													{t("reportsModule.selectedTenants")}
+												</div>
+											</div>
+											<div className={classes.userlist}>
+												{userList &&
+													userList[broadcastTo].map((u) => (
+														<div
+															className={classes.userContainer}
 															onClick={handleToggleToSend(u._id)}
 														>
-															<MailOutlineRoundedIcon className={classes.checkIcon} />
-														</IconButton>
-													</div>
-												)
-											}
+															<UserItem
+																user={u}
+																avatarSize={40}
+																size={11}
+																showName
+																showTitle
+															/>
+															<IconButton
+																className={clsx(
+																	classes.checkBtn,
+																	toSend.find((us) => us === u._id) &&
+																		classes.checked
+																)}
+																onClick={handleToggleToSend(u._id)}
+															>
+																<MailOutlineRoundedIcon
+																	className={classes.checkIcon}
+																/>
+															</IconButton>
+														</div>
+													))}
+											</div>
+										</div>
+										<div className={classes.sendBtns}>
+											{sending ? (
+												<div className={classes.sending}>
+													<CircularProgress className={classes.top} size={20} />
+												</div>
+											) : !toSend.length ? (
+												<Button
+													className={classes.sendBtn}
+													onClick={handleDistribute(true)}
+												>
+													{t("reportsModule.sendToAll")}
+												</Button>
+											) : (
+												<Button
+													className={classes.sendBtn}
+													onClick={handleDistribute(false)}
+												>
+													{`${t("reportsModule.sendTo")} ${toSend.length} ${t(
+														"reportsModule.selected"
+													)}`}
+												</Button>
+											)}
 										</div>
 									</div>
-									<div className={classes.sendBtns}>
-										{
-											!toSend.length ?
-											<Button
-											 	className={classes.sendBtn}
-												onClick={handleDistribute(true)}
-											 >
-												{t("reportsModule.sendToAll")}
-											 </Button> :
-											 <Button 
-											 	className={classes.sendBtn} 
-												onClick={handleDistribute(false)}
-											>
-											 	{`${t("reportsModule.sendTo")} ${toSend.length} ${t("reportsModule.selected")}`}
-											 </Button>
-										}
-											 
-										</div>
-								</div>
-                                </Collapse>
-                            }
+								</Collapse>
+							}
 						</Paper>
 					</Grid>
 				</Grid>
@@ -303,8 +360,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 	generateBtn: {
 		color: "white",
-        height: '35px',
-        width: '100px',
+		height: "35px",
+		width: "100px",
 		background: theme.palette.leading,
 		borderRadius: "50px",
 		fontSize: "13px",
@@ -313,10 +370,10 @@ const useStyles = makeStyles((theme) => ({
 			background: theme.palette.leading,
 			boxShadow: "0 0 10px 4px rgba(0,0,0,0.25)",
 		},
-        "&:disabled": {
-			background: 'transparent',
-            color: "rgba(255,255,255,0.6)",
-            border: '1px solid rgba(255,255,255,0.2)',
+		"&:disabled": {
+			background: "transparent",
+			color: "rgba(255,255,255,0.6)",
+			border: "1px solid rgba(255,255,255,0.2)",
 			boxShadow: "0 0 10px 4px rgba(0,0,0,0.25)",
 		},
 	},
@@ -328,122 +385,123 @@ const useStyles = makeStyles((theme) => ({
 		color: "white",
 		animationDuration: "550ms",
 	},
-    linkContainer: {
-        color: 'white',
-        display: 'flex',
-        border: '1px solid rgba(255,255,255,0.2)',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '90%',
-        borderRadius: '10px',
-		margin: '0 auto'
-    },
-    copyLink: {
-        color: 'white',
-        width: '40px',
-        background: 'rgba(255,255,255,0.2)',
-        borderRadius: '0px 10px 10px 0px',
-        '&:hover': {
-            background: theme.palette.leading
-        }
-    },
-    copyIcon: {
-        fontSize: '14px'
-    },
-    link: {
-        width: 'calc(100% - 40px)',
-        color: 'white',
-        fontSize: '11px',
-        textAlign: 'center',
-		textOverflow: 'ellipsis',
-		overflow: 'hidden',
-		whiteSpace: 'nowrap',
-		padding: '0 30px'
-    },
+	linkContainer: {
+		color: "white",
+		display: "flex",
+		border: "1px solid rgba(255,255,255,0.2)",
+		alignItems: "center",
+		justifyContent: "center",
+		width: "90%",
+		borderRadius: "10px",
+		margin: "0 auto",
+	},
+	copyLink: {
+		color: "white",
+		width: "40px",
+		background: "rgba(255,255,255,0.2)",
+		borderRadius: "0px 10px 10px 0px",
+		"&:hover": {
+			background: theme.palette.leading,
+		},
+	},
+	copyIcon: {
+		fontSize: "14px",
+	},
+	link: {
+		width: "calc(100% - 40px)",
+		color: "white",
+		fontSize: "11px",
+		textAlign: "center",
+		textOverflow: "ellipsis",
+		overflow: "hidden",
+		whiteSpace: "nowrap",
+		padding: "0 30px",
+	},
 	broadcastContainer: {
-		border: '1px solid rgba(255,255,255,0.2)',
-		width: '90%',
-		borderRadius: '10px',
-		margin: '30px auto 10px'
+		border: "1px solid rgba(255,255,255,0.2)",
+		width: "90%",
+		borderRadius: "10px",
+		margin: "30px auto 10px",
 	},
 	broadcastToggle: {
-		display: 'flex'
+		display: "flex",
 	},
 	selectedOption: {
-		width: '50%',
-		height: '30px',
-		color: 'white',
-		fontSize: '13px',
-		display: 'grid',
-		placeItems: 'center',
-		cursor: 'pointer'
+		width: "50%",
+		height: "30px",
+		color: "white",
+		fontSize: "13px",
+		display: "grid",
+		placeItems: "center",
+		cursor: "pointer",
 	},
 	optionUsers: {
-		borderRadius: '10px 0 0 0px'
+		borderRadius: "10px 0 0 0px",
 	},
 	optionTenants: {
-		borderRadius: '0 10px 0px 0'
+		borderRadius: "0 10px 0px 0",
 	},
 	activeSelected: {
-		background: theme.palette.leading
+		background: theme.palette.leading,
 	},
 	userlist: {
-		overflow: 'overlay',
-		height: '200px',
-		padding: '10px 20px',
-		borderTop: '1px solid rgba(255,255,255,0.2)'
+		overflow: "overlay",
+		height: "200px",
+		padding: "10px 20px",
+		borderTop: "1px solid rgba(255,255,255,0.2)",
 	},
 
 	userContainer: {
-		height: '60px',
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		cursor: 'pointer'
+		height: "60px",
+		display: "flex",
+		justifyContent: "space-between",
+		alignItems: "center",
+		cursor: "pointer",
 	},
 	checkBtn: {
-		color: 'rgba(255,255,255,0.2)',
-		border: '1px solid rgba(255,255,255,0.2)',
-		height: '30px',
-		width: '30px',
-		'&:hover': {
-			borderColor: 'white'
-		}
+		color: "rgba(255,255,255,0.2)",
+		border: "1px solid rgba(255,255,255,0.2)",
+		height: "30px",
+		width: "30px",
+		"&:hover": {
+			borderColor: "white",
+		},
 	},
 	checkIcon: {
-		fontSize: '18px'
+		fontSize: "18px",
 	},
 
 	checked: {
 		background: theme.palette.leading,
-		color: 'white'
+		color: "white",
 	},
 	sendBtns: {
-		width: '90%',
-		display: 'flex',
-		justifyContent: 'space-evenly',
-		margin: '10px auto'
+		width: "90%",
+		display: "flex",
+		justifyContent: "space-evenly",
+		margin: "10px auto",
 	},
 	sendBtn: {
-		width: '80%',
-		color: 'white',
-		border: '1px solid rgba(255,255,255,0.2)',
-		borderRadius: '50px',
-		'&:hover': {
-			boxShadow: '0 0 3px 1px rgba(255,255,255,0.2) inset'
+		width: "80%",
+		color: "white",
+		border: "1px solid rgba(255,255,255,0.2)",
+		borderRadius: "50px",
+		whiteSpace: 'nowrap',
+		"&:hover": {
+			boxShadow: "0 0 3px 1px rgba(255,255,255,0.2) inset",
 		},
-		'&:disabled': {
-			color: 'rgba(255,255,255,0.2)'
-		}
+		"&:disabled": {
+			color: "rgba(255,255,255,0.2)",
+		},
 	},
 	reportName: {
-		color: 'white',
-		padding: '10px 0',
-		width: '90%',
-		margin: '40px auto 10px',
-		textAlign: 'center',
-		borderRadius: '10px',
-		border: '1px solid rgba(255,255,255,0.2)',
-		background: 'rgba(255,255,255,0.2)'
-	}
+		color: "white",
+		padding: "10px 0",
+		width: "90%",
+		margin: "40px auto 10px",
+		textAlign: "center",
+		borderRadius: "10px",
+		border: "1px solid rgba(255,255,255,0.2)",
+		background: "rgba(255,255,255,0.2)",
+	},
 }));

@@ -110,7 +110,7 @@ export const distributeReport = async (reportId, userList) => {
             {
                 headers: {
                     module: 'reports',
-                    requesttype: 'distribute',
+                    requesttype: 'share',
                 },
             }
         );
@@ -156,6 +156,29 @@ export const getReports = async () => {
                 headers: {
                     module: 'reports',
                     requesttype: 'create',
+                },
+            }
+        );
+        if (res.status === 200) {
+            return res.data;
+        }
+    } catch(e) {
+        if (e.message.includes('403')) {
+			return getUnauthorizedMessage();
+		};
+		return { error: true, reason: 'general', status: 500 };
+    }   
+}
+
+
+export const getReport = async (reportId) => {
+    try {
+        const res = await axios.post(
+            `${process.env.REACT_APP_BACKEND_URL}/reports/getReport`, { reportId },
+            {
+                headers: {
+                    module: 'reports',
+                    requesttype: 'read',
                 },
             }
         );
