@@ -56,6 +56,7 @@ export const FaultsReport = ({ setUpsert }) => {
 			reportId: "faultsGeneral",
 			parameters: queryParamsToObject(location.search),
 			asset: data.asset._id,
+			reportId: viewMode ? params.reportId : null
 		});
 	};
 
@@ -70,14 +71,11 @@ export const FaultsReport = ({ setUpsert }) => {
 						lang.dateonly
 					)} - ${format(parseISO(data.toDate), lang.dateonly)}`}
 				</div>
-
-				{!viewMode && (
-					<Can module="reports" action={"share"}>
-						<Button className={classes.distributeBtn} onClick={handleShare}>
-							{t("reportsModule.distributeReport")}
-						</Button>
-					</Can>
-				)}
+				<Can module="reports" action={"share"}>
+					<Button className={classes.distributeBtn} onClick={handleShare}>
+						{t("reportsModule.distributeReport")}
+					</Button>
+				</Can>				
 			</Grid>
 			<Grid item xs={12} className={classes.assetContainer}>
 				<div className={classes.asset}>{getFullAddress(data.asset)}</div>

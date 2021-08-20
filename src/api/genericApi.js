@@ -222,6 +222,12 @@ export const getServerError = () => {
 	return { text: i18next.t('errors.serverError'), severity: 'error', status: 500 }
 }
 
+export const getReportDistributedSnack = () => {
+	return { text: i18next.t('reportsModule.reportSentSuccessfully'), severity: 'success', status: 200 }
+}
+
+
+
 export const getLocalization = (langCode) => {
 	return localizations[langCode];
 }
