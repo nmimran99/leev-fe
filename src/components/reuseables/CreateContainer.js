@@ -95,7 +95,7 @@ export const CreateContainer = ({ isOpen, handleClose }) => {
                 return; 
             };
             setSnackbar({
-                text: "faultsModule.faultSuccesfullyCreated",
+                text: t("faultsModule.faultSuccesfullyCreated"),
                 severity: 'success',
             });
             handleClose();

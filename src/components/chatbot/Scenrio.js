@@ -1,42 +1,40 @@
-import i18next from 'i18next';
-import { assignUserToFault, checkEmailExists } from '../../api/chatbotApi';
-import { createExternalFault } from '../../api/faultsApi';
+import i18next from "i18next";
+import { assignUserToFault, checkEmailExists } from "../../api/chatbotApi";
+import { createExternalFault } from "../../api/faultsApi";
 
 export const welcome = {
-	querstions: [
-		
-	]
-}
+	querstions: [],
+};
 
 export const assetNotFound = {
-	type: 'assetNotFound',
+	type: "assetNotFound",
 	questions: [
 		{
 			order: 0,
-            text: 'chatbot.assetNotFound',
+			text: "chatbot.assetNotFound",
 			actionRequired: false,
 			inputType: null,
-            submitFunc: null
+			submitFunc: null,
 		},
-	]
+	],
 };
 
 export const openFault = {
-	type: 'openFault',
+	type: "openFault",
 	data: {
 		asset: null,
 		system: null,
 		location: null,
 		description: null,
-		images: null
+		images: null,
 	},
-	submitInput: function(data, field) {
+	submitInput: function (data, field) {
 		this.data[field] = data;
 		return Promise.resolve();
 	},
-	submit: async function(vault) {
+	submit: async function (vault) {
 		let createdBy = vault.user ? vault.user._id : null;
-		const res = await createExternalFault({...this.data, createdBy})
+		const res = await createExternalFault({ ...this.data, createdBy });
 		if (res) {
 			return res;
 		}
@@ -45,69 +43,76 @@ export const openFault = {
 	questions: [
 		{
 			order: 0,
-            text: 'chatbot.welcomeMessage',
+			text: "chatbot.welcomeMessage",
 			actionRequired: false,
 			inputType: null,
-            submitFunc: null
+			submitFunc: null,
 		},
 		{
 			order: 1,
-            text: 'chatbot.notLoggedIn.requestSystem',
+			text: "chatbot.notLoggedIn.requestSystem",
 			actionRequired: true,
-			inputType: 'select',
-			inputField: 'system'
+			inputType: "select",
+			inputField: "system",
 		},
 		{
 			order: 2,
-            text: 'chatbot.notLoggedIn.requestLocation',
+			text: "chatbot.notLoggedIn.requestLocation",
 			actionRequired: true,
-			inputType: 'select',
-			inputField: 'location'
+			inputType: "select",
+			inputField: "location",
 		},
 		{
 			order: 3,
-            text: 'chatbot.notLoggedIn.requestDescription1',
-            actionRequired: false,
+			text: "chatbot.notLoggedIn.requestDescription1",
+			actionRequired: false,
 			inputType: null,
-			inputField: null
-           
+			inputField: null,
 		},
 		{
 			order: 4,
-            text: 'chatbot.notLoggedIn.requestDescription2',
+			text: "chatbot.notLoggedIn.requestDescription2",
 			actionRequired: true,
-			inputType: 'string',
-			inputField: 'description'
+			inputType: "string",
+			inputField: "description",
 		},
 		{
 			order: 5,
-            text: 'chatbot.notLoggedIn.requestPhotos',
+			text: "chatbot.notLoggedIn.requestPhotos",
 			actionRequired: true,
-			inputType: 'image',
-			inputField: 'images',
-			submit: true
+			inputType: "image",
+			inputField: "images",
+			submit: false,
 		},
 		{
 			order: 6,
-            text: 'chatbot.notLoggedIn.faultOpenedSuccessfully',
-            actionRequired: false,
+			text: "chatbot.notLoggedIn.openingFault",
+			actionRequired: false,
 			inputType: null,
-			inputField: null
-		}
-	]
+			inputField: null,
+			submit: true,
+		},
+		{
+			order: 7,
+			text: "chatbot.notLoggedIn.faultOpenedSuccessfully",
+			actionRequired: false,
+			inputType: null,
+			inputField: null,
+		},
+	],
 };
 
 export const followFault = {
-	type: 'followFault',
+	type: "followFault",
 	data: {
 		shouldFollow: false,
-		assignStatus: null
+		assignStatus: null,
 	},
-	submitInput: function(data, field) {
+	submitInput: function (data, field) {
 		this.data[field] = data;
 		return Promise.resolve();
 	},
-	submit: async function(vault) {
+	submit: async function (vault) {
 		if (!this.data.shouldFollow) {
 			this.data.assignStatus = false;
 			return this.data;
@@ -127,26 +132,26 @@ export const followFault = {
 	questions: [
 		{
 			order: 0,
-            text: 'chatbot.requestFollow',
+			text: "chatbot.requestFollow",
 			actionRequired: true,
-			inputType: 'boolean',
-			inputField: 'shouldFollow',
-            submit: true
-		}
-	]
+			inputType: "boolean",
+			inputField: "shouldFollow",
+			submit: true,
+		},
+	],
 };
 
 export const checkUserAuthentication = {
-	type: 'checkUserAuthentication',
+	type: "checkUserAuthentication",
 	data: {
 		email: null,
-		authenticated: false
+		authenticated: false,
 	},
-	submitInput: function(data, field) {
+	submitInput: function (data, field) {
 		this.data[field] = data;
 		return Promise.resolve();
 	},
-	submit: async function(vault) {
+	submit: async function (vault) {
 		if (!this.data.email) return false;
 		try {
 			let res = await checkEmailExists(this.data.email);
@@ -167,75 +172,74 @@ export const checkUserAuthentication = {
 	questions: [
 		{
 			order: 0,
-            text: 'chatbot.requestEmail',
+			text: "chatbot.requestEmail",
 			actionRequired: true,
-			inputType: 'string',
-			inputField: 'email',
-            submit: true
-		}
-	]
-}
+			inputType: "string",
+			inputField: "email",
+			submit: true,
+		},
+	],
+};
 
 export const assignedSuccessfully = {
 	questions: [
 		{
 			order: 0,
-			text: 'chatbot.assignedSuccessfully',
+			text: "chatbot.assignedSuccessfully",
 			actionRequired: false,
 			inputType: null,
 			inputField: null,
-			submit: false
-		}
-	]
-}
+			submit: false,
+		},
+	],
+};
 
 export const assignFailed = {
 	questions: [
 		{
 			order: 0,
-			text: 'chatbot.userNotFound',
+			text: "chatbot.userNotFound",
 			actionRequired: false,
 			inputType: null,
 			inputField: null,
-			submit: false
-		}
-	]
-}
-
+			submit: false,
+		},
+	],
+};
 
 export const userAssigned = {
-	type: 'userAssigned',
+	type: "userAssigned",
 	questions: [
 		{
 			order: 0,
-            text: 'chatbot.notLoggedIn.emailSent',
-            actionRequired: false,
+			text: "chatbot.notLoggedIn.emailSent",
+			actionRequired: false,
 			inputType: null,
 			inputField: null,
-            submitFunc: null
-		}
-	]
-}
+			submitFunc: null,
+		},
+	],
+};
 
 export const thankyou = {
 	questions: [
 		{
 			order: 0,
-            text: 'chatbot.notLoggedIn.thankyou',
-            actionRequired: false,
+			text: "chatbot.notLoggedIn.thankyou",
+			actionRequired: false,
 			inputType: null,
 			inputField: null,
-            submitFunc: null
-		}
-	]
-}
+			submitFunc: null,
+		},
+	],
+};
 
 export const getNextScenario = (currentScenario, auth) => {
 	return new Promise((resolve, reject) => {
-		if (currentScenario.type === 'openFault') {
+		if (currentScenario.type === "openFault") {
 			resolve(followFault);
-		};
-		if (currentScenario.type === 'followFault') {
+		}
+		if (currentScenario.type === "followFault") {
 			if (currentScenario.data.shouldFollow) {
 				if (currentScenario.data.assignStatus) {
 					resolve(userAssigned);
@@ -245,16 +249,17 @@ export const getNextScenario = (currentScenario, auth) => {
 			}
 			resolve(thankyou);
 		}
-		if (currentScenario.type === 'checkUserAuthentication') {
+		if (currentScenario.type === "checkUserAuthentication") {
 			if (currentScenario.data.authenticated) {
-				resolve(assignedSuccessfully)
+				resolve(assignedSuccessfully);
 			} else {
-				resolve(assignFailed)
+				resolve(assignFailed);
 			}
 		}
-		if (['assignedSuccessfully', 'assignFailed'].includes(currentScenario.type)) {
+		if (
+			["assignedSuccessfully", "assignFailed"].includes(currentScenario.type)
+		) {
 			resolve(thankyou);
 		}
-	})
-	
-}
+	});
+};

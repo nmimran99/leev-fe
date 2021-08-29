@@ -13,14 +13,16 @@ export const Faults = () => {
 
     return (
         <Grid container justify='center'>
-            <Switch>
-                <Route exact path={path}>
-                    <FaultViews />        
-                </Route>
-                <Route path={`${path}/:faultId`}>
-                    <FaultView />
-                </Route>
-            </Switch>
+            <Grid item xs={12} >
+                <Switch>
+                    <Route exact path={path}>
+                        <FaultViews />        
+                    </Route>
+                    <Route path={`${path}/:faultId`}>
+                        <FaultView />
+                    </Route>
+                </Switch>
+            </Grid> 
         </Grid>
         
     )

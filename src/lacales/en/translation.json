@@ -600,6 +600,7 @@
             "requestDescription1": "Please provide me with a detailed description of the fault",
             "requestDescription2": "Efficient description will include the fault's location and details about what exactly isn't working correctly",
             "requestPhotos": "Would you like to add some photos of the fault?",
+            "openingFault": "Give me a second, I'm creating the fault now",
             "faultOpenedSuccessfully": "Great! Fault was created successfully",
             "requestEmail": "What is your Email address?",
             "emailSent": "Great! I sent you an Email with the fault details and link",
