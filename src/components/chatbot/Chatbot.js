@@ -98,6 +98,12 @@ export const Chatbot = () => {
 
 	useEffect(() => {
 		if (!scenarioStep) return;
+		handleScenarioStepChange();
+	}, [scenarioStep]);
+
+	const { t } = useTranslation();
+
+	const handleScenarioStepChange = async () => {
 		setTimeout(async () => {
 			setMessages([
 				...messages,
@@ -111,14 +117,15 @@ export const Chatbot = () => {
 					setScenarioStep(sc.questions[0]);
 					return;
 				}
+				if (scenarioStep.submit) {
+					await handleSubmit();
+				}
 				setScenarioStep(scenario.questions[scenarioStep.order + 1]);
 			} else {
 				setShowInput(scenarioStep.inputType);
 			}
 		}, 1000);
-	}, [scenarioStep]);
-
-	const { t } = useTranslation();
+	};
 
 	const handleInputChange = async (inputVal) => {
 		if (!inputVal.value && inputVal.type === "image") {
@@ -200,8 +207,8 @@ export const Chatbot = () => {
 	};
 
 	const changeLanguage = (l) => (event) => {
-        setMessages([]);
-		setLang(getLocalization(l))
+		setMessages([]);
+		setLang(getLocalization(l));
 		setLangMenu(false);
 	};
 
@@ -220,19 +227,19 @@ export const Chatbot = () => {
 				>
 					{lang.code ? lang.code.toUpperCase() : ""}
 				</Button>
-                <Menu
+				<Menu
 					classes={{
-                        paper : classes.langMenu
-                    }}
-                    keepMounted
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
+						paper: classes.langMenu,
+					}}
+					keepMounted
+					anchorOrigin={{
+						vertical: "bottom",
+						horizontal: "right",
+					}}
+					transformOrigin={{
+						vertical: "top",
+						horizontal: "right",
+					}}
 					anchorEl={langMenu}
 					keepMounted
 					open={Boolean(langMenu)}
@@ -275,7 +282,6 @@ export const Chatbot = () => {
 					<MessageBoolean handleInputChange={handleInputChange} />
 				) : null}
 			</Grid>
-            
 		</div>
 	);
 };
@@ -290,37 +296,36 @@ const useStyles = makeStyles((theme) => ({
 	},
 	topBar: {
 		display: "flex",
-        background: "rgba(0,0,0,0.9)",
-        height: '75px',
+		background: "rgba(0,0,0,0.9)",
+		height: "75px",
 	},
 	addressContainer: {
 		width: "100%",
 		height: "40px",
-		
+
 		backdropFilter: "blur(5px)",
 		borderBottom: "1px solid rgba(255,255,255,0.2)",
 		padding: "15px",
 	},
-    langMenu: {
-        background: 'rgba(0,0,0,0.8)',
-        backdropFilter: 'blur(10px)',
-        
-        border: '1px solid rgba(255,255,255,0.2)',
+	langMenu: {
+		background: "rgba(0,0,0,0.8)",
+		backdropFilter: "blur(10px)",
 
-    },
-    changeLanguage: {
-        background: 'transparent',
-        color: 'white',
-        borderRadius: '0',
-        height: '70px'
-    },
-    langItem: {
-        color: 'white',
-        width: '100%',
-        '&:hover': {
-            background: 'rgba(255,255,255,0.1)'
-        }
-    },
+		border: "1px solid rgba(255,255,255,0.2)",
+	},
+	changeLanguage: {
+		background: "transparent",
+		color: "white",
+		borderRadius: "0",
+		height: "70px",
+	},
+	langItem: {
+		color: "white",
+		width: "100%",
+		"&:hover": {
+			background: "rgba(255,255,255,0.1)",
+		},
+	},
 	messagesContainer: {
 		height: "calc(100% - 120px)",
 		width: "100%",

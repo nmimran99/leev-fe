@@ -33,12 +33,18 @@ export const openFault = {
 		return Promise.resolve();
 	},
 	submit: async function (vault) {
-		let createdBy = vault.user ? vault.user._id : null;
-		const res = await createExternalFault({ ...this.data, createdBy });
-		if (res) {
-			return res;
+		try {
+			let createdBy = vault.user ? vault.user._id : null;
+			console.log(createdBy);
+			const res = await createExternalFault({ ...this.data, createdBy });
+			console.log(res);
+			if (res) {
+				return res;
+			}
+			return false;
+		} catch (e) {
+			console.log(e.message);
 		}
-		return false;
 	},
 	questions: [
 		{
