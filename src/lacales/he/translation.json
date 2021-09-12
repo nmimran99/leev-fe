@@ -176,6 +176,7 @@
             "ready": "מוכן לביצוע",
             "inProgress": "בביצוע",
             "pending": "ממתין לפעולה", 
+            "awaitingApproval": "ממתין לאישור",
             "closed": "סגור"
         },
         "showFilters": "הצג מסננים",
@@ -238,6 +239,7 @@
             "ready": "מוכן לביצוע",
             "inProgress": "בביצוע",
             "pending": "ממתין לפעולה", 
+            "awaitingApproval": "ממתין לאישור",
             "closed": "סגור"
         },
         "showFilters": "הצג מסננים",
@@ -300,7 +302,8 @@
         "step": "שלב",
         "startDtae": "תאריך התחלה",
         "startDateText": "תאריך תחילת משימה",
-        "taskIterations": "מועדי חזרות למשימה"           
+        "taskIterations": "מועדי חזרות למשימה",
+        "showRepeatable": "הצג משימות חוזרות"            
     },
     "documentsModule": {
         "upsert": {

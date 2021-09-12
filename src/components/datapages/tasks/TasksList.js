@@ -1,4 +1,4 @@
-import { Fade, Grid, makeStyles } from "@material-ui/core";
+import { Button, Fade, Grid, makeStyles } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
@@ -11,63 +11,42 @@ import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { NoDataFound } from "../../reuseables/NoDataFound";
 import { TaskMinified } from "./TaskMinified";
 import { TasksControls } from "./TasksControls";
+import ReplayIcon from "@material-ui/icons/Replay";
+import clsx from "clsx";
 
-export const TasksList = ({ repeatable }) => {
+export const TasksList = ({
+	items,
+	showRepeatable,
+	handleToggleRepeatable,
+}) => {
 	const classes = useStyles();
-	const location = useLocation();
-	const query = useQuery(location.search);
-	const { auth } = useContext(AuthContext);
 	const { t } = useTranslation();
-	const { setSnackbar } = useContext(SnackbarContext);
-	const [isLoading, setIsLoading] = useState(true);
-	const [tasks, setTasks] = useState([]);
-
-	useEffect(() => {
-		getTasks({ ...query, isRepeatable: repeatable })
-			.then((res) => {
-				if (!res || res.status === 403) {
-					return [];
-				}
-				if (res.status === 500) {
-					setSnackbar(getServerError());
-					return;
-				}
-				setTasks(res);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	}, [isLoading]);
-
-	useEffect(() => {
-		setIsLoading(true);
-	}, [location.search]);
 
 	return (
 		<Grid container justify="center">
-			<Grid xs={12} className={classes.moduleContainer}>
-				<div className={classes.pageModule}>
-					{repeatable
-						? t("tasksModule.repeatableTasks")
-						: t("tasksModule.tasks")}
-				</div>
+			<Grid item xl={7} xs={12} className={classes.btnContainer}>
+				<Button
+					className={clsx(
+						classes.toggleRepeatable,
+						showRepeatable && classes.toggled
+					)}
+					onClick={handleToggleRepeatable}
+				>
+					<ReplayIcon />
+					<div className={classes.btnLbl}>
+						{t("tasksModule.showRepeatable")}
+					</div>
+				</Button>
 			</Grid>
-			<Grid item xs={12}>
-				<TasksControls />
-			</Grid>
-			{isLoading ? (
-				<LoadingProgress />
-			) : (
-				<Fade in={!isLoading}>
-					<Grid container className={classes.listContainer}>
-						{tasks.length ? (
-							tasks.map((task, i) => <TaskMinified data={task} key={i} />)
-						) : (
-							<NoDataFound />
-						)}
-					</Grid>
-				</Fade>
-			)}
+			<Fade in={items.length}>
+				<Grid container className={classes.listContainer}>
+					{items.length ? (
+						items.map((task, i) => <TaskMinified data={task} key={i} />)
+					) : (
+						<NoDataFound />
+					)}
+				</Grid>
+			</Fade>
 		</Grid>
 	);
 };
@@ -75,6 +54,7 @@ export const TasksList = ({ repeatable }) => {
 const useStyles = makeStyles((theme) => ({
 	listContainer: {
 		padding: "10px",
+		justifyContent: "center",
 		[theme.breakpoints.down("sm")]: {
 			padding: "10px 0",
 		},
@@ -105,5 +85,24 @@ const useStyles = makeStyles((theme) => ({
 			borderRadius: 0,
 			margin: 0,
 		},
+	},
+	toggleRepeatable: {
+		border: "1px solid rgba(255,255,255,0.2)",
+		color: "white",
+		borderRadius: "50px",
+		padding: "5px 20px 5px 10px",
+		"&:hover": {
+			borderColor: "white",
+		},
+	},
+	btnLbl: {
+		padding: "0 10px",
+	},
+	btnContainer: {
+		display: "flex",
+		justifyContent: "flex-end",
+	},
+	toggled: {
+		background: "rgba(0,0,0,0.7)",
 	},
 }));

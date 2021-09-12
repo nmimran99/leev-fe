@@ -1,30 +1,24 @@
-import { Grid, makeStyles, useMediaQuery } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { getFullAddress } from "../../../api/assetsApi";
+import { ItemLink } from "../../reuseables/ItemLink";
 import { StatusTag } from "../../reuseables/StatusTag";
 import { UserItem } from "../../user/UserItem";
-import { FaultLink } from "./FaultLink";
 
-const LinkWrapper = ({ withLink, faultId, children}) => {
+const LinkWrapper = ({ withLink, faultId, children }) => {
 	if (withLink) {
 		return (
 			<Link
-			to={`/workspace/faults/${faultId}`}
-			style={{ textDecoration: "none" }}
-		>
-			{children}
-		</Link>
-		)
+				to={`/workspace/faults/${faultId}`}
+				style={{ textDecoration: "none" }}
+			>
+				{children}
+			</Link>
+		);
 	}
-	return (
-		<React.Fragment>
-			{children}
-		</React.Fragment>
-	)
-}
-
+	return <React.Fragment>{children}</React.Fragment>;
+};
 
 export const FaultMinified = ({ data, withLink }) => {
 	const classes = useStyles();
@@ -34,11 +28,9 @@ export const FaultMinified = ({ data, withLink }) => {
 		setFault(data);
 	}, [data]);
 
-	
-
 	return (
-			<LinkWrapper withLink={withLink} faultId={fault.faultId} >
-				<Grid container className={classes.container} alignItems="flex-start">
+		<LinkWrapper withLink={withLink} faultId={fault.faultId}>
+			<Grid container className={classes.container} alignItems="flex-start">
 				<Grid
 					container
 					justify="space-between"
@@ -62,16 +54,14 @@ export const FaultMinified = ({ data, withLink }) => {
 				>
 					<Grid item xs={5} className={classes.userData}>
 						<UserItem size={13} avatarSize={40} user={fault.owner} />
-						<FaultLink faultId={fault.faultId} size={14} />
+						<ItemLink module={"faults"} itemId={fault.faultId} size={13} />
 					</Grid>
 					<Grid item xs={7} className={classes.status}>
-						<StatusTag status={fault.status} type={"fault"} />
+						<StatusTag status={fault.status} type={"fault"} size={12} />
 					</Grid>
 				</Grid>
 			</Grid>
-			</LinkWrapper>
-			
-	
+		</LinkWrapper>
 	);
 };
 
@@ -80,31 +70,26 @@ const useStyles = makeStyles((theme) => ({
 		width: "100%",
 		height: "100%",
 		position: "relative",
+		padding: "10px",
 	},
 	title: {
 		color: "white",
-		fontSize: "16px",
-		padding: "15px 5px",
-		display: "-webkit-box",
-		WebkitLineClamp: "2",
-		WebkitBoxOrient: "vertical",
+		fontSize: "14px",
+		padding: "18px 5px",
+		whiteSpace: "nowrap",
 		overflow: "hidden",
 		textOverflow: "ellipsis",
-		height: "60px",
 	},
 	topRow: {
 		padding: "5px",
 		maxHeight: "60px",
 	},
 	userData: {
-		padding: "5px 0px",
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "flex-start",
 	},
-	bottomRow: {
-		height: "50px",
-	},
+	bottomRow: {},
 	asset: {
 		color: "white",
 		borderRadius: "50px",
@@ -115,6 +100,7 @@ const useStyles = makeStyles((theme) => ({
 		width: "fit-content",
 		textAlign: "center",
 		whiteSpace: "nowrap",
+		fontSize: "13px",
 	},
 	faultLink: {
 		display: "flex",

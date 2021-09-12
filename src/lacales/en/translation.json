@@ -176,6 +176,7 @@
             "ready": "Ready",
             "inProgress": "In Progress",
             "pending": "Pending for Action", 
+            "awaitingApproval": "Awaiting Approval",
             "closed": "Closed"
         },
         "showFilters": "Show Filters",
@@ -238,6 +239,7 @@
             "ready": "Ready",
             "inProgress": "In Progress",
             "pending": "Pending for Action", 
+            "awaitingApproval": "Awaiting Approval",
             "closed": "Closed"
         },
         "showFilters": "Show Filters",
@@ -300,7 +302,8 @@
         "step": "Step",
         "startDtae": "Start date",
         "startDateText": "Task Start date",
-        "taskIterations": "Task Iterations"         
+        "taskIterations": "Task Iterations",
+        "showRepeatable": "Show Repeatable Tasks"         
     },
     "documentsModule": {
         "upsert": {

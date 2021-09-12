@@ -239,8 +239,6 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: "5px",
 	},
 	miniTask: {
-		border: "1px solid rgba(255,255,255,0.2)",
-		background: "rgba(0,0,0,0.0)",
 		margin: "10px",
 		borderRadius: "5px",
 	},
