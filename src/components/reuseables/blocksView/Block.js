@@ -1,12 +1,36 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
 import clsx from "clsx";
+import { useDrag } from "react-dnd";
 
-export const Block = ({ children, isEmpty }) => {
+export const Block = ({ children, isEmpty, item }) => {
 	const classes = useStyles();
+	const [{ isDragging }, drag] = useDrag({
+		type: "ITEMBLOCK",
+		item: {
+			item,
+		},
+		collect: (monitor) => ({
+			isDragging: !!monitor.isDragging(),
+		}),
+	});
+
+	if (isEmpty) {
+		return (
+			<div
+				className={clsx(classes.itemContainer, isEmpty && classes.emptyBlock)}
+			>
+				{children}
+			</div>
+		);
+	}
 
 	return (
-		<div className={clsx(classes.itemContainer, isEmpty && classes.emptyBlock)}>
+		<div
+			ref={drag}
+			className={clsx(classes.itemContainer, isEmpty && classes.emptyBlock)}
+			style={{ opacity: isDragging ? 0.5 : 1 }}
+		>
 			{children}
 		</div>
 	);

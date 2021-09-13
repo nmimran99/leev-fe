@@ -1,48 +1,38 @@
 import {
-	ClickAwayListener,
-	Icon,
+	Drawer,
 	IconButton,
 	List,
 	ListItem,
 	ListItemIcon,
 	ListItemText,
 	makeStyles,
-	Slide,
-	Collapse,
-	useMediaQuery,
-	Drawer,
-	Avatar,
-	Fade,
 } from "@material-ui/core";
+import AssessmentIcon from "@material-ui/icons/Assessment";
+import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
+import DashboardRoundedIcon from "@material-ui/icons/DashboardRounded";
+import DescriptionRoundedIcon from "@material-ui/icons/DescriptionRounded";
+import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
+import HomeWorkIcon from "@material-ui/icons/HomeWork";
+import SettingsRoundedIcon from "@material-ui/icons/SettingsRounded";
+import SettingsSystemDaydreamIcon from "@material-ui/icons/SettingsSystemDaydream";
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
+import WarningRoundedIcon from "@material-ui/icons/WarningRounded";
+import clsx from "clsx";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { clearUserLS, isResident } from "../../../api/userApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { LanguageContext } from "../../../context/LanguageContext";
-import { NotificationsContext } from "../../../context/NotificationsContext";
 import { Can } from "../../reuseables/Can";
 import { UserItem } from "../../user/UserItem";
-import clsx from "clsx";
-import DashboardRoundedIcon from "@material-ui/icons/DashboardRounded";
-import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
-import HomeWorkIcon from "@material-ui/icons/HomeWork";
-import SettingsSystemDaydreamIcon from "@material-ui/icons/SettingsSystemDaydream";
-import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
-import SettingsBackupRestoreIcon from "@material-ui/icons/SettingsBackupRestore";
-import WarningRoundedIcon from "@material-ui/icons/WarningRounded";
-import DescriptionRoundedIcon from "@material-ui/icons/DescriptionRounded";
-import SettingsRoundedIcon from "@material-ui/icons/SettingsRounded";
-import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
-import AssessmentIcon from "@material-ui/icons/Assessment";
 
 export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 	const classes = useStyles();
 	const history = useHistory();
 	const { t, i18n } = useTranslation();
 	const { lang } = useContext(LanguageContext);
-	const matches = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 	const { auth } = useContext(AuthContext);
 
 	const handleClick = (type) => (event) => {
@@ -181,29 +171,7 @@ export const SideMenu = ({ toggleMenu, toggleSettings, menuOpen }) => {
 								<AssignmentTurnedInIcon classes={{ root: classes.iconRoot }} />
 							</ListItemIcon>
 							<ListItemText
-								primary={t("sideMenu.myTasks")}
-								className={classes.listItemText}
-								disableTypography={true}
-							/>
-						</ListItem>
-					</Can>
-					<Can
-						module="tasks"
-						action="read"
-						shouldRender={!isResident(auth.user)}
-					>
-						<ListItem
-							button={true}
-							className={classes.listItem}
-							onClick={handleClick("repeatableTasks")}
-						>
-							<ListItemIcon className={classes.listItemIcon}>
-								<SettingsBackupRestoreIcon
-									classes={{ root: classes.iconRoot }}
-								/>
-							</ListItemIcon>
-							<ListItemText
-								primary={t("sideMenu.repeatableTasks")}
+								primary={t("sideMenu.tasks")}
 								className={classes.listItemText}
 								disableTypography={true}
 							/>

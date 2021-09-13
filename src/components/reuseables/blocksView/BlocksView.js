@@ -1,10 +1,13 @@
 import { Grid, List, makeStyles } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import { DndProvider, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { getStatusList } from "../../../api/genericApi";
 import { StatusTag } from "../StatusTag";
 import { Block } from "./Block";
+import { BlockList } from "./BlockList";
 
-export const BlocksView = ({ items, module, ItemBlock }) => {
+export const BlocksView = ({ items, module, ItemBlock, handleDrop }) => {
 	const classes = useStyles();
 	const [data, setData] = useState([]);
 	const [statuses, setStatuses] = useState([]);
@@ -38,40 +41,32 @@ export const BlocksView = ({ items, module, ItemBlock }) => {
 		return Promise.resolve(res);
 	};
 
-	const getBlock = (fbs) => {
-		return (
-			<List className={classes.blockFaults}>
-				{fbs.map((f, i) => (
-					<Block>
-						<ItemBlock data={f} key={i} asBlock />
-					</Block>
-				))}
-				{fbs.length < fillTo &&
-					[...Array(fillTo - fbs.length).keys()].map((b) => (
-						<Block isEmpty></Block>
-					))}
-			</List>
-		);
-	};
-
 	return (
-		<div className={classes.container}>
-			{Object.entries(blocksData).map((s, i) => {
-				return (
-					<div className={classes.gridItem} key={i}>
-						<div className={classes.block}>
-							<div className={classes.blockTitle}>
-								<StatusTag
-									type={module.slice(0, -1)}
-									status={statuses.find((st) => st.statusId === s[0])}
+		<DndProvider backend={HTML5Backend}>
+			<div className={classes.container}>
+				{Object.entries(blocksData).map((s, i) => {
+					return (
+						<div className={classes.gridItem} key={i}>
+							<div className={classes.block}>
+								<div className={classes.blockTitle}>
+									<StatusTag
+										type={module.slice(0, -1)}
+										status={statuses.find((st) => st.statusId === s[0])}
+									/>
+								</div>
+								<BlockList
+									fbs={s[1]}
+									fillTo={fillTo}
+									ItemBlock={ItemBlock}
+									listId={statuses.find((st) => st.statusId === s[0])._id}
+									handleDrop={handleDrop}
 								/>
 							</div>
-							{getBlock(s[1])}
 						</div>
-					</div>
-				);
-			})}
-		</div>
+					);
+				})}
+			</div>
+		</DndProvider>
 	);
 };
 
@@ -84,7 +79,6 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	gridItem: {
-		minHeight: "700px",
 		width: "20%",
 		[theme.breakpoints.down("sm")]: {
 			minHeight: "0",
@@ -104,14 +98,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	block: {
 		padding: "0 5px",
-	},
-	blockFaults: {
-		borderRadius: "10px",
-		minHeight: "600px",
-		padding: "5px",
-		[theme.breakpoints.down("sm")]: {
-			minHeight: "0",
-		},
 	},
 	faultContainer: {
 		padding: "10px",

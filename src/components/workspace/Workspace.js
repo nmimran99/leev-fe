@@ -9,6 +9,7 @@ import { FaultsContextProvider } from "../../context/FaultsContext";
 import { NotificationsContextProvider } from "../../context/NotificationsContext";
 import { SnackbarContext } from "../../context/SnackbarContext";
 import { SocketContextProvider } from "../../context/SocketContext";
+import { TasksContextProvider } from "../../context/TasksContext";
 import { UpsertContextProvider } from "../../context/UpsertContext";
 import { Controls } from "../controls/Controls";
 import { Assets } from "../datapages/assets/Assets";
@@ -32,75 +33,77 @@ export const Workspace = ({}) => {
 	return (
 		<React.Fragment>
 			<UpsertContextProvider>
-			<FaultsContextProvider>
-				<div container className={classes.mainContainer}>
-					<SocketContextProvider id={auth.user._id}>
-						<ConversationsContextProvider>
-							<NotificationsContextProvider>
-								<Controls />
-							</NotificationsContextProvider>
-						</ConversationsContextProvider>
-					</SocketContextProvider>
-					<div className={classes.mainData}>
-						<Switch>
-							<Route path={"/workspace/clients"}>
-								<Clients />
-							</Route>
-							<Route path={"/workspace/assets"}>
-								<Assets />
-							</Route>
-							<Route path={"/workspace/systems"}>
-								<Systems />
-							</Route>
-							<Route path={"/workspace/faults"}>
-								<Faults />
-							</Route>
-							<Route path={"/workspace/tasks"}>
-								<Tasks />
-							</Route>
-							<Route path={"/workspace/repeatableTasks"}>
-								<RepeatableTasks />
-							</Route>
-							<Route path={"/workspace/documents"}>
-								<Documents />
-							</Route>
-							<Route path={"/workspace/map"}>
-								<MapView />
-							</Route>
-							<Route path={"/workspace/calender"}>
-								<Calender />
-							</Route>
-							<Route path={"/workspace/dashboard"}>
-								<Dashboard />
-							</Route>
-							<Route path={"/workspace/reports"}>
-								<Reports />
-							</Route>
-						</Switch>
-					</div>
-				</div>
-				{Boolean(snackbar) && (
-					<Portal>
-						<Snackbar
-							open={Boolean(snackbar)}
-							autoHideDuration={6000}
-							onClose={() => setSnackbar(null)}
-						>
-							<Alert
-								onClose={() => setSnackbar(null)}
-								severity={snackbar.severity}
-								elevation={9}
-								variant={"filled"}
-								classes={{
-									message: classes.message,
-								}}
-							>
-								{snackbar.text}
-							</Alert>
-						</Snackbar>
-					</Portal>
-				)}
-			</FaultsContextProvider>
+				<FaultsContextProvider>
+					<TasksContextProvider>
+						<div container className={classes.mainContainer}>
+							<SocketContextProvider id={auth.user._id}>
+								<ConversationsContextProvider>
+									<NotificationsContextProvider>
+										<Controls />
+									</NotificationsContextProvider>
+								</ConversationsContextProvider>
+							</SocketContextProvider>
+							<div className={classes.mainData}>
+								<Switch>
+									<Route path={"/workspace/clients"}>
+										<Clients />
+									</Route>
+									<Route path={"/workspace/assets"}>
+										<Assets />
+									</Route>
+									<Route path={"/workspace/systems"}>
+										<Systems />
+									</Route>
+									<Route path={"/workspace/faults"}>
+										<Faults />
+									</Route>
+									<Route path={"/workspace/tasks"}>
+										<Tasks />
+									</Route>
+									<Route path={"/workspace/repeatableTasks"}>
+										<RepeatableTasks />
+									</Route>
+									<Route path={"/workspace/documents"}>
+										<Documents />
+									</Route>
+									<Route path={"/workspace/map"}>
+										<MapView />
+									</Route>
+									<Route path={"/workspace/calender"}>
+										<Calender />
+									</Route>
+									<Route path={"/workspace/dashboard"}>
+										<Dashboard />
+									</Route>
+									<Route path={"/workspace/reports"}>
+										<Reports />
+									</Route>
+								</Switch>
+							</div>
+						</div>
+						{Boolean(snackbar) && (
+							<Portal>
+								<Snackbar
+									open={Boolean(snackbar)}
+									autoHideDuration={6000}
+									onClose={() => setSnackbar(null)}
+								>
+									<Alert
+										onClose={() => setSnackbar(null)}
+										severity={snackbar.severity}
+										elevation={9}
+										variant={"filled"}
+										classes={{
+											message: classes.message,
+										}}
+									>
+										{snackbar.text}
+									</Alert>
+								</Snackbar>
+							</Portal>
+						)}
+					</TasksContextProvider>
+				</FaultsContextProvider>
 			</UpsertContextProvider>
 		</React.Fragment>
 	);
@@ -139,7 +142,7 @@ const useStyles = makeStyles((theme) => ({
 			margin: 0,
 			padding: 0,
 			height: "calc(100% - 84px)",
-			
+
 			width: "100%",
 		},
 	},

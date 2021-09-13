@@ -491,7 +491,6 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "flex-start",
 		padding: "0 30px",
 		[theme.breakpoints.down("sm")]: {
-			alignItems: "center",
 			padding: "0 15px",
 		},
 	},

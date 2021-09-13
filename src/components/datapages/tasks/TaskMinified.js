@@ -154,7 +154,8 @@ const useStyles = makeStyles((theme) => ({
 		placeItems: "center",
 		padding: "5px 0",
 		[theme.breakpoints.down("sm")]: {
-			placeItems: "flex-end",
+			justifyContent: "center",
+			flexWrap: "wrap",
 		},
 	},
 	asset: {

@@ -2,7 +2,7 @@ import { Grid, makeStyles } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router";
-import { getFaults } from "../../../api/faultsApi";
+import { getFaults, updateFaultStatus } from "../../../api/faultsApi";
 import { updateQueryParams } from "../../../api/genericApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { FaultsContext } from "../../../context/FaultsContext";
@@ -29,7 +29,9 @@ export const FaultViews = () => {
 
 	useEffect(() => {
 		if (!isLoading) return;
-		getFaults(query)
+		let f = query;
+		delete f.viewType;
+		getFaults(f)
 			.then((data) => {
 				if (data) {
 					setFaults(data);
@@ -54,6 +56,19 @@ export const FaultViews = () => {
 			),
 		});
 	}, [viewType]);
+
+	const handleDrop = async (fault, statusId) => {
+		if (fault.status._id == statusId) return;
+		const res = await updateFaultStatus(fault._id, statusId);
+		setFaults((fs) => {
+			return fs.map((f) => {
+				if (f._id === fault._id) {
+					return res;
+				}
+				return f;
+			});
+		});
+	};
 
 	return (
 		<Grid container justify={"center"}>
@@ -81,6 +96,7 @@ export const FaultViews = () => {
 								items={faults}
 								module={"faults"}
 								ItemBlock={FaultMinified}
+								handleDrop={handleDrop}
 							/>
 						)
 					) : (

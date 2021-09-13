@@ -2,13 +2,8 @@ import { Grid, makeStyles } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router";
-import {
-	addQueryParam,
-	getServerError,
-	removeQueryParam,
-	updateQueryParams,
-} from "../../../api/genericApi";
-import { getTasks } from "../../../api/tasksApi";
+import { updateQueryParams } from "../../../api/genericApi";
+import { getTasks, updateTaskStatus } from "../../../api/tasksApi";
 import { AuthContext } from "../../../context/AuthContext";
 import { BlocksView } from "../../reuseables/blocksView/BlocksView";
 import { useQuery } from "../../reuseables/customHooks/useQuery";
@@ -17,6 +12,7 @@ import { NoDataFound } from "../../reuseables/NoDataFound";
 import { TaskMinified } from "./TaskMinified";
 import { TasksControls } from "./TasksControls";
 import { TasksList } from "./TasksList";
+import { TasksContext } from "../../../context/TasksContext";
 
 export const TaskViews = ({}) => {
 	const history = useHistory();
@@ -25,7 +21,7 @@ export const TaskViews = ({}) => {
 	const classes = useStyles();
 	const { auth } = useContext(AuthContext);
 	const { t } = useTranslation();
-	const [tasks, setTasks] = useState([]);
+	const { tasks, setTasks } = useContext(TasksContext);
 	const [viewType, setViewType] = useState(query["viewType"] || "list");
 	const [isLoading, setIsLoading] = useState(true);
 	const [showRepeatable, setShowRepeatable] = useState(false);
@@ -70,6 +66,19 @@ export const TaskViews = ({}) => {
 		setIsLoading(true);
 	};
 
+	const handleDrop = async (task, statusId) => {
+		if (task.status._id == statusId) return;
+		const res = await updateTaskStatus(task._id, statusId);
+		setTasks((ts) => {
+			return ts.map((t) => {
+				if (t._id === task._id) {
+					return res;
+				}
+				return t;
+			});
+		});
+	};
+
 	return (
 		<Grid container justify={"center"}>
 			<Grid xs={12} className={classes.moduleContainer}>
@@ -93,13 +102,13 @@ export const TaskViews = ({}) => {
 							<TasksList
 								handleToggleRepeatable={handleToggleRepeatable}
 								showRepeatable={showRepeatable}
-								items={tasks}
 							/>
 						) : (
 							<BlocksView
-								items={tasks}
 								module={"tasks"}
 								ItemBlock={TaskMinified}
+								items={tasks}
+								handleDrop={handleDrop}
 							/>
 						)
 					) : (

@@ -13,14 +13,12 @@ import { TaskMinified } from "./TaskMinified";
 import { TasksControls } from "./TasksControls";
 import ReplayIcon from "@material-ui/icons/Replay";
 import clsx from "clsx";
+import { TasksContext } from "../../../context/TasksContext";
 
-export const TasksList = ({
-	items,
-	showRepeatable,
-	handleToggleRepeatable,
-}) => {
+export const TasksList = ({ showRepeatable, handleToggleRepeatable }) => {
 	const classes = useStyles();
 	const { t } = useTranslation();
+	const { tasks } = useContext(TasksContext);
 
 	return (
 		<Grid container justify="center">
@@ -38,10 +36,10 @@ export const TasksList = ({
 					</div>
 				</Button>
 			</Grid>
-			<Fade in={items.length}>
+			<Fade in={tasks.length}>
 				<Grid container className={classes.listContainer}>
-					{items.length ? (
-						items.map((task, i) => <TaskMinified data={task} key={i} />)
+					{tasks.length ? (
+						tasks.map((task, i) => <TaskMinified data={task} key={i} />)
 					) : (
 						<NoDataFound />
 					)}
