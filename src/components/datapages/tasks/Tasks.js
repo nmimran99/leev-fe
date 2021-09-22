@@ -15,7 +15,9 @@ export const Tasks = () => {
 					<TaskViews />
 				</Route>
 				<Route path={`${path}/:taskId`}>
-					<TaskView repeatable />
+					<Grid item xl={6} lg={7} md={9} sm={11} xs={12}>
+						<TaskView repeatable />
+					</Grid>
 				</Route>
 			</Switch>
 		</Grid>

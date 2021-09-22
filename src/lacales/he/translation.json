@@ -192,7 +192,8 @@
             "changeOwner": "החלף ממונה על תקלה",
             "addRelatedUser": "הוסף משתמש מקושר",
             "removeRelatedUser": "הסר משתמש מרשימת המקושרים",
-            "changeStatus": "שינוי סטטוס"
+            "changeStatus": "שינוי סטטוס",
+            "createLink": "צור לינק לתקלה"
         },
         "noRelatedUsers": "לתקלה זו אין כרגע משתמשים מקושרים.",
         "relatedUsers": "משתמשים מקושרים",
@@ -255,7 +256,8 @@
             "removeRelatedUser": "הסר משתמש מרשימת המקושרים לתקלה",
             "changeStatus": "שינוי סטטוס",
             "schedule": "קבע מועדים",
-            "taskMenu": "תפריט משימה"
+            "taskMenu": "תפריט משימה",
+            "createLink": "צור לינק למשימה"
         },
         "noRelatedUsers": "למשימה זו אין כרגע משתמשים מקושרים.",
         "relatedUsers": "משתמשים מקושרים",

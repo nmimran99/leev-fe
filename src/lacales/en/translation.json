@@ -192,7 +192,8 @@
             "changeOwner": "Change Assigned User",
             "addRelatedUser": "Add Related User",
             "removeRelatedUser": "Remove user from related users",
-            "changeStatus": "Change Status"
+            "changeStatus": "Change Status",
+            "createLink": "Create Fault Link"
         },
         "noRelatedUsers": "There are no followers to this fault yet.",
         "relatedUsers": "Related users",
@@ -255,7 +256,8 @@
             "removeRelatedUser": "Remove related user?",
             "changeStatus": "Change Status",
             "schedule": "Schedule Task",
-            "taskMenu": "Task Menu"
+            "taskMenu": "Task Menu",
+            "createLink": "Create Task Link"
         },
         "noRelatedUsers": "There are no related users to this task yet.",
         "relatedUsers": "Related Users",

@@ -5,15 +5,15 @@ import {
 	makeStyles,
 	Tooltip,
 	useMediaQuery,
-} from '@material-ui/core';
-import { ClearRounded } from '@material-ui/icons';
-import AddRoundedIcon from '@material-ui/icons/AddRounded';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { getFullName } from '../../api/genericApi';
-import { UserItem } from '../user/UserItem';
-import { AlertDialog } from './AlertDialog';
-import { Can } from './Can';
+} from "@material-ui/core";
+import { ClearRounded } from "@material-ui/icons";
+import AddRoundedIcon from "@material-ui/icons/AddRounded";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { getFullName } from "../../api/genericApi";
+import { UserItem } from "../user/UserItem";
+import { AlertDialog } from "./AlertDialog";
+import { Can } from "./Can";
 
 export const UserList = ({
 	users,
@@ -23,11 +23,11 @@ export const UserList = ({
 	addTooltip,
 	title,
 	placeholder,
-    module,
-    owner
+	module,
+	owner,
 }) => {
 	const classes = useStyles();
-	const downSm = useMediaQuery((theme) => theme.breakpoints.down('md'));
+	const downSm = useMediaQuery((theme) => theme.breakpoints.down("md"));
 	const { t } = useTranslation();
 	const [userList, setUserList] = useState(users || []);
 	const [liHover, setLiHover] = useState(null);
@@ -37,8 +37,7 @@ export const UserList = ({
 		setUserList(users);
 	}, [users]);
 
-	useEffect(() => {
-	}, [alertDialog]);
+	useEffect(() => {}, [alertDialog]);
 
 	const toggleHover = (index) => (event) => {
 		event.stopPropagation();
@@ -52,25 +51,26 @@ export const UserList = ({
 				setAlertDialog(null);
 			},
 			handleCancel: () => setAlertDialog(null),
-			text: `${t('general.removeUserConfirmation.part1')} ${getFullName(
+			text: `${t("general.removeUserConfirmation.part1")} ${getFullName(
 				user
-			)} ${t('general.removeUserConfirmation.part2')}?`,
-			title: `${t('general.removeUserFromFollowing')}`,
+			)} ${t("general.removeUserConfirmation.part2")}?`,
+			title: `${t("general.removeUserFromFollowing")}`,
 		});
 	};
 	return (
 		<div
 			className={classes.linked}
-			style={{ minWidth: `200px`, width: '100%' }}
+			style={{ minWidth: `200px`, width: "100%" }}
 		>
 			<div className={classes.topRow}>
 				<div className={classes.linkedHeader}>{title}</div>
-				<Can module={module} action={'changeRelatedUsers'} userList={[...users.map(u => u._id), owner._id]} >
+				<Can
+					module={module}
+					action={"changeRelatedUsers"}
+					userList={[...users.map((u) => u._id), owner._id]}
+				>
 					<Tooltip title={addTooltip}>
-						<IconButton
-							className={classes.addUser}
-							onClick={handleAdd}
-						>
+						<IconButton className={classes.addUser} onClick={handleAdd}>
 							<AddRoundedIcon className={classes.icon} />
 						</IconButton>
 					</Tooltip>
@@ -94,34 +94,30 @@ export const UserList = ({
 								showPhone
 								showName
 							/>
-                            <Can module={module} action={'changeRelatedUsers'} userList={[...users.map(u => u._id), owner._id]}>
-                                {(liHover === i || downSm) && (
-                                    <Tooltip title={removeTooltip}>
-                                        <IconButton
-                                            className={classes.removeUser}
-                                            onClick={removeUser(user)}
-                                        >
-                                            <ClearRounded
-                                                className={classes.icon}
-                                            />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
-                            </Can>
-							
+							<Can
+								module={module}
+								action={"changeRelatedUsers"}
+								userList={[...users.map((u) => u._id), owner._id]}
+							>
+								{(liHover === i || downSm) && (
+									<Tooltip title={removeTooltip}>
+										<IconButton
+											className={classes.removeUser}
+											onClick={removeUser(user)}
+										>
+											<ClearRounded className={classes.icon} />
+										</IconButton>
+									</Tooltip>
+								)}
+							</Can>
 						</ListItem>
 					))
 				) : (
-					<ListItem className={classes.placeholder}>
-						{placeholder}
-					</ListItem>
+					<ListItem className={classes.placeholder}>{placeholder}</ListItem>
 				)}
 			</List>
 			{Boolean(alertDialog) && (
-				<AlertDialog
-					isOpen={Boolean(alertDialog)}
-					alertDialog={alertDialog}
-				/>
+				<AlertDialog isOpen={Boolean(alertDialog)} alertDialog={alertDialog} />
 			)}
 		</div>
 	);
@@ -129,64 +125,64 @@ export const UserList = ({
 
 const useStyles = makeStyles((theme) => ({
 	linked: {
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'flex-start',
-		background: 'rgba(0,0,0,0.4)',
-		margin: '10px 0',
-		borderRadius: '10px',
-		padding: '10px 0',
-		height: '300px',
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "flex-start",
+		margin: "10px 0",
+		borderRadius: "10px",
+		padding: "10px 0",
+		maxHeight: "300px",
 	},
 	topRow: {
-		margin: '0px auto',
-		width: '90%',
-		borderBottom: '1px solid rgba(255,255,255,0.2)',
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
+		margin: "0px auto",
+		width: "90%",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
+		display: "flex",
+		justifyContent: "space-between",
+		alignItems: "center",
 	},
 	linkedHeader: {
-		color: 'white',
-		fontSize: '16px',
-		padding: '5px 5px 10px',
+		color: "white",
+		fontSize: "14px",
+		padding: "5px 5px 10px",
 	},
 	followingList: {
-		padding: '5px 0',
-		overflowY: 'auto',
+		padding: "5px 0",
+		overflowY: "auto",
 	},
 	listItem: {
-		width: '100%',
-		borderRadius: '5px',
-		padding: '8px',
-		display: 'flex',
-		justifyContent: 'space-between',
-		'&:hover': {
-			background: 'rgba(0,0,0,0.4)',
+		width: "100%",
+		borderRadius: "5px",
+		padding: "8px",
+		display: "flex",
+		justifyContent: "space-between",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
+		"&:hover": {
+			background: "rgba(0,0,0,0.4)",
 		},
 	},
 	removeUser: {
-		color: 'white',
-		'&:hover': {
-			background: 'rgba(0,0,0,0.3)',
+		color: "white",
+		"&:hover": {
+			background: "rgba(0,0,0,0.3)",
 		},
 	},
 	addUser: {
-		color: 'white',
-		border: '1px solid rgba(255,255,255,0.2)',
-		padding: '5px',
-		margin: '0 0 10px 0',
+		color: "white",
+		border: "1px solid rgba(255,255,255,0.2)",
+		padding: "5px",
+		margin: "0 0 10px 0",
 	},
 	icon: {
-		fontSize: '20px',
+		fontSize: "16px",
 	},
 	placeholder: {
-		background: 'rgba(0,0,0,0.4)',
-		borderRadius: '25px',
-		color: 'white',
-		padding: '10px 20px',
-		width: '90%',
-		margin: '10px auto',
-		fontSize: '13px',
+		background: "rgba(0,0,0,0.4)",
+		borderRadius: "25px",
+		color: "white",
+		padding: "10px 20px",
+		width: "90%",
+		margin: "10px auto",
+		fontSize: "13px",
 	},
 }));

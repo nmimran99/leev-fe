@@ -134,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	faultPresent: {
-		margin: "20px 10px",
+		margin: "10px",
 		[theme.breakpoints.down("sm")]: {
 			margin: "20px 0",
 		},

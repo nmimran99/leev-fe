@@ -35,7 +35,7 @@ export const CommentSection = ({
 	const { t } = useTranslation();
 	const { lang } = useContext(LanguageContext);
 	const { auth } = useContext(AuthContext);
-	const { env ,setEnv } = useContext(EnvContext);
+	const { env, setEnv } = useContext(EnvContext);
 	const ctx = useRef(null);
 	const [commentList, setCommentList] = useState(parent.comments || []);
 	const [parentId, setParentId] = useState(parent._id);
@@ -99,12 +99,12 @@ export const CommentSection = ({
 	const toggleInputFocused = () => {
 		if (textFocused) {
 			setTextFocused(false);
-			setEnv({ ...env, inputFocused: false})
+			setEnv({ ...env, inputFocused: false });
 		} else {
 			setTextFocused(true);
-			setEnv({ ...env, inputFocused: true})
+			setEnv({ ...env, inputFocused: true });
 		}
-	}
+	};
 
 	return (
 		<Grid container className={classes.mainContainer}>
@@ -121,86 +121,87 @@ export const CommentSection = ({
 					</Button>
 				</Grid>
 			)}
-			{ commentList.slice(Math.max(commentList.length - numOfComments, 0)).map((c, i) => (
-				<Grid item xs={12} className={clsx(classes.comment)} key={i}>
-					<div className={classes.commentContainer}>
-						<Avatar
-							className={classes.avatar}
-							alt={"abc"}
-							src={c.user.avatar}
-							style={{ height: "50px", width: "50px" }}
-						/>
-						<div className={classes.data}>
-							<div className={classes.commenter}>
-								{`${c.user.firstName} ${c.user.lastName}`}
+			{commentList
+				.slice(Math.max(commentList.length - numOfComments, 0))
+				.map((c, i) => (
+					<Grid item xs={12} className={clsx(classes.comment)} key={i}>
+						<div className={classes.commentContainer}>
+							<Avatar
+								className={classes.avatar}
+								alt={"abc"}
+								src={c.user.avatar}
+								style={{ height: "50px", width: "50px" }}
+							/>
+							<div className={classes.data}>
+								<div className={classes.commenter}>
+									{`${c.user.firstName} ${c.user.lastName}`}
+								</div>
+								{Boolean(editComment) && editComment._id === c._id ? (
+									<div className={classes.editContainer}>
+										<FormControl variant="outlined" className={classes.form}>
+											<OutlinedInput
+												value={editComment.text || ""}
+												onChange={handleEditChange}
+												placeholder={t("comments.add")}
+												className={clsx(
+													classes.textInput,
+													textFocused ? classes.focused : null
+												)}
+												onFocus={() => setTextFocused(true)}
+												multiline
+												classes={{
+													inputMultiline: classes.multiLine,
+												}}
+											/>
+										</FormControl>
+										<IconButton
+											className={classes.save}
+											onClick={handleUpdateComment}
+										>
+											<SaveRoundedIcon className={classes.icon} />
+										</IconButton>
+										<IconButton
+											className={classes.cancel}
+											onClick={() => setEditComment(null)}
+										>
+											<ClearRoundedIcon className={classes.icon} />
+										</IconButton>
+									</div>
+								) : (
+									<div className={classes.commentText}>{`${c.text}`}</div>
+								)}
+								{Boolean(c.image) && (
+									<div className={classes.commentImage}>
+										<img src={c.image} className={classes.cImage} />
+									</div>
+								)}
 							</div>
-							{Boolean(editComment) && editComment._id === c._id ? (
-								<div className={classes.editContainer}>
-									<FormControl variant="outlined" className={classes.form}>
-										<OutlinedInput
-											value={editComment.text || ""}
-											onChange={handleEditChange}
-											placeholder={t("comments.add")}
-											className={clsx(
-												classes.textInput,
-												textFocused ? classes.focused : null
-											)}
-											onFocus={() => setTextFocused(true)}
-											multiline
-											classes={{
-												inputMultiline: classes.multiLine,
-											}}
-										/>
-									</FormControl>
-									<IconButton
-										className={classes.save}
-										onClick={handleUpdateComment}
-									>
-										<SaveRoundedIcon className={classes.icon} />
-									</IconButton>
-									<IconButton
-										className={classes.cancel}
-										onClick={() => setEditComment(null)}
-									>
-										<ClearRoundedIcon className={classes.icon} />
-									</IconButton>
-								</div>
-							) : (
-								<div className={classes.commentText}>{`${c.text}`}</div>
-							)}
-							{
-								Boolean(c.image) &&
-								<div className={classes.commentImage}>
-									<img src={c.image} className={classes.cImage}/>
-								</div>
-							}
 						</div>
-					</div>
-					<div className={classes.commentFooter}>
-						{/* <div className={classes.footerField}> 
+						<div className={classes.commentFooter}>
+							{/* <div className={classes.footerField}> 
                                 <Button className={classes.footerBtn}> 
                                     {t("comments.reply")}
                                 </Button>
                             </div> */}
-						{c.user._id == auth.user._id && (
+							{c.user._id == auth.user._id && (
+								<div className={classes.footerField}>
+									<Button
+										className={classes.footerBtn}
+										onClick={() => setEditComment(c)}
+									>
+										{t("comments.edit")}
+									</Button>
+								</div>
+							)}
 							<div className={classes.footerField}>
-								<Button
-									className={classes.footerBtn}
-									onClick={() => setEditComment(c)}
-								>
-									{t("comments.edit")}
-								</Button>
-							</div>
-						)}
-						<div className={classes.footerField}>
-							{` · `}
-							<div className={classes.timePassed}>
-								{`${getDatediffString(c.createdAt)}`}
+								{` · `}
+								<div className={classes.timePassed}>
+									{`${getDatediffString(c.createdAt)}`}
+								</div>
 							</div>
 						</div>
-					</div>
-				</Grid>
-			))}
+					</Grid>
+				))}
 
 			<Can
 				module={module}
@@ -263,7 +264,6 @@ export const CommentSection = ({
 							</FormControl>
 							<IconButton
 								className={classes.addPhotoBtn}
-								
 								component={"label"}
 								variant={"contained"}
 							>
@@ -302,14 +302,14 @@ export const CommentSection = ({
 
 const useStyles = makeStyles((theme) => ({
 	mainContainer: {
-		padding: '10px 30px',
-		[theme.breakpoints.down('sm')]: {
-			padding: '0',
-		}
+		padding: "10px 30px",
+		[theme.breakpoints.down("sm")]: {
+			padding: "0",
+		},
 	},
 	title: {
 		color: "white",
-		fontSize: "20px",
+		fontSize: "16px",
 		padding: "20px 30px 10px",
 		marginBottom: "10px",
 		borderBottom: "1px solid rgba(255,255,255,0.2)",
@@ -380,6 +380,8 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		flexDirection: "column",
 		margin: "5px 0",
+		fontSize: "16px",
+		fontWeight: 100,
 	},
 	commentContainer: {
 		width: "fit-content",
@@ -493,13 +495,13 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "14px",
 	},
 	commentImage: {
-		margin: '10px 0'
+		margin: "10px 0",
 	},
 	cImage: {
-		borderRadius: '10px',
-		maxWidth: '300px',
-		[theme.breakpoints.down('sm')]: {
-			maxWidth: '100%'
-		}
-	}
+		borderRadius: "10px",
+		maxWidth: "300px",
+		[theme.breakpoints.down("sm")]: {
+			maxWidth: "100%",
+		},
+	},
 }));

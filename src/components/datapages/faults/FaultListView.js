@@ -59,6 +59,7 @@ export const FaultListView = ({ faults }) => {
 						fid={faultView.faultId}
 						updateFaultState={updateFaultState}
 						faultData={faultView}
+						isPreview
 					/>
 				</Grid>
 			)}
@@ -69,7 +70,10 @@ export const FaultListView = ({ faults }) => {
 const useStyles = makeStyles((theme) => ({
 	main: {
 		border: "1px solid rgba(255,255,255,0.2)",
-		height: "70vh",
+		height: "75vh",
+		[theme.breakpoints.down("lg")]: {
+			height: "70vh",
+		},
 		[theme.breakpoints.down("sm")]: {
 			border: "0",
 			height: "auto",

@@ -16,7 +16,7 @@ export const StatusTag = ({ status, type, size }) => {
 	return (
 		<div
 			className={clsx(classes.statusTag, classes[status.statusId])}
-			style={{ fontSize: size || "14px" }}
+			style={{ fontSize: `${size}px` || "14px" }}
 		>
 			{status.statusId === "ready" ? (
 				<PlayCircleOutlineIcon className={classes.icon} />
