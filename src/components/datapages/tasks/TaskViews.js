@@ -2,44 +2,32 @@ import { Grid, makeStyles } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router";
-import { getFaults, updateFaultStatus } from "../../../api/faultsApi";
 import { updateQueryParams } from "../../../api/genericApi";
+import { getTasks, updateTaskStatus } from "../../../api/tasksApi";
 import { AuthContext } from "../../../context/AuthContext";
-import { FaultsContext } from "../../../context/FaultsContext";
 import { BlocksView } from "../../reuseables/blocksView/BlocksView";
 import { useQuery } from "../../reuseables/customHooks/useQuery";
 import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { NoDataFound } from "../../reuseables/NoDataFound";
-import { FaultBlock } from "./FaultBlock";
-import { FaultBlockView } from "./FaultBlockView";
-import { FaultListView } from "./FaultListView";
-import { FaultMinified } from "./FaultMinified";
-import { FaultsControls } from "./FaultsControls";
+import { TaskMinified } from "./TaskMinified";
+import { TasksControls } from "./TasksControls";
+import { TasksList } from "./TasksList";
+import { TasksContext } from "../../../context/TasksContext";
 
-export const FaultViews = () => {
+export const TaskViews = ({}) => {
 	const history = useHistory();
 	const location = useLocation();
 	const query = useQuery(location.search);
 	const classes = useStyles();
 	const { auth } = useContext(AuthContext);
 	const { t } = useTranslation();
-	const { faults, setFaults } = useContext(FaultsContext);
+	const { tasks, setTasks } = useContext(TasksContext);
 	const [viewType, setViewType] = useState(query["viewType"] || "list");
 	const [isLoading, setIsLoading] = useState(true);
+	const [showRepeatable, setShowRepeatable] = useState(false);
 
 	useEffect(() => {
-		if (!isLoading) return;
-		let f = query;
-		delete f.viewType;
-		getFaults(f)
-			.then((data) => {
-				if (data) {
-					setFaults(data);
-				}
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
+		prepareData();
 	}, [isLoading]);
 
 	useEffect(() => {
@@ -47,6 +35,9 @@ export const FaultViews = () => {
 	}, [location.search]);
 
 	useEffect(() => {
+		if (viewType !== "list") {
+			setShowRepeatable(false);
+		}
 		history.push({
 			path: location.pathname,
 			search: updateQueryParams(
@@ -57,15 +48,33 @@ export const FaultViews = () => {
 		});
 	}, [viewType]);
 
-	const handleDrop = async (fault, statusId) => {
-		if (fault.status._id == statusId) return;
-		const res = await updateFaultStatus(fault._id, statusId);
-		setFaults((fs) => {
-			return fs.map((f) => {
-				if (f._id === fault._id) {
+	const prepareData = async () => {
+		let f = query;
+		delete f.viewType;
+		let ts = await getTasks({ ...f, isRepeatable: showRepeatable });
+		setTasks(ts);
+		setIsLoading(false);
+	};
+
+	const handleToggleRepeatable = () => {
+		if (showRepeatable) {
+			setShowRepeatable(false);
+			setIsLoading(true);
+			return;
+		}
+		setShowRepeatable(true);
+		setIsLoading(true);
+	};
+
+	const handleDrop = async (task, statusId) => {
+		if (task.status._id == statusId) return;
+		const res = await updateTaskStatus(task._id, statusId);
+		setTasks((ts) => {
+			return ts.map((t) => {
+				if (t._id === task._id) {
 					return res;
 				}
-				return f;
+				return t;
 			});
 		});
 	};
@@ -73,11 +82,11 @@ export const FaultViews = () => {
 	return (
 		<Grid container justify={"center"}>
 			<Grid xs={12} className={classes.moduleContainer}>
-				<div className={classes.pageModule}>{t("assetsModule.faults")}</div>
+				<div className={classes.pageModule}>{t("assetsModule.tasks")}</div>
 			</Grid>
 
 			<Grid item xs={12}>
-				<FaultsControls viewType={viewType} setViewType={setViewType} />
+				<TasksControls viewType={viewType} setViewType={setViewType} />
 			</Grid>
 			{isLoading ? (
 				<LoadingProgress />
@@ -88,14 +97,17 @@ export const FaultViews = () => {
 					className={classes.faultPresent}
 					style={{ height: "auto" }}
 				>
-					{faults.length ? (
+					{tasks.length ? (
 						viewType === "list" ? (
-							<FaultListView faults={faults} />
+							<TasksList
+								handleToggleRepeatable={handleToggleRepeatable}
+								showRepeatable={showRepeatable}
+							/>
 						) : (
 							<BlocksView
-								items={faults}
-								module={"faults"}
-								ItemBlock={FaultMinified}
+								module={"tasks"}
+								ItemBlock={TaskMinified}
+								items={tasks}
 								handleDrop={handleDrop}
 							/>
 						)
@@ -134,7 +146,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	faultPresent: {
-		margin: "10px",
+		margin: "20px 10px",
 		[theme.breakpoints.down("sm")]: {
 			margin: "20px 0",
 		},

@@ -25,7 +25,6 @@
         "assets": "נכסים",
         "systems": "מערכות",
         "tasks": "משימות",
-        "myTasks": "המשימות שלי",
         "repeatableTasks": "משימות מחזוריות",
         "faults": "תקלות",
         "documents": "מסמכים",
@@ -176,6 +175,7 @@
             "ready": "מוכן לביצוע",
             "inProgress": "בביצוע",
             "pending": "ממתין לפעולה", 
+            "awaitingApproval": "ממתין לאישור",
             "closed": "סגור"
         },
         "showFilters": "הצג מסננים",
@@ -192,7 +192,8 @@
             "changeOwner": "החלף ממונה על תקלה",
             "addRelatedUser": "הוסף משתמש מקושר",
             "removeRelatedUser": "הסר משתמש מרשימת המקושרים",
-            "changeStatus": "שינוי סטטוס"
+            "changeStatus": "שינוי סטטוס",
+            "createLink": "צור לינק לתקלה"
         },
         "noRelatedUsers": "לתקלה זו אין כרגע משתמשים מקושרים.",
         "relatedUsers": "משתמשים מקושרים",
@@ -238,6 +239,7 @@
             "ready": "מוכן לביצוע",
             "inProgress": "בביצוע",
             "pending": "ממתין לפעולה", 
+            "awaitingApproval": "ממתין לאישור",
             "closed": "סגור"
         },
         "showFilters": "הצג מסננים",
@@ -254,7 +256,8 @@
             "removeRelatedUser": "הסר משתמש מרשימת המקושרים לתקלה",
             "changeStatus": "שינוי סטטוס",
             "schedule": "קבע מועדים",
-            "taskMenu": "תפריט משימה"
+            "taskMenu": "תפריט משימה",
+            "createLink": "צור לינק למשימה"
         },
         "noRelatedUsers": "למשימה זו אין כרגע משתמשים מקושרים.",
         "relatedUsers": "משתמשים מקושרים",
@@ -300,7 +303,8 @@
         "step": "שלב",
         "startDtae": "תאריך התחלה",
         "startDateText": "תאריך תחילת משימה",
-        "taskIterations": "מועדי חזרות למשימה"           
+        "taskIterations": "מועדי חזרות למשימה",
+        "showRepeatable": "הצג משימות חוזרות"            
     },
     "documentsModule": {
         "upsert": {

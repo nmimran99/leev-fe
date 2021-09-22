@@ -1,31 +1,39 @@
-
-import axios from 'axios';
-import { addMonths, addWeeks, addYears, eachDayOfInterval, isAfter, isBefore, parseISO, toDate } from 'date-fns';
-import { addDays, format } from 'date-fns/esm';
-import i18next from 'i18next';
-import heLocale from 'date-fns/locale/he';
-import deLocale from 'date-fns/locale/de'
-import usLocale from 'date-fns/locale/en-US'
-import { getDateParts } from './calenderApi';
+import axios from "axios";
+import {
+	addMonths,
+	addWeeks,
+	addYears,
+	eachDayOfInterval,
+	isAfter,
+	isBefore,
+	parseISO,
+	toDate,
+} from "date-fns";
+import { addDays, format } from "date-fns/esm";
+import i18next from "i18next";
+import heLocale from "date-fns/locale/he";
+import deLocale from "date-fns/locale/de";
+import usLocale from "date-fns/locale/en-US";
+import { getDateParts } from "./calenderApi";
 
 export const localizations = {
 	he: {
-		name: 'Hebrew',
-        code: 'he',
-        dir: 'rtl',
-        dateformat: 'dd/MM/yyyy HH:mm',
-        dateonly: 'dd/MM/yyyy',
-        timeonly: 'HH:mm'
+		name: "Hebrew",
+		code: "he",
+		dir: "rtl",
+		dateformat: "dd/MM/yyyy HH:mm",
+		dateonly: "dd/MM/yyyy",
+		timeonly: "HH:mm",
 	},
 	en: {
-		name: 'English',
-        code: 'en',
-        dir: 'ltr',
-        dateformat: 'MM/dd/yyyy p',
-        dateonly: 'MM/dd/yyyy',
-        timeonly: 'p'
-	}
-}
+		name: "English",
+		code: "en",
+		dir: "ltr",
+		dateformat: "MM/dd/yyyy p",
+		dateonly: "MM/dd/yyyy",
+		timeonly: "p",
+	},
+};
 
 export const queryParamsToObject = (search) => {
 	if (!search) return {};
@@ -37,13 +45,13 @@ export const queryParamsToObject = (search) => {
 				.replace(/"/g, '\\"')
 				.replace(/&/g, '","')
 				.replace(/=/g, '":"')
-				.replace(/%2C/g, ',')
-				.replace(/%5D/g, ',')
-				.replace(/%5B/g, ',') +
+				.replace(/%2C/g, ",")
+				.replace(/%5D/g, ",")
+				.replace(/%5B/g, ",") +
 			'"}'
 	);
 	Object.entries(decoded).forEach((entry) => {
-		if (entry[1].substring(0, 1) === '[') {
+		if (entry[1].substring(0, 1) === "[") {
 			decoded[entry[0]] = JSON.parse(entry[1]);
 		}
 	});
@@ -53,12 +61,12 @@ export const queryParamsToObject = (search) => {
 export const removeQueryParam = (search, paramName) => {
 	let params = new URLSearchParams(search);
 	params.delete(paramName);
-	return params.toString() ? '?' + params.toString() : '';
+	return params.toString() ? "?" + params.toString() : "";
 };
 
 export const addQueryParam = (search, paramList) => {
 	let params = new URLSearchParams(search);
-	if (!paramList.length) return '?' + params.toString();
+	if (!paramList.length) return "?" + params.toString();
 	paramList.forEach((param) => {
 		if (param.value instanceof Array) {
 			param.value = JSON.stringify(param.value);
@@ -69,7 +77,7 @@ export const addQueryParam = (search, paramList) => {
 			params.append(param.name, param.value);
 		}
 	});
-	return '?' + params.toString();
+	return "?" + params.toString();
 };
 
 export const updateQueryParams = (search, add, remove) => {
@@ -91,16 +99,16 @@ export const updateQueryParams = (search, add, remove) => {
 			}
 		});
 	}
-	return '?' + params.toString();
+	return "?" + params.toString();
 };
 
 export const specialStringPurge = (string) => {
 	if (!string) return null;
 	return string
-		.replaceAll('+', ' ')
-		.replaceAll(/[&\/\\#,+()$~%.'":*?<>{}]/g, '')
-		.replaceAll(' ,', '')
-		.replaceAll(',', ' ');
+		.replaceAll("+", " ")
+		.replaceAll(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
+		.replaceAll(" ,", "")
+		.replaceAll(",", " ");
 };
 
 export const getLabelsByLanguage = async (lang) => {
@@ -122,31 +130,31 @@ export const getDatediffString = (fromDate) => {
 	let diff;
 	if (diffInSecs < 60) {
 		diff = diffInSecs.toString();
-		return diff + ' ' + i18next.t('dates.shortsecond');
+		return diff + " " + i18next.t("dates.shortsecond");
 	}
 	if (diffInSecs > 60 && diffInSecs < 3600) {
 		diff = Math.round(diffInSecs / 60).toString();
-		return diff + ' ' + i18next.t('dates.shortminute');
+		return diff + " " + i18next.t("dates.shortminute");
 	}
 	if (diffInSecs > 3600 && diffInSecs < 86400) {
 		diff = Math.round(diffInSecs / 3600).toString();
-		return diff + ' ' + i18next.t('dates.shorthour');
+		return diff + " " + i18next.t("dates.shorthour");
 	}
 	if (diffInSecs > 86400 && diffInSecs < 604800) {
 		diff = Math.round(diffInSecs / 86400).toString();
-		return diff + ' ' + i18next.t('dates.shortday');
+		return diff + " " + i18next.t("dates.shortday");
 	}
 	if (diffInSecs > 604800 && diffInSecs < 2629743) {
 		diff = Math.round(diffInSecs / 604800).toString();
-		return diff + ' ' + i18next.t('dates.shortweek');
+		return diff + " " + i18next.t("dates.shortweek");
 	}
 	if (diffInSecs > 2629743 && diffInSecs < 31556926) {
 		diff = Math.round(diffInSecs / 2629743).toString();
-		return diff + ' ' + i18next.t('dates.shortmonth');
+		return diff + " " + i18next.t("dates.shortmonth");
 	}
 	if (diffInSecs < 31556926) {
 		diff = Math.round(diffInSecs / 31556926).toString();
-		return diff + ' ' + i18next.t('dates.shortyear');
+		return diff + " " + i18next.t("dates.shortyear");
 	}
 };
 
@@ -191,12 +199,12 @@ export const getNextIterationDate = (startDate, interval) => {
 		year: addYears,
 		month: addMonths,
 		week: addWeeks,
-		day: addDays
+		day: addDays,
 	};
 
 	let dateFunc = addFunctions[interval];
 
-	while(true) {
+	while (true) {
 		if (isBefore(currDate, today)) {
 			currDate = dateFunc(currDate, 1);
 		} else {
@@ -205,39 +213,66 @@ export const getNextIterationDate = (startDate, interval) => {
 	}
 };
 
-
 export const getUnauthorizedMessage = () => {
-	return { text: i18next.t('errors.unauthorized'), severity: 'error', status: 403 }
+	return {
+		text: i18next.t("errors.unauthorized"),
+		severity: "error",
+		status: 403,
+	};
 };
 
 export const getDeactivateDeniedMessage = () => {
-	return { text: i18next.t('errors.cannotDeactivateAssetOwner'), severity: 'error', status: 405 }
+	return {
+		text: i18next.t("errors.cannotDeactivateAssetOwner"),
+		severity: "error",
+		status: 405,
+	};
 };
 
 export const getSuccessMessage = (type, idenitifer, action) => {
-	return { text: `${i18next.t("messages.snackMessage.itemOfType")} ${i18next.t(`general.${type}`)} ${i18next.t("messages.snackMessage.withIdentifier")} ${idenitifer} ${i18next.t(`messages.snackMessage.${action}`)} ${i18next.t(`messages.snackMessage.withSuccess`)}`, severity: 'success', status: 200 }
-}
+	return {
+		text: `${i18next.t("messages.snackMessage.itemOfType")} ${i18next.t(
+			`general.${type}`
+		)} ${i18next.t(
+			"messages.snackMessage.withIdentifier"
+		)} ${idenitifer} ${i18next.t(
+			`messages.snackMessage.${action}`
+		)} ${i18next.t(`messages.snackMessage.withSuccess`)}`,
+		severity: "success",
+		status: 200,
+	};
+};
 
 export const getServerError = () => {
-	return { text: i18next.t('errors.serverError'), severity: 'error', status: 500 }
-}
+	return {
+		text: i18next.t("errors.serverError"),
+		severity: "error",
+		status: 500,
+	};
+};
 
 export const getReportDistributedSnack = () => {
-	return { text: i18next.t('reportsModule.reportSentSuccessfully'), severity: 'success', status: 200 }
-}
-
-
+	return {
+		text: i18next.t("reportsModule.reportSentSuccessfully"),
+		severity: "success",
+		status: 200,
+	};
+};
 
 export const getLocalization = (langCode) => {
 	return localizations[langCode];
-}
+};
 
 export const getLocale = (langCode) => {
 	const locales = {
 		he: heLocale,
 		en: deLocale,
-		de: deLocale
+		de: deLocale,
 	};
 
 	return locales[langCode];
-}
+};
+
+export const generateItemLink = (module, itemId) => {
+	return `${process.env.REACT_APP_FRONTEND_URL}/workspace/${module}/${itemId}`;
+};

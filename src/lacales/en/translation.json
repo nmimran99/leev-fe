@@ -25,7 +25,6 @@
         "assets": "Assets",
         "systems": "Systems",
         "tasks": "Tasks",
-        "myTasks": "My Tasks",
         "repeatableTasks": "Repeating Tasks",
         "faults": "Faults",
         "documents": "Documents",
@@ -176,6 +175,7 @@
             "ready": "Ready",
             "inProgress": "In Progress",
             "pending": "Pending for Action", 
+            "awaitingApproval": "Awaiting Approval",
             "closed": "Closed"
         },
         "showFilters": "Show Filters",
@@ -192,7 +192,8 @@
             "changeOwner": "Change Assigned User",
             "addRelatedUser": "Add Related User",
             "removeRelatedUser": "Remove user from related users",
-            "changeStatus": "Change Status"
+            "changeStatus": "Change Status",
+            "createLink": "Create Fault Link"
         },
         "noRelatedUsers": "There are no followers to this fault yet.",
         "relatedUsers": "Related users",
@@ -238,6 +239,7 @@
             "ready": "Ready",
             "inProgress": "In Progress",
             "pending": "Pending for Action", 
+            "awaitingApproval": "Awaiting Approval",
             "closed": "Closed"
         },
         "showFilters": "Show Filters",
@@ -254,7 +256,8 @@
             "removeRelatedUser": "Remove related user?",
             "changeStatus": "Change Status",
             "schedule": "Schedule Task",
-            "taskMenu": "Task Menu"
+            "taskMenu": "Task Menu",
+            "createLink": "Create Task Link"
         },
         "noRelatedUsers": "There are no related users to this task yet.",
         "relatedUsers": "Related Users",
@@ -300,7 +303,8 @@
         "step": "Step",
         "startDtae": "Start date",
         "startDateText": "Task Start date",
-        "taskIterations": "Task Iterations"         
+        "taskIterations": "Task Iterations",
+        "showRepeatable": "Show Repeatable Tasks"         
     },
     "documentsModule": {
         "upsert": {

@@ -1,8 +1,5 @@
-import {
-	Grid, IconButton, makeStyles,
-	useMediaQuery
-} from "@material-ui/core";
-import AddIcon from '@material-ui/icons/Add';
+import { Grid, IconButton, makeStyles, useMediaQuery } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
 import RoomIcon from "@material-ui/icons/Room";
 import clsx from "clsx";
@@ -12,12 +9,14 @@ import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams } from "react-router";
 import { getFullAddress } from "../../../api/assetsApi";
 import * as faultApi from "../../../api/faultsApi";
+import { generateItemLink } from "../../../api/genericApi";
 import { LanguageContext } from "../../../context/LanguageContext";
 import { SnackbarContext } from "../../../context/SnackbarContext";
 import { UpsertContext } from "../../../context/UpsertContext";
 import { AddRelatedUser } from "../../reuseables/AddRelatedUser";
 import { Carousel } from "../../reuseables/Carousel";
 import { CommentSection } from "../../reuseables/CommentSection";
+import { ItemLink } from "../../reuseables/ItemLink";
 import { LoadingProgress } from "../../reuseables/LoadingProgress";
 import { ReturnToPrevios } from "../../reuseables/ReturnToPrevious";
 import { StatusTag } from "../../reuseables/StatusTag";
@@ -27,8 +26,10 @@ import { UserList } from "../../reuseables/UserList";
 import { UserItem } from "../../user/UserItem";
 import { FaultLink } from "./FaultLink";
 import { FaultViewControls } from "./FaultViewControls";
+import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 
-export const FaultView = ({ fid, faultData, updateFaultState }) => {
+export const FaultView = ({ fid, faultData, updateFaultState, isPreview }) => {
 	const history = useHistory();
 	const location = useLocation();
 	const { t } = useTranslation();
@@ -166,56 +167,79 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 		setUpsertData({ itemId: faultId, module: "faults" });
 	};
 
+	const handleCreateLink = async () => {
+		if (navigator.clipboard) {
+			await navigator.clipboard.writeText(
+				generateItemLink("faults", fault.faultId)
+			);
+			setSnackbar({
+				severity: "success",
+				text: t("reportsModule.copiedToClipboard"),
+			});
+			return;
+		}
+		setSnackbar({ severity: "error", text: t("reportsModule.linkNotCopied") });
+	};
+
 	return isLoading ? (
 		<LoadingProgress />
 	) : (
 		<React.Fragment>
 			<Grid
 				container
-				className={classes.container}
+				className={clsx(
+					classes.container,
+					isPreview && classes.previewContainer
+				)}
 				justify="space-between"
 				alignItems="flex-start"
 			>
-				<Grid container className={classes.controls}>
-					<Grid item xs={12} className={classes.topHeaderGriditem}>
-						<div className={classes.faultId}>
-							<FaultLink faultId={fault.faultId} size={18} />
+				<div className={classes.topHeaderGriditem}>
+					<div className={classes.faultId}>
+						<ItemLink itemId={fault.faultId} module={"faults"} size={13} />
+					</div>
+					<div className={classes.statusTagContainer}>
+						<div
+							className={classes.controlsGriditem}
+							onClick={() => setChangeStatus(true)}
+							style={{
+								justifyContent: "flex-start",
+								cursor: "pointer",
+							}}
+						>
+							<StatusTag status={fault.status} type="fault" size={16} />
 						</div>
-						<ReturnToPrevios />
-					</Grid>
-					<Grid item xs={12} className={classes.controlsGriditem}>
-						<FaultViewControls
-							fault={fault}
-							editFault={toggleEditMode(fault._id)}
-							updateOwner={() => setChangeOwner(true)}
-							changeStatus={() => setChangeStatus(true)}
-						/>
-					</Grid>
-					<Grid
-						item
-						xs={12}
-						className={classes.controlsGriditem}
-						style={{
-							justifyContent: downSm ? "center" : "flex-start",
-							cursor: "pointer",
-						}}
-						onClick={() => setChangeStatus(true)}
-					>
-						<StatusTag status={fault.status} type="fault" size={"16px"} />
-					</Grid>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					sm={12}
-					md={12}
-					lg={8}
-					xl={9}
-					className={classes.rightContainer}
-				>
-					<div className={classes.asset}>{getFullAddress(fault.asset)}</div>
+					</div>
+					<div className={classes.controls}>
+						<div className={classes.control}>
+							<FaultViewControls
+								fault={fault}
+								editFault={toggleEditMode(fault._id)}
+								updateOwner={() => setChangeOwner(true)}
+								changeStatus={() => setChangeStatus(true)}
+								handleCreateLink={handleCreateLink}
+							/>
+						</div>
+						<div className={classes.control}>
+							<ReturnToPrevios fontSize={16} size={35} />
+						</div>
+					</div>
+				</div>
+				{Boolean(fault.images.length) && (
+					<Carousel
+						images={fault.images}
+						isOpen={Boolean(fault.images.length)}
+						size={downSm ? 300 : 500}
+					/>
+				)}
+				<div className={classes.detailsContainer}>
+					<div className={clsx(classes.detailPill, classes.asset)}>
+						<HomeRoundedIcon className={classes.systemIcon} />
+						{getFullAddress(fault.asset)}
+					</div>
 					<div
 						className={clsx(
+							classes.detailPill,
 							classes.system,
 							!fault.system && classes.notAssigned
 						)}
@@ -225,6 +249,7 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					</div>
 					<div
 						className={clsx(
+							classes.detailPill,
 							classes.location,
 							!fault.location && classes.notAssigned
 						)}
@@ -235,50 +260,57 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 							: t("general.noLocationAssigned")}
 					</div>
 
+					{!fault.asset && (
+						<Grid item xs={12}>
+							<div
+								className={clsx(
+									classes.detailPill,
+									classes.taskNotLinkedToAsset
+								)}
+							>
+								<InfoOutlinedIcon className={classes.infoIcon} />
+								{t("tasksModule.taskNotLinkedToAsset")}
+							</div>
+						</Grid>
+					)}
+				</div>
+
+				<Grid
+					item
+					xs={12}
+					sm={12}
+					md={12}
+					lg={8}
+					xl={9}
+					className={classes.rightContainer}
+				>
 					<div className={classes.title}>{fault.title}</div>
-					<div className={classes.desc}>
-						
-						<div className={classes.itemDates}>
-							<div className={classes.openDate}>
-								{`${t("general.createDate")} ${format(
-									parseISO(fault.createdAt),
+					<div className={clsx(classes.dataContainer, classes.desc)}>
+						{fault.description}
+						<div className={classes.tagsContainer}>
+							{fault.tags.map((tag) => (
+								<div className={classes.tag} key={tag._id}>
+									{tag.value}
+								</div>
+							))}
+						</div>
+					</div>
+					<div className={classes.itemDates}>
+						<div className={classes.openDate}>
+							{`${t("general.createDate")} ${format(
+								parseISO(fault.createdAt),
+								lang.dateformat
+							)}`}
+						</div>
+						{Boolean(fault.closedDate) && fault.status.state === "close" && (
+							<div className={classes.closedDate}>
+								{`${t("general.closedDate")} ${format(
+									parseISO(fault.closedDate),
 									lang.dateformat
 								)}`}
 							</div>
-							{Boolean(fault.closedDate) && fault.status.state === "close" && (
-								<div className={classes.closedDate}>
-									{`${t("general.closedDate")} ${format(
-										parseISO(fault.closedDate),
-										lang.dateformat
-									)}`}
-								</div>
-							)}
-						</div>
-
-						{fault.description}
-						<div className={classes.tagsContainer}>
-							{/* <IconButton 								
-								className={classes.addTag}
-							>
-								<AddIcon className={classes.addTagIcon} />
-							</IconButton> */}
-							{
-								fault.tags.map((tag) => 
-									<div className={classes.tag} key={tag._id} > 
-										{tag.value}
-									</div>
-								)
-							}
-							
-						</div>
+						)}
 					</div>
-					{Boolean(fault.images.length) && (
-						<Carousel
-							images={fault.images}
-							isOpen={Boolean(fault.images.length)}
-							size={300}
-						/>
-					)}
 				</Grid>
 				<Grid
 					item
@@ -289,35 +321,32 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 					xl={3}
 					className={classes.leftContainer}
 				>
-					<Grid container justify="center">
-						<Grid item xs={12}>
-							<div className={classes.owner}>
-								{
-									<UserItem
-										user={fault.owner || null}
-										showTitle
-										showPhone
-										showName
-										size={12}
-										avatarSize={50}
-									/>
-								}
-							</div>
-						</Grid>
-						<Grid item xl={10} md={6} sm={6} xs={12}>
-							<UserList
-								users={fault.relatedUsers}
-								removeTooltip={t("faultsModule.controls.removeRelatedUser")}
-								addTooltip={t("faultsModule.controls.addRelatedUser")}
-								placeholder={t("faultsModule.noRelatedUsers")}
-								title={t("faultsModule.relatedUsers")}
-								handleRemove={removeRelatedUser}
-								handleAdd={() => setAddRelatedUserModal(true)}
-								module={"faults"}
-								owner={fault.owner}
+					<div className={clsx(classes.owner, classes.dataContainer)}>
+						{
+							<UserItem
+								user={fault.owner || null}
+								showTitle
+								showPhone
+								showName
+								size={12}
+								avatarSize={50}
 							/>
-						</Grid>
-					</Grid>
+						}
+					</div>
+
+					<div className={clsx(classes.userlist, classes.dataContainer)}>
+						<UserList
+							users={fault.relatedUsers}
+							removeTooltip={t("faultsModule.controls.removeRelatedUser")}
+							addTooltip={t("faultsModule.controls.addRelatedUser")}
+							placeholder={t("faultsModule.noRelatedUsers")}
+							title={t("faultsModule.relatedUsers")}
+							handleRemove={removeRelatedUser}
+							handleAdd={() => setAddRelatedUserModal(true)}
+							module={"faults"}
+							owner={fault.owner}
+						/>
+					</div>
 				</Grid>
 				<Grid item xs={12} className={classes.comments}>
 					<CommentSection
@@ -366,11 +395,28 @@ export const FaultView = ({ fid, faultData, updateFaultState }) => {
 
 const useStyles = makeStyles((theme) => ({
 	container: {
+		height: "calc(100% - 40px)",
 		overflowY: "overlay",
-		height: "100%",
-		[theme.breakpoints.down("sm")]: {
-			height: "auto",
+		border: "solid rgba(255,255,255,0.2)",
+		borderWidth: "0 1px",
+		boxShadow: "0 0 5px 2px rgb(0 0 0 / 30%)",
+		background: "rgba(255,255,255,0.2)",
+		position: "relative",
+		borderRadius: "8px",
+		margin: "20px 0",
+		[theme.breakpoints.down("xs")]: {
+			border: "none",
+			margin: "0",
+			borderRadius: "0",
+			height: "100%",
 		},
+	},
+	previewContainer: {
+		margin: "0",
+		height: "100%",
+		borderRadius: 0,
+		boxShadow: "none",
+		background: "rgba(0,0,0,0.2)",
 	},
 	rightContainer: {
 		display: "flex",
@@ -378,48 +424,52 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "flex-start",
 		padding: "0 30px",
 		[theme.breakpoints.down("sm")]: {
-			alignItems: "center",
 			padding: "0 15px",
 		},
 	},
-	asset: {
-		color: "white",
-		fontSize: "16px",
-		background: "black",
-		width: "fit-content",
-		padding: "10px 20px",
+	detailsContainer: {
+		display: "flex",
+		padding: "10px",
+		flexWrap: "wrap",
+	},
+	detailPill: {
 		borderRadius: "50px",
-		boxShadow: "rgba(0,0,0,0.25) 0 0 5px 2px",
+		padding: "7px 25px 7px 15px",
+		width: "fit-content",
 		textAlign: "center",
 		whiteSpace: "nowrap",
+		fontSize: "13px",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		margin: "3px",
+	},
+	asset: {
+		color: "white",
+		background: "black",
 	},
 	system: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		width: "fit-content",
 		color: "white",
-		borderRadius: "50px",
-		padding: "10px 20px",
 		background: "rgba(0,0,0,0.3)",
-		whiteSpace: "nowrap",
-		margin: "10px 0",
 	},
 	location: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		width: "fit-content",
 		color: "white",
-		borderRadius: "50px",
-		padding: "10px 20px",
-		background: "rgba(255,255,255,0.2)",
-		whiteSpace: "nowrap",
-		margin: "0px 0",
+		background: "rgba(0,0,0,0.2)",
 	},
 	systemIcon: {
 		margin: "0 10px 0 0",
 		fontSize: "18px",
+	},
+	userlist: {
+		margin: "10px 0",
+		[theme.breakpoints.down("sm")]: {
+			width: "100%",
+			display: "flex",
+			justifyContent: "center",
+		},
+	},
+	statusTagContainer: {
+		margin: "0 10px",
 	},
 	title: {
 		color: "white",
@@ -430,11 +480,9 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: "20px",
 	},
 	desc: {
-		background: "rgba(0,0,0,0.4)",
-		borderRadius: "10px",
-		padding: "10px",
+		padding: "20px",
 		color: "white",
-		width: "95%",
+		width: "90%",
 		wordBreak: "break-word",
 	},
 	leftContainer: {
@@ -449,45 +497,57 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	owner: {
-		background: "rgba(0,0,0,0.4)",
 		padding: "5px 30px",
 		borderRadius: "10px",
 		width: "fit-content",
 		height: "70px",
-		margin: "0 auto",
+		[theme.breakpoints.down("sm")]: {
+			width: "calc(100% - 60px)",
+			display: "flex",
+			justifyContent: "center",
+		},
 	},
 	controls: {
 		display: "flex",
 		justifyContent: "space-between",
 		alignItems: "center",
-		padding: "20px 30px 0px 30px",
+		width: "fit-content",
+		marginLeft: "auto",
+	},
 
-		[theme.breakpoints.down("sm")]: {
-			padding: "20px 15px 0px",
-		},
+	dataContainer: {
+		background: "rgba(0,0,0,0.2)",
+		wordBreak: "break-word",
+		borderRadius: "8px",
+		border: "1px solid rgba(255,255,255,0.2)",
+		boxShadow: "0 0 3px 1px rgb(0 0 0 / 20%)",
+	},
+	control: {
+		margin: "0 5px",
 	},
 	controlsGriditem: {
 		display: "flex",
 		justifyContent: "flex-end",
-		margin: "10px 0",
 	},
 	topHeaderGriditem: {
 		display: "flex",
-		justifyContent: "space-between",
-		margin: "10px 0",
-		width: "100%",
+		justifyContent: "flex-start",
+		padding: "20px 20px",
+		width: "calc(100% - 40px)",
+		height: "35px",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
 		[theme.breakpoints.down("sm")]: {
-			border: "1px solid rgba(255,255,255,0.2)",
-			background: "black",
-			borderRadius: "50px",
-			padding: "5px 5px 5px 25px",
+			padding: "10px",
+			width: "calc(100% - 20px)",
 		},
 	},
 	faultId: {
-		padding: "10px 0",
+		padding: "5px 20px",
 		display: "flex",
 		justifyContent: "space-between",
 		alignItems: "center",
+		background: "rgba(0,0,0,0.6)",
+		borderRadius: "50px",
 	},
 	linked: {
 		display: "flex",
@@ -525,7 +585,12 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	itemDates: {
-		margin: "0 0 20px",
+		padding: "10px 0",
+		display: "flex",
+		alignItems: "flex-start",
+		[theme.breakpoints.down("sm")]: {
+			justifyContent: "space-evenly",
+		},
 	},
 	openDate: {
 		color: "white",
@@ -533,7 +598,9 @@ const useStyles = makeStyles((theme) => ({
 		padding: "7px 15px",
 		background: "rgba(0,0,0,0.4)",
 		width: "fit-content",
-		borderRadius: "50px",
+		borderRadius: "5px",
+		height: "fit-content",
+		whiteSpace: "nowrap",
 		[theme.breakpoints.down("sm")]: {
 			fontSize: "11px",
 			padding: "4px 15px",
@@ -542,56 +609,55 @@ const useStyles = makeStyles((theme) => ({
 	closedDate: {
 		color: "white",
 		fontSize: "14px",
-		margin: "10px 0",
 		padding: "7px 15px",
 		background: "green",
 		width: "fit-content",
-		borderRadius: "50px",
+		borderRadius: "5px",
+		height: "fit-content",
+		margin: "0 3px",
+		whiteSpace: "nowrap",
 		[theme.breakpoints.down("sm")]: {
 			fontSize: "11px",
 			padding: "4px 15px",
 		},
 	},
-	comments: {
-		background: "rgba(0,0,0,0.4)",
-	},
 	status: {
 		margin: "10px 0",
 	},
 	notAssigned: {
-		filter: "brightness(60%)",
+		filter: "brightness(80%)",
 	},
 	tagsContainer: {
-		display: 'flex',
-		padding: '4px 0',
-		width: 'fit-content',
-		borderRadius: '50px',
-		marginTop: '30px',
-		flexFlow: 'wrap'
+		display: "flex",
+		padding: "4px 0",
+		width: "fit-content",
+		borderRadius: "50px",
+		marginTop: "30px",
+		flexFlow: "wrap",
 	},
 	tag: {
-		background: 'rgba(255,255,255,0.5)',
-		borderRadius: '50px',
-		padding: '0px 10px',
-		display: 'grid',
-		placeItems: 'center',
-		fontSize: '12px',
-		margin: '4px 3px',
-		height: '22px',
-		color: 'black',
-		lineHeight: 1
+		background: "rgba(255,255,255,0.5)",
+		borderRadius: "50px",
+		padding: "0px 10px",
+		display: "grid",
+		placeItems: "center",
+		fontSize: "12px",
+		margin: "4px 3px",
+		height: "22px",
+		color: "black",
+		lineHeight: 1,
 	},
 	addTag: {
-		color: 'white',
-		borderRadius: '50px',
-		fontSize: '11px',
-		height: '22px',
-		width: '22px',
-		border: '1px solid rgba(255,255,255,0.4)',
+		color: "white",
+		borderRadius: "50px",
+		fontSize: "11px",
+		height: "22px",
+		width: "22px",
+		border: "1px solid rgba(255,255,255,0.4)",
 		padding: 0,
-		margin: '4px 3px', 
+		margin: "4px 3px",
 	},
 	addTagIcon: {
-		fontSize: '16px',
-	}
+		fontSize: "16px",
+	},
 }));

@@ -1,4 +1,4 @@
-import { Grid, IconButton, makeStyles } from "@material-ui/core";
+import { Grid, IconButton, makeStyles, useMediaQuery } from "@material-ui/core";
 import BlurOnRoundedIcon from "@material-ui/icons/BlurOnRounded";
 import DoneIcon from "@material-ui/icons/Done";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
@@ -7,9 +7,13 @@ import clsx from "clsx";
 import { format, parseISO } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useParams } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 import { getFullAddress } from "../../../api/assetsApi";
-import { getNextIterationDate } from "../../../api/genericApi";
+import {
+	generateItemLink,
+	getNextIterationDate,
+} from "../../../api/genericApi";
+
 import {
 	addTaskRelatedUser,
 	completeTaskStep,
@@ -39,9 +43,11 @@ import { UpdateStatus } from "../../reuseables/UpdateStatus";
 import { UserList } from "../../reuseables/UserList";
 import { UserItem } from "../../user/UserItem";
 import { TaskViewControls } from "./TaskViewControls";
+import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
 
 export const TaskView = () => {
 	const history = useHistory();
+	const downSm = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 	const { t } = useTranslation();
 	const classes = useStyles();
 	const { lang } = useContext(LanguageContext);
@@ -171,6 +177,20 @@ export const TaskView = () => {
 		setUpsertData({ itemId: task._id, module: "tasks" });
 	};
 
+	const handleCreateLink = async () => {
+		if (navigator.clipboard) {
+			await navigator.clipboard.writeText(
+				generateItemLink("tasks", task.taskId)
+			);
+			setSnackbar({
+				severity: "success",
+				text: t("reportsModule.copiedToClipboard"),
+			});
+			return;
+		}
+		setSnackbar({ severity: "error", text: t("reportsModule.linkNotCopied") });
+	};
+
 	return isLoading ? (
 		<LoadingProgress />
 	) : (
@@ -181,61 +201,55 @@ export const TaskView = () => {
 				justify="space-between"
 				alignItems="flex-start"
 			>
-				<Grid container className={classes.controls}>
-					<div className={classes.topHeaderGriditem}>
-						<div className={classes.taskId}>
-							<ItemLink itemId={task.taskId} module={"tasks"} size={18} />
-						</div>
-						<ReturnToPrevios />
+				<div className={classes.topHeaderGriditem}>
+					<div className={classes.taskId}>
+						<ItemLink itemId={task.taskId} module={"tasks"} size={13} />
 					</div>
-
-					<Grid item xs={12} className={classes.controlsGriditem}>
-						<TaskViewControls
-							task={task}
-							editTask={toggleEditMode}
-							updateOwner={() => setChangeOwner(true)}
-							changeStatus={() => setChangeStatus(true)}
-							handleScheduler={() => setScheduling(true)}
-						/>
-					</Grid>
-					{!task.isRepeatable ? (
-						<Grid
-							item
-							xs={12}
-							className={classes.controlsGriditem}
-							onClick={() => setChangeStatus(true)}
-							style={{
-								justifyContent: "flex-start",
-								cursor: "pointer",
-							}}
-						>
-							<StatusTag status={task.status} type="task" size={"16px"} />
-						</Grid>
-					) : (
-						<Grid item xs={12} className={classes.controlsGriditem}>
-							<div className={classes.repeatableContainer}>
-								<div className={classes.repeatableMark}>
-									{t("tasksModule.repeatableTask")}
-								</div>
-								<div className={classes.repeatableMarkInstructions}>
-									{t("tasksModule.repeatableTaskInstructions")}
-								</div>
+					<div className={classes.statusTagContainer}>
+						{!task.isRepeatable && (
+							<div
+								className={classes.controlsGriditem}
+								onClick={() => setChangeStatus(true)}
+								style={{
+									justifyContent: "flex-start",
+									cursor: "pointer",
+								}}
+							>
+								<StatusTag status={task.status} type="task" size={16} />
 							</div>
-						</Grid>
-					)}
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					sm={12}
-					md={8}
-					lg={8}
-					xl={9}
-					className={classes.rightContainer}
-				>
-					<div className={classes.asset}>{getFullAddress(task.asset)}</div>
+						)}
+					</div>
+					<div className={classes.controls}>
+						<div className={classes.control}>
+							<TaskViewControls
+								task={task}
+								editTask={toggleEditMode}
+								updateOwner={() => setChangeOwner(true)}
+								changeStatus={() => setChangeStatus(true)}
+								handleScheduler={() => setScheduling(true)}
+								handleCreateLink={handleCreateLink}
+							/>
+						</div>
+						<div className={classes.control}>
+							<ReturnToPrevios fontSize={16} size={35} />
+						</div>
+					</div>
+				</div>
+				{Boolean(task.images.length) && (
+					<Carousel
+						images={task.images}
+						isOpen={Boolean(task.images.length)}
+						size={downSm ? 300 : 500}
+					/>
+				)}
+				<div className={classes.detailsContainer}>
+					<div className={clsx(classes.detailPill, classes.asset)}>
+						<HomeRoundedIcon className={classes.systemIcon} />
+						{getFullAddress(task.asset)}
+					</div>
 					<div
 						className={clsx(
+							classes.detailPill,
 							classes.system,
 							!task.system && classes.notAssigned
 						)}
@@ -245,6 +259,7 @@ export const TaskView = () => {
 					</div>
 					<div
 						className={clsx(
+							classes.detailPill,
 							classes.location,
 							!task.location && classes.notAssigned
 						)}
@@ -257,30 +272,42 @@ export const TaskView = () => {
 
 					{!task.asset && (
 						<Grid item xs={12}>
-							<div className={classes.taskNotLinkedToAsset}>
+							<div
+								className={clsx(
+									classes.detailPill,
+									classes.taskNotLinkedToAsset
+								)}
+							>
 								<InfoOutlinedIcon className={classes.infoIcon} />
 								{t("tasksModule.taskNotLinkedToAsset")}
 							</div>
 						</Grid>
 					)}
-					<div className={classes.title}>{task.title}</div>
-					<div className={classes.desc}>
-						<div className={classes.itemDates}>
-							<div className={classes.openDate}>
-								{`${t("general.createDate")} ${format(
-									parseISO(task.createdAt),
-									lang.dateformat
-								)}`}
-							</div>
-							{Boolean(task.closedDate) && (
-								<div className={classes.closedDate}>
-									{`${t("general.closedDate")} ${format(
-										parseISO(task.closedDate),
-										lang.dateformat
-									)}`}
+					{task.isRepeatable && (
+						<div item xs={12} className={classes.controlsGriditem}>
+							<div className={classes.repeatableContainer}>
+								<div className={classes.repeatableMark}>
+									{t("tasksModule.repeatableTask")}
 								</div>
-							)}
+								<div className={classes.repeatableMarkInstructions}>
+									{t("tasksModule.repeatableTaskInstructions")}
+								</div>
+							</div>
 						</div>
+					)}
+				</div>
+
+				<Grid
+					item
+					xs={12}
+					sm={12}
+					md={8}
+					lg={8}
+					xl={9}
+					className={classes.rightContainer}
+				>
+					<div className={classes.title}>{task.title}</div>
+					<div className={clsx(classes.dataContainer, classes.desc)}>
 						{task.description}
 						<div className={classes.timeActive}>
 							<TimeActive createDate={task.createdAt} />
@@ -335,8 +362,26 @@ export const TaskView = () => {
 							</Grid>
 						</div>
 					)}
+					<div className={classes.itemDates}>
+						<div className={classes.openDate}>
+							{`${t("general.createDate")} ${format(
+								parseISO(task.createdAt),
+								lang.dateformat
+							)}`}
+						</div>
+						{Boolean(task.closedDate) && (
+							<div className={classes.closedDate}>
+								{`${t("general.closedDate")} ${format(
+									parseISO(task.closedDate),
+									lang.dateformat
+								)}`}
+							</div>
+						)}
+					</div>
 					{Boolean(task.steps.length) && (
-						<div className={classes.stepsContainer}>
+						<div
+							className={clsx(classes.dataContainer, classes.stepsContainer)}
+						>
 							<div className={classes.stepsTitle}>
 								{t("tasksModule.taskSteps")}
 							</div>
@@ -384,13 +429,6 @@ export const TaskView = () => {
 							))}
 						</div>
 					)}
-					{Boolean(task.images.length) && (
-						<Carousel
-							images={task.images}
-							isOpen={Boolean(task.images.length)}
-							size={300}
-						/>
-					)}
 				</Grid>
 				<Grid
 					item
@@ -401,7 +439,7 @@ export const TaskView = () => {
 					xl={3}
 					className={classes.leftContainer}
 				>
-					<div className={classes.owner}>
+					<div className={clsx(classes.owner, classes.dataContainer)}>
 						<UserItem
 							user={task.owner}
 							showTitle
@@ -411,17 +449,19 @@ export const TaskView = () => {
 							avatarSize={50}
 						/>
 					</div>
-					<UserList
-						users={task.relatedUsers}
-						removeTooltip={t("tasksModule.controls.removeRelatedUser")}
-						addTooltip={t("tasksModule.controls.addRelatedUser")}
-						placeholder={t("tasksModule.noRelatedUsers")}
-						title={t("tasksModule.relatedUsers")}
-						handleRemove={removeRelatedUser}
-						handleAdd={() => setAddRelatedUserModal(true)}
-						module={"tasks"}
-						owner={task.owner}
-					/>
+					<div className={clsx(classes.userlist, classes.dataContainer)}>
+						<UserList
+							users={task.relatedUsers}
+							removeTooltip={t("tasksModule.controls.removeRelatedUser")}
+							addTooltip={t("tasksModule.controls.addRelatedUser")}
+							placeholder={t("tasksModule.noRelatedUsers")}
+							title={t("tasksModule.relatedUsers")}
+							handleRemove={removeRelatedUser}
+							handleAdd={() => setAddRelatedUserModal(true)}
+							module={"tasks"}
+							owner={task.owner}
+						/>
+					</div>
 				</Grid>
 				{!task.isRepeatable && (
 					<Grid item xs={12} className={classes.comments}>
@@ -479,10 +519,20 @@ export const TaskView = () => {
 
 const useStyles = makeStyles((theme) => ({
 	container: {
+		height: "calc(100% - 40px)",
 		overflowY: "overlay",
-		height: "100%",
-		[theme.breakpoints.down("sm")]: {
-			height: "calc(100% - 64px)",
+		border: "solid rgba(255,255,255,0.2)",
+		borderWidth: "0 1px",
+		boxShadow: "0 0 5px 2px rgb(0 0 0 / 30%)",
+		background: "rgba(255,255,255,0.2)",
+		position: "relative",
+		borderRadius: "8px",
+		margin: "20px 0",
+		[theme.breakpoints.down("xs")]: {
+			border: "none",
+			margin: "0",
+			borderRadius: "0",
+			height: "100%",
 		},
 	},
 	rightContainer: {
@@ -491,44 +541,55 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "flex-start",
 		padding: "0 30px",
 		[theme.breakpoints.down("sm")]: {
-			alignItems: "center",
 			padding: "0 15px",
 		},
 	},
-	asset: {
-		color: "white",
-		fontSize: "16px",
-		background: "black",
-		width: "fit-content",
-		padding: "10px 20px",
+	detailsContainer: {
+		display: "flex",
+		padding: "10px",
+		flexWrap: "wrap",
+	},
+	detailPill: {
 		borderRadius: "50px",
-		boxShadow: "rgba(0,0,0,0.25) 0 0 5px 2px",
+		padding: "7px 25px 7px 15px",
+		width: "fit-content",
 		textAlign: "center",
 		whiteSpace: "nowrap",
+		fontSize: "13px",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		margin: "3px",
+	},
+	dataContainer: {
+		background: "rgba(0,0,0,0.2)",
+		wordBreak: "break-word",
+		borderRadius: "8px",
+		border: "1px solid rgba(255,255,255,0.2)",
+		boxShadow: "0 0 3px 1px rgb(0 0 0 / 20%)",
+	},
+	userlist: {
+		margin: "10px 0",
+		[theme.breakpoints.down("sm")]: {
+			width: "100%",
+			display: "flex",
+			justifyContent: "center",
+		},
+	},
+	statusTagContainer: {
+		margin: "0 10px",
+	},
+	asset: {
+		color: "white",
+		background: "black",
 	},
 	system: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		width: "fit-content",
 		color: "white",
-		borderRadius: "50px",
-		padding: "10px 20px",
 		background: "rgba(0,0,0,0.3)",
-		whiteSpace: "nowrap",
-		margin: "10px 0",
 	},
 	location: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		width: "fit-content",
 		color: "white",
-		borderRadius: "50px",
-		padding: "10px 20px",
-		background: "rgba(255,255,255,0.2)",
-		whiteSpace: "nowrap",
-		margin: "0px 0",
+		background: "rgba(0,0,0,0.2)",
 	},
 	systemIcon: {
 		margin: "0 10px 0 0",
@@ -536,15 +597,13 @@ const useStyles = makeStyles((theme) => ({
 	},
 	title: {
 		color: "white",
-		fontSize: "22px",
+		fontSize: "18px",
 		padding: "15px 0",
 		alignSelf: "flex-end",
 		width: "100%",
 		marginTop: "20px",
 	},
 	desc: {
-		background: "rgba(0,0,0,0.4)",
-		borderRadius: "10px",
 		padding: "20px",
 		color: "white",
 		width: "90%",
@@ -562,61 +621,49 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	owner: {
-		background: "rgba(0,0,0,0.4)",
 		padding: "5px 30px",
 		borderRadius: "10px",
 		width: "fit-content",
 		height: "70px",
+		[theme.breakpoints.down("sm")]: {
+			width: "calc(100% - 60px)",
+			display: "flex",
+			justifyContent: "center",
+		},
 	},
 	controls: {
 		display: "flex",
 		justifyContent: "space-between",
 		alignItems: "center",
-		padding: "20px 30px 0px 30px",
-		[theme.breakpoints.down("sm")]: {
-			padding: "20px 15px 0px",
-		},
+		width: "fit-content",
+		marginLeft: "auto",
+	},
+	control: {
+		margin: "0 5px",
 	},
 	topHeaderGriditem: {
 		display: "flex",
-		justifyContent: "space-between",
-		margin: "10px 0",
-		width: "100%",
+		justifyContent: "flex-start",
+		padding: "20px 20px",
+		width: "calc(100% - 40px)",
+		height: "35px",
+		borderBottom: "1px solid rgba(255,255,255,0.2)",
 		[theme.breakpoints.down("sm")]: {
-			border: "1px solid rgba(255,255,255,0.2)",
-			background: "black",
-			borderRadius: "50px",
-			padding: "5px 5px 5px 25px",
+			padding: "10px",
+			width: "calc(100% - 20px)",
 		},
 	},
 	controlsGriditem: {
 		display: "flex",
 		justifyContent: "flex-end",
-		margin: "10px 0",
 	},
 	taskId: {
-		padding: "5px 0",
+		padding: "5px 20px",
 		display: "flex",
 		justifyContent: "space-between",
 		alignItems: "center",
-	},
-	linked: {
-		display: "flex",
-		flexDirection: "column",
-		justifyContent: "flex-start",
-		background: "rgba(0,0,0,0.4)",
-		margin: "10px 0",
-		borderRadius: "10px",
-		padding: "10px 0",
-		height: "300px",
-	},
-	linkedHeader: {
-		color: "white",
-		fontSize: "16px",
-		padding: "5px",
-		margin: "0px auto",
-		width: "80%",
-		borderBottom: "1px solid rgba(255,255,255,0.2)",
+		background: "rgba(0,0,0,0.6)",
+		borderRadius: "50px",
 	},
 	followingList: {
 		padding: "5px",
@@ -636,7 +683,12 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	itemDates: {
-		margin: "0 0 20px",
+		padding: "10px 0",
+		display: "flex",
+		alignItems: "flex-start",
+		[theme.breakpoints.down("sm")]: {
+			justifyContent: "space-evenly",
+		},
 	},
 	openDate: {
 		color: "white",
@@ -644,7 +696,9 @@ const useStyles = makeStyles((theme) => ({
 		padding: "7px 15px",
 		background: "rgba(0,0,0,0.4)",
 		width: "fit-content",
-		borderRadius: "50px",
+		borderRadius: "5px",
+		height: "fit-content",
+		whiteSpace: "nowrap",
 		[theme.breakpoints.down("sm")]: {
 			fontSize: "11px",
 			padding: "4px 15px",
@@ -653,19 +707,19 @@ const useStyles = makeStyles((theme) => ({
 	closedDate: {
 		color: "white",
 		fontSize: "14px",
-		margin: "10px 0",
 		padding: "7px 15px",
 		background: "green",
 		width: "fit-content",
-		borderRadius: "50px",
+		borderRadius: "5px",
+		height: "fit-content",
+		margin: "0 3px",
+		whiteSpace: "nowrap",
 		[theme.breakpoints.down("sm")]: {
 			fontSize: "11px",
 			padding: "4px 15px",
 		},
 	},
-	comments: {
-		background: "rgba(0,0,0,0.4)",
-	},
+	comments: {},
 	status: {
 		margin: "10px 0",
 	},
@@ -676,11 +730,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	stepsContainer: {
 		color: "white",
-		background: "rgba(0,0,0,0.4)",
-		borderRadius: "10px",
 		width: "90%",
 		margin: "10px 0",
-		padding: "10px 20px",
+		padding: "10px",
 		[theme.breakpoints.down("sm")]: {
 			padding: "10px 0",
 			width: "100%",
@@ -795,6 +847,6 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "18px",
 	},
 	notAssigned: {
-		filter: "brightness(60%)",
+		filter: "brightness(80%)",
 	},
 }));
